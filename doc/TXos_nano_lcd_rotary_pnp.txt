@@ -1,0 +1,52 @@
+*Pick And Place List
+*Company=
+*Author=
+*eMail=
+*
+*Project=TXos_nano_lcd_rotary
+*Date=10:30:44
+*CreatedBy=Fritzing 0.9.3b.04.19.5c895d327c44a3114e5fcc9d8260daf0cbb52806
+*
+*
+*Coordinates in mm, always center of component
+*Origin 0/0=Lower left corner of PCB
+*Rotation in degree (0-360, math. pos.)
+*
+*No;Value;Package;X;Y;Rotation;Side;Name
+1;;;93.0474;-2.8092;0;Bottom;Hole4
+2;;;2.87743;-58.6892;0;Bottom;Hole2
+3;;THT;28.2774;-10.4292;180;Bottom;Analog 3
+4;;THT;22.0544;-45.9892;0;Bottom;ICSP
+5;;;39.7074;-12.9692;0;Bottom;Jumper13
+6;22k;THT;39.7074;-53.6092;0;Bottom;R2
+7;10k;THT;39.7074;-49.7992;180;Bottom;R1
+8;;;16.8474;-12.9692;0;Bottom;Jumper10
+9;;;90.5074;-23.1292;0;Bottom;Jumper5
+10;;;47.3274;-7.8892;0;Bottom;Jumper8
+11;;THT;85.4274;-39.6392;0;Bottom;TWI1
+12;;THT;4.14743;-11.6992;180;Bottom;Vin
+13;;;13.0374;-45.9892;0;Bottom;Jumper15
+14;;;56.2174;-9.1592;0;Bottom;Jumper1
+15;;;10.4974;-24.3992;0;Bottom;Jumper4
+16;;THT;20.6574;-10.4292;180;Bottom;Analog 2
+17;;THT;35.8974;-10.4292;180;Bottom;Analog 4
+18;;THT;79.0774;-11.6992;0;Bottom;Digital 2
+19;;THT;77.8074;-39.6392;0;Bottom;TWI2
+20;;;5.41743;-24.3992;0;Bottom;Jumper7
+21;;THT;43.5174;-10.4292;180;Bottom;Analog 5
+22;;THT;66.3774;-32.0192;180;Bottom;Rotary Encoder
+23;;THT;60.0274;-11.6992;0;Bottom;Digital 5
+24;;;72.7274;-28.2092;0;Bottom;Jumper14
+25;;;32.0874;-12.9692;0;Bottom;Jumper12
+26;;;24.4674;-12.9692;0;Bottom;Jumper11
+27;;;28.2774;-42.1792;0;Bottom;Jumper16
+28;;THT;85.4274;-24.3992;0;Bottom;PPM
+29;;THT;72.7274;-11.6992;0;Bottom;Digital 3
+30;;;30.8089;-28.2092;90;Bottom;Arduino Nano V3
+31;;THT;13.0374;-10.4292;180;Bottom;Analog 1
+32;;THT;85.4274;-11.6992;0;Bottom;Digital 1
+33;;;2.87743;-2.8092;0;Bottom;Hole1
+34;;;49.8674;-10.4292;0;Bottom;Jumper2
+35;;;9.22743;-12.9692;0;Bottom;Jumper9
+36;;THT;66.3774;-11.6992;0;Bottom;Digital 4
+37;;;93.0474;-58.6892;0;Bottom;Hole3
