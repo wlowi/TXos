@@ -1,0 +1,7 @@
+TXos_nano_lcd_rotary
+R2 1 9 22k
+R1 9 0 10k
+
+.TRAN 1ms 100ms
+* .AC DEC 100 100 1MEG
+.END

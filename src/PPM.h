@@ -65,6 +65,7 @@ typedef struct timingSet_t {
 class PPM
 {
 public:
+    volatile timingSet_t *modifiableSet;
     volatile timingSet_t *activeSet;
     channel_t outputChannel;
     
@@ -73,8 +74,8 @@ public:
      */
     uint8_t outputState;
 
-    ppmTiming_t channelTime;
-    ppmTiming_t inFrameTime;
+    /* inFrameTime is used to compute the remaining time until frame end */
+    ppmTiming_t inFrameTime_usec;
 
     /* Count how may times the user mode code was unable to compute 
      * and set all channels within one PPM frame.
@@ -85,8 +86,6 @@ public:
     /* Flag indicating that all channels have been set.
      */
     volatile boolean channelSetDone;
-
-    volatile timingSet_t *modifiableSet;
     
 public:
     PPM();

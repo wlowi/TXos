@@ -18,77 +18,85 @@
 #include "AnalogInput.h"
 #include "PPM.h"
 
+#define PIN_LOW() PORTD &= ~_BV( PPM_PORT)
+#define PIN_HIGH() PORTD |= _BV( PPM_PORT)
+
+/* Convert timer low, high values to microseconds.
+ * Division by 2 is because the timer runs in 0.5 usec resolution.
+ */
+#define CONVERT_TIMER_TO_USEC( l, h)  ((((ppmTiming_t)h << 8) + l) >> 1)
+
+/* PPM generation state machine states */
+#define BEGIN_OF_FIRST_SPACE    0
+#define END_OF_SPACE            1
+#define END_OF_MARK             2
+#define END_OF_LAST_SPACE       4
+
 PPM ppm;
 
 ISR( TIMER1_COMPA_vect) {
     
-    ppmTiming_t t_usec;
+    ppmTiming_t nextTimerValue_usec;
     uint8_t h, l;
     
     l = TCNT1L;
     h = TCNT1H;
 
-    /* Reset counter */
+    /* Resetting the counter is the first thing to do to guarantee correct timing. */
     TCNT1H = (byte)0;
     TCNT1L = (byte)0;
     
-    ppm.inFrameTime += ((((ppmTiming_t)h << 8) + l) >> 1);
+    ppm.inFrameTime_usec += CONVERT_TIMER_TO_USEC( l, h);
     
     switch( ppm.outputState) {
-    case 0: /* begin of first space of a frame, set pin to low */
-        PORTD &= ~_BV( PPM_PORT);
+    case BEGIN_OF_FIRST_SPACE:
+        PIN_LOW();
+        nextTimerValue_usec = PPM_SPACE_usec;
 
         ppm.switchSet();
         AnalogInput::start();
 
-        t_usec = PPM_SPACE_usec;
-
-        ppm.outputState++;
-        ppm.channelTime = ppm.inFrameTime = 0;
+        ppm.inFrameTime_usec = 0;
+        ppm.outputState = END_OF_SPACE;
         break;
         
-    case 1: /* end of space, set to high */
-        PORTD |= _BV( PPM_PORT);
-        
-        t_usec = ppm.activeSet->channel[ppm.outputChannel];
+    case END_OF_SPACE:
+        PIN_HIGH();
+        nextTimerValue_usec = ppm.activeSet->channel[ppm.outputChannel];
 
-        ppm.outputState++;
+        ppm.outputState = END_OF_MARK;
         break;
 
-    case 2: /* end of mask, set to low */
-        PORTD &= ~_BV( PPM_PORT);
-        
-        t_usec = PPM_SPACE_usec;
+    case END_OF_MARK:
+        PIN_LOW();
+        nextTimerValue_usec = PPM_SPACE_usec;
         
         ppm.outputChannel++;
-        if( ppm.outputChannel >= PPM_CHANNELS)  {
-            ppm.outputChannel = 0;
-            ppm.outputState++; // done
+        if( ppm.outputChannel < PPM_CHANNELS)  {
+            ppm.outputState = END_OF_SPACE; // repeat for next channel
         } else {
-            ppm.outputState--; // repeat, back to state 1
+            ppm.outputChannel = 0;
+            ppm.outputState = END_OF_LAST_SPACE; // done
         }
         break;
         
-    case 3: /* end of last space, set to high */
-        PORTD |= _BV( PPM_PORT);
+    case END_OF_LAST_SPACE:
+        PIN_HIGH();
+        nextTimerValue_usec = PPM_FRAME_usec - ppm.inFrameTime_usec;
 
-        t_usec = PPM_FRAME_usec - ppm.channelTime;
-
-        ppm.outputState = 0;
+        ppm.outputState = BEGIN_OF_FIRST_SPACE;
         break;
         
     default:
-        t_usec = 0;
+        nextTimerValue_usec = 0;
     }
-
-    ppm.channelTime += t_usec;
     
     /* Multiply by 2 because the timer resulution is 0.5 micro sec. */
-    t_usec <<= 1;
+    nextTimerValue_usec <<= 1;
 
     /* Set output compare register. HIGH BYTE FIRST ! */
-    OCR1AH = HIGH_BYTE( t_usec);
-    OCR1AL = LOW_BYTE( t_usec);
+    OCR1AH = HIGH_BYTE( nextTimerValue_usec);
+    OCR1AL = LOW_BYTE( nextTimerValue_usec);
 }
 
 PPM::PPM() {
@@ -115,7 +123,7 @@ void PPM::init() {
         }
 
         outputChannel = 0;
-        outputState = 0;
+        outputState = BEGIN_OF_FIRST_SPACE;
         ppmOverrun = 0;
         channelSetDone = true;
 
@@ -137,20 +145,25 @@ void PPM::init() {
     }
 }
 
+/* Current in frame time, in usec.
+ */
 ppmTiming_t PPM::getInFrameTime() {
     
     ppmTiming_t t;
     uint8_t l, h;
 
     ATOMIC_BLOCK( ATOMIC_RESTORESTATE) {
-        t = ppm.inFrameTime;
+        t = ppm.inFrameTime_usec;
         l = TCNT1L; // Read low byte first!
         h = TCNT1H;
     }
     
-    return t + ((((ppmTiming_t)h << 8) + l) >> 1);
+    return t + CONVERT_TIMER_TO_USEC( l, h);
 }
 
+/* An overrun occurs if not all channels in the modifiable set
+ * were set and a switch occurs.
+ */
 uint16_t PPM::getOverrunCounter() {
 
     return ppm.ppmOverrun;
