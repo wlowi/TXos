@@ -8,6 +8,7 @@ class Controls {
 
     public:
         Controls();
+        void init();
         void GetControlValues( channelSet_t &channels );
 };
 

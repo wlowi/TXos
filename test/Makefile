@@ -6,15 +6,19 @@ WX_LIBS = $(shell wx-config --libs)
 # wx-config --cxxflags
 WX_CXXFLAGS = $(shell wx-config --cxxflags)
 
+EMU_OBJ = emu/EEPROM.o
+
 CONTROLS_OBJ = controls/InputBox.o controls/Controls.o
 
-UI_OBJ = ui/LcdWidget.o ui/DisplayBox.o
+UI_OBJ = ui/LcdWidget.o ui/DisplayBox.o ui/UserInterface.o
 
 OUTPUT_OBJ = output/OutputBox.o output/Output.o
 
-CXX += -I. -Icontrols -Iui -Ioutput
+MODULE_OBJ = modules/ServoReverse.o
 
-OBJECTS = $(PROGRAM).o TXos.o $(CONTROLS_OBJ) $(UI_OBJ) $(OUTPUT_OBJ)
+CXX += -I. -Iemu -Icontrols -Iui -Ioutput -Imodules
+
+OBJECTS = $(PROGRAM).o TXos.o Module.o ModuleManager.o $(EMU_OBJ) $(CONTROLS_OBJ) $(UI_OBJ) $(OUTPUT_OBJ) $(MODULE_OBJ)
 
 # implementation
 

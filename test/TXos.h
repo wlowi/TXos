@@ -17,6 +17,14 @@ typedef uint8_t channel_t;
  */
 typedef int16_t channelValue_t;
 
+/* A bitmap with boolean values for 16 channels.
+ */
+typedef uint16_t channelBits_t;
+
+#define BIT_SET( bm, ch)     bm |= ((channelBits_t)1 << ch)
+#define BIT_CLEAR( bm, ch)   bm &= ~((channelBits_t)1 << ch)
+#define IS_BIT_SET( bm, ch)  (bm & (1 << ch))
+
 #define CHANNELVALUE_MID        ((value_t)    0)
 #define CHANNELVALUE_MIN        ((value_t)-1000)
 #define CHANNELVALUE_MAX        ((value_t) 1000)

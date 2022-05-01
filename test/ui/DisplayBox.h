@@ -18,6 +18,8 @@ class DisplayBox : public wxBoxSizer
 
     public:
         DisplayBox( wxWindow *parent);
+        void OnButton( wxCommandEvent &event);
+        
         void paint( void);
 };
 

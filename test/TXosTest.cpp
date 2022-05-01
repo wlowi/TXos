@@ -5,12 +5,16 @@
 #include "DisplayBox.h"
 #include "OutputBox.h"
 
+#include "EEPROM.h"
+
+EEPROMClass EEPROM(4096);
+
 extern void setup( void);
 extern void loop( void);
 
 InputBox *inputBox;
 OutputBox *outputBox;
-DisplayBox *display;
+DisplayBox *displayBox;
 
 class TXosTest : public wxApp
 {
@@ -75,8 +79,8 @@ MyFrame::MyFrame()
     inputBox =  new InputBox( panel, 4, 4);
     hbox->Add( inputBox);
     hbox->AddSpacer(10);
-    display =  new DisplayBox( panel);
-    hbox->Add( display);
+    displayBox =  new DisplayBox( panel);
+    hbox->Add( displayBox);
     hbox->AddSpacer(10);
     outputBox = new OutputBox( panel, 9);
     hbox->Add( outputBox);
@@ -96,7 +100,7 @@ void MyFrame::OnExit(wxCommandEvent& event)
  
 void MyFrame::OnAbout(wxCommandEvent& event)
 {
-    display->paint();
+    displayBox->paint();
 
     //wxMessageBox("TXos Test Helper",
     //             "TXos Test Helper", wxOK | wxICON_INFORMATION);

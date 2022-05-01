@@ -29,21 +29,37 @@
 
 #include "TXos.h"
 
+#include "EEPROM.h"
+
 #include "Controls.h"
 #include "Output.h"
+#include "UserInterface.h"
+
+#include "Module.h"
+#include "ModuleManager.h"
+
+#include "ServoReverse.h"
 
 channelSet_t channels;
 Controls controls;
 Output output;
+UserInterface userInterface;
+ModuleManager moduleManager;
 
 void setup( void) {
 
+    moduleManager.Add( new ServoReverse());
+
+    controls.init();
+    output.init();
+    userInterface.init();
 }
 
 void loop( void) {
 
     controls.GetControlValues( channels);
-
+    moduleManager.RunModules( channels);
     output.setChannels( channels);
 
+    userInterface.handle();
 }

@@ -8,6 +8,10 @@ Controls::Controls() {
 
 }
 
+void Controls::init() {
+
+}
+
 void Controls::GetControlValues( channelSet_t &channels) {
 
     for( int ch=0; ch < inputBox->GetChannels(); ch++) {

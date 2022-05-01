@@ -7,6 +7,10 @@
 
 #include <stdint.h>
 
+#ifndef NULL
+#define NULL __null
+#endif
+
 typedef uint8_t byte;
 
 #endif

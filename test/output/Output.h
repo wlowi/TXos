@@ -8,6 +8,7 @@ class Output {
 
     public:
         Output();
+        void init();
         void setChannels( channelSet_t &channels);
 };
 
