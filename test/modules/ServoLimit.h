@@ -1,23 +1,24 @@
 
-#ifndef _ServoReverse_h_
-#define _ServoReverse_h_
+#ifndef _ServoLimit_h_
+#define _ServoLimit_h_
 
 #include "TXos.h"
 #include "Module.h"
 
-typedef struct servoReverse_t {
+typedef struct servoLimit_t {
 
-        channelBits_t revBits;
+        percent_t posLimit_pct[CHANNELS];
+        percent_t negLimit_pct[CHANNELS];
 
-} servoReverse_t;
+} servoLimit_t;
 
-class ServoReverse : public Module {
+class ServoLimit : public Module {
 
     private:
-        servoReverse_t cfg;
+        servoLimit_t cfg;
 
     public:
-        ServoReverse();
+        ServoLimit();
         void run( channelSet_t &channels);
         void setDefaults();
 

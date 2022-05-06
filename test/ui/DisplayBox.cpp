@@ -4,7 +4,8 @@
 DisplayBox::DisplayBox( wxWindow *parent)
     : wxBoxSizer(wxVERTICAL)
 {
-    lcd = new LcdWidget(parent, wxID_ANY, 160, 128, 2);
+    key = KEY_NONE;
+    lcd = new LcdWidget(parent, wxID_ANY, 160, 128, 1);
     Add( lcd);
     AddSpacer(20);
 
@@ -25,29 +26,25 @@ void DisplayBox::OnButton( wxCommandEvent &event) {
 
     switch( event.GetId()) {
         case wxID_UP:
-            printf("OnButton %d UP\n", event.GetId());
+            key = KEY_UP;
             break;
         case wxID_OK:
-            printf("OnButton %d OK\n", event.GetId());
+            key = KEY_ENTER;
             break;
         case wxID_DOWN:
-            printf("OnButton %d DOWN\n", event.GetId());
+            key = KEY_DOWN;
             break;
     }
 }
 
-void DisplayBox::paint( void) 
+LcdWidget *DisplayBox::getLCD( void) 
 {
-    for( int x=1; x<100; x++) {
-        lcd->setPixel( x, 100);
-        lcd->setPixel( x, 102);
-        lcd->setPixel( x, 104);
-    }
+    return lcd;
+}
 
-    lcd->setBg( 255,0,0);
-    lcd->println( "Hallo Welt!");
-    lcd->setFontSize(2);
-    lcd->println( "Hallo Welt!");
-    lcd->setFontSize(3);
-    lcd->print( "Hallo Welt!");
+uint8_t DisplayBox::getKey() {
+
+    uint8_t k = key;
+    key = KEY_NONE;
+    return k;
 }

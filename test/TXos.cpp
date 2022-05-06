@@ -37,22 +37,38 @@
 
 #include "Module.h"
 #include "ModuleManager.h"
+#include "ConfigBlock.h"
+#include "SystemConfig.h"
 
 #include "ServoReverse.h"
+#include "ServoSubtrim.h"
+#include "ServoLimit.h"
 
 channelSet_t channels;
 Controls controls;
 Output output;
 UserInterface userInterface;
-ModuleManager moduleManager;
+ConfigBlock configBlock;
+SystemConfig systemConfig( configBlock);
+ModuleManager moduleManager( configBlock);
 
 void setup( void) {
 
+    userInterface.init();
+
+    systemConfig.load();
+
+    /* The order of modules is important.
+     * It defines the order of execution in RunModules().
+     */
     moduleManager.Add( new ServoReverse());
+    moduleManager.Add( new ServoSubtrim());
+    moduleManager.Add( new ServoLimit());
+
+    moduleManager.load( systemConfig.getModelID());
 
     controls.init();
     output.init();
-    userInterface.init();
 }
 
 void loop( void) {

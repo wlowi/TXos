@@ -28,11 +28,12 @@ class MyFrame : public wxFrame
         MyFrame();
  
     private:
+        void OnClose(wxCloseEvent& event);
         void OnExit(wxCommandEvent& event);
         void OnAbout(wxCommandEvent& event);
         void handleIdle(wxIdleEvent& event);
 };
- 
+
 enum
 {
     ID_Hello = 1
@@ -42,6 +43,8 @@ wxIMPLEMENT_APP(TXosTest);
  
 bool TXosTest::OnInit()
 {
+    EEPROM.loadFromFile();
+
     MyFrame *frame = new MyFrame();
     frame->Show(true);
     return true;
@@ -70,6 +73,7 @@ MyFrame::MyFrame()
  
     Bind(wxEVT_MENU, &MyFrame::OnAbout, this, wxID_ABOUT);
     Bind(wxEVT_MENU, &MyFrame::OnExit, this, wxID_EXIT);
+    Bind(wxEVT_CLOSE_WINDOW, &MyFrame::OnClose, this);
 
     wxPanel *panel = new wxPanel(this, -1);
 
@@ -93,15 +97,19 @@ MyFrame::MyFrame()
     Bind(wxEVT_IDLE, &MyFrame::handleIdle, this);
 }
  
+void MyFrame::OnClose(wxCloseEvent& event)
+{
+    EEPROM.saveToFile();
+    Destroy();
+}
+
 void MyFrame::OnExit(wxCommandEvent& event)
 {
-    Close(true);
+    Close();
 }
  
 void MyFrame::OnAbout(wxCommandEvent& event)
 {
-    displayBox->paint();
-
     //wxMessageBox("TXos Test Helper",
     //             "TXos Test Helper", wxOK | wxICON_INFORMATION);
 

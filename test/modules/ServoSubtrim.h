@@ -1,23 +1,23 @@
 
-#ifndef _ServoReverse_h_
-#define _ServoReverse_h_
+#ifndef _ServoSubtrim_h_
+#define _ServoSubtrim_h_
 
 #include "TXos.h"
 #include "Module.h"
 
-typedef struct servoReverse_t {
+typedef struct servoSubtrim_t {
 
-        channelBits_t revBits;
+        percent_t trim_pct[CHANNELS];
 
-} servoReverse_t;
+} servoSubtrim_t;
 
-class ServoReverse : public Module {
+class ServoSubtrim : public Module {
 
     private:
-        servoReverse_t cfg;
+        servoSubtrim_t cfg;
 
     public:
-        ServoReverse();
+        ServoSubtrim();
         void run( channelSet_t &channels);
         void setDefaults();
 

@@ -2,3 +2,4 @@
 **/*.o
 srv/.vscode
 src/default
+test/EEPROM.DAT

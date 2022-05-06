@@ -328,6 +328,8 @@ void LcdWidget::clear()
         }
     }
 
+	textX = textY = 0;
+	
     Refresh();
 }
 

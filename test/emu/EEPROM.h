@@ -4,6 +4,8 @@
 
 #include "Arduino.h"
 
+#define EEPROM_FILENAME  "EEPROM.DAT"
+
 class EEPROMClass {
 
     private:
@@ -12,6 +14,9 @@ class EEPROMClass {
 
     public:
         EEPROMClass( uint16_t len);
+
+        void loadFromFile();
+        void saveToFile();
 
         uint8_t read( int idx )              { return storage[idx]; }
         void write( int idx, uint8_t val )   { storage[idx] = val; }
