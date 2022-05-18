@@ -1,7 +1,7 @@
 
 #include "ServoReverse.h"
 
-ServoReverse::ServoReverse() : Module( MODULE_SERVO_REVERSE_TYPE) {
+ServoReverse::ServoReverse() : Module( MODULE_SERVO_REVERSE_TYPE, TEXT_MODULE_SERVO_REVERSE) {
 
     setDefaults();
 }
@@ -33,4 +33,39 @@ uint8_t *ServoReverse::getConfig() {
 void ServoReverse::setConfig( uint8_t *config, moduleSize_t size) {
 
 
+}
+
+/* From TableEditable */
+uint8_t ServoReverse::getItemCount() {
+
+    return CHANNELS;
+}
+
+const char *ServoReverse::getItemName( uint8_t row) {
+
+    return ChannelNames[row];
+}
+
+uint8_t ServoReverse::getValueCount() {
+
+    return 1;
+}
+
+TableEditType_t ServoReverse::getValueType( uint8_t col) {
+
+    return BOOLEAN_T;
+}
+
+void ServoReverse::getValue( uint8_t row, uint8_t col, CellType *val) {
+
+    val->boolV = IS_BIT_SET( cfg.revBits, row);
+}
+
+void ServoReverse::setValue( uint8_t row, uint8_t col, CellType *val) {
+    
+    if( val->boolV) {
+        BIT_SET( cfg.revBits, row);
+    } else {
+        BIT_CLEAR( cfg.revBits, row);
+    }
 }

@@ -6,7 +6,7 @@
 #include "Module.h"
 #include "ConfigBlock.h"
 
-class ModuleManager {
+class ModuleManager : public TableEditable {
     
     private:
         Module *first;
@@ -20,10 +20,22 @@ class ModuleManager {
     public:
         ModuleManager( ConfigBlock &svc);
         void Add( Module *module);
+        uint8_t getModuleCount();
+        Module *getModule( uint8_t idx);
+
         void RunModules( channelSet_t &channels);
 
         void load( configBlockID_t modelID);
         void save( configBlockID_t modelID);
+
+        /* From Interface TableEditable */
+        const char *getName();
+        uint8_t getItemCount();
+        const char *getItemName( uint8_t row);
+        uint8_t getValueCount();
+        TableEditType_t getValueType( uint8_t col);
+        void getValue( uint8_t row, uint8_t col, CellType *val);
+        void setValue( uint8_t row, uint8_t col, CellType *val);
 };
 
 #endif

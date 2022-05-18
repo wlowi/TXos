@@ -1,9 +1,8 @@
 
 #include "DisplayBox.h"
 
-DisplayBox::DisplayBox( wxWindow *parent)
-    : wxBoxSizer(wxVERTICAL)
-{
+DisplayBox::DisplayBox( wxWindow *parent) : wxBoxSizer(wxVERTICAL) {
+
     key = KEY_NONE;
     lcd = new LcdWidget(parent, wxID_ANY, 160, 128, 1);
     Add( lcd);
@@ -37,14 +36,17 @@ void DisplayBox::OnButton( wxCommandEvent &event) {
     }
 }
 
-LcdWidget *DisplayBox::getLCD( void) 
-{
+LcdWidget *DisplayBox::getLCD( void) {
+
     return lcd;
 }
 
-uint8_t DisplayBox::getKey() {
+Event *DisplayBox::getEvent() {
 
-    uint8_t k = key;
+    event.key = key;
+    event.count = 1;
+
     key = KEY_NONE;
-    return k;
+
+    return &event;
 }

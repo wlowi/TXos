@@ -6,6 +6,20 @@
 #define FONT_H (8 * fontSz)
 #define FONT_W (6 * fontSz)
 
+/* 128 pixel, Base font height 8
+ *   8 * 16 = 128
+ *  16 *  8 = 128
+ *  32 *  4 = 128
+ */
+static const unsigned int lines[] =  { 0, 16, 8, 4 };
+
+/* 160 pixel, Base font width 6
+ *   6 * 26 = 156
+ *  12 * 13 = 156
+ *  24 *  6 = 144
+ */
+static const unsigned int columns[] = { 0, 26, 13, 6 };
+
 /* standard ascii 5x7 font */
 static const unsigned char  font5x7[] = {
     0x00, 0x00, 0x00, 0x00, 0x00,   
@@ -350,6 +364,16 @@ void LcdWidget::setFontSize( unsigned int sz)
 	if( sz < 1) { fontSz = 1; }
 	else if( sz > 3) { fontSz = 3; }
 	else { fontSz = sz; }
+}
+
+unsigned int LcdWidget::getLines() {
+
+	return lines[fontSz];
+}
+
+unsigned int LcdWidget::getColumns() {
+
+	return columns[fontSz];
 }
 
 void LcdWidget::setCursor( unsigned int r, unsigned int c)

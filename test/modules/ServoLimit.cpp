@@ -1,7 +1,7 @@
 
 #include "ServoLimit.h"
 
-ServoLimit::ServoLimit() : Module( MODULE_SERVO_LIMIT_TYPE) {
+ServoLimit::ServoLimit() : Module( MODULE_SERVO_LIMIT_TYPE, TEXT_MODULE_SERVO_LIMIT) {
 
     setDefaults();
 }
@@ -44,4 +44,43 @@ uint8_t *ServoLimit::getConfig() {
 
 void ServoLimit::setConfig( uint8_t *config, moduleSize_t size) {
 
+}
+
+/* From TableEditable */
+uint8_t ServoLimit::getItemCount() {
+
+    return CHANNELS;
+}
+
+const char *ServoLimit::getItemName( uint8_t row) {
+
+    return ChannelNames[row];
+}
+
+uint8_t ServoLimit::getValueCount() {
+
+    return 2;
+}
+
+TableEditType_t ServoLimit::getValueType( uint8_t col) {
+
+    return INT8_T;
+}
+
+void ServoLimit::getValue( uint8_t row, uint8_t col, CellType *val) {
+
+    if( col == 0) {
+        val->int8V = cfg.negLimit_pct[row];
+    } else {
+        val->int8V = cfg.posLimit_pct[row];
+    }
+}
+
+void ServoLimit::setValue( uint8_t row, uint8_t col, CellType *val) {
+
+    if( col == 0) {
+        cfg.negLimit_pct[row] = val->int8V;
+    } else {
+        cfg.posLimit_pct[row] = val->int8V;
+    }
 }

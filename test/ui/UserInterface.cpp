@@ -1,19 +1,23 @@
 
 #include "UserInterface.h"
-#include "DisplayBox.h"
+#include "ModuleManager.h"
 
 extern DisplayBox *displayBox;
+extern ModuleManager moduleManager;
 
 void UserInterface::init() {
 
+    module = NULL;
     screen = SCREEN_INIT;
     lcd = displayBox->getLCD();
     lcd->clear();
     lcd->setFontSize( 2);
-    lcd->println("Booting...");
+    lcd->println(TEXT_BOOTING);
 }
 
 void UserInterface::handle() {
+
+    Event *event = displayBox->getEvent();
 
     switch (screen)
     {
@@ -22,15 +26,15 @@ void UserInterface::handle() {
         break;
     
     case SCREEN_HOME:
-        homeScreen();
+        homeScreen( event);
         break;
 
     case SCREEN_SELECT:
-        selectScreen();
+        selectScreen( event);
         break;
 
     case SCREEN_CONFIG:
-        configScreen();
+        configScreen( event);
         break;
 
     default:
@@ -38,48 +42,94 @@ void UserInterface::handle() {
     }
 }
 
-void UserInterface::homeScreen() {
+void UserInterface::homeScreen( Event *event) {
 
-    if( refresh = REFRESH_FULL) {
+    if( refresh == REFRESH_FULL) {
+        lcd->setBg(0,0,0);
+        lcd->setFg(255,255,255);
         lcd->clear();
+
         lcd->print( TEXT_TXOS);
         lcd->println( TXOS_VERSION);
         refresh = REFRESH_UPDATE;
     }
 
-    if( refresh = REFRESH_UPDATE) {
+    if( refresh == REFRESH_UPDATE) {
 
         refresh = REFRESH_OK;
     }
 
-    if( displayBox->getKey() == KEY_ENTER) {
+    if( event->key == KEY_ENTER) {
         switchScreen( SCREEN_SELECT);
     }
 }
 
-void UserInterface::selectScreen() {
+void UserInterface::selectScreen( Event *event) {
 
-    if( refresh = REFRESH_FULL) {
-        lcd->clear();
-        refresh = REFRESH_UPDATE;
-    }
+    uint8_t idx;
+    uint8_t cnt;
+    Module *mod;
 
-    if( refresh = REFRESH_UPDATE) {
-
+    if( refresh == REFRESH_FULL) {
+        selectList.clear();
+        selectList.set( &moduleManager);
+        selectList.paint( lcd);
         refresh = REFRESH_OK;
     }
 
-    if( displayBox->getKey() == KEY_ENTER) {
-        switchScreen( SCREEN_HOME);
+    selectList.process( lcd, event);
+
+    if( event->pending()) {
+        switch( event->key) {
+            case KEY_ENTER:
+                idx = selectList.current();
+                if( idx == 0) {
+                    switchScreen( SCREEN_HOME);
+                } else {
+                    module = moduleManager.getModule(idx-1);
+                    LOG("UserInterface::selectScreen(): Module %s\n", module ? module->getName() : "NULL");
+                    switchScreen( SCREEN_CONFIG);
+                }
+                break;
+        }
     }
 }
 
-void UserInterface::configScreen() {
+void UserInterface::configScreen( Event *event) {
 
+    uint8_t idx;
+    uint8_t cnt;
+
+    if( module == NULL) {
+        LOG("UserInterface::configScreen(): No module\n",1);
+        switchScreen(SCREEN_SELECT);
+        return;
+    }
+
+    if( refresh == REFRESH_FULL) {
+        selectList.clear();
+        selectList.set( module);
+        selectList.paint( lcd);
+        refresh = REFRESH_OK;
+    }
+
+    selectList.process( lcd, event);
+
+    if( event->pending()) {
+        switch( event->key) {
+            case KEY_ENTER:
+                idx = selectList.current();
+                if( idx == 0) {
+                    switchScreen( SCREEN_SELECT);
+                }
+                break;
+        }
+    }
 }
 
 void UserInterface::switchScreen( uint8_t scr) {
 
     screen = scr;
     refresh = REFRESH_FULL;
+    LOG("UserInterface::switchScreen(): Switch to %d\n", scr);
 }

@@ -1,7 +1,7 @@
 
 #include "ServoSubtrim.h"
 
-ServoSubtrim::ServoSubtrim() : Module( MODULE_SERVO_SUBTRIM_TYPE) {
+ServoSubtrim::ServoSubtrim() : Module( MODULE_SERVO_SUBTRIM_TYPE, TEXT_MODULE_SERVO_SUBTRIM) {
 
     setDefaults();
 }
@@ -42,4 +42,35 @@ uint8_t *ServoSubtrim::getConfig() {
 void ServoSubtrim::setConfig( uint8_t *config, moduleSize_t size) {
 
 
+}
+
+/* From TableEditable */
+uint8_t ServoSubtrim::getItemCount() {
+
+    return CHANNELS;
+}
+
+const char *ServoSubtrim::getItemName( uint8_t row) {
+
+    return ChannelNames[row];
+}
+
+uint8_t ServoSubtrim::getValueCount() {
+
+    return 1;
+}
+
+TableEditType_t ServoSubtrim::getValueType( uint8_t col) {
+
+    return INT8_T;
+}
+
+void ServoSubtrim::getValue( uint8_t row, uint8_t col, CellType *val) {
+
+    val->int8V = cfg.trim_pct[row];
+}
+
+void ServoSubtrim::setValue( uint8_t row, uint8_t col, CellType *val) {
+
+    cfg.trim_pct[row] = val->int8V;
 }

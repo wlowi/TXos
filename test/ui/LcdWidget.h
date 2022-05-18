@@ -45,6 +45,8 @@ class LcdWidget : public wxPanel
         void setBg( unsigned char r, unsigned char g, unsigned char b);
         void setFg( unsigned char r, unsigned char g, unsigned char b);
         void setFontSize( unsigned int sz);
+        unsigned int getLines();
+        unsigned int getColumns();
         void setCursor( unsigned int r, unsigned int c);
         
         void setPixel( unsigned int x, unsigned int y);

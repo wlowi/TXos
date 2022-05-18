@@ -10,7 +10,7 @@ EMU_OBJ = emu/EEPROM.o
 
 CONTROLS_OBJ = controls/InputBox.o controls/Controls.o
 
-UI_OBJ = ui/LcdWidget.o ui/DisplayBox.o ui/UserInterface.o
+UI_OBJ = ui/LcdWidget.o ui/DisplayBox.o ui/UserInterface.o ui/SelectList.o
 
 OUTPUT_OBJ = output/OutputBox.o output/Output.o
 

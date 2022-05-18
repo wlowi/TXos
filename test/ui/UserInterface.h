@@ -4,6 +4,8 @@
 
 #include "TXos.h"
 #include "DisplayBox.h"
+#include "SelectList.h"
+#include "TableEditable.h"
 
 #define SCREEN_INIT     0
 #define SCREEN_HOME     1
@@ -14,15 +16,6 @@
 #define REFRESH_FULL    1
 #define REFRESH_UPDATE  2
 
-class SelectList {
-
-    private:
-    
-    public:
-        void clear();
-        void add();
-};
-
 class UserInterface {
 
     private:
@@ -31,9 +24,12 @@ class UserInterface {
         uint8_t screen;
         uint8_t refresh;
         
-        void homeScreen();
-        void selectScreen();
-        void configScreen();
+        TableEditable *module;
+        SelectList selectList;
+
+        void homeScreen(Event *event);
+        void selectScreen(Event *event);
+        void configScreen(Event *event);
         
         void switchScreen( uint8_t scr);
 

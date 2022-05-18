@@ -16,19 +16,29 @@
 #define KEY_ENTER       2
 #define KEY_DOWN        3
 
+class Event {
 
-class DisplayBox : public wxBoxSizer
-{
+    public:
+        uint8_t key;
+        uint8_t count;
+
+        void markProcessed() { key = KEY_NONE; }
+        bool pending() { return key != KEY_NONE; }
+};
+
+class DisplayBox : public wxBoxSizer {
+
     private:
         LcdWidget *lcd;
         uint8_t key;
+        Event event;
 
     public:
         DisplayBox( wxWindow *parent);
         void OnButton( wxCommandEvent &event);
         
         LcdWidget *getLCD( void);
-        uint8_t getKey();
+        Event *getEvent();
 };
 
 #endif

@@ -44,6 +44,18 @@
 #include "ServoSubtrim.h"
 #include "ServoLimit.h"
 
+const char *ChannelNames[CHANNELS] = {
+    TEXT_CONTROL_CHANNEL_1,
+    TEXT_CONTROL_CHANNEL_2,
+    TEXT_CONTROL_CHANNEL_3,
+    TEXT_CONTROL_CHANNEL_4,
+    TEXT_CONTROL_CHANNEL_5,
+    TEXT_CONTROL_CHANNEL_6,
+    TEXT_CONTROL_CHANNEL_7,
+    TEXT_CONTROL_CHANNEL_8,
+    TEXT_CONTROL_CHANNEL_9
+};
+
 channelSet_t channels;
 Controls controls;
 Output output;

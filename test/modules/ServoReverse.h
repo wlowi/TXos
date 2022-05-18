@@ -24,6 +24,14 @@ class ServoReverse : public Module {
         moduleSize_t getConfigSize();
         uint8_t *getConfig();
         void setConfig( uint8_t *config, moduleSize_t size);
+
+        /* From TableEditable */
+        uint8_t getItemCount();
+        const char *getItemName( uint8_t row);
+        uint8_t getValueCount();
+        TableEditType_t getValueType( uint8_t col);
+        void getValue( uint8_t row, uint8_t col, CellType *val);
+        void setValue( uint8_t row, uint8_t col, CellType *val);
 };
 
 #endif

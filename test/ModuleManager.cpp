@@ -19,6 +19,35 @@ void ModuleManager::Add( Module *module) {
     }
 }
 
+uint8_t ModuleManager::getModuleCount() {
+
+    Module *current = first;
+    uint8_t cnt = 0;
+
+    while( current != NULL) {
+        cnt++;
+        current = current->next;
+    }
+
+    return cnt;
+}
+
+Module *ModuleManager::getModule( uint8_t idx) {
+
+    Module *current = first;
+    uint8_t cnt = 0;
+
+    while( current != NULL) {
+        if( cnt == idx) {
+            break;
+        }
+        cnt++;
+        current = current->next;
+    }
+
+    return current;
+}
+
 void ModuleManager::RunModules( channelSet_t &channels) {
 
     Module *current = first;
@@ -118,3 +147,40 @@ void ModuleManager::setDefaults() {
         current = current->next;
     }
 }
+
+/* Interface TableEditable */
+
+const char *ModuleManager::getName() {
+
+    return TEXT_SELECT;
+}
+
+uint8_t ModuleManager::getItemCount() {
+
+    return getModuleCount();
+}
+
+const char *ModuleManager::getItemName( uint8_t row) {
+
+    Module *mod = getModule( row);
+    return mod->getName();
+}
+
+uint8_t ModuleManager::getValueCount() {
+
+    return 0;
+}
+
+TableEditType_t ModuleManager::getValueType( uint8_t col) {
+
+    return INT8_T;
+}
+
+void ModuleManager::getValue( uint8_t row, uint8_t col, CellType *val) {
+    // Nothing
+}
+
+void ModuleManager::setValue( uint8_t row, uint8_t col, CellType *val) {
+    // Nothing
+}
+

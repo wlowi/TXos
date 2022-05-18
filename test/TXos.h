@@ -32,7 +32,7 @@ typedef uint16_t channelBits_t;
 
 #define BIT_SET( bm, ch)     bm |= ((channelBits_t)1 << ch)
 #define BIT_CLEAR( bm, ch)   bm &= ~((channelBits_t)1 << ch)
-#define IS_BIT_SET( bm, ch)  (bm & (1 << ch))
+#define IS_BIT_SET( bm, ch)  (bm & ((channelBits_t)1 << ch))
 
 #define CHANNELVALUE_MID        ((channelValue_t)    0)
 #define CHANNELVALUE_MIN        ((channelValue_t)-1250)
@@ -59,6 +59,8 @@ typedef int8_t percent_t;
 typedef uint16_t digital_t;
 
 #define CHANNELS                ((channel_t)9)
+
+extern const char *ChannelNames[CHANNELS];
 
 /* Timings for all channels */
 typedef struct channelSet_t {
