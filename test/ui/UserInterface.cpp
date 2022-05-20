@@ -71,15 +71,14 @@ void UserInterface::selectScreen( Event *event) {
     Module *mod;
 
     if( refresh == REFRESH_FULL) {
-        selectList.clear();
         selectList.set( &moduleManager);
-        selectList.paint( lcd);
         refresh = REFRESH_OK;
     }
 
     selectList.process( lcd, event);
 
     if( event->pending()) {
+        LOG("UserInterface::selectScreen(): event pending %d\n", event->key);
         switch( event->key) {
             case KEY_ENTER:
                 idx = selectList.current();
@@ -107,9 +106,7 @@ void UserInterface::configScreen( Event *event) {
     }
 
     if( refresh == REFRESH_FULL) {
-        selectList.clear();
         selectList.set( module);
-        selectList.paint( lcd);
         refresh = REFRESH_OK;
     }
 

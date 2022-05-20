@@ -176,11 +176,11 @@ TableEditType_t ModuleManager::getValueType( uint8_t col) {
     return INT8_T;
 }
 
-void ModuleManager::getValue( uint8_t row, uint8_t col, CellType *val) {
+void ModuleManager::getValue( uint8_t row, uint8_t col, Cell *cell) {
     // Nothing
 }
 
-void ModuleManager::setValue( uint8_t row, uint8_t col, CellType *val) {
+void ModuleManager::setValue( uint8_t row, uint8_t col, Cell *cell) {
     // Nothing
 }
 

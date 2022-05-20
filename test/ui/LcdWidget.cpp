@@ -444,6 +444,46 @@ void LcdWidget::println( const char str[])
     textY = (textY > height) ? height: textY;
 }
 
+void LcdWidget::printInt( int val) {
+
+  printInt( val, 0, ' ');
+}
+
+void LcdWidget::printInt( int val, uint8_t width) {
+
+  printInt( val, width, ' ');
+}
+
+void LcdWidget::printInt( int val, uint8_t width, char filler) {
+
+  int8_t neg = 0;
+  unsigned int uval;
+
+  if( val < 0) {
+    uval = -val;
+    neg = 1;
+  } else {
+    uval = val;
+  }
+  
+  printIntGeneric( uval, neg, width, filler);
+}
+
+void LcdWidget::printUInt( unsigned int val) {
+
+  printIntGeneric( val, 0, 0, ' ');
+}
+
+void LcdWidget::printUInt( unsigned int val, uint8_t width) {
+  
+  printIntGeneric( val, 0, width, ' ');
+}
+
+void LcdWidget::printUInt( unsigned int val, uint8_t width, char filler) {
+  
+  printIntGeneric( val, 0, width, filler);
+}
+
 /* private */
 
 void LcdWidget::setPixelOnDC( wxDC &dc, unsigned int x, unsigned int y)
@@ -526,4 +566,56 @@ void LcdWidget::charLine( wxDC &dc, char l)
     }
 
     textX++;
+}
+
+void LcdWidget::printIntGeneric( unsigned int val, int8_t neg, uint8_t width, char filler) {
+
+	uint8_t bufflen = (width == 0) ? 6 : width;
+	char buff[ bufflen+1 ];
+	uint8_t p = bufflen;
+
+	buff[p--] = '\0';
+
+  	// p >= 0 here
+  	if( val == 0) {
+    	buff[p] = '0';
+  	} else {
+    	for(;;) {
+      		buff[p] = (val % 10) + '0';
+      		val /= 10;
+      		if( val == 0) { // done
+        		break;
+      		} else if( p == 0) {
+        		neg = -1; // indicates overflow
+        		break;
+      		}
+        
+      		p--;
+    	}
+  	}
+
+  	if( neg == 1) { // indicates negative sign
+    	if( p == 0) {
+      		neg = -1; // indicates overflow
+    	} else {
+      		p--;
+      	buff[p] = '-';
+    	}
+  	}
+    
+  	if( neg < 0) { // indicates overflow
+    	for( p = 0; p < bufflen; p++) {
+      		buff[p] = '*'; 
+    	}
+    	p = 0;
+  	} else {
+	    if( width > 0) {
+    		while( p > 0) {
+        		p--;
+        		buff[p] = filler;
+      		}
+    	}
+  	}
+    
+  	print( &buff[p] );
 }

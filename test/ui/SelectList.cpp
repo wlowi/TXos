@@ -5,20 +5,36 @@ void SelectList::clear() {
 
     table = NULL;
     idx = oldIdx = topIdx = 0;
+    refresh = REFRESH_FULL;
+    mode = MODE_RENDER;
+    editCol = 0;
 }
 
 void SelectList::set( TableEditable *tab) {
 
+    clear();
     table = tab;
 }
 
 void SelectList::process( LcdWidget *lcd, Event *event) {
 
-    uint8_t refresh = REFRESH_OK;
+    Cell cell;
 
-    switch( event->key) {
+    if( refresh == REFRESH_FULL) {
+        paint( lcd);
+        refresh = REFRESH_OK;
+    }
+
+    switch( mode) {
+    case MODE_RENDER:
+        switch( event->key) {
 
         case KEY_ENTER:
+            if( table->getValueCount() > 0 && idx > 0) {
+                mode = MODE_EDIT;
+                editCol = 0;
+                refresh = REFRESH_UPDATE;
+            }
             break;
 
         case KEY_UP:
@@ -30,11 +46,36 @@ void SelectList::process( LcdWidget *lcd, Event *event) {
             next();
             refresh = REFRESH_UPDATE;
             break;
+        }
+        break;
+
+    case MODE_EDIT:
+        switch( event->key) {
+
+        case KEY_ENTER:
+            editCol++;
+            if( editCol >= table->getValueCount()) {
+                mode = MODE_RENDER;
+                editCol = 0;
+            }   
+            refresh = REFRESH_UPDATE; 
+            break;
+
+        case KEY_UP:
+        case KEY_DOWN:
+            table->getValue( idx-1, editCol, &cell);
+            cell.edit( event);
+            table->setValue( idx-1, editCol, &cell);
+            refresh = REFRESH_UPDATE;
+            break;
+        }
+        break;
     }
 
     if( refresh == REFRESH_UPDATE) {
         update( lcd);
         event->markProcessed();
+        refresh = REFRESH_OK;
     }
 }
 
@@ -58,6 +99,8 @@ uint8_t SelectList::current() {
 
     return idx;
 }
+
+/* private */
 
 void SelectList::paint( LcdWidget *lcd) {
 
@@ -99,8 +142,6 @@ void SelectList::update( LcdWidget *lcd) {
     }
 }
 
-/* private */
-
 bool SelectList::adjustTopIdx( LcdWidget *lcd) {
 
     uint8_t lines = lcd->getLines();
@@ -132,10 +173,23 @@ void SelectList::refreshLine( LcdWidget *lcd, uint8_t i) {
 
 void SelectList::printItem( LcdWidget *lcd, uint8_t i) {
 
+    Cell cell;
+
     if( i == 0) {
         lcd->print(TEXT_BACK);
     } else {
         lcd->print(table->getItemName(i-1));
+        for( uint8_t col = 0; col < table->getValueCount(); col++) {
+            table->getValue( i-1, col, &cell);
+            normalColors( lcd);
+            lcd->print(" ");
+            if( mode == MODE_EDIT && col == editCol) {
+                editColors( lcd);
+            } else {
+                normalColors( lcd);
+            }
+            cell.render( lcd);
+        }
     }
 }
 
@@ -157,3 +211,8 @@ void SelectList::headerColors( LcdWidget *lcd) {
     lcd->setFg(0,255,0);
 }
 
+void SelectList::editColors( LcdWidget *lcd) {
+
+    lcd->setBg(255,255,255);
+    lcd->setFg(0,0,0);
+}

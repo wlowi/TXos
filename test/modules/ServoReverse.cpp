@@ -56,14 +56,15 @@ TableEditType_t ServoReverse::getValueType( uint8_t col) {
     return BOOLEAN_T;
 }
 
-void ServoReverse::getValue( uint8_t row, uint8_t col, CellType *val) {
+void ServoReverse::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
-    val->boolV = IS_BIT_SET( cfg.revBits, row);
+    cell->value.boolV = IS_BIT_SET( cfg.revBits, row);
+    cell->type = BOOLEAN_T;
 }
 
-void ServoReverse::setValue( uint8_t row, uint8_t col, CellType *val) {
+void ServoReverse::setValue( uint8_t row, uint8_t col, Cell *cell) {
     
-    if( val->boolV) {
+    if( cell->value.boolV) {
         BIT_SET( cfg.revBits, row);
     } else {
         BIT_CLEAR( cfg.revBits, row);

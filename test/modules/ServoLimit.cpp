@@ -67,20 +67,22 @@ TableEditType_t ServoLimit::getValueType( uint8_t col) {
     return INT8_T;
 }
 
-void ServoLimit::getValue( uint8_t row, uint8_t col, CellType *val) {
+void ServoLimit::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
     if( col == 0) {
-        val->int8V = cfg.negLimit_pct[row];
+        cell->value.int8V = cfg.negLimit_pct[row];
     } else {
-        val->int8V = cfg.posLimit_pct[row];
+        cell->value.int8V = cfg.posLimit_pct[row];
     }
+
+    cell->type = INT8_T;
 }
 
-void ServoLimit::setValue( uint8_t row, uint8_t col, CellType *val) {
+void ServoLimit::setValue( uint8_t row, uint8_t col, Cell *cell) {
 
     if( col == 0) {
-        cfg.negLimit_pct[row] = val->int8V;
+        cfg.negLimit_pct[row] = cell->value.int8V;
     } else {
-        cfg.posLimit_pct[row] = val->int8V;
+        cfg.posLimit_pct[row] = cell->value.int8V;
     }
 }

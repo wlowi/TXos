@@ -34,6 +34,7 @@ class LcdWidget : public wxPanel
         wxColor col565ToCol( pixel col565);
         void printChar( wxDC &dc, char ch);
 		void charLine( wxDC &dc, char l);
+        void printIntGeneric( unsigned int val, int8_t neg, uint8_t width, char filler);
 
     public:
         LcdWidget( wxWindow *parent, wxWindowID id, unsigned int width, unsigned int height, unsigned int pixSz = 1);
@@ -52,7 +53,15 @@ class LcdWidget : public wxPanel
         void setPixel( unsigned int x, unsigned int y);
         void setPixel( unsigned int x, unsigned int y, unsigned char r, unsigned char g, unsigned char b);
         void print( const char str[]);
-        void println( const char str[]);        
+        void println( const char str[]);
+
+        void printInt( int val);
+        void printInt( int val, uint8_t width);
+        void printInt( int val, uint8_t width, char filler);
+
+        void printUInt( unsigned int val);
+        void printUInt( unsigned int val, uint8_t width);
+        void printUInt( unsigned int val, uint8_t width, char filler);
 };
 
 #endif

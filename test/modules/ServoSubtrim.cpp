@@ -65,12 +65,13 @@ TableEditType_t ServoSubtrim::getValueType( uint8_t col) {
     return INT8_T;
 }
 
-void ServoSubtrim::getValue( uint8_t row, uint8_t col, CellType *val) {
+void ServoSubtrim::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
-    val->int8V = cfg.trim_pct[row];
+    cell->value.int8V = cfg.trim_pct[row];
+    cell->type = INT8_T;
 }
 
-void ServoSubtrim::setValue( uint8_t row, uint8_t col, CellType *val) {
+void ServoSubtrim::setValue( uint8_t row, uint8_t col, Cell *cell) {
 
-    cfg.trim_pct[row] = val->int8V;
+    cfg.trim_pct[row] = cell->value.int8V;
 }

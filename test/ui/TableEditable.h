@@ -16,16 +16,16 @@ enum TableEditType_t {
 typedef union CellType_t {    
     bool boolV;
     int8_t int8V;
-} CellType;
+} CellType_t;
 
 class Cell {
 
-    TableEditType_t type;
-    CellType value;
-
     public:
+        TableEditType_t type;
+        CellType_t value;
+    
         void render( LcdWidget *lcd);
-        void edit( LcdWidget *lcd, uint8_t key);
+        void edit( Event *event);
 };
 
 class TableEditable {
@@ -39,8 +39,8 @@ class TableEditable {
         virtual uint8_t getValueCount() = 0;
         virtual TableEditType_t getValueType( uint8_t col) = 0;
 
-        virtual void getValue( uint8_t row, uint8_t col, CellType *val) = 0;
-        virtual void setValue( uint8_t row, uint8_t col, CellType *val) = 0;
+        virtual void getValue( uint8_t row, uint8_t col, Cell *cell) = 0;
+        virtual void setValue( uint8_t row, uint8_t col, Cell *cell) = 0;
 };
 
 #endif
