@@ -3,7 +3,7 @@
 #define _UserInterface_h_
 
 #include "TXos.h"
-#include "DisplayBox.h"
+#include "DisplayImpl.h"
 #include "SelectList.h"
 #include "TableEditable.h"
 

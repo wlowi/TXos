@@ -6,16 +6,17 @@
 #define _TableEditable_h_
 
 #include "TXos.h"
-#include "DisplayBox.h"
+#include "DisplayImpl.h"
 
 enum TableEditType_t {
     BOOLEAN_T,
-    INT8_T
+    INT8_T,
+    INT16_T
 };
 
 typedef union CellType_t {    
     bool boolV;
-    int8_t int8V;
+    int16_t intV;
 } CellType_t;
 
 class Cell {

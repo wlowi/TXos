@@ -46,7 +46,7 @@ typedef uint16_t channelBits_t;
 /* This represents a percentage from -125% to 125%
  * We don't need 16 bits for that.
  */
-typedef int8_t percent_t;
+typedef int16_t percent_t;
 #define PERCENT_MAX ((percent_t)125)
 #define PERCENT_MIN ((percent_t)-125)
 
@@ -69,5 +69,8 @@ typedef struct channelSet_t {
     digital_t switches;
 
 } channelSet_t;
+
+#define MODEL_NAME_LEN          ((uint8_t)8)
+#define MODEL_NAME_DEFAULT      CC("--------")
 
 #endif

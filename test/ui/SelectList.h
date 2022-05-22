@@ -4,7 +4,7 @@
 
 #include "TXos.h"
 #include "TableEditable.h"
-#include "DisplayBox.h"
+#include "DisplayImpl.h"
 
 #define SCREEN_INIT     0
 #define SCREEN_HOME     1

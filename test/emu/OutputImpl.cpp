@@ -1,7 +1,7 @@
 
-#include "OutputBox.h"
+#include "OutputImpl.h"
 
-OutputBox::OutputBox( wxWindow *parent, int channels)
+OutputImpl::OutputImpl( wxWindow *parent, int channels)
     : wxBoxSizer(wxHORIZONTAL)
 {
     channelIDs = new wxWindowID[channels];
@@ -13,7 +13,7 @@ OutputBox::OutputBox( wxWindow *parent, int channels)
     for( int channel=0; channel<channels; channel++) {
         channelIDs[channel] = wxWindow::NewControlId();
         wxBoxSizer *vbox = new wxBoxSizer(wxVERTICAL);
-        wxGauge *gauge = new wxGauge(parent, channelIDs[channel], 300, wxDefaultPosition, wxSize(-1,300), wxSL_VERTICAL);
+        wxGauge *gauge = new wxGauge(parent, channelIDs[channel], 3000, wxDefaultPosition, wxSize(-1,300), wxSL_VERTICAL);
         gauges[channel] = gauge;
         vbox->Add( gauge);
         wxString str;
@@ -23,19 +23,19 @@ OutputBox::OutputBox( wxWindow *parent, int channels)
         vbox->Add( new wxStaticText(parent, wxID_ANY, str));
         Add( vbox);
         AddSpacer(10);
-        gauge->SetValue(150);
+        gauge->SetValue(1500);
     }
 }
 
-void OutputBox::SetChannelValue(int channel, int value) {
+void OutputImpl::SetChannelValue(int channel, int value) {
 
     wxString str;
     str.Printf(wxT("%d"), value);
     values[channel]->SetLabel( str);
-    gauges[channel]->SetValue( value+150);
+    gauges[channel]->SetValue( value+1500);
 }
 
-OutputBox::~OutputBox( void) {
+OutputImpl::~OutputImpl( void) {
 
     if( channelIDs != NULL) {
         delete [] channelIDs;

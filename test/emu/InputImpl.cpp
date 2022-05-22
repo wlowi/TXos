@@ -1,7 +1,7 @@
 
-#include "InputBox.h"
+#include "InputImpl.h"
 
-InputBox::InputBox( wxWindow *parent, int channels, int switches)
+InputImpl::InputImpl( wxWindow *parent, int channels, int switches)
     : wxBoxSizer(wxVERTICAL)
 {
     this->channels = channels;
@@ -26,14 +26,14 @@ InputBox::InputBox( wxWindow *parent, int channels, int switches)
     for( int channel=0; channel<channels; channel++) {
         sliderIDs[channel] = wxWindow::NewControlId();
         wxBoxSizer *vbox = new wxBoxSizer(wxVERTICAL);
-        wxSlider *slider = new wxSlider(parent, sliderIDs[channel],0,-100,100, wxDefaultPosition, wxSize(-1,200), wxSL_VERTICAL);
+        wxSlider *slider = new wxSlider(parent, sliderIDs[channel],0,-1000,1000, wxDefaultPosition, wxSize(-1,200), wxSL_VERTICAL);
         vbox->Add( slider);
         wxString str;
         str.Printf(wxT("CH%d"), channel+1);
         vbox->Add( new wxStaticText(parent, wxID_ANY, str));
         hbox->Add( vbox);
         hbox->AddSpacer(10);
-        slider->Bind( wxEVT_SCROLL_THUMBTRACK, &InputBox::OnScroll, this, sliderIDs[channel]);
+        slider->Bind( wxEVT_SCROLL_THUMBTRACK, &InputImpl::OnScroll, this, sliderIDs[channel]);
     }
 
     Add( hbox);
@@ -48,14 +48,14 @@ InputBox::InputBox( wxWindow *parent, int channels, int switches)
         wxRadioBox *swtch = new wxRadioBox(parent, switchIDs[sw], str, wxDefaultPosition, wxDefaultSize, 3, choices, 1, wxRA_SPECIFY_COLS);
         hbox->Add(swtch);
         hbox->AddSpacer(10);
-        swtch->Bind( wxEVT_RADIOBOX, &InputBox::OnSwitch, this, switchIDs[sw]);
+        swtch->Bind( wxEVT_RADIOBOX, &InputImpl::OnSwitch, this, switchIDs[sw]);
     }
 
     Add( hbox);
     AddSpacer(10);
 }
 
-InputBox::~InputBox( void) {
+InputImpl::~InputImpl( void) {
 
     if( sliderIDs != NULL) {
         delete [] sliderIDs;
@@ -69,27 +69,27 @@ InputBox::~InputBox( void) {
     }
 }
 
-int InputBox::GetChannels() {
+int InputImpl::GetChannels() {
 
     return channels;
 }
 
-int InputBox::GetSwitches() {
+int InputImpl::GetSwitches() {
 
     return switches;
 }
 
-int InputBox::GetChannelValue( int ch) {
+int InputImpl::GetChannelValue( int ch) {
 
     return chValues[ch];
 }
 
-int InputBox::GetSwitchValue( int sw) {
+int InputImpl::GetSwitchValue( int sw) {
 
     return swValues[sw];
 }
 
-void InputBox::OnScroll( wxScrollEvent& event) {
+void InputImpl::OnScroll( wxScrollEvent& event) {
 
     for( int i=0; i<channels; i++) {
         if( sliderIDs[i] == event.GetId()) {
@@ -101,7 +101,7 @@ void InputBox::OnScroll( wxScrollEvent& event) {
     
 }
 
-void InputBox::OnSwitch( wxCommandEvent& event) {
+void InputImpl::OnSwitch( wxCommandEvent& event) {
 
     for( int i=0; i<switches; i++) {
         if( switchIDs[i] == event.GetId()) {

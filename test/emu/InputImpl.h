@@ -1,6 +1,6 @@
 
-#ifndef _InputBox_h_
-#define _InputBox_h_
+#ifndef _InputImpl_h_
+#define _InputImpl_h_
 
 #include <wx/wxprec.h>
  
@@ -10,7 +10,7 @@
 
 #include "Arduino.h"
 
-class InputBox : public wxBoxSizer
+class InputImpl : public wxBoxSizer
 {
     private:
         int channels;
@@ -22,8 +22,8 @@ class InputBox : public wxBoxSizer
         int *swValues = NULL;
 
     public:
-        InputBox( wxWindow *parent, int channels, int switches);
-        ~InputBox( void);
+        InputImpl( wxWindow *parent, int channels, int switches);
+        ~InputImpl( void);
 
         int GetChannels();
         int GetSwitches();

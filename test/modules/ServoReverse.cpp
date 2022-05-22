@@ -30,11 +30,6 @@ uint8_t *ServoReverse::getConfig() {
     return (uint8_t*)&cfg;
 }
 
-void ServoReverse::setConfig( uint8_t *config, moduleSize_t size) {
-
-
-}
-
 /* From TableEditable */
 uint8_t ServoReverse::getItemCount() {
 

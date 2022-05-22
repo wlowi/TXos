@@ -39,11 +39,6 @@ uint8_t *ServoSubtrim::getConfig() {
     return (uint8_t*)&cfg;
 }
 
-void ServoSubtrim::setConfig( uint8_t *config, moduleSize_t size) {
-
-
-}
-
 /* From TableEditable */
 uint8_t ServoSubtrim::getItemCount() {
 
@@ -67,11 +62,19 @@ TableEditType_t ServoSubtrim::getValueType( uint8_t col) {
 
 void ServoSubtrim::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
-    cell->value.int8V = cfg.trim_pct[row];
+    cell->value.intV = cfg.trim_pct[row];
     cell->type = INT8_T;
 }
 
 void ServoSubtrim::setValue( uint8_t row, uint8_t col, Cell *cell) {
 
-    cfg.trim_pct[row] = cell->value.int8V;
+    cfg.trim_pct[row] = cell->value.intV;
+
+    if( cfg.trim_pct[row] > PERCENT_MAX) {
+        cfg.trim_pct[row] = PERCENT_MAX;
+    }
+
+    if( cfg.trim_pct[row] < PERCENT_MIN) {
+        cfg.trim_pct[row] = PERCENT_MIN;
+    }
 }

@@ -1,6 +1,6 @@
 
-#ifndef _OutputBox_h_
-#define _OutputBox_h_
+#ifndef _OutputImpl_h_
+#define _OutputImpl_h_
 
 #include <wx/wxprec.h>
  
@@ -10,7 +10,7 @@
 
 #include "Arduino.h"
 
-class OutputBox : public wxBoxSizer
+class OutputImpl : public wxBoxSizer
 {
     private:
         wxWindowID *channelIDs = NULL;
@@ -18,8 +18,8 @@ class OutputBox : public wxBoxSizer
         wxStaticText **values = NULL;
 
     public:
-        OutputBox( wxWindow *parent, int channels);
-        ~OutputBox( void);
+        OutputImpl( wxWindow *parent, int channels);
+        ~OutputImpl( void);
 
         void SetChannelValue( int channel, int value);
 };

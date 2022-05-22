@@ -1,15 +1,17 @@
 
 #include "UserInterface.h"
 #include "ModuleManager.h"
+#include "SystemConfig.h"
 
-extern DisplayBox *displayBox;
+extern DisplayImpl *displayImpl;
 extern ModuleManager moduleManager;
+extern SystemConfig systemConfig;
 
 void UserInterface::init() {
 
     module = NULL;
     screen = SCREEN_INIT;
-    lcd = displayBox->getLCD();
+    lcd = displayImpl->getLCD();
     lcd->clear();
     lcd->setFontSize( 2);
     lcd->println(TEXT_BOOTING);
@@ -17,7 +19,7 @@ void UserInterface::init() {
 
 void UserInterface::handle() {
 
-    Event *event = displayBox->getEvent();
+    Event *event = displayImpl->getEvent();
 
     switch (screen)
     {
@@ -51,6 +53,10 @@ void UserInterface::homeScreen( Event *event) {
 
         lcd->print( TEXT_TXOS);
         lcd->println( TXOS_VERSION);
+
+        lcd->print( TEXT_MODEL);
+        lcd->printUInt( systemConfig.getModelID(), 3);
+
         refresh = REFRESH_UPDATE;
     }
 

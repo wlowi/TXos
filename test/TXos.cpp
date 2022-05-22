@@ -40,6 +40,7 @@
 #include "ConfigBlock.h"
 #include "SystemConfig.h"
 
+#include "ModelSelect.h"
 #include "ServoReverse.h"
 #include "ServoSubtrim.h"
 #include "ServoLimit.h"
@@ -73,6 +74,7 @@ void setup( void) {
     /* The order of modules is important.
      * It defines the order of execution in RunModules().
      */
+    moduleManager.Add( new ModelSelect());
     moduleManager.Add( new ServoReverse());
     moduleManager.Add( new ServoSubtrim());
     moduleManager.Add( new ServoLimit());

@@ -1,7 +1,7 @@
 
-#include "DisplayBox.h"
+#include "DisplayImpl.h"
 
-DisplayBox::DisplayBox( wxWindow *parent) : wxBoxSizer(wxVERTICAL) {
+DisplayImpl::DisplayImpl( wxWindow *parent) : wxBoxSizer(wxVERTICAL) {
 
     key = KEY_NONE;
     lcd = new LcdWidget(parent, wxID_ANY, 160, 128, 1);
@@ -10,18 +10,18 @@ DisplayBox::DisplayBox( wxWindow *parent) : wxBoxSizer(wxVERTICAL) {
 
     wxButton *b = new wxButton(parent, wxID_UP, wxT("Up"));
     Add( b);
-    b->Bind( wxEVT_BUTTON, &DisplayBox::OnButton, this, wxID_UP);
+    b->Bind( wxEVT_BUTTON, &DisplayImpl::OnButton, this, wxID_UP);
     
     b = new wxButton(parent, wxID_OK, wxT("Enter"));
     Add( b);
-    b->Bind( wxEVT_BUTTON, &DisplayBox::OnButton, this, wxID_OK);
+    b->Bind( wxEVT_BUTTON, &DisplayImpl::OnButton, this, wxID_OK);
     
     b = new wxButton(parent, wxID_DOWN, wxT("Down"));
     Add( b);
-    b->Bind( wxEVT_BUTTON, &DisplayBox::OnButton, this, wxID_DOWN);
+    b->Bind( wxEVT_BUTTON, &DisplayImpl::OnButton, this, wxID_DOWN);
 }
 
-void DisplayBox::OnButton( wxCommandEvent &event) {
+void DisplayImpl::OnButton( wxCommandEvent &event) {
 
     switch( event.GetId()) {
         case wxID_UP:
@@ -36,12 +36,12 @@ void DisplayBox::OnButton( wxCommandEvent &event) {
     }
 }
 
-LcdWidget *DisplayBox::getLCD( void) {
+LcdWidget *DisplayImpl::getLCD( void) {
 
     return lcd;
 }
 
-Event *DisplayBox::getEvent() {
+Event *DisplayImpl::getEvent() {
 
     event.key = key;
     event.count = 1;

@@ -8,10 +8,12 @@
 typedef uint8_t moduleType_t;
 typedef uint8_t moduleSize_t;
 
-#define MODULE_INVALID_TYPE            ((moduleType_t)0)
-#define MODULE_SERVO_REVERSE_TYPE      ((moduleType_t)1)
-#define MODULE_SERVO_SUBTRIM_TYPE      ((moduleType_t)2)
-#define MODULE_SERVO_LIMIT_TYPE        ((moduleType_t)3)
+#define MODULE_INVALID_TYPE             ((moduleType_t)0)
+
+#define MODULE_MODEL_SELECT_TYPE        ((moduleType_t)1)
+#define MODULE_SERVO_REVERSE_TYPE       ((moduleType_t)20)
+#define MODULE_SERVO_SUBTRIM_TYPE       ((moduleType_t)21)
+#define MODULE_SERVO_LIMIT_TYPE         ((moduleType_t)22)
 
 class Module : public TableEditable {
 
@@ -30,7 +32,6 @@ class Module : public TableEditable {
         virtual moduleSize_t getConfigSize() = 0;
         moduleType_t getConfigType();
         virtual uint8_t *getConfig() = 0;
-        virtual void setConfig( uint8_t *config, moduleSize_t size) = 0;
 
         /* From Interface TableEditable */
         const char *getName();

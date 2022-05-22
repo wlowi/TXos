@@ -23,7 +23,6 @@ class ServoReverse : public Module {
 
         moduleSize_t getConfigSize();
         uint8_t *getConfig();
-        void setConfig( uint8_t *config, moduleSize_t size);
 
         /* From TableEditable */
         uint8_t getItemCount();

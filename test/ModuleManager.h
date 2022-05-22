@@ -22,6 +22,7 @@ class ModuleManager : public TableEditable {
         void Add( Module *module);
         uint8_t getModuleCount();
         Module *getModule( uint8_t idx);
+        Module *getModuleByType( moduleType_t type);
 
         void RunModules( channelSet_t &channels);
 

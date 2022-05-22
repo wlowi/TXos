@@ -1,27 +1,28 @@
 
-#ifndef _ServoLimit_h_
-#define _ServoLimit_h_
+#ifndef _ModelSelect_h_
+#define _ModelSelect_h_
 
 #include "TXos.h"
 #include "Module.h"
+#include "ConfigBlock.h"
 
-typedef struct servoLimit_t {
+typedef struct modelSelect_t {
 
-    percent_t posLimit_pct[CHANNELS];
-    percent_t negLimit_pct[CHANNELS];
+    char modelName[MODEL_NAME_LEN +1];
 
-} servoLimit_t;
+} modelSelect_t;
 
-class ServoLimit : public Module {
+class ModelSelect : public Module {
 
     private:
-        servoLimit_t cfg;
+        modelSelect_t cfg;
 
     public:
-        ServoLimit();
+        ModelSelect();
+
+        /* From Module */
         void run( channelSet_t &channels);
         void setDefaults();
-
         moduleSize_t getConfigSize();
         uint8_t *getConfig();
 

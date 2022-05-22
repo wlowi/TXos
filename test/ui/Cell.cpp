@@ -13,7 +13,11 @@ void Cell::render( LcdWidget *lcd) {
             break;
 
         case INT8_T:
-            lcd->printInt( value.int8V, 4);
+            lcd->printInt( value.intV, 4);
+            break;
+
+        case INT16_T:
+            lcd->printInt( value.intV, 6);
             break;
     }
 }
@@ -30,11 +34,12 @@ void Cell::edit( Event *event) {
             break;
 
         case INT8_T:
+        case INT16_T:
             if( event->key == KEY_DOWN) {
-                value.int8V -= event->count;
+                value.intV -= event->count;
                 event->markProcessed();
             } else if( event->key == KEY_UP) {
-                value.int8V += event->count;
+                value.intV += event->count;
                 event->markProcessed();
             }
             break;

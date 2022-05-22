@@ -42,10 +42,6 @@ uint8_t *ServoLimit::getConfig() {
     return (uint8_t*)&cfg;
 }
 
-void ServoLimit::setConfig( uint8_t *config, moduleSize_t size) {
-
-}
-
 /* From TableEditable */
 uint8_t ServoLimit::getItemCount() {
 
@@ -70,9 +66,9 @@ TableEditType_t ServoLimit::getValueType( uint8_t col) {
 void ServoLimit::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
     if( col == 0) {
-        cell->value.int8V = cfg.negLimit_pct[row];
+        cell->value.intV = cfg.negLimit_pct[row];
     } else {
-        cell->value.int8V = cfg.posLimit_pct[row];
+        cell->value.intV = cfg.posLimit_pct[row];
     }
 
     cell->type = INT8_T;
@@ -81,8 +77,25 @@ void ServoLimit::getValue( uint8_t row, uint8_t col, Cell *cell) {
 void ServoLimit::setValue( uint8_t row, uint8_t col, Cell *cell) {
 
     if( col == 0) {
-        cfg.negLimit_pct[row] = cell->value.int8V;
+        cfg.negLimit_pct[row] = cell->value.intV;
     } else {
-        cfg.posLimit_pct[row] = cell->value.int8V;
+        cfg.posLimit_pct[row] = cell->value.intV;
     }
+
+    if( cfg.negLimit_pct[row] > PERCENT_MAX) {
+        cfg.negLimit_pct[row] = PERCENT_MAX;
+    }
+
+    if( cfg.negLimit_pct[row] < PERCENT_MIN) {
+        cfg.negLimit_pct[row] = PERCENT_MIN;
+    }
+
+    if( cfg.posLimit_pct[row] > PERCENT_MAX) {
+        cfg.posLimit_pct[row] = PERCENT_MAX;
+    }
+
+    if( cfg.posLimit_pct[row] < PERCENT_MIN) {
+        cfg.posLimit_pct[row] = PERCENT_MIN;
+    }
+
 }

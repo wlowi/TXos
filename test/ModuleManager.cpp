@@ -48,6 +48,20 @@ Module *ModuleManager::getModule( uint8_t idx) {
     return current;
 }
 
+Module *ModuleManager::getModuleByType( moduleType_t type) {
+
+    Module *current = first;
+
+    while( current != NULL) {
+        if( current->getConfigType() == type) {
+            break;
+        }
+        current = current->next;
+    }
+
+    return current;
+}
+
 void ModuleManager::RunModules( channelSet_t &channels) {
 
     Module *current = first;
@@ -78,32 +92,53 @@ void ModuleManager::save( configBlockID_t modelID) {
     blockService->writeBlock();
 }
 
-void ModuleManager::parseBlock() {
-
-    uint8_t *payload;
-    moduleType_t type;
-    moduleSize_t size;
-    Module *current = first;
-
-    payload = blockService->getPayload();
-
-    while( current != NULL) {
-
 #define GET( p, s)                              \
     do {                                        \
         blockService->memcpy( p, payload, s);   \
         payload += s;                           \
     } while( 0 )
 
-        GET( (uint8_t*)&type, sizeof(moduleType_t));
+void ModuleManager::parseBlock() {
+
+    uint8_t *payload;
+    moduleType_t type;
+    moduleSize_t size;
+    Module *current;
+
+    payload = blockService->getPayload();
+
+    GET( (uint8_t*)&type, sizeof(moduleType_t));
+
+    while( type != MODULE_INVALID_TYPE) {
+
         GET( (uint8_t*)&size, sizeof(moduleSize_t));
-        GET( current->getConfig(), size);
 
         LOG("ModuleManager::parseBlock(): GET type=%d size=%d\n", type, size);
 
-        current = current->next;
+        current = getModuleByType( type);
+        if( current == NULL) {
+            LOG("ModuleManager::parseBlock(): No module of type=%d\n", type);
+            break;
+        }
+
+        if( current->getConfigSize() != size) {
+            LOG("ModuleManager::parseBlock(): Config size mismatch of module type=%d %d != %d\n",
+                type, current->getConfigSize(), size);
+            break;
+        }
+
+        GET( current->getConfig(), size);
+
+        GET( (uint8_t*)&type, sizeof(moduleType_t));
     }
 }
+
+#define PUT( p, s)                              \
+    do {                                        \
+        blockService->memcpy( payload, p, s);   \
+        payload += s;                           \
+        totalSize += s;                         \
+    } while( 0 )
 
 void ModuleManager::generateBlock(configBlockID_t modelID) {
 
@@ -118,24 +153,31 @@ void ModuleManager::generateBlock(configBlockID_t modelID) {
     while( current != NULL) {
         
         size = current->getConfigSize();
-        type = current->getConfigType();
 
-        if( totalSize + sizeof(moduleType_t) + sizeof(moduleSize_t) + size <= CONFIG_PAYLOAD_SIZE) {
+        if( size > 0) { // Do not store module config of size 0
 
-#define PUT( p, s)                              \
-    do {                                        \
-        blockService->memcpy( payload, p, s);   \
-        payload += s;                           \
-        totalSize += s;                         \
-    } while( 0 )
+            type = current->getConfigType();
 
-            PUT( (uint8_t*)&type, sizeof(moduleType_t));
-            PUT( (uint8_t*)&size, sizeof(moduleSize_t));
-            PUT( current->getConfig(), size);
+            // +1 is for terminating invalid module type
+            if( totalSize + sizeof(moduleType_t) + sizeof(moduleSize_t) + size +1 <= CONFIG_PAYLOAD_SIZE) {
+                PUT( (uint8_t*)&type, sizeof(moduleType_t));
+                PUT( (uint8_t*)&size, sizeof(moduleSize_t));
+                PUT( current->getConfig(), size);
+            } else {
+                LOG("ModuleManager::generateBlock(): Payload to large. %d > %d\n",
+                    totalSize + sizeof(moduleType_t) + sizeof(moduleSize_t) + size,
+                    CONFIG_PAYLOAD_SIZE);
+            }
         }
 
         current = current->next;
     }
+
+    // Terminating invalid module type
+    type = MODULE_INVALID_TYPE;
+    PUT( (uint8_t*)&type, sizeof(moduleType_t));
+
+    LOG("ModuleManager::generateBlock(): Payload %d bytes\n", totalSize);
 }
 
 void ModuleManager::setDefaults() {

@@ -1,6 +1,6 @@
 
-#ifndef _DisplayBox_h_
-#define _DisplayBox_h_
+#ifndef _DisplayImpl_h_
+#define _DisplayImpl_h_
 
 #include <wx/wxprec.h>
  
@@ -26,7 +26,7 @@ class Event {
         bool pending() { return key != KEY_NONE; }
 };
 
-class DisplayBox : public wxBoxSizer {
+class DisplayImpl : public wxBoxSizer {
 
     private:
         LcdWidget *lcd;
@@ -34,7 +34,7 @@ class DisplayBox : public wxBoxSizer {
         Event event;
 
     public:
-        DisplayBox( wxWindow *parent);
+        DisplayImpl( wxWindow *parent);
         void OnButton( wxCommandEvent &event);
         
         LcdWidget *getLCD( void);

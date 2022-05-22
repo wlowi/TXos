@@ -4,7 +4,8 @@
 
 #define CC( t ) ((const char*)t)
 
-// Module Names (13 letters max.)
+// Module Names (13 letters max.)       1234567890123
+#define TEXT_MODULE_MODEL_SELECT    CC("Model Select")
 #define TEXT_MODULE_SERVO_LIMIT     CC("Servo limit")
 #define TEXT_MODULE_SERVO_REVERSE   CC("Servo reverse")
 #define TEXT_MODULE_SERVO_SUBTRIM   CC("Servo subtrim")
@@ -36,5 +37,6 @@
 #define TEXT_BACK                   CC("< back >")
 #define TEXT_BOOTING                CC("Booting...")
 #define TEXT_SELECT                 CC("Select")
+#define TEXT_MODEL                  CC("Model")
 
 #endif

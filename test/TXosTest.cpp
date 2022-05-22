@@ -1,9 +1,9 @@
 
 #include "Arduino.h"
 
-#include "InputBox.h"
-#include "DisplayBox.h"
-#include "OutputBox.h"
+#include "InputImpl.h"
+#include "DisplayImpl.h"
+#include "OutputImpl.h"
 
 #include "EEPROM.h"
 
@@ -12,9 +12,9 @@ EEPROMClass EEPROM(4096);
 extern void setup( void);
 extern void loop( void);
 
-InputBox *inputBox;
-OutputBox *outputBox;
-DisplayBox *displayBox;
+InputImpl *inputImpl;
+OutputImpl *outputImpl;
+DisplayImpl *displayImpl;
 
 class TXosTest : public wxApp
 {
@@ -80,14 +80,14 @@ MyFrame::MyFrame()
     wxBoxSizer *hbox = new wxBoxSizer(wxHORIZONTAL);
 
     hbox->AddSpacer(10);
-    inputBox =  new InputBox( panel, 4, 4);
-    hbox->Add( inputBox);
+    inputImpl =  new InputImpl( panel, 4, 4);
+    hbox->Add( inputImpl);
     hbox->AddSpacer(10);
-    displayBox =  new DisplayBox( panel);
-    hbox->Add( displayBox);
+    displayImpl =  new DisplayImpl( panel);
+    hbox->Add( displayImpl);
     hbox->AddSpacer(10);
-    outputBox = new OutputBox( panel, 9);
-    hbox->Add( outputBox);
+    outputImpl = new OutputImpl( panel, 9);
+    hbox->Add( outputImpl);
     hbox->AddSpacer(10);
 
     panel->SetSizer(hbox);
