@@ -46,11 +46,6 @@ uint8_t ServoReverse::getValueCount() {
     return 1;
 }
 
-TableEditType_t ServoReverse::getValueType( uint8_t col) {
-
-    return BOOLEAN_T;
-}
-
 void ServoReverse::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
     cell->value.boolV = IS_BIT_SET( cfg.revBits, row);

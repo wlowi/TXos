@@ -1,18 +1,34 @@
 
-#ifndef _ModelSelect_h_
-#define _ModelSelect_h_
+#ifndef _Model_h_
+#define _Model_h_
 
 #include "TXos.h"
 #include "Module.h"
-#include "ConfigBlock.h"
 
-class ModelSelect : public Module {
+typedef uint8_t wingMix_t;
+
+#define WINGMIX_OPTION_NUM  ((uint8_t)5)
+
+#define WINGMIX_1AIL        ((wingMix_t)0)
+#define WINGMIX_2AIL        ((wingMix_t)1)
+#define WINGMIX_DELTA       ((wingMix_t)2)
+#define WINGMIX_VTAIL       ((wingMix_t)3)
+#define WINGMIX_VTAIL2      ((wingMix_t)4)
+
+typedef struct model_t {
+
+    char modelName[MODEL_NAME_LEN +1];
+    wingMix_t wingMix;
+
+} model_t;
+
+class Model : public Module {
 
     private:
-        char modelNo[3];
-        
+        model_t cfg;
+
     public:
-        ModelSelect();
+        Model();
 
         /* From Module */
         void run( channelSet_t &channels);
@@ -27,5 +43,4 @@ class ModelSelect : public Module {
         void getValue( uint8_t row, uint8_t col, Cell *cell);
         void setValue( uint8_t row, uint8_t col, Cell *cell);
 };
-
 #endif

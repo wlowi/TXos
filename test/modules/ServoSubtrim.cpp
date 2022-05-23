@@ -55,11 +55,6 @@ uint8_t ServoSubtrim::getValueCount() {
     return 1;
 }
 
-TableEditType_t ServoSubtrim::getValueType( uint8_t col) {
-
-    return INT8_T;
-}
-
 void ServoSubtrim::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
     cell->value.intV = cfg.trim_pct[row];

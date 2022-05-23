@@ -58,11 +58,6 @@ uint8_t ServoLimit::getValueCount() {
     return 2;
 }
 
-TableEditType_t ServoLimit::getValueType( uint8_t col) {
-
-    return INT8_T;
-}
-
 void ServoLimit::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
     if( col == 0) {

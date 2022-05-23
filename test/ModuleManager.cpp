@@ -213,11 +213,6 @@ uint8_t ModuleManager::getValueCount() {
     return 0;
 }
 
-TableEditType_t ModuleManager::getValueType( uint8_t col) {
-
-    return INT8_T;
-}
-
 void ModuleManager::getValue( uint8_t row, uint8_t col, Cell *cell) {
     // Nothing
 }

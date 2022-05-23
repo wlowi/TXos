@@ -42,6 +42,7 @@ typedef uint16_t channelBits_t;
 #define CHANNEL_AILERON         ((channel_t)1)
 #define CHANNEL_ELEVATOR        ((channel_t)2)
 #define CHANNEL_RUDDER          ((channel_t)3)
+#define CHANNEL_AILERON2        ((channel_t)4)
 
 /* This represents a percentage from -125% to 125%
  * We don't need 16 bits for that.

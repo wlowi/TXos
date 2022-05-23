@@ -11,6 +11,7 @@ typedef uint8_t moduleSize_t;
 #define MODULE_INVALID_TYPE             ((moduleType_t)0)
 
 #define MODULE_MODEL_SELECT_TYPE        ((moduleType_t)1)
+#define MODULE_MODEL_TYPE               ((moduleType_t)2)
 #define MODULE_SERVO_REVERSE_TYPE       ((moduleType_t)20)
 #define MODULE_SERVO_SUBTRIM_TYPE       ((moduleType_t)21)
 #define MODULE_SERVO_LIMIT_TYPE         ((moduleType_t)22)

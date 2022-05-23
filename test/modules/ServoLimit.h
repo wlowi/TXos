@@ -29,7 +29,6 @@ class ServoLimit : public Module {
         uint8_t getItemCount();
         const char *getItemName( uint8_t row);
         uint8_t getValueCount();
-        TableEditType_t getValueType( uint8_t col);
         void getValue( uint8_t row, uint8_t col, Cell *cell);
         void setValue( uint8_t row, uint8_t col, Cell *cell);
 };

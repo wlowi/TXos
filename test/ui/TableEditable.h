@@ -11,12 +11,21 @@
 enum TableEditType_t {
     BOOLEAN_T,
     INT8_T,
-    INT16_T
+    INT16_T,
+    STRING_T,
+    LIST_T,
 };
 
-typedef union CellType_t {    
+typedef struct CellType_t {    
+    
     bool boolV;
+    
     int16_t intV;
+    
+    uint8_t size;
+    const char *string;
+    const char **list;
+
 } CellType_t;
 
 class Cell {
@@ -38,7 +47,6 @@ class TableEditable {
         virtual const char *getItemName( uint8_t row) = 0;
 
         virtual uint8_t getValueCount() = 0;
-        virtual TableEditType_t getValueType( uint8_t col) = 0;
 
         virtual void getValue( uint8_t row, uint8_t col, Cell *cell) = 0;
         virtual void setValue( uint8_t row, uint8_t col, Cell *cell) = 0;

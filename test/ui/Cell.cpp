@@ -19,6 +19,14 @@ void Cell::render( LcdWidget *lcd) {
         case INT16_T:
             lcd->printInt( value.intV, 6);
             break;
+
+        case STRING_T:
+            lcd->print( value.string);
+            break;
+
+        case LIST_T:
+            lcd->print( value.list[value.intV]);
+            break;
     }
 }
 
@@ -40,6 +48,25 @@ void Cell::edit( Event *event) {
                 event->markProcessed();
             } else if( event->key == KEY_UP) {
                 value.intV += event->count;
+                event->markProcessed();
+            }
+            break;
+
+        case STRING_T:
+            break;
+
+        case LIST_T:
+            if( event->key == KEY_DOWN) {
+                value.intV -= event->count;
+                if( value.intV < 0) {
+                    value.intV = 0;
+                }
+                event->markProcessed();
+            } else if( event->key == KEY_UP) {
+                value.intV += event->count;
+                if( value.intV >= value.size) {
+                    value.intV = value.size-1;
+                }
                 event->markProcessed();
             }
             break;

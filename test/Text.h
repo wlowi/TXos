@@ -6,6 +6,7 @@
 
 // Module Names (13 letters max.)       1234567890123
 #define TEXT_MODULE_MODEL_SELECT    CC("Model Select")
+#define TEXT_MODULE_MODEL           CC("Model")
 #define TEXT_MODULE_SERVO_LIMIT     CC("Servo limit")
 #define TEXT_MODULE_SERVO_REVERSE   CC("Servo reverse")
 #define TEXT_MODULE_SERVO_SUBTRIM   CC("Servo subtrim")
@@ -38,5 +39,12 @@
 #define TEXT_BOOTING                CC("Booting...")
 #define TEXT_SELECT                 CC("Select")
 #define TEXT_MODEL                  CC("Model")
+#define TEXT_MODEL_NAME             CC("Name")
+#define TEXT_WINGMIX                CC("Mix")
+#define TEXT_WINGMIX_1AIL           CC(" 1-Ail")
+#define TEXT_WINGMIX_2AIL           CC(" 2-Ail")
+#define TEXT_WINGMIX_DELTA          CC(" Delta")
+#define TEXT_WINGMIX_VTAIL          CC(" V-Mix")
+#define TEXT_WINGMIX_VTAIL2         CC("V-Mix2")
 
 #endif

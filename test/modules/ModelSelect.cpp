@@ -15,44 +15,52 @@ void ModelSelect::run( channelSet_t &channels) {
 
 void ModelSelect::setDefaults() {
 
-    memcpy( cfg.modelName, MODEL_NAME_DEFAULT, MODEL_NAME_LEN +1);
+    // noop
 }
 
 moduleSize_t ModelSelect::getConfigSize() {
 
-    return (moduleSize_t)sizeof( cfg);
+    return 0;
 }
 
 uint8_t *ModelSelect::getConfig() {
 
-    return (uint8_t*)&cfg;
+    return NULL;
 }
 
 /* From TableEditable */
 
 uint8_t ModelSelect::getItemCount() {
 
-    return CONFIG_MODELS;
+    return CONFIG_MODEL_COUNT;
 }
 
 const char *ModelSelect::getItemName( uint8_t row) {
 
-    return "model";
+    row++; // Start model number at 1
+
+    if( row < 10) {
+        modelNo[0] = ' ';
+    } else {
+        modelNo[0] = '0' + row / 10;
+    }
+
+    modelNo[1] = '0' + row % 10;
+    modelNo[2] = '\0';
+
+    return modelNo;
 }
 
 uint8_t ModelSelect::getValueCount() {
 
-    return 0;
-}
-
-TableEditType_t ModelSelect::getValueType( uint8_t col) {
-
-    return INT8_T; // Dont care
+    return 1;
 }
 
 void ModelSelect::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
-    // noop
+    cell->type = STRING_T;
+    cell->value.size = MODEL_NAME_LEN;
+    cell->value.string = "model";
 }
 
 void ModelSelect::setValue( uint8_t row, uint8_t col, Cell *cell) {
