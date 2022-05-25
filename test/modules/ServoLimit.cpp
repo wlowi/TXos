@@ -61,20 +61,18 @@ uint8_t ServoLimit::getValueCount() {
 void ServoLimit::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
     if( col == 0) {
-        cell->value.intV = cfg.negLimit_pct[row];
+        cell->setInt8( cfg.negLimit_pct[row]);
     } else {
-        cell->value.intV = cfg.posLimit_pct[row];
+        cell->setInt8( cfg.posLimit_pct[row]);
     }
-
-    cell->type = INT8_T;
 }
 
 void ServoLimit::setValue( uint8_t row, uint8_t col, Cell *cell) {
 
     if( col == 0) {
-        cfg.negLimit_pct[row] = cell->value.intV;
+        cfg.negLimit_pct[row] = cell->getInt8();
     } else {
-        cfg.posLimit_pct[row] = cell->value.intV;
+        cfg.posLimit_pct[row] = cell->getInt8();
     }
 
     if( cfg.negLimit_pct[row] > PERCENT_MAX) {

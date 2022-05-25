@@ -22,8 +22,7 @@ void UserInterface::handle() {
 
     Event *event = displayImpl->getEvent();
 
-    switch (screen)
-    {
+    switch (screen) {
     case SCREEN_INIT:
         switchScreen( SCREEN_HOME);
         break;
@@ -78,8 +77,6 @@ void UserInterface::homeScreen( Event *event) {
 void UserInterface::selectScreen( Event *event) {
 
     uint8_t idx;
-    uint8_t cnt;
-    Module *mod;
 
     if( refresh == REFRESH_FULL) {
         selectList.set( &moduleManager);
@@ -91,16 +88,16 @@ void UserInterface::selectScreen( Event *event) {
     if( event->pending()) {
         LOG("UserInterface::selectScreen(): event pending %d\n", event->key);
         switch( event->key) {
-            case KEY_ENTER:
-                idx = selectList.current();
-                if( idx == 0) {
-                    switchScreen( SCREEN_HOME);
-                } else {
-                    module = moduleManager.getModule(idx-1);
-                    LOG("UserInterface::selectScreen(): Module %s\n", module ? module->getName() : "NULL");
-                    switchScreen( SCREEN_CONFIG);
-                }
-                break;
+        case KEY_ENTER:
+            idx = selectList.current();
+            if( idx == 0) {
+                switchScreen( SCREEN_HOME);
+            } else {
+                module = moduleManager.getModule(idx-1);
+                LOG("UserInterface::selectScreen(): Module %s\n", module ? module->getName() : "NULL");
+                switchScreen( SCREEN_CONFIG);
+            }
+            break;
         }
     }
 }
@@ -108,7 +105,6 @@ void UserInterface::selectScreen( Event *event) {
 void UserInterface::configScreen( Event *event) {
 
     uint8_t idx;
-    uint8_t cnt;
 
     if( module == NULL) {
         LOG("** UserInterface::configScreen(): No module\n",1);
@@ -125,12 +121,13 @@ void UserInterface::configScreen( Event *event) {
 
     if( event->pending()) {
         switch( event->key) {
-            case KEY_ENTER:
-                idx = selectList.current();
-                if( idx == 0) {
-                    switchScreen( SCREEN_SELECT);
-                }
-                break;
+        case KEY_ENTER:
+            idx = selectList.current();
+            if( idx == 0) {
+                moduleManager.save( systemConfig.getModelID());
+                switchScreen( SCREEN_SELECT);
+            }
+            break;
         }
     }
 }

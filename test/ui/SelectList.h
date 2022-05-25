@@ -6,11 +6,6 @@
 #include "TableEditable.h"
 #include "DisplayImpl.h"
 
-#define SCREEN_INIT     0
-#define SCREEN_HOME     1
-#define SCREEN_SELECT   2
-#define SCREEN_CONFIG   3
-
 #define REFRESH_OK      0
 #define REFRESH_FULL    1
 #define REFRESH_UPDATE  2
@@ -22,6 +17,7 @@ class SelectList {
 
     private:
         TableEditable *table;
+        Cell cell;
         uint8_t idx;
         uint8_t oldIdx;
         uint8_t topIdx;

@@ -30,7 +30,7 @@ class Model : public Module {
     public:
         Model();
 
-        const char *getModelName() { return cfg.modelName; }
+        char *getModelName() { return cfg.modelName; }
 
         /* From Module */
         void run( channelSet_t &channels);

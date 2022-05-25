@@ -71,13 +71,10 @@ uint8_t ModelSelect::getValueCount() {
 void ModelSelect::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
     if( moduleManager.parseModule( row +1, model) == CONFIGBLOCK_RC_OK) {
-        cell->value.string = model.getModelName();
+        cell->setString( model.getModelName(), MODEL_NAME_LEN);
     } else {
-        cell->value.string = "?";
+        cell->setString( modelNo, 1);
     }
-
-    cell->type = STRING_T;
-    cell->value.size = MODEL_NAME_LEN;
 }
 
 void ModelSelect::setValue( uint8_t row, uint8_t col, Cell *cell) {

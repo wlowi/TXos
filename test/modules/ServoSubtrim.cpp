@@ -57,13 +57,12 @@ uint8_t ServoSubtrim::getValueCount() {
 
 void ServoSubtrim::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
-    cell->value.intV = cfg.trim_pct[row];
-    cell->type = INT8_T;
+    cell->setInt8( cfg.trim_pct[row]);
 }
 
 void ServoSubtrim::setValue( uint8_t row, uint8_t col, Cell *cell) {
 
-    cfg.trim_pct[row] = cell->value.intV;
+    cfg.trim_pct[row] = cell->getInt8();
 
     if( cfg.trim_pct[row] > PERCENT_MAX) {
         cfg.trim_pct[row] = PERCENT_MAX;

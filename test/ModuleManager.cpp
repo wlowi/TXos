@@ -185,6 +185,8 @@ void ModuleManager::generateBlock(configBlockID_t modelID) {
     moduleSize_t totalSize = 0;
     Module *current = first;
 
+    blockService->formatBlock( modelID);
+
     payload = blockService->getPayload();
 
     while( current != NULL) {

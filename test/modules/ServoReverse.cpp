@@ -48,13 +48,12 @@ uint8_t ServoReverse::getValueCount() {
 
 void ServoReverse::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
-    cell->value.boolV = IS_BIT_SET( cfg.revBits, row);
-    cell->type = BOOLEAN_T;
+    cell->setBool( IS_BIT_SET( cfg.revBits, row));
 }
 
 void ServoReverse::setValue( uint8_t row, uint8_t col, Cell *cell) {
     
-    if( cell->value.boolV) {
+    if( cell->getBool()) {
         BIT_SET( cfg.revBits, row);
     } else {
         BIT_CLEAR( cfg.revBits, row);

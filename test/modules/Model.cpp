@@ -40,7 +40,7 @@ void Model::run( channelSet_t &channels) {
 
     case WINGMIX_VTAIL2:        
         channels.analogChannel[CHANNEL_AILERON2] = -channels.analogChannel[CHANNEL_AILERON];
-        // no break;
+        // fall through
 
     case WINGMIX_VTAIL:
         a1 = channels.analogChannel[CHANNEL_RUDDER];
@@ -49,6 +49,10 @@ void Model::run( channelSet_t &channels) {
         a2 -= channels.analogChannel[CHANNEL_ELEVATOR];
         channels.analogChannel[CHANNEL_RUDDER] = a1;
         channels.analogChannel[CHANNEL_ELEVATOR] = a2;
+        break;
+
+    default:
+        // ignore
         break;
     }
 
@@ -83,6 +87,7 @@ const char *Model::getItemName( uint8_t row) {
     switch( row) {
     case 0: // model name
         return TEXT_MODEL_NAME;
+
     default: // wingmix type
         return TEXT_WINGMIX;
     }
@@ -97,16 +102,11 @@ void Model::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
     switch( row) {
     case 0: // model name
-        cell->type = STRING_T;
-        cell->value.size = MODEL_NAME_LEN;
-        cell->value.string = cfg.modelName;
+        cell->setString( cfg.modelName, MODEL_NAME_LEN);
         break;
 
     default: // wingmix type
-        cell->type = LIST_T;
-        cell->value.size = WINGMIX_OPTION_NUM;
-        cell->value.list = wingMixNames;;
-        cell->value.intV = cfg.wingMix; // current option
+        cell->setList( wingMixNames, WINGMIX_OPTION_NUM, cfg.wingMix);
     }
 }
 
@@ -118,6 +118,6 @@ void Model::setValue( uint8_t row, uint8_t col, Cell *cell) {
         break;
 
     default: // wingmix type
-        cfg.wingMix = cell->value.intV;
+        cfg.wingMix = cell->getList();
     }
 }
