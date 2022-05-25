@@ -1,6 +1,7 @@
 
 #include "UserInterface.h"
 #include "ModuleManager.h"
+#include "Model.h"
 #include "SystemConfig.h"
 
 extern DisplayImpl *displayImpl;
@@ -56,6 +57,10 @@ void UserInterface::homeScreen( Event *event) {
 
         lcd->print( TEXT_MODEL);
         lcd->printUInt( systemConfig.getModelID(), 3);
+        lcd->println();
+    
+        Model *model = (Model*)moduleManager.getModuleByType(MODULE_MODEL_TYPE);
+        lcd->print( model->getModelName());
 
         refresh = REFRESH_UPDATE;
     }
@@ -106,7 +111,7 @@ void UserInterface::configScreen( Event *event) {
     uint8_t cnt;
 
     if( module == NULL) {
-        LOG("UserInterface::configScreen(): No module\n",1);
+        LOG("** UserInterface::configScreen(): No module\n",1);
         switchScreen(SCREEN_SELECT);
         return;
     }

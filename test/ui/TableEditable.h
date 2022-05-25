@@ -43,6 +43,11 @@ class TableEditable {
     public:
         virtual const char *getName() = 0;
 
+        virtual bool isEditable() { return true; }
+        virtual bool isExecutable() { return false; }
+
+        virtual void execute( uint8_t row ) { }
+
         virtual uint8_t getItemCount() = 0;
         virtual const char *getItemName( uint8_t row) = 0;
 

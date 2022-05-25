@@ -23,6 +23,7 @@ class SystemConfig {
         void parseBlock();
         void generateBlock();
         void setDefaults();
+        void verify();
 
     public:
         SystemConfig( ConfigBlock &svc);
@@ -30,6 +31,7 @@ class SystemConfig {
         void save();
 
         configBlockID_t getModelID();
+        void setModelID( configBlockID_t model);
 };
 
 #endif

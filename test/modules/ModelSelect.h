@@ -3,13 +3,14 @@
 #define _ModelSelect_h_
 
 #include "TXos.h"
-#include "Module.h"
-#include "ConfigBlock.h"
+#include "ModuleManager.h"
+#include "Model.h"
 
 class ModelSelect : public Module {
 
     private:
         char modelNo[3];
+        Model model;
         
     public:
         ModelSelect();
@@ -21,6 +22,10 @@ class ModelSelect : public Module {
         uint8_t *getConfig();
 
         /* From TableEditable */
+        bool isEditable() { return false; }; // override
+        bool isExecutable() { return true; }; // override
+        void execute( uint8_t row );
+
         uint8_t getItemCount();
         const char *getItemName( uint8_t row);
         uint8_t getValueCount();

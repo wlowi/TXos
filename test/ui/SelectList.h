@@ -34,10 +34,10 @@ class SelectList {
         void printItem( LcdWidget *lcd, uint8_t i);
         void paint( LcdWidget *lcd);
         void update( LcdWidget *lcd);
-        void normalColors( LcdWidget *lcd);
-        void selectedColors( LcdWidget *lcd);
-        void headerColors( LcdWidget *lcd);
-        void editColors( LcdWidget *lcd);
+        void normalColors( LcdWidget *lcd) const;
+        void selectedColors( LcdWidget *lcd) const;
+        void headerColors( LcdWidget *lcd) const;
+        void editColors( LcdWidget *lcd) const;
         
     public:
         void clear();
@@ -45,7 +45,7 @@ class SelectList {
         void process( LcdWidget *lcd, Event *event);
         void prev();
         void next();
-        uint8_t current();
+        uint8_t current() const;
 };
 
 #endif

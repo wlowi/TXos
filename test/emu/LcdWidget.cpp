@@ -438,6 +438,10 @@ void LcdWidget::print( const char str[])
 void LcdWidget::println( const char str[])
 {
     print( str);
+	println();
+}
+
+void LcdWidget::println() {
 
     textX = 0;
     textY += FONT_H;

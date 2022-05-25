@@ -10,6 +10,7 @@ uint8_t ConfigBlock::readBlock( configBlockID_t id) {
 
     int configStart;
 
+    LOG("ConfigBlock::readBlock( %d )\n", id);
     if( id > CONFIG_BLOCKID_INVALID && id < CONFIG_BLOCKS) {
         
         blockID = id;
@@ -17,17 +18,20 @@ uint8_t ConfigBlock::readBlock( configBlockID_t id) {
         EEPROM.get( configStart, block);
 
         if( !isBlockValid()) {
+            LOG("** ConfigBlock::readBlock(): invalid csum for ID=%d\n", blockID);
             return CONFIGBLOCK_RC_CSUM;
         }
 
         return CONFIGBLOCK_RC_OK;
     }
-    
+
+    LOG("** ConfigBlock::readBlock(): invalid ID=%d\n", id);
     return CONFIGBLOCK_RC_INVID;
 }
 
 uint8_t ConfigBlock::formatBlock( configBlockID_t id) {
 
+    LOG("ConfigBlock::formatlock( %d )\n", id);
     if( id > CONFIG_BLOCKID_INVALID && id < CONFIG_BLOCKS) {
 
         blockID = id;
@@ -37,7 +41,8 @@ uint8_t ConfigBlock::formatBlock( configBlockID_t id) {
         
         return CONFIGBLOCK_RC_OK;        
     }
-    
+
+    LOG("** ConfigBlock::formatBlock(): invalid ID=%d\n", id);
     return CONFIGBLOCK_RC_INVID;  
 }
 
@@ -45,6 +50,7 @@ uint8_t ConfigBlock::writeBlock() {
     
     int configStart;
 
+    LOG("ConfigBlock::writeBlock() blockID=%d\n", blockID);
     if( blockID > CONFIG_BLOCKID_INVALID && blockID < CONFIG_BLOCKS) {
 
         configStart = (blockID * CONFIG_BLOCK_SIZE);
@@ -53,7 +59,8 @@ uint8_t ConfigBlock::writeBlock() {
         
         return CONFIGBLOCK_RC_OK;
     }
-    
+
+    LOG("** ConfigBlock::writeBlock(): invalid ID=%d\n", blockID);
     return CONFIGBLOCK_RC_INVID;
 }
 
@@ -67,7 +74,7 @@ bool ConfigBlock::isBlockValid()
     return block.checksum == computeChecksum();
 }
 
-void ConfigBlock::memcpy( uint8_t *dest, uint8_t *src, size_t sz) {
+void ConfigBlock::memcpy( uint8_t *dest, const uint8_t *src, size_t sz) {
 
     while( sz--) {
         (*dest) = (*src);

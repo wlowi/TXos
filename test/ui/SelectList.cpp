@@ -30,9 +30,15 @@ void SelectList::process( LcdWidget *lcd, Event *event) {
         switch( event->key) {
 
         case KEY_ENTER:
-            if( table->getValueCount() > 0 && idx > 0) {
-                mode = MODE_EDIT;
-                editCol = 0;
+            if( table->isEditable()) {
+                if( table->getValueCount() > 0 && idx > 0) {
+                    mode = MODE_EDIT;
+                    editCol = 0;
+                    refresh = REFRESH_UPDATE;
+                }
+            }
+            if( table->isExecutable() && idx > 0) {
+                table->execute( idx-1);
                 refresh = REFRESH_UPDATE;
             }
             break;
@@ -46,7 +52,10 @@ void SelectList::process( LcdWidget *lcd, Event *event) {
             next();
             refresh = REFRESH_UPDATE;
             break;
-        }
+
+        default:
+            // ignore
+        }   
         break;
 
     case MODE_EDIT:
@@ -68,8 +77,14 @@ void SelectList::process( LcdWidget *lcd, Event *event) {
             table->setValue( idx-1, editCol, &cell);
             refresh = REFRESH_UPDATE;
             break;
+
+        default:
+            // ignore
         }
         break;
+
+    default:
+        // ignore
     }
 
     if( refresh == REFRESH_UPDATE) {
@@ -95,7 +110,7 @@ void SelectList::next() {
     }
 }
 
-uint8_t SelectList::current() {
+uint8_t SelectList::current() const {
 
     return idx;
 }
@@ -104,7 +119,6 @@ uint8_t SelectList::current() {
 
 void SelectList::paint( LcdWidget *lcd) {
 
-    uint8_t i;
     uint8_t end;
     uint8_t lines = lcd->getLines();
     uint8_t items = table->getItemCount() +1;
@@ -123,7 +137,7 @@ void SelectList::paint( LcdWidget *lcd) {
     adjustTopIdx( lcd);
     end = (items < lines) ? items : lines;
 
-    for( i = topIdx; i < topIdx + end; i++) {        
+    for( uint8_t i = topIdx; i < topIdx + end; i++) {        
         refreshLine( lcd, i);
     }
 
@@ -193,25 +207,25 @@ void SelectList::printItem( LcdWidget *lcd, uint8_t i) {
     }
 }
 
-void SelectList::normalColors( LcdWidget *lcd) {
+void SelectList::normalColors( LcdWidget *lcd) const {
 
     lcd->setBg(0,0,0);
     lcd->setFg(255,255,255);
 }
 
-void SelectList::selectedColors( LcdWidget *lcd) {
+void SelectList::selectedColors( LcdWidget *lcd) const {
 
     lcd->setBg(255,255,0);
     lcd->setFg(0,0,0);
 }
 
-void SelectList::headerColors( LcdWidget *lcd) {
+void SelectList::headerColors( LcdWidget *lcd) const {
 
     lcd->setBg(0,0,0);
     lcd->setFg(0,255,0);
 }
 
-void SelectList::editColors( LcdWidget *lcd) {
+void SelectList::editColors( LcdWidget *lcd) const {
 
     lcd->setBg(255,255,255);
     lcd->setFg(0,0,0);

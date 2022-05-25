@@ -48,7 +48,7 @@ class ConfigBlock {
         uint8_t *getPayload();
 
         bool isBlockValid();
-        void memcpy( uint8_t *dest, uint8_t *src, size_t sz);
+        void memcpy( uint8_t *dest, const uint8_t *src, size_t sz);
 };
 
 #endif

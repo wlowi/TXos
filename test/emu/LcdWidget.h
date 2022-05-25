@@ -54,6 +54,7 @@ class LcdWidget : public wxPanel
         void setPixel( unsigned int x, unsigned int y, unsigned char r, unsigned char g, unsigned char b);
         void print( const char str[]);
         void println( const char str[]);
+        void println();
 
         void printInt( int val);
         void printInt( int val, uint8_t width);

@@ -62,6 +62,48 @@ Module *ModuleManager::getModuleByType( moduleType_t type) {
     return current;
 }
 
+#define GET( p, s)                              \
+    do {                                        \
+        blockService->memcpy( p, payload, s);   \
+        payload += s;                           \
+    } while( 0 )
+
+uint8_t ModuleManager::parseModule( configBlockID_t modelID, Module &module) {
+
+    uint8_t rc;
+    uint8_t *payload;
+    moduleType_t type;
+    moduleSize_t size;
+
+    rc = blockService->readBlock( modelID);
+    if( rc != CONFIGBLOCK_RC_OK) {
+        return rc;
+    }
+
+    rc = CONFIGBLOCK_RC_INVID;
+    payload = blockService->getPayload();
+    GET( (uint8_t*)&type, sizeof(moduleType_t));
+
+    while( type != MODULE_INVALID_TYPE) {
+
+        GET( (uint8_t*)&size, sizeof(moduleSize_t));
+
+        LOG("ModuleManager::parseModule(): GET type=%d size=%d\n", type, size);
+
+        if( type == module.getConfigType()) {
+            GET( module.getConfig(), size);
+            rc = CONFIGBLOCK_RC_OK;
+            break;
+        } else {
+            payload += size;
+        }
+
+        GET( (uint8_t*)&type, sizeof(moduleType_t));
+    }
+
+    return rc;
+}
+
 void ModuleManager::RunModules( channelSet_t &channels) {
 
     Module *current = first;
@@ -79,7 +121,7 @@ void ModuleManager::load( configBlockID_t modelID) {
     if( blockService->isBlockValid()) {
         parseBlock();
     } else {
-        LOG("ModuleManager::load(): Block %d is invalid.\n", modelID);
+        LOG("** ModuleManager::load(): Block %d is invalid.\n", modelID);
         setDefaults();
         save( modelID);
     }
@@ -92,11 +134,6 @@ void ModuleManager::save( configBlockID_t modelID) {
     blockService->writeBlock();
 }
 
-#define GET( p, s)                              \
-    do {                                        \
-        blockService->memcpy( p, payload, s);   \
-        payload += s;                           \
-    } while( 0 )
 
 void ModuleManager::parseBlock() {
 
@@ -117,12 +154,12 @@ void ModuleManager::parseBlock() {
 
         current = getModuleByType( type);
         if( current == NULL) {
-            LOG("ModuleManager::parseBlock(): No module of type=%d\n", type);
+            LOG("** ModuleManager::parseBlock(): No module of type=%d\n", type);
             break;
         }
 
         if( current->getConfigSize() != size) {
-            LOG("ModuleManager::parseBlock(): Config size mismatch of module type=%d %d != %d\n",
+            LOG("** ModuleManager::parseBlock(): Config size mismatch of module type=%d %d != %d\n",
                 type, current->getConfigSize(), size);
             break;
         }
@@ -160,11 +197,13 @@ void ModuleManager::generateBlock(configBlockID_t modelID) {
 
             // +1 is for terminating invalid module type
             if( totalSize + sizeof(moduleType_t) + sizeof(moduleSize_t) + size +1 <= CONFIG_PAYLOAD_SIZE) {
+                LOG("ModuleManager::generateBlock(): Put type=%d size=%d\n", type, size);
+
                 PUT( (uint8_t*)&type, sizeof(moduleType_t));
                 PUT( (uint8_t*)&size, sizeof(moduleSize_t));
                 PUT( current->getConfig(), size);
             } else {
-                LOG("ModuleManager::generateBlock(): Payload to large. %d > %d\n",
+                LOG("** ModuleManager::generateBlock(): Payload to large. %d > %d\n",
                     totalSize + sizeof(moduleType_t) + sizeof(moduleSize_t) + size,
                     CONFIG_PAYLOAD_SIZE);
             }
@@ -220,4 +259,3 @@ void ModuleManager::getValue( uint8_t row, uint8_t col, Cell *cell) {
 void ModuleManager::setValue( uint8_t row, uint8_t col, Cell *cell) {
     // Nothing
 }
-

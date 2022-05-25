@@ -1,5 +1,9 @@
 
 #include "ModelSelect.h"
+#include "SystemConfig.h"
+
+extern ModuleManager moduleManager;
+extern SystemConfig systemConfig;
 
 ModelSelect::ModelSelect() : Module( MODULE_MODEL_SELECT_TYPE, TEXT_MODULE_MODEL_SELECT) {
 
@@ -30,6 +34,14 @@ uint8_t *ModelSelect::getConfig() {
 
 /* From TableEditable */
 
+void ModelSelect::execute( uint8_t row) {
+
+    LOG("ModelSelect::execute( %d )\n", row);
+
+    moduleManager.load( row +1);
+    systemConfig.setModelID( row +1);
+}
+
 uint8_t ModelSelect::getItemCount() {
 
     return CONFIG_MODEL_COUNT;
@@ -58,9 +70,14 @@ uint8_t ModelSelect::getValueCount() {
 
 void ModelSelect::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
+    if( moduleManager.parseModule( row +1, model) == CONFIGBLOCK_RC_OK) {
+        cell->value.string = model.getModelName();
+    } else {
+        cell->value.string = "?";
+    }
+
     cell->type = STRING_T;
     cell->value.size = MODEL_NAME_LEN;
-    cell->value.string = "model";
 }
 
 void ModelSelect::setValue( uint8_t row, uint8_t col, Cell *cell) {
