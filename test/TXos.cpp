@@ -42,6 +42,7 @@
 
 #include "ModelSelect.h"
 #include "Model.h"
+#include "EngineCut.h"
 #include "ServoReverse.h"
 #include "ServoSubtrim.h"
 #include "ServoLimit.h"
@@ -77,6 +78,7 @@ void setup( void) {
      */
     moduleManager.Add( new ModelSelect());
     moduleManager.Add( new Model());
+    moduleManager.Add( new EngineCut());
     moduleManager.Add( new ServoReverse());
     moduleManager.Add( new ServoSubtrim());
     moduleManager.Add( new ServoLimit());

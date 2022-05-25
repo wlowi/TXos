@@ -14,6 +14,10 @@ void Controls::init() {
 
 void Controls::GetControlValues( channelSet_t &channels) {
 
+    for( int ch=0; ch < CHANNELS; ch++) {
+        channels.analogChannel[ch] = CHANNELVALUE_MID;
+    }
+
     for( int ch=0; ch < inputImpl->GetChannels(); ch++) {
         channels.analogChannel[ch] = inputImpl->GetChannelValue( ch);
     }

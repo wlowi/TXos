@@ -3,3 +3,4 @@
 srv/.vscode
 src/default
 test/EEPROM.DAT
+test/TXosTest

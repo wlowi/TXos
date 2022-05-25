@@ -14,7 +14,7 @@ UI_OBJ = ui/UserInterface.o ui/SelectList.o ui/Cell.o
 
 OUTPUT_OBJ = output/Output.o
 
-MODULE_OBJ = modules/ModelSelect.o modules/Model.o modules/ServoReverse.o modules/ServoSubtrim.o modules/ServoLimit.o
+MODULE_OBJ = modules/ModelSelect.o modules/Model.o modules/EngineCut.o modules/ServoReverse.o modules/ServoSubtrim.o modules/ServoLimit.o
 
 CXX += -I. -Iemu -Icontrols -Iui -Ioutput -Imodules
 
