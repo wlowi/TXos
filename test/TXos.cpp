@@ -1,29 +1,45 @@
 /*
  * TXos - RC Transmitter OS
  *
- * D0   RX            - USB
- * D1   TX            - USB
- * D2   Clk           - Rotary Encoder
- * D3   Dir           - Rotary Encoder
- * D4   Switch        - Rotary Encoder
+ * Output
+ * ======
+ * 
  * D5   PPM Out
+ * 
+ * Switches
+ * ========
+ * 
  * D6   Digital 1
  * D7   Digital 2
  * D8   Digital 3
  * D9   Digital 4
  * D10  Digital 5
- * D11  MOSI          - ICSP
- * D12  MISO          - ICSP
- * D13  SCK           - ICSP
+ * D11  Digital 6
+ * 
+ * Analog Input
+ * ============
  * 
  * A0   Analog 1
  * A1   Analog 2
  * A2   Analog 3
  * A3   Analog 4
- * A4   SDA           - TWI (LCD)
- * A5   SCL           - TWI (LCD)
- * A6   Analog 5
+ * A4   Analog 5
+ * A5   Analog 6
  * A7   Vcc Monitor
+ * 
+ * Rotary Encoder
+ * ==============
+ * 
+ * A10  Rotary Encoder A
+ * A11  Rotary Encoder B
+ * A12  Rotary Encoder Switch
+ * 
+ * Display
+ * =======
+ * MOSI
+ * SCK
+ * D
+ * D
  * 
  */
 
@@ -47,6 +63,12 @@
 #include "ServoSubtrim.h"
 #include "ServoLimit.h"
 
+#if defined( ARDUINO )
+#include "InputImpl.h"
+#include "OutputImpl.h"
+#include "DisplayImpl.h"
+#endif
+
 const char *ChannelNames[CHANNELS] = {
     TEXT_CONTROL_CHANNEL_1,
     TEXT_CONTROL_CHANNEL_2,
@@ -60,6 +82,13 @@ const char *ChannelNames[CHANNELS] = {
 };
 
 channelSet_t channels;
+
+#if defined( ARDUINO )
+InputImpl *inputImpl;
+OutputImpl *outputImpl;
+DisplayImpl *displayImpl;
+#endif
+
 Controls controls;
 Output output;
 UserInterface userInterface;
@@ -68,6 +97,12 @@ SystemConfig systemConfig( configBlock);
 ModuleManager moduleManager( configBlock);
 
 void setup( void) {
+
+#if defined( ARDUINO )
+    inputImpl = new InputImpl( 6, 6);
+    outputImpl = new OutputImpl( CHANNELS);
+    displayImpl = new DisplayImpl();
+#endif
 
     userInterface.init();
 
@@ -90,6 +125,13 @@ void setup( void) {
 }
 
 void loop( void) {
+
+#if defined( ARDUINO )
+    digitalWrite( LED_BUILTIN, HIGH);
+    delay( 11);
+    digitalWrite( LED_BUILTIN, LOW);
+    delay( 11);
+#endif
 
     controls.GetControlValues( channels);
     moduleManager.RunModules( channels);

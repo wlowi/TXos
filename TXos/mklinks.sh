@@ -3,10 +3,9 @@
 # Create links for all cpp and header files from ../test hierarchy
 #
 
-SOURCE="../test ../test/controls ../test/modules ../test/output ../test/ui"
+SOURCE="../test ../test/controls ../test/modules ../test/output ../test/ui atmega2560"
 
-find . -lname "*.cpp" -exec rm -f \{\} \;
-find . -lname "*.h" -exec rm -f \{\} \;
+sh rmlinks.sh
 
 for SOURCEDIR in $SOURCE ; do
     echo Link from $SOURCEDIR

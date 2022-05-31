@@ -43,12 +43,12 @@ void SelectList::process( LcdWidget *lcd, Event *event) {
             break;
 
         case KEY_UP:
-            prev();
+            next();
             refresh = REFRESH_UPDATE;
             break;
 
         case KEY_DOWN:
-            next();
+            prev();
             refresh = REFRESH_UPDATE;
             break;
 

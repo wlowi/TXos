@@ -9,7 +9,7 @@ EngineCut::EngineCut() : Module( MODULE_ENGINE_CUT_TYPE, TEXT_MODULE_ENGINE_CUT)
 void EngineCut::run( channelSet_t &channels) {
 
     if( cfg.trigger == channels.switches ) {
-        channels.analogChannel[CHANNEL_THROTTLE] = cfg.cut_pct;
+        channels.analogChannel[CHANNEL_THROTTLE] = PCT_TO_CHANNEL(cfg.cut_pct);
     }
 }
 
