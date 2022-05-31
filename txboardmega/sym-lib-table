@@ -1,0 +1,3 @@
+(sym_lib_table
+  (lib (name joy-it)(type Legacy)(uri ${KIPRJMOD}/joy-it.lib)(options "")(descr ""))
+)

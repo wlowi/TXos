@@ -1,6 +1,9 @@
 .vscode
+**/*~
 **/*.o
 srv/.vscode
 src/default
 test/EEPROM.DAT
 test/TXosTest
+txboardmega/*-bak
+txboardmega/*.bck
