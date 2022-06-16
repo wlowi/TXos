@@ -9,6 +9,7 @@ class Output {
     public:
         Output();
         void init();
+        bool acceptChannels();
         void setChannels( channelSet_t &channels);
 };
 

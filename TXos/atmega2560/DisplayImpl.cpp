@@ -127,11 +127,11 @@ Event *DisplayImpl::getEvent() {
       button = 0;
     } else if( enc > 0) {
       event.key = KEY_UP;
-      event.count = 1; //(enc >> 2);
+      event.count = (enc >> 2);
       enc = 0;
     } else if( enc < 0) {
       event.key = KEY_DOWN;
-      event.count = 1; //-(enc >> 2);
+      event.count = -(enc >> 2);
       enc = 0;
     } else {
       event.key = KEY_NONE;

@@ -21,6 +21,7 @@ class OutputImpl : public wxBoxSizer
         OutputImpl( wxWindow *parent, int channels);
         ~OutputImpl( void);
 
+        bool acceptChannels();
         void SetChannelValue( int channel, int value);
 };
 

@@ -30,6 +30,8 @@ typedef int16_t channelValue_t;
  */
 typedef uint16_t channelBits_t;
 
+typedef uint16_t timingUsec_t;
+
 #define BIT_SET( bm, ch)     bm |= ((channelBits_t)1 << ch)
 #define BIT_CLEAR( bm, ch)   bm &= ~((channelBits_t)1 << ch)
 #define IS_BIT_SET( bm, ch)  (bm & ((channelBits_t)1 << ch))
@@ -43,6 +45,9 @@ typedef uint16_t channelBits_t;
 #define CHANNEL_ELEVATOR        ((channel_t)2)
 #define CHANNEL_RUDDER          ((channel_t)3)
 #define CHANNEL_AILERON2        ((channel_t)4)
+
+#define H( v ) ((uint8_t)(v >> 8))
+#define L( v ) ((uint8_t)(v & 0xff))
 
 /* This represents a percentage from -125% to 125%
  * We don't need 16 bits for that.

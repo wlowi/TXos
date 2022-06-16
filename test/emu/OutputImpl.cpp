@@ -27,6 +27,11 @@ OutputImpl::OutputImpl( wxWindow *parent, int channels)
     }
 }
 
+bool OutputImpl::acceptChannels() {
+
+    return true;
+}
+
 void OutputImpl::SetChannelValue(int channel, int value) {
 
     wxString str;

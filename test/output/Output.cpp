@@ -12,6 +12,11 @@ void Output::init() {
 
 }
 
+bool Output::acceptChannels() {
+  
+  return outputImpl->acceptChannels();  
+}
+
 void Output::setChannels( channelSet_t &channels) {
 
     for( int ch=0; ch<CHANNELS; ch++) {
