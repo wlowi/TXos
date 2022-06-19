@@ -272,70 +272,70 @@ Analog 0-5
 $Comp
 L Connector_Generic:Conn_01x03 J9
 U 1 1 6298D216
-P 9950 3900
-F 0 "J9" H 10030 3942 50  0000 L CNN
-F 1 "Switch 1" H 10030 3851 50  0000 L CNN
-F 2 "Connector_JST:JST_EH_B3B-EH-A_1x03_P2.50mm_Vertical" H 9950 3900 50  0001 C CNN
-F 3 "~" H 9950 3900 50  0001 C CNN
-	1    9950 3900
+P 2200 3200
+F 0 "J9" H 2280 3242 50  0000 L CNN
+F 1 "Switch 1" H 2280 3151 50  0000 L CNN
+F 2 "Connector_JST:JST_EH_B3B-EH-A_1x03_P2.50mm_Vertical" H 2200 3200 50  0001 C CNN
+F 3 "~" H 2200 3200 50  0001 C CNN
+	1    2200 3200
 	1    0    0    -1  
 $EndComp
 $Comp
 L Connector_Generic:Conn_01x03 J10
 U 1 1 62991DFA
-P 9950 4300
-F 0 "J10" H 10030 4342 50  0000 L CNN
-F 1 "Switch 2" H 10030 4251 50  0000 L CNN
-F 2 "Connector_JST:JST_EH_B3B-EH-A_1x03_P2.50mm_Vertical" H 9950 4300 50  0001 C CNN
-F 3 "~" H 9950 4300 50  0001 C CNN
-	1    9950 4300
+P 2200 3700
+F 0 "J10" H 2280 3742 50  0000 L CNN
+F 1 "Switch 2" H 2280 3651 50  0000 L CNN
+F 2 "Connector_JST:JST_EH_B3B-EH-A_1x03_P2.50mm_Vertical" H 2200 3700 50  0001 C CNN
+F 3 "~" H 2200 3700 50  0001 C CNN
+	1    2200 3700
 	1    0    0    -1  
 $EndComp
 $Comp
 L Connector_Generic:Conn_01x03 J11
 U 1 1 62992B4F
-P 9950 4700
-F 0 "J11" H 10030 4742 50  0000 L CNN
-F 1 "Switch 3" H 10030 4651 50  0000 L CNN
-F 2 "Connector_JST:JST_EH_B3B-EH-A_1x03_P2.50mm_Vertical" H 9950 4700 50  0001 C CNN
-F 3 "~" H 9950 4700 50  0001 C CNN
-	1    9950 4700
+P 2200 4150
+F 0 "J11" H 2280 4192 50  0000 L CNN
+F 1 "Switch 3" H 2280 4101 50  0000 L CNN
+F 2 "Connector_JST:JST_EH_B3B-EH-A_1x03_P2.50mm_Vertical" H 2200 4150 50  0001 C CNN
+F 3 "~" H 2200 4150 50  0001 C CNN
+	1    2200 4150
 	1    0    0    -1  
 $EndComp
 $Comp
 L Connector_Generic:Conn_01x03 J12
 U 1 1 62995006
-P 9950 5100
-F 0 "J12" H 10030 5142 50  0000 L CNN
-F 1 "Switch 4" H 10030 5051 50  0000 L CNN
-F 2 "Connector_JST:JST_EH_B3B-EH-A_1x03_P2.50mm_Vertical" H 9950 5100 50  0001 C CNN
-F 3 "~" H 9950 5100 50  0001 C CNN
-	1    9950 5100
+P 2200 4600
+F 0 "J12" H 2280 4642 50  0000 L CNN
+F 1 "Switch 4" H 2280 4551 50  0000 L CNN
+F 2 "Connector_JST:JST_EH_B3B-EH-A_1x03_P2.50mm_Vertical" H 2200 4600 50  0001 C CNN
+F 3 "~" H 2200 4600 50  0001 C CNN
+	1    2200 4600
 	1    0    0    -1  
 $EndComp
 $Comp
 L Connector_Generic:Conn_01x03 J13
 U 1 1 62995652
-P 9950 5500
-F 0 "J13" H 10030 5542 50  0000 L CNN
-F 1 "Switch 5" H 10030 5451 50  0000 L CNN
-F 2 "Connector_JST:JST_EH_B3B-EH-A_1x03_P2.50mm_Vertical" H 9950 5500 50  0001 C CNN
-F 3 "~" H 9950 5500 50  0001 C CNN
-	1    9950 5500
+P 2200 5050
+F 0 "J13" H 2280 5092 50  0000 L CNN
+F 1 "Switch 5" H 2280 5001 50  0000 L CNN
+F 2 "Connector_JST:JST_EH_B3B-EH-A_1x03_P2.50mm_Vertical" H 2200 5050 50  0001 C CNN
+F 3 "~" H 2200 5050 50  0001 C CNN
+	1    2200 5050
 	1    0    0    -1  
 $EndComp
 $Comp
 L Connector_Generic:Conn_01x03 J14
 U 1 1 62995DB8
-P 9950 5900
-F 0 "J14" H 10030 5942 50  0000 L CNN
-F 1 "Switch 6" H 10030 5851 50  0000 L CNN
-F 2 "Connector_JST:JST_EH_B3B-EH-A_1x03_P2.50mm_Vertical" H 9950 5900 50  0001 C CNN
-F 3 "~" H 9950 5900 50  0001 C CNN
-	1    9950 5900
+P 2200 5500
+F 0 "J14" H 2280 5542 50  0000 L CNN
+F 1 "Switch 6" H 2280 5451 50  0000 L CNN
+F 2 "Connector_JST:JST_EH_B3B-EH-A_1x03_P2.50mm_Vertical" H 2200 5500 50  0001 C CNN
+F 3 "~" H 2200 5500 50  0001 C CNN
+	1    2200 5500
 	1    0    0    -1  
 $EndComp
-Text Notes 9950 3700 0    50   ~ 0
+Text Notes 2000 2850 0    50   ~ 0
 Switches 0-6
 $Comp
 L Connector_Generic:Conn_01x05 J15
@@ -359,66 +359,6 @@ F 3 "~" H 7800 3550 50  0001 C CNN
 	1    7800 3550
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	9750 3800 9650 3800
-Wire Wire Line
-	9650 3800 9650 3200
-Connection ~ 9650 3200
-Wire Wire Line
-	9750 4200 9650 4200
-Wire Wire Line
-	9650 4200 9650 3800
-Connection ~ 9650 3800
-Wire Wire Line
-	9750 4600 9650 4600
-Wire Wire Line
-	9650 4600 9650 4200
-Connection ~ 9650 4200
-Wire Wire Line
-	9750 5000 9650 5000
-Wire Wire Line
-	9650 5000 9650 4600
-Connection ~ 9650 4600
-Wire Wire Line
-	9750 5400 9650 5400
-Wire Wire Line
-	9650 5400 9650 5000
-Connection ~ 9650 5000
-Wire Wire Line
-	9750 5800 9650 5800
-Wire Wire Line
-	9650 5800 9650 5400
-Connection ~ 9650 5400
-Wire Wire Line
-	9750 4000 9600 4000
-Wire Wire Line
-	9600 4000 9600 3400
-Connection ~ 9600 3400
-Wire Wire Line
-	9750 4400 9600 4400
-Wire Wire Line
-	9600 4400 9600 4000
-Connection ~ 9600 4000
-Wire Wire Line
-	9750 4800 9600 4800
-Wire Wire Line
-	9600 4800 9600 4400
-Connection ~ 9600 4400
-Wire Wire Line
-	9750 5200 9600 5200
-Wire Wire Line
-	9600 5200 9600 4800
-Connection ~ 9600 4800
-Wire Wire Line
-	9750 5600 9600 5600
-Wire Wire Line
-	9600 5600 9600 5200
-Connection ~ 9600 5200
-Wire Wire Line
-	9750 6000 9600 6000
-Wire Wire Line
-	9600 6000 9600 5600
-Connection ~ 9600 5600
 NoConn ~ 6100 5500
 Text Notes 1350 6950 0    50   ~ 0
 PCINT18   PK2   ADC10\nPCINT19   PK3   ADC11\nPCINT20   PK4   ADC12
@@ -502,4 +442,128 @@ Wire Wire Line
 Connection ~ 4500 2100
 Wire Wire Line
 	4500 2100 3900 2100
+Wire Wire Line
+	3900 900  1450 900 
+Wire Wire Line
+	1450 900  1450 3100
+Wire Wire Line
+	1450 3100 2000 3100
+Connection ~ 3900 900 
+Wire Wire Line
+	1450 3100 1450 3600
+Wire Wire Line
+	1450 3600 2000 3600
+Connection ~ 1450 3100
+Wire Wire Line
+	1450 3600 1450 4050
+Wire Wire Line
+	1450 4050 2000 4050
+Connection ~ 1450 3600
+Wire Wire Line
+	1450 4050 1450 4500
+Wire Wire Line
+	1450 4500 2000 4500
+Connection ~ 1450 4050
+Wire Wire Line
+	1450 4500 1450 4950
+Wire Wire Line
+	1450 4950 2000 4950
+Connection ~ 1450 4500
+Wire Wire Line
+	1450 4950 1450 5400
+Wire Wire Line
+	1450 5400 2000 5400
+Connection ~ 1450 4950
+Wire Wire Line
+	4000 950  1500 950 
+Wire Wire Line
+	1500 950  1500 3300
+Wire Wire Line
+	1500 3300 2000 3300
+Connection ~ 4000 950 
+Wire Wire Line
+	1500 3300 1500 3800
+Wire Wire Line
+	1500 3800 2000 3800
+Connection ~ 1500 3300
+Wire Wire Line
+	1500 3800 1500 4250
+Connection ~ 1500 3800
+Wire Wire Line
+	1500 4250 1500 4700
+Wire Wire Line
+	1500 4700 2000 4700
+Connection ~ 1500 4250
+Wire Wire Line
+	1500 4700 1500 5150
+Wire Wire Line
+	1500 5150 2000 5150
+Connection ~ 1500 4700
+Wire Wire Line
+	1500 5150 1500 5600
+Wire Wire Line
+	1500 5600 2000 5600
+Connection ~ 1500 5150
+Wire Wire Line
+	2000 3200 1950 3200
+Wire Wire Line
+	1950 3200 1950 3400
+Wire Wire Line
+	1950 3400 3650 3400
+Wire Wire Line
+	3650 3400 3650 4600
+Wire Wire Line
+	3650 4600 4550 4600
+Wire Wire Line
+	2000 3700 1950 3700
+Wire Wire Line
+	1950 3700 1950 3900
+Wire Wire Line
+	1950 3900 3600 3900
+Wire Wire Line
+	3600 3900 3600 4700
+Wire Wire Line
+	3600 4700 4550 4700
+Wire Wire Line
+	1500 4250 2000 4250
+Wire Wire Line
+	2000 4150 1950 4150
+Wire Wire Line
+	1950 4150 1950 4350
+Wire Wire Line
+	1950 4350 3550 4350
+Wire Wire Line
+	3550 4350 3550 4800
+Wire Wire Line
+	3550 4800 4550 4800
+Wire Wire Line
+	2000 4600 1950 4600
+Wire Wire Line
+	1950 4600 1950 4800
+Wire Wire Line
+	1950 4800 3500 4800
+Wire Wire Line
+	3500 4800 3500 4900
+Wire Wire Line
+	3500 4900 4550 4900
+Wire Wire Line
+	2000 5050 1950 5050
+Wire Wire Line
+	1950 5050 1950 5250
+Wire Wire Line
+	1950 5250 3600 5250
+Wire Wire Line
+	3600 5250 3600 5000
+Wire Wire Line
+	3600 5000 4550 5000
+Wire Wire Line
+	2000 5500 1950 5500
+Wire Wire Line
+	1950 5500 1950 5700
+Wire Wire Line
+	1950 5700 3650 5700
+Wire Wire Line
+	3650 5700 3650 5100
+Wire Wire Line
+	3650 5100 4550 5100
 $EndSCHEMATC
