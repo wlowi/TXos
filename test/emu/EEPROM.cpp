@@ -30,7 +30,7 @@ void EEPROMClass::loadFromFile() {
             file.seekg (0, ios::beg);
             file.read ( (char*)storage, size);
         } else {
-            printf("FILE SIZE MISMATCH: %d %d \n", size, len);
+            printf("FILE SIZE MISMATCH: %d %d \n", (uint16_t)size, len);
         }
 
         file.close();

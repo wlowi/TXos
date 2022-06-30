@@ -72,7 +72,8 @@ void SystemConfig::parseBlock() {
         blockService->memcpy( (uint8_t*)&cfg, blockService->getPayload(), sizeof(cfg));
         verify();
     } else {
-        LOG( "** SystemConfig::parseBlock(): Config size > CONFIG_PAYLOAD_SIZE\n", NULL);
+        LOGV( "** SystemConfig::parseBlock(): Config size (%ld) > CONFIG_PAYLOAD_SIZE (%ld)\n",
+             sizeof( cfg), CONFIG_PAYLOAD_SIZE);
     }
 }
 
@@ -91,7 +92,8 @@ void SystemConfig::generateBlock() {
     if( sizeof( cfg) <= CONFIG_PAYLOAD_SIZE) {
         blockService->memcpy( blockService->getPayload(), (uint8_t*)&cfg, sizeof(cfg));
     } else {
-        LOG( "** SystemConfig::generateBlock(): Config size > CONFIG_PAYLOAD_SIZE\n", NULL);
+        LOGV( "** SystemConfig::parseBlock(): Config size (%ld) > CONFIG_PAYLOAD_SIZE (%ld)\n",
+             sizeof( cfg), CONFIG_PAYLOAD_SIZE);
     }
 }
 
@@ -110,7 +112,7 @@ void SystemConfig::setDefaults() {
 void SystemConfig::verify() {
 
     if( cfg.modelID < 1 || cfg.modelID > CONFIG_MODEL_COUNT) {
-        LOG( "** SystemConfig::verify(): Failed. invalid modelID=%d\n", cfg.modelID);
+        LOGV( "** SystemConfig::verify(): Failed. invalid modelID=%d\n", cfg.modelID);
         cfg.modelID = 1;
     }
 }

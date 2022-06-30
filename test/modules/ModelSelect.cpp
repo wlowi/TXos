@@ -65,7 +65,7 @@ uint8_t *ModelSelect::getConfig() {
  */
 void ModelSelect::execute( uint8_t row) {
 
-    LOG("ModelSelect::execute( %d )\n", row);
+    LOGV("ModelSelect::execute( %d )\n", row);
 
     moduleManager.load( row +1);
     systemConfig.setModelID( row +1);

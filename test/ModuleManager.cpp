@@ -129,7 +129,7 @@ uint8_t ModuleManager::parseModule( configBlockID_t modelID, Module &moduleRef) 
 
         GET( (uint8_t*)&size, sizeof(moduleSize_t));
 
-        LOG("ModuleManager::parseModule(): GET type=%d size=%d\n", type, size);
+        LOGV("ModuleManager::parseModule(): GET type=%d size=%d\n", type, size);
 
         if( type == moduleRef.getConfigType()) {
             GET( moduleRef.getConfig(), size);
@@ -170,7 +170,7 @@ void ModuleManager::load( configBlockID_t modelID) {
     if( blockService->isBlockValid()) {
         parseBlock();
     } else {
-        LOG("** ModuleManager::load(): Block %d is invalid.\n", modelID);
+        LOGV("** ModuleManager::load(): Block %d is invalid.\n", modelID);
         setDefaults();
         save( modelID);
     }
@@ -205,16 +205,16 @@ void ModuleManager::parseBlock() {
 
         GET( (uint8_t*)&size, sizeof(moduleSize_t));
 
-        LOG("ModuleManager::parseBlock(): GET type=%d size=%d\n", type, size);
+        LOGV("ModuleManager::parseBlock(): GET type=%d size=%d\n", type, size);
 
         current = getModuleByType( type);
         if( current == nullptr) {
-            LOG("** ModuleManager::parseBlock(): No module of type=%d\n", type);
+            LOGV("** ModuleManager::parseBlock(): No module of type=%d\n", type);
             break;
         }
 
         if( current->getConfigSize() != size) {
-            LOG("** ModuleManager::parseBlock(): Config size mismatch of module type=%d %d != %d\n",
+            LOGV("** ModuleManager::parseBlock(): Config size mismatch of module type=%d %d != %d\n",
                 type, current->getConfigSize(), size);
             break;
         }
@@ -285,14 +285,14 @@ void ModuleManager::generateBlock(configBlockID_t modelID) {
 
             // +1 is for terminating invalid module type
             if( totalSize + sizeof(moduleType_t) + sizeof(moduleSize_t) + size +1 <= CONFIG_PAYLOAD_SIZE) {
-                LOG("ModuleManager::generateBlock(): Put type=%d size=%d\n", type, size);
+                LOGV("ModuleManager::generateBlock(): Put type=%d size=%d\n", type, size);
 
                 PUT( (uint8_t*)&type, sizeof(moduleType_t));
                 PUT( (uint8_t*)&size, sizeof(moduleSize_t));
                 PUT( current->getConfig(), size);
 
             } else {
-                LOG("** ModuleManager::generateBlock(): Payload to large. %d > %d\n",
+                LOGV("** ModuleManager::generateBlock(): Payload to large. %ld > %ld\n",
                     totalSize + sizeof(moduleType_t) + sizeof(moduleSize_t) + size,
                     CONFIG_PAYLOAD_SIZE);
             }
@@ -305,7 +305,7 @@ void ModuleManager::generateBlock(configBlockID_t modelID) {
     type = MODULE_INVALID_TYPE;
     PUT( (uint8_t*)&type, sizeof(moduleType_t));
 
-    LOG("ModuleManager::generateBlock(): Payload %d bytes\n", totalSize);
+    LOGV("ModuleManager::generateBlock(): Payload %d bytes\n", totalSize);
 }
 
 /*

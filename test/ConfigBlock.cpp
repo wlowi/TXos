@@ -29,7 +29,7 @@ configBlock_rc ConfigBlock::readBlock( configBlockID_t id) {
 
     int configStart;
 
-    LOG("ConfigBlock::readBlock( %d )\n", id);
+    LOGV("ConfigBlock::readBlock( %d )\n", id);
     if( id > CONFIG_BLOCKID_INVALID && id < CONFIG_BLOCKS) {
         
         blockID = id;
@@ -37,14 +37,14 @@ configBlock_rc ConfigBlock::readBlock( configBlockID_t id) {
         EEPROM.get( configStart, block);
 
         if( !isBlockValid()) {
-            LOG("** ConfigBlock::readBlock(): invalid csum for ID=%d\n", blockID);
+            LOGV("** ConfigBlock::readBlock(): invalid csum for ID=%d\n", blockID);
             return CONFIGBLOCK_RC_CSUM;
         }
 
         return CONFIGBLOCK_RC_OK;
     }
 
-    LOG("** ConfigBlock::readBlock(): invalid ID=%d\n", id);
+    LOGV("** ConfigBlock::readBlock(): invalid ID=%d\n", id);
     return CONFIGBLOCK_RC_INVID;
 }
 
@@ -54,7 +54,7 @@ configBlock_rc ConfigBlock::readBlock( configBlockID_t id) {
  */
 configBlock_rc ConfigBlock::formatBlock( configBlockID_t id) {
 
-    LOG("ConfigBlock::formatlock( %d )\n", id);
+    LOGV("ConfigBlock::formatlock( %d )\n", id);
     if( id > CONFIG_BLOCKID_INVALID && id < CONFIG_BLOCKS) {
 
         blockID = id;
@@ -65,7 +65,7 @@ configBlock_rc ConfigBlock::formatBlock( configBlockID_t id) {
         return CONFIGBLOCK_RC_OK;        
     }
 
-    LOG("** ConfigBlock::formatBlock(): invalid ID=%d\n", id);
+    LOGV("** ConfigBlock::formatBlock(): invalid ID=%d\n", id);
     return CONFIGBLOCK_RC_INVID;  
 }
 
@@ -76,7 +76,7 @@ configBlock_rc ConfigBlock::writeBlock() {
     
     int configStart;
 
-    LOG("ConfigBlock::writeBlock() blockID=%d\n", blockID);
+    LOGV("ConfigBlock::writeBlock() blockID=%d\n", blockID);
     if( blockID > CONFIG_BLOCKID_INVALID && blockID < CONFIG_BLOCKS) {
 
         configStart = (blockID * CONFIG_BLOCK_SIZE);
@@ -86,7 +86,7 @@ configBlock_rc ConfigBlock::writeBlock() {
         return CONFIGBLOCK_RC_OK;
     }
 
-    LOG("** ConfigBlock::writeBlock(): invalid ID=%d\n", blockID);
+    LOGV("** ConfigBlock::writeBlock(): invalid ID=%d\n", blockID);
     return CONFIGBLOCK_RC_INVID;
 }
 

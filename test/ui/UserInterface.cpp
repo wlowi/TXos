@@ -86,7 +86,7 @@ void UserInterface::selectScreen( Event *event) {
     selectList.process( lcd, event);
 
     if( event->pending()) {
-        LOG("UserInterface::selectScreen(): event pending %d\n", event->key);
+        LOGV("UserInterface::selectScreen(): event pending %d\n", event->key);
         switch( event->key) {
         case KEY_ENTER:
             idx = selectList.current();
@@ -94,7 +94,7 @@ void UserInterface::selectScreen( Event *event) {
                 switchScreen( SCREEN_HOME);
             } else {
                 module = moduleManager.getModule(idx-1);
-                LOG("UserInterface::selectScreen(): Module %s\n", module ? module->getName() : "NULL");
+                LOGV("UserInterface::selectScreen(): Module %s\n", module ? module->getName() : "NULL");
                 switchScreen( SCREEN_CONFIG);
             }
             break;
@@ -107,7 +107,7 @@ void UserInterface::configScreen( Event *event) {
     uint8_t idx;
 
     if( module == NULL) {
-        LOG("** UserInterface::configScreen(): No module\n",1);
+        LOG("** UserInterface::configScreen(): No module\n");
         switchScreen(SCREEN_SELECT);
         return;
     }
@@ -136,5 +136,5 @@ void UserInterface::switchScreen( uint8_t scr) {
 
     screen = scr;
     refresh = REFRESH_FULL;
-    LOG("UserInterface::switchScreen(): Switch to %d\n", scr);
+    LOGV("UserInterface::switchScreen(): Switch to %d\n", scr);
 }
