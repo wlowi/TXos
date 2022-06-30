@@ -56,6 +56,14 @@ void Cell::edit( Event *event) {
             value.intV += event->count;
             event->markProcessed();
         }
+
+        if( value.intV > numericMax) {
+            value.intV = numericMax;
+        }
+        if( value.intV < numericMin) {
+            value.intV = numericMin;
+        }
+
         break;
 
     case STRING_T:
@@ -107,16 +115,20 @@ void Cell::setBool( bool v) {
     value.boolV = v;
 }
 
-void Cell::setInt8( int8_t v) {
+void Cell::setInt8( int8_t v, int16_t nmin, int16_t nmax) {
 
     type = INT8_T;
     value.intV = v;
+    numericMin = nmin;
+    numericMax = nmax;
 }
 
-void Cell::setInt16( int16_t v) {
+void Cell::setInt16( int16_t v, int16_t nmin, int16_t nmax) {
 
     type = INT16_T;
     value.intV = v;
+    numericMin = nmin;
+    numericMax = nmax;
 }
 
 void Cell::setString( char *v, uint8_t sz) {

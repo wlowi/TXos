@@ -1,12 +1,31 @@
+/*
+    TXos. A remote control transmitter OS.
+
+    Copyright (C) 2022 Wolfgang Lohwasser
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+*/
 
 #include "ConfigBlock.h"
 
-ConfigBlock::ConfigBlock() {
-    
-    blockID = CONFIG_BLOCKID_INVALID;
-}
+ConfigBlock::ConfigBlock() = default;
 
-uint8_t ConfigBlock::readBlock( configBlockID_t id) {
+/*
+ * Verify config block id and read a block from EEPROM.
+ */
+configBlock_rc ConfigBlock::readBlock( configBlockID_t id) {
 
     int configStart;
 
@@ -29,7 +48,11 @@ uint8_t ConfigBlock::readBlock( configBlockID_t id) {
     return CONFIGBLOCK_RC_INVID;
 }
 
-uint8_t ConfigBlock::formatBlock( configBlockID_t id) {
+/*
+ * Verify config block id and format a block.
+ * Formatting a block means filling it with 0xff.
+ */
+configBlock_rc ConfigBlock::formatBlock( configBlockID_t id) {
 
     LOG("ConfigBlock::formatlock( %d )\n", id);
     if( id > CONFIG_BLOCKID_INVALID && id < CONFIG_BLOCKS) {
@@ -46,7 +69,10 @@ uint8_t ConfigBlock::formatBlock( configBlockID_t id) {
     return CONFIGBLOCK_RC_INVID;  
 }
 
-uint8_t ConfigBlock::writeBlock() {
+/*
+ * Verify current block id, update block checksum and write block to EEPROM.
+ */
+configBlock_rc ConfigBlock::writeBlock() {
     
     int configStart;
 
@@ -64,17 +90,24 @@ uint8_t ConfigBlock::writeBlock() {
     return CONFIGBLOCK_RC_INVID;
 }
 
+/*
+ * Get a pointer to the block payload.
+ */
 uint8_t *ConfigBlock::getPayload() {
 
     return block.payload;
 }
 
+/*
+ * Recompute block checksum and compare against stored block checksum.
+ * Returns false if the computed checksum differs.
+ */
 bool ConfigBlock::isBlockValid()
 {
     return block.checksum == computeChecksum();
 }
 
-void ConfigBlock::memcpy( uint8_t *dest, const uint8_t *src, size_t sz) {
+void ConfigBlock::memcpy( uint8_t *dest, const uint8_t *src, size_t sz) const {
 
     while( sz--) {
         (*dest) = (*src);
@@ -85,23 +118,28 @@ void ConfigBlock::memcpy( uint8_t *dest, const uint8_t *src, size_t sz) {
 
 /* private */
 
+/*
+ * Recompute and return block checksum.
+ * NOTE: The blocks checksum is NOT updated.
+ */
 checksum_t ConfigBlock::computeChecksum()
 {
     checksum_t checksum = 0;
-    byte *p = (byte*)&block;
+    const uint8_t *p = (uint8_t*)&block;
 
     for( uint16_t i = 0; i < CONFIG_PAYLOAD_SIZE; i++)
     {
         checksum = rotate(checksum);
-        checksum ^= (i ^ ((byte)*(p+i)));
+        checksum ^= (i ^ *(p+i));
     }
 
     return checksum;
 }
 
-/* Left rotate unsigned int value.
+/*
+ * Left rotate unsigned int value.
  */
-checksum_t ConfigBlock::rotate( checksum_t v)
+checksum_t ConfigBlock::rotate( checksum_t v) const
 {
     return ((v >> 15) & 1) | (v << 1);
 }

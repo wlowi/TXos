@@ -106,7 +106,7 @@ void InputImpl::OnSwitch( wxCommandEvent& event) {
     for( int i=0; i<switches; i++) {
         if( switchIDs[i] == event.GetId()) {
             swValues[i] = event.GetSelection();
-//            printf("HandleSwitch %d %d\n", event.GetId(), event.GetSelection());
+//            printf("HandleSwitch %d %d\n", i, swValues[i]);
             break;
         }
     }

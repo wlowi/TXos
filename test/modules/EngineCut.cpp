@@ -55,11 +55,11 @@ void EngineCut::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
     switch( row) {
     case 0:
-        cell->setInt8( cfg.trigger);
+        cell->setInt8( cfg.trigger, PERCENT_MIN, PERCENT_MAX);
         break;
 
     default:
-        cell->setInt8( cfg.cut_pct);
+        cell->setInt8( cfg.cut_pct, PERCENT_MIN, PERCENT_MAX);
     }
 }
 

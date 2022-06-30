@@ -19,11 +19,11 @@
 class Event {
 
     public:
-        uint8_t key;
-        uint8_t count;
+        uint8_t key = KEY_NONE;
+        uint8_t count = 1;
 
         void markProcessed() { key = KEY_NONE; }
-        bool pending() { return key != KEY_NONE; }
+        bool pending() const { return key != KEY_NONE; }
 };
 
 class DisplayImpl : public wxBoxSizer {
@@ -31,6 +31,7 @@ class DisplayImpl : public wxBoxSizer {
     private:
         LcdWidget *lcd;
         uint8_t key;
+        uint8_t count;
         Event event;
 
     public:

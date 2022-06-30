@@ -68,30 +68,24 @@ Wire Wire Line
 Wire Wire Line
 	4550 2100 4500 2100
 Wire Wire Line
-	3900 2100 3900 6100
+	3900 2100 3900 6250
 Wire Wire Line
-	7450 6100 7450 5900
-Wire Wire Line
-	7450 5900 7600 5900
+	7550 5900 7600 5900
 $Comp
 L Connector_Generic:Conn_01x02 J1
 U 1 1 6292B0CC
-P 2400 1600
-F 0 "J1" H 2318 1275 50  0000 C CNN
-F 1 "Power" H 2318 1366 50  0000 C CNN
-F 2 "Connector_JST:JST_EH_B2B-EH-A_1x02_P2.50mm_Vertical" H 2400 1600 50  0001 C CNN
-F 3 "~" H 2400 1600 50  0001 C CNN
-	1    2400 1600
+P 2150 1700
+F 0 "J1" H 2068 1375 50  0000 C CNN
+F 1 "Power" H 2068 1466 50  0000 C CNN
+F 2 "Connector_JST:JST_EH_B2B-EH-A_1x02_P2.50mm_Vertical" H 2150 1700 50  0001 C CNN
+F 3 "~" H 2150 1700 50  0001 C CNN
+	1    2150 1700
 	-1   0    0    1   
 $EndComp
 Wire Wire Line
 	4550 1500 4500 1500
 Wire Wire Line
 	4550 1700 4500 1700
-Wire Wire Line
-	2700 1700 2700 1600
-Wire Wire Line
-	2700 1600 2600 1600
 $Comp
 L Connector_Generic:Conn_01x03 J3
 U 1 1 629369DD
@@ -247,25 +241,20 @@ Wire Wire Line
 	9600 1400 9600 1800
 Connection ~ 9600 1800
 Wire Wire Line
-	3900 6100 7450 6100
+	3900 6250 7550 6250
 Wire Wire Line
 	4550 1900 4500 1900
 Wire Wire Line
 	3900 1900 3900 900 
 Wire Wire Line
-	3900 900  9650 900 
+	3900 900  7300 900 
 Wire Wire Line
 	9650 900  9650 1200
 Connection ~ 9650 1200
 Wire Wire Line
-	4000 1700 4000 950 
-Wire Wire Line
 	4000 950  7200 950 
 Wire Wire Line
 	9600 950  9600 1400
-Connection ~ 4000 1700
-Wire Wire Line
-	4000 1700 2700 1700
 Connection ~ 9600 1400
 Text Notes 9950 1100 0    50   ~ 0
 Analog 0-5
@@ -365,7 +354,7 @@ PCINT18   PK2   ADC10\nPCINT19   PK3   ADC11\nPCINT20   PK4   ADC12
 Wire Wire Line
 	7200 4300 7600 4300
 Wire Wire Line
-	7200 4300 7200 950 
+	7200 4300 7200 3650
 Connection ~ 7200 950 
 Wire Wire Line
 	7200 950  9600 950 
@@ -418,16 +407,11 @@ Wire Wire Line
 	4550 1400 4500 1400
 Wire Wire Line
 	4500 1400 4500 1500
-Connection ~ 4500 1500
-Wire Wire Line
-	4500 1500 2600 1500
 Wire Wire Line
 	4550 1600 4500 1600
 Wire Wire Line
 	4500 1600 4500 1700
 Connection ~ 4500 1700
-Wire Wire Line
-	4500 1700 4000 1700
 Wire Wire Line
 	4550 1800 4500 1800
 Wire Wire Line
@@ -566,4 +550,215 @@ Wire Wire Line
 	3650 5700 3650 5100
 Wire Wire Line
 	3650 5100 4550 5100
+Wire Wire Line
+	7600 3650 7200 3650
+Connection ~ 7200 3650
+Wire Wire Line
+	7200 3650 7200 2500
+Wire Wire Line
+	7600 3450 7300 3450
+Wire Wire Line
+	7300 3450 7300 900 
+Connection ~ 7300 900 
+Wire Wire Line
+	7300 900  9650 900 
+Wire Wire Line
+	4550 2900 3950 2900
+Wire Wire Line
+	3950 2900 3950 6200
+Wire Wire Line
+	6700 6200 6700 3350
+Wire Wire Line
+	6700 3350 7600 3350
+Text Notes 7900 5450 0    50   ~ 0
+CS
+Text Notes 7900 5650 0    50   ~ 0
+A0/DC
+Wire Wire Line
+	7550 6250 7550 5900
+Wire Wire Line
+	3950 6200 6700 6200
+Wire Wire Line
+	4550 3300 4000 3300
+Wire Wire Line
+	4000 3300 4000 6150
+Wire Wire Line
+	4000 6150 7500 6150
+Wire Wire Line
+	7500 6150 7500 5600
+Wire Wire Line
+	7500 5600 7600 5600
+Wire Wire Line
+	4550 3400 4050 3400
+Wire Wire Line
+	4050 3400 4050 6100
+Wire Wire Line
+	4050 6100 7450 6100
+Wire Wire Line
+	7450 6100 7450 5400
+Wire Wire Line
+	7450 5400 7600 5400
+NoConn ~ 7600 3750
+$Comp
+L Device:R_Small R1
+U 1 1 62B96776
+P 7700 2350
+F 0 "R1" H 7759 2396 50  0000 L CNN
+F 1 "10k" H 7759 2305 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" H 7700 2350 50  0001 C CNN
+F 3 "~" H 7700 2350 50  0001 C CNN
+	1    7700 2350
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_Small R2
+U 1 1 62B981EC
+P 8250 2350
+F 0 "R2" H 8309 2396 50  0000 L CNN
+F 1 "22k" H 8309 2305 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" H 8250 2350 50  0001 C CNN
+F 3 "~" H 8250 2350 50  0001 C CNN
+	1    8250 2350
+	1    0    0    -1  
+$EndComp
+Text Notes 7900 3400 0    50   ~ 0
+PPM
+Text Notes 7900 3500 0    50   ~ 0
+Vcc 5V
+Text Notes 7900 3600 0    50   ~ 0
+Vin 10V
+Text Notes 7900 3700 0    50   ~ 0
+GND
+Wire Wire Line
+	6100 2100 7700 2100
+Wire Wire Line
+	7700 2100 7700 2250
+Wire Wire Line
+	8250 2250 8250 2100
+Wire Wire Line
+	8250 2100 7700 2100
+Connection ~ 7700 2100
+Wire Wire Line
+	7200 2500 7700 2500
+Wire Wire Line
+	7700 2500 7700 2450
+Connection ~ 7200 2500
+Wire Wire Line
+	7200 2500 7200 950 
+Wire Wire Line
+	8500 2550 8250 2550
+Wire Wire Line
+	8250 2550 8250 2450
+Wire Wire Line
+	8500 2550 8500 1000
+Wire Wire Line
+	4500 1700 4000 1700
+Wire Wire Line
+	4000 1700 4000 950 
+Connection ~ 4000 1700
+$Comp
+L Regulator_Linear:LM7808_TO220 U2
+U 1 1 62C36CF5
+P 3100 1350
+F 0 "U2" H 3100 1592 50  0000 C CNN
+F 1 "LM7809_TO220" H 3100 1501 50  0000 C CNN
+F 2 "Package_TO_SOT_THT:TO-220-3_Vertical" H 3100 1575 50  0001 C CIN
+F 3 "https://www.onsemi.cn/PowerSolutions/document/MC7800-D.PDF" H 3100 1300 50  0001 C CNN
+	1    3100 1350
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3100 1650 3100 1700
+Connection ~ 3100 1700
+Wire Wire Line
+	2350 1600 2400 1600
+Wire Wire Line
+	2400 1600 2400 1350
+Wire Wire Line
+	2400 1350 2550 1350
+Wire Wire Line
+	3400 1350 3450 1350
+Wire Wire Line
+	4400 1350 4400 1500
+Wire Wire Line
+	4400 1500 4500 1500
+Connection ~ 4500 1500
+Wire Wire Line
+	8500 1000 2400 1000
+Wire Wire Line
+	2400 1000 2400 1350
+Connection ~ 2400 1350
+$Comp
+L Device:C C1
+U 1 1 62C6A4BD
+P 2550 1550
+F 0 "C1" H 2665 1596 50  0000 L CNN
+F 1 "100nF" H 2665 1505 50  0000 L CNN
+F 2 "Capacitor_THT:C_Rect_L9.0mm_W2.5mm_P7.50mm_MKT" H 2588 1400 50  0001 C CNN
+F 3 "~" H 2550 1550 50  0001 C CNN
+	1    2550 1550
+	1    0    0    -1  
+$EndComp
+Connection ~ 2550 1700
+Wire Wire Line
+	2550 1700 2350 1700
+Wire Wire Line
+	3450 1400 3450 1350
+Wire Wire Line
+	2550 1700 3100 1700
+Connection ~ 3450 1350
+Wire Wire Line
+	3450 1350 4400 1350
+Wire Wire Line
+	2550 1400 2550 1350
+Connection ~ 2550 1350
+Wire Wire Line
+	2550 1350 2800 1350
+$Comp
+L Device:CP C3
+U 1 1 62C91123
+P 3500 1900
+F 0 "C3" V 3650 1800 50  0000 C CNN
+F 1 "10uF" V 3650 2000 50  0000 C CNN
+F 2 "Capacitor_THT:CP_Radial_D5.0mm_P2.00mm" H 3538 1750 50  0001 C CNN
+F 3 "~" H 3500 1900 50  0001 C CNN
+	1    3500 1900
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	3650 1900 3900 1900
+Connection ~ 3900 1900
+Wire Wire Line
+	3100 1700 3100 1900
+Wire Wire Line
+	3100 1900 3350 1900
+Wire Wire Line
+	7600 3550 7250 3550
+Wire Wire Line
+	7250 3550 7250 1050
+Wire Wire Line
+	7250 1050 4400 1050
+Wire Wire Line
+	4400 1050 4400 1350
+Connection ~ 4400 1350
+Text Notes 1900 1750 0    50   ~ 0
+GND
+Text Notes 1950 1650 0    50   ~ 0
++V
+Wire Wire Line
+	3100 1700 3450 1700
+$Comp
+L Device:CP C2
+U 1 1 62B91980
+P 3450 1550
+F 0 "C2" H 3568 1596 50  0000 L CNN
+F 1 "100uF" H 3568 1505 50  0000 L CNN
+F 2 "Capacitor_THT:CP_Radial_D6.3mm_P2.50mm" H 3488 1400 50  0001 C CNN
+F 3 "~" H 3450 1550 50  0001 C CNN
+	1    3450 1550
+	1    0    0    -1  
+$EndComp
+Connection ~ 3450 1700
+Wire Wire Line
+	3450 1700 4000 1700
 $EndSCHEMATC

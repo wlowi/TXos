@@ -50,9 +50,8 @@ typedef uint16_t timingUsec_t;
 #define L( v ) ((uint8_t)(v & 0xff))
 
 /* This represents a percentage from -125% to 125%
- * We don't need 16 bits for that.
  */
-typedef int16_t percent_t;
+typedef int8_t percent_t;
 #define PERCENT_MAX ((percent_t)125)
 #define PERCENT_MIN ((percent_t)-125)
 
@@ -60,9 +59,25 @@ typedef int16_t percent_t;
 
 #define CHAMMEL_TO_PCT( c) ((percent_t)(c/10))
 
-/* Type representing the state of 8 switches.
+/* Numeric switch identifier
  */
-typedef uint16_t digital_t;
+typedef uint8_t switch_t;
+
+/* Type representing the state of 8 switches.
+ * Two bits per switch allow for 4 states: (switchValue_t)
+ *
+ *  0 State 0
+ *  1 State 1
+ *  2 State 2
+ *  3 Invalid position or "Dont care" for comparison
+ */
+typedef uint16_t switchSet_t;
+typedef uint8_t switchValue_t;
+
+/* SWITCH_SET( switchSet_t set, switch_t switchNo, switchState) */
+#define SWITCH_SET( s, n, v)    ((s) |= ( ((v) & 0x03) << ((n) << 1)))
+/* SWITCH_GET( switchSet_t set, switch_t switchNo) */
+#define SWITCH_GET( s, n)       (((s) >> ((n) << 1)) & 0x03)
 
 #define CHANNELS                ((channel_t)9)
 
@@ -72,9 +87,10 @@ extern const char *ChannelNames[CHANNELS];
 typedef struct channelSet_t {
     
     channelValue_t analogChannel[ CHANNELS ];
-    digital_t switches;
+    switchSet_t switches;
 
 } channelSet_t;
+
 
 #define MODEL_NAME_LEN          ((uint8_t)8)
 #define MODEL_NAME_DEFAULT      CC("--------")

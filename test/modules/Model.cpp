@@ -40,7 +40,8 @@ void Model::run( channelSet_t &channels) {
 
     case WINGMIX_VTAIL2:        
         channels.analogChannel[CHANNEL_AILERON2] = -channels.analogChannel[CHANNEL_AILERON];
-        // fall through
+
+        [[fallthrough]];
 
     case WINGMIX_VTAIL:
         a1 = channels.analogChannel[CHANNEL_RUDDER];

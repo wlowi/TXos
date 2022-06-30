@@ -36,10 +36,14 @@
  * 
  * Display
  * =======
- * MOSI
- * SCK
- * D
- * D
+ *            +5V    1  
+ *            GND    2
+ * D10        CS     3
+ * RESET             4
+ * D9         A0/DC  5
+ * MOSI              6
+ * SCK               7
+ *            +3.3V  8
  * 
  */
 
@@ -84,6 +88,15 @@ const char *ChannelNames[CHANNELS] = {
 channelSet_t channels;
 
 #if defined( ARDUINO )
+
+const uint8_t AnalogPins[] = {
+  A0,A1,A2,A3,A4,A5
+};
+
+const uint8_t SwitchPins[] = {
+  6,7,8,9,10,11
+};
+
 InputImpl *inputImpl;
 OutputImpl *outputImpl;
 DisplayImpl *displayImpl;
@@ -159,7 +172,8 @@ void setup( void) {
 
 #if defined( ARDUINO )
 
-    inputImpl = new InputImpl( 6, 6);
+    inputImpl = new InputImpl( 6, AnalogPins,
+                               6, SwitchPins);
     outputImpl = new OutputImpl();
     displayImpl = new DisplayImpl();
 
@@ -176,20 +190,19 @@ void setup( void) {
     /* The order of modules is important.
      * It defines the order of execution in RunModules().
      */
-    moduleManager.Add( new ModelSelect());
-    moduleManager.Add( new Model());
-    moduleManager.Add( new EngineCut());
-    moduleManager.Add( new ServoReverse());
-    moduleManager.Add( new ServoSubtrim());
-    moduleManager.Add( new ServoLimit());
+    moduleManager.add( new ModelSelect());
+    moduleManager.add( new Model());
+    moduleManager.add( new EngineCut());
+    moduleManager.add( new ServoReverse());
+    moduleManager.add( new ServoSubtrim());
+    moduleManager.add( new ServoLimit());
 
     moduleManager.load( systemConfig.getModelID());
 
-    controls.init();
-    output.init();
-
+#if defined( ARDUINO )
 #ifdef ENABLE_MEMDEBUG
     MEMDEBUG_INIT();
+#endif
 #endif
 }
 
@@ -197,7 +210,7 @@ void loop( void) {
 
     if( output.acceptChannels() ) {
         controls.GetControlValues( channels);
-        moduleManager.RunModules( channels);
+        moduleManager.runModules( channels);
         output.setChannels( channels);
         
 #if defined( ARDUINO )

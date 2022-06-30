@@ -1,16 +1,14 @@
 
 #include "InputImpl.h"
 
-InputImpl::InputImpl( int channels, int switches)
+InputImpl::InputImpl( channel_t channels, const uint8_t analogPins[],
+                      switch_t switches, const uint8_t switchPins[])
 {
     this->channels = channels;
     this->switches = switches;
 
-    chValues = new int[channels];
-
-    for( int i=0; i<channels; i++) {
-        chValues[i] = 0;
-    }
+    this->analogPins = analogPins;
+    this->switchPins = switchPins;
 
     swValues = new int[switches];
 
@@ -19,22 +17,34 @@ InputImpl::InputImpl( int channels, int switches)
     }
 }
 
-int InputImpl::GetChannels() {
+channel_t InputImpl::GetChannels() {
 
     return channels;
 }
 
-int InputImpl::GetSwitches() {
+switch_t InputImpl::GetSwitches() {
 
     return switches;
 }
 
-int InputImpl::GetChannelValue( int ch) {
+int InputImpl::GetChannelValue( channel_t ch) {
 
-    return chValues[ch];
+    if( ch < channels) {
+      return analogRead( analogPins[ch]);
+    }
+
+    LOG("InputImpl::GetChannelValue: Illegal channel no. %s", ch);
+    
+    return 0;
 }
 
-int InputImpl::GetSwitchValue( int sw) {
+int InputImpl::GetSwitchValue( switch_t sw) {
 
-    return swValues[sw];
+    if( sw < switches) {
+      return 0;
+    }
+
+    LOG("InputImpl::GetSwitchValue: Illegal switch no. %s", sw);
+
+    return 0;
 }

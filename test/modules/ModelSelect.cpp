@@ -1,3 +1,26 @@
+/*
+    TXos. A remote control transmitter OS.
+
+    Copyright (C) 2022 Wolfgang Lohwasser
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+*/
+
+/*
+    Select a model configuration from EEPROM.
+ */
 
 #include "ModelSelect.h"
 #include "SystemConfig.h"
@@ -22,6 +45,8 @@ void ModelSelect::setDefaults() {
     // noop
 }
 
+/* From Module */
+
 moduleSize_t ModelSelect::getConfigSize() {
 
     return 0;
@@ -29,11 +54,15 @@ moduleSize_t ModelSelect::getConfigSize() {
 
 uint8_t *ModelSelect::getConfig() {
 
-    return NULL;
+    return nullptr;
 }
 
 /* From TableEditable */
 
+/*
+ * Called when we select a model.
+ * This will load the model configuration.
+ */
 void ModelSelect::execute( uint8_t row) {
 
     LOG("ModelSelect::execute( %d )\n", row);
@@ -49,16 +78,24 @@ uint8_t ModelSelect::getItemCount() {
 
 const char *ModelSelect::getItemName( uint8_t row) {
 
-    row++; // Start model number at 1
+    int8_t p = MODELNO_STRING_LEN;
 
-    if( row < 10) {
-        modelNo[0] = ' ';
-    } else {
-        modelNo[0] = '0' + row / 10;
+    row++; // model number start at 1
+
+    modelNo[p--] = '\0';
+
+   	for(;;) {
+   		modelNo[p--] = (row % 10) + '0';
+        row /= 10;
+
+      	if( row == 0 || p < 0) {
+        	break;
+      	}
     }
 
-    modelNo[1] = '0' + row % 10;
-    modelNo[2] = '\0';
+    while( p >= 0) {
+        modelNo[p--] = ' ';
+    }
 
     return modelNo;
 }
@@ -73,6 +110,9 @@ void ModelSelect::getValue( uint8_t row, uint8_t col, Cell *cell) {
     if( moduleManager.parseModule( row +1, model) == CONFIGBLOCK_RC_OK) {
         cell->setString( model.getModelName(), MODEL_NAME_LEN);
     } else {
+        /* Config block for this model is uninitialized.
+         * Display model number instead of name.
+         */
         cell->setString( modelNo, 1);
     }
 }

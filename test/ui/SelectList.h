@@ -39,8 +39,8 @@ class SelectList {
         void clear();
         void set( TableEditable *tab);
         void process( LcdWidget *lcd, Event *event);
-        void prev();
-        void next();
+        void prev( uint8_t count);
+        void next( uint8_t count);
         uint8_t current() const;
 };
 

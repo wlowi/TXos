@@ -43,12 +43,12 @@ void SelectList::process( LcdWidget *lcd, Event *event) {
             break;
 
         case KEY_UP:
-            next();
+            next( event->count);
             refresh = REFRESH_UPDATE;
             break;
 
         case KEY_DOWN:
-            prev();
+            prev( event->count);
             refresh = REFRESH_UPDATE;
             break;
 
@@ -72,7 +72,9 @@ void SelectList::process( LcdWidget *lcd, Event *event) {
                 if( editCol >= table->getValueCount()) {
                     mode = MODE_RENDER;
                     editCol = 0;
-                }   
+                } else {
+                    table->getValue( idx-1, editCol, &cell);
+                }  
                 refresh = REFRESH_UPDATE; 
                 break;
 
@@ -95,19 +97,23 @@ void SelectList::process( LcdWidget *lcd, Event *event) {
     }
 }
 
-void SelectList::prev() {
+void SelectList::prev( uint8_t count) {
 
-    if( idx > 0) {
-        idx--;
+    if( count >= idx) {
+        idx = 0;
+    } else {
+        idx -= count;
     }
 }
 
-void SelectList::next() {
+void SelectList::next( uint8_t count) {
 
     uint8_t items = table->getItemCount() +1;
 
-    if( idx < items-1) {
-        idx++;
+    if( (idx + count) >= (items - 1) ) {
+        idx = items-1;
+    } else {
+        idx += count;
     }
 }
 

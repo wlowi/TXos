@@ -33,11 +33,13 @@ class Cell {
     private:
         TableEditType_t type;
         CellType_t value;
+        int16_t numericMin;
+        int16_t numericMax;
     
     public:
         void setBool( bool v);
-        void setInt8( int8_t v);
-        void setInt16( int16_t v);
+        void setInt8( int8_t v, int16_t nmin, int16_t nmax);
+        void setInt16( int16_t v, int16_t nmin, int16_t nmax);
         void setString( char *v, uint8_t sz);
         void setList( const char **v, uint8_t sz, uint8_t curr);
 

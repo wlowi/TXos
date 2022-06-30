@@ -2,23 +2,27 @@
 #ifndef _InputImpl_h_
 #define _InputImpl_h_
 
-#include "Arduino.h"
+#include "TXos.h"
 
 class InputImpl
 {
     private:
-        int channels;
-        int switches;
-        int *chValues = NULL;
+        channel_t channels;
+        switch_t switches;
+
+        const uint8_t *analogPins;
+        const uint8_t *switchPins;
+
         int *swValues = NULL;
 
     public:
-        InputImpl( int channels, int switches);
+        InputImpl( channel_t channels, const uint8_t analogPins[],
+                   switch_t switches, const uint8_t switchPins[]);
 
-        int GetChannels();
-        int GetSwitches();
-        int GetChannelValue( int ch);
-        int GetSwitchValue( int sw);
+        channel_t GetChannels();
+        switch_t GetSwitches();
+        int GetChannelValue( channel_t ch);
+        int GetSwitchValue( switch_t sw);
 };
 
 #endif
