@@ -1,24 +1,24 @@
 
 #include "InputImpl.h"
 
-InputImpl::InputImpl( wxWindow *parent, int channels, int switches)
+InputImpl::InputImpl( wxWindow *parent)
     : wxBoxSizer(wxVERTICAL)
 {
-    this->channels = channels;
-    this->switches = switches;
+    this->channels = CONTROL_CHANNELS;
+    this->switches = SWITCHES;
 
     sliderIDs = new wxWindowID[channels];
-    chValues = new int[channels];
+    chValues = new channelValue_t[channels];
 
     for( int i=0; i<channels; i++) {
         chValues[i] = 0;
     }
 
     switchIDs = new wxWindowID[switches];
-    swValues = new int[switches];
+    swValues = new switchState_t[switches];
 
     for( int i=0; i<switches; i++) {
-        swValues[i] = 0;
+        swValues[i] = SW_STATE_DONTCARE;
     }
 
     wxBoxSizer *hbox = new wxBoxSizer(wxHORIZONTAL);
@@ -41,11 +41,28 @@ InputImpl::InputImpl( wxWindow *parent, int channels, int switches)
 
     hbox = new wxBoxSizer(wxHORIZONTAL);
     wxString choices[] = {wxT("0"), wxT("1"), wxT("2")};
-    for( int sw=0; sw<switches;sw++) {
+    for( int sw = 0; sw < switches; sw++) {
+        switchConf_t conf = Controls::switchConfGet( SWITCH_CONFIGURATION, sw);
+
+        wxRadioBox *swtch = nullptr;
         switchIDs[sw] = wxWindow::NewControlId();
         wxString str;
-        str.Printf(wxT("SW%d"), sw+1);
-        wxRadioBox *swtch = new wxRadioBox(parent, switchIDs[sw], str, wxDefaultPosition, wxDefaultSize, 3, choices, 1, wxRA_SPECIFY_COLS);
+
+        switch( conf) {
+            case SW_CONF_2STATE:
+                str.Printf(wxT("SW%d"), sw+1);
+                swtch = new wxRadioBox(parent, switchIDs[sw], str, wxDefaultPosition, wxDefaultSize, 2, choices, 1, wxRA_SPECIFY_COLS);
+                break;
+
+            case SW_CONF_3STATE:
+                str.Printf(wxT("SW%d"), sw+1);
+                swtch = new wxRadioBox(parent, switchIDs[sw], str, wxDefaultPosition, wxDefaultSize, 3, choices, 1, wxRA_SPECIFY_COLS);
+                break;
+
+            default:
+                continue;
+        }
+
         hbox->Add(swtch);
         hbox->AddSpacer(10);
         swtch->Bind( wxEVT_RADIOBOX, &InputImpl::OnSwitch, this, switchIDs[sw]);
@@ -69,22 +86,29 @@ InputImpl::~InputImpl( void) {
     }
 }
 
-int InputImpl::GetChannels() {
+void InputImpl::init( switchSetConf_t conf) {
+
+    /* This is a no-op as all the initialization
+     * has already be done in the constructor.
+     */
+}
+
+channel_t InputImpl::GetChannels() {
 
     return channels;
 }
 
-int InputImpl::GetSwitches() {
+switch_t InputImpl::GetSwitches() {
 
     return switches;
 }
 
-int InputImpl::GetChannelValue( int ch) {
+channelValue_t InputImpl::GetChannelValue( int ch) {
 
     return chValues[ch];
 }
 
-int InputImpl::GetSwitchValue( int sw) {
+switchState_t InputImpl::GetSwitchValue( int sw) {
 
     return swValues[sw];
 }
@@ -105,7 +129,22 @@ void InputImpl::OnSwitch( wxCommandEvent& event) {
 
     for( int i=0; i<switches; i++) {
         if( switchIDs[i] == event.GetId()) {
-            swValues[i] = event.GetSelection();
+            switch( event.GetSelection()) {
+                case 0:
+                    swValues[i] = SW_STATE_0;
+                    break;
+
+                case 1:
+                    swValues[i] = SW_STATE_1;
+                    break;
+
+                case 2:
+                    swValues[i] = SW_STATE_2;
+                    break;
+
+                default:
+                    swValues[i] = SW_STATE_DONTCARE;
+            }
 //            printf("HandleSwitch %d %d\n", i, swValues[i]);
             break;
         }

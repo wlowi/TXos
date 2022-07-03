@@ -3,16 +3,39 @@
 #define _OutputImpl_h_
 
 #include "TXos.h"
+#include "Controls.h"
 
 #define PPM_PORT            5
+
+/*
+ *      0  300     1000  1500  2000             22500
+ *  ____     _______             _________ ... ____
+ *      |   |       |     |     |
+ *      |___|       |     |     |
+ *
+ *      |   |
+ *    PPM_SPACE
+ *
+ *          |   PPM_MID   |
+ *
+ *
+ *  100%  ==   1.1  -  1.9 mSec
+ *  125%  ==   1.0  -  2.0 mSec
+ *  150%  ==   0.9  -  2.1 mSec
+ *
+ *  9 ch * 2.1 mSec = 18.9 mSec    22.5 - 18.9 = 3.6 mSec
+ *
+ */
+
 
 #define PPM_FRAME_usec      ((timingUsec_t)22500)
 #define PPM_SPACE_usec      ((timingUsec_t)  300)
 #define PPM_MID_usec        ((timingUsec_t) 1200)
-#define PPM_RANGE_usec      ((timingUsec_t)  500)
+#define PPM_RANGE100_usec   ((timingUsec_t)  400)
+#define PPM_RANGEMAX_usec   ((timingUsec_t)  500)
 
-#define PPM_MIN_usec        (PPM_MID_usec - PPM_RANGE_usec)
-#define PPM_MAX_usec        (PPM_MID_usec + PPM_RANGE_usec)
+#define PPM_MIN_usec        (PPM_MID_usec - PPM_RANGEMAX_usec)
+#define PPM_MAX_usec        (PPM_MID_usec + PPM_RANGEMAX_usec)
 
 /* Initial high for sync */
 #define PPM_INIT_usec       ((timingUsec_t) 8000)

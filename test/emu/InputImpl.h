@@ -9,26 +9,29 @@
 #endif
 
 #include "Arduino.h"
+#include "Controls.h"
 
 class InputImpl : public wxBoxSizer
 {
     private:
-        int channels;
-        int switches;
+        channel_t channels;
+        switch_t switches;
 
-        wxWindowID *sliderIDs = NULL;
-        int *chValues = NULL;
-        wxWindowID *switchIDs = NULL;
-        int *swValues = NULL;
+        wxWindowID *sliderIDs = nullptr;
+        channelValue_t *chValues = nullptr;
+        wxWindowID *switchIDs = nullptr;
+        switchState_t *swValues = nullptr;
 
     public:
-        InputImpl( wxWindow *parent, int channels, int switches);
-        ~InputImpl( void);
+        explicit InputImpl( wxWindow *parent);
+        ~InputImpl( void) final;
 
-        int GetChannels();
-        int GetSwitches();
-        int GetChannelValue( int ch);
-        int GetSwitchValue( int sw);
+        void init( switchSetConf_t conf);
+
+        channel_t GetChannels();
+        switch_t GetSwitches();
+        channelValue_t GetChannelValue( int ch);
+        switchState_t GetSwitchValue( int sw);
 
         void OnScroll( wxScrollEvent& event);
         void OnSwitch( wxCommandEvent& event);

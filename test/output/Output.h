@@ -26,6 +26,7 @@
 #define _Output_h_
 
 #include "TXos.h"
+#include "Controls.h"
 
 class Output {
 

@@ -200,11 +200,11 @@ void OutputImpl::SetChannelValue(int channel, int value) {
 
     /* Convert:
      * 
-     * value_t
+     * value
      * =======
      * CHANNELVALUE_MID   0
-     * CHANNELVALUE_MIN   -1000
-     * CHANNELVALUE_MAX   1000
+     * CHANNELVALUE_MIN   -1250 == -125%  == -500
+     * CHANNELVALUE_MAX    1250 ==  125%  ==  500
      *
      * To:
      * 
@@ -218,7 +218,7 @@ void OutputImpl::SetChannelValue(int channel, int value) {
 
     if( channel < CHANNELS) {
 
-        t = PPM_MID_usec + (value / 2);
+        t = PPM_MID_usec + (value * 2 / 5);
 
         if( t < PPM_MIN_usec) t = PPM_MIN_usec;
         if( t > PPM_MAX_usec) t = PPM_MAX_usec;

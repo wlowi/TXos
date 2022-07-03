@@ -17,6 +17,10 @@ InputImpl::InputImpl( channel_t channels, const uint8_t analogPins[],
     }
 }
 
+void InputImpl::init( switchSetConf_t conf) {
+  
+}
+
 channel_t InputImpl::GetChannels() {
 
     return channels;
@@ -27,24 +31,24 @@ switch_t InputImpl::GetSwitches() {
     return switches;
 }
 
-int InputImpl::GetChannelValue( channel_t ch) {
+channelValue_t InputImpl::GetChannelValue( channel_t ch) {
 
     if( ch < channels) {
       return analogRead( analogPins[ch]);
     }
 
-    LOG("InputImpl::GetChannelValue: Illegal channel no. %s", ch);
+    LOGV("InputImpl::GetChannelValue: Illegal channel no. %s", ch);
     
     return 0;
 }
 
-int InputImpl::GetSwitchValue( switch_t sw) {
+switchState_t InputImpl::GetSwitchValue( switch_t sw) {
 
     if( sw < switches) {
-      return 0;
+      return SW_STATE_0;
     }
 
-    LOG("InputImpl::GetSwitchValue: Illegal switch no. %s", sw);
+    LOGV("InputImpl::GetSwitchValue: Illegal switch no. %s", sw);
 
-    return 0;
+    return SW_STATE_DONTCARE;
 }

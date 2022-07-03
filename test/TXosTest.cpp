@@ -80,7 +80,7 @@ MyFrame::MyFrame()
     wxBoxSizer *hbox = new wxBoxSizer(wxHORIZONTAL);
 
     hbox->AddSpacer(10);
-    inputImpl =  new InputImpl( panel, 4, 4);
+    inputImpl =  new InputImpl( panel);
     hbox->Add( inputImpl);
     hbox->AddSpacer(10);
     displayImpl =  new DisplayImpl( panel);

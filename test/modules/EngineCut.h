@@ -19,18 +19,18 @@ class EngineCut : public Module {
 
     public:
         EngineCut();
-        void run( channelSet_t &channels);
-        void setDefaults();
+        void run( channelSet_t &channels) final;
+        void setDefaults() final;
 
-        moduleSize_t getConfigSize();
-        uint8_t *getConfig();
+        moduleSize_t getConfigSize() final;
+        uint8_t *getConfig() final;
 
         /* From TableEditable */
-        uint8_t getItemCount();
-        const char *getItemName( uint8_t row);
-        uint8_t getValueCount();
-        void getValue( uint8_t row, uint8_t col, Cell *cell);
-        void setValue( uint8_t row, uint8_t col, Cell *cell);
+        uint8_t getItemCount() final;
+        const char *getItemName( uint8_t row) final;
+        uint8_t getValueCount() final;
+        void getValue( uint8_t row, uint8_t col, Cell *cell) final;
+        void setValue( uint8_t row, uint8_t col, Cell *cell) final;
 };
 
 #endif

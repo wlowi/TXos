@@ -8,7 +8,7 @@ EngineCut::EngineCut() : Module( MODULE_ENGINE_CUT_TYPE, TEXT_MODULE_ENGINE_CUT)
 
 void EngineCut::run( channelSet_t &channels) {
 
-    if( cfg.trigger == channels.switches ) {
+    if( Controls::evalSwitches( channels, cfg.trigger) ) {
         channels.analogChannel[CHANNEL_THROTTLE] = PCT_TO_CHANNEL(cfg.cut_pct);
     }
 }
@@ -16,7 +16,7 @@ void EngineCut::run( channelSet_t &channels) {
 void EngineCut::setDefaults() {
 
     cfg.cut_pct = -100;
-    cfg.trigger = 0;
+    cfg.trigger = SW_STATE_ALL_DONTCARE;
 }
 
 moduleSize_t EngineCut::getConfigSize() {

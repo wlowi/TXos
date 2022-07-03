@@ -27,6 +27,7 @@
 
 #include "TXos.h"
 #include "TableEditable.h"
+#include "Controls.h"
 
 typedef uint8_t moduleType_t;
 

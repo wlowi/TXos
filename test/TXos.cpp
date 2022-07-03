@@ -199,6 +199,8 @@ void setup( void) {
 
     moduleManager.load( systemConfig.getModelID());
 
+    controls.init( SWITCH_CONFIGURATION);
+
 #if defined( ARDUINO )
 #ifdef ENABLE_MEMDEBUG
     MEMDEBUG_INIT();

@@ -554,7 +554,7 @@ void LcdWidget::charLine( wxDC &dc, char l)
 		}
 
 		for( sz = 0; sz < fontSz; sz++) {
-			int ty = textY + sz + fontSz * y;
+			unsigned int ty = textY + sz + fontSz * y;
 
         	if( ty >= height) { break; }
 

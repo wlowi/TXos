@@ -3,6 +3,7 @@
 #define _InputImpl_h_
 
 #include "TXos.h"
+#include "Controls.h"
 
 class InputImpl
 {
@@ -19,10 +20,12 @@ class InputImpl
         InputImpl( channel_t channels, const uint8_t analogPins[],
                    switch_t switches, const uint8_t switchPins[]);
 
+        void init( switchSetConf_t conf);
+
         channel_t GetChannels();
         switch_t GetSwitches();
-        int GetChannelValue( channel_t ch);
-        int GetSwitchValue( switch_t sw);
+        channelValue_t GetChannelValue( channel_t ch);
+        switchState_t GetSwitchValue( switch_t sw);
 };
 
 #endif
