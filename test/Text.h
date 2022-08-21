@@ -26,6 +26,8 @@
 // Module Names (13 letters max.)       1234567890123
 #define TEXT_MODULE_MODEL_SELECT    CC("Model Select")
 #define TEXT_MODULE_MODEL           CC("Model")
+#define TEXT_MODULE_MONITOR         CC("Monitor")
+#define TEXT_MODULE_SWITCHES        CC("Switches")
 #define TEXT_MODULE_ENGINE_CUT      CC("Engine Cut")
 #define TEXT_MODULE_SERVO_LIMIT     CC("Servo limit")
 #define TEXT_MODULE_SERVO_REVERSE   CC("Servo reverse")

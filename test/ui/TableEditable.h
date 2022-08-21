@@ -60,7 +60,10 @@ class TableEditable {
 
         virtual bool isEditable() { return true; }
         virtual bool isExecutable() { return false; }
+        /* Returns true if a value has changed without user interaction */
+        virtual bool hasChanged() { return false; }
 
+        /* Called when isExecute() returns true and the user presses the ENTER key */
         virtual void execute( uint8_t row ) { /* default implementation does nothing */ }
 
         virtual uint8_t getItemCount() = 0;

@@ -62,6 +62,8 @@
 
 #include "ModelSelect.h"
 #include "Model.h"
+#include "ServoMonitor.h"
+#include "SwitchMonitor.h"
 #include "EngineCut.h"
 #include "ServoReverse.h"
 #include "ServoSubtrim.h"
@@ -192,6 +194,8 @@ void setup( void) {
      */
     moduleManager.add( new ModelSelect());
     moduleManager.add( new Model());
+    moduleManager.add( new ServoMonitor());
+    moduleManager.add( new SwitchMonitor());
     moduleManager.add( new EngineCut());
     moduleManager.add( new ServoReverse());
     moduleManager.add( new ServoSubtrim());

@@ -18,7 +18,7 @@ InputImpl::InputImpl( wxWindow *parent)
     swValues = new switchState_t[switches];
 
     for( int i=0; i<switches; i++) {
-        swValues[i] = SW_STATE_DONTCARE;
+        swValues[i] = SW_STATE_0;
     }
 
     wxBoxSizer *hbox = new wxBoxSizer(wxHORIZONTAL);
@@ -66,6 +66,7 @@ InputImpl::InputImpl( wxWindow *parent)
         hbox->Add(swtch);
         hbox->AddSpacer(10);
         swtch->Bind( wxEVT_RADIOBOX, &InputImpl::OnSwitch, this, switchIDs[sw]);
+        swtch->SetSelection( 0);
     }
 
     Add( hbox);

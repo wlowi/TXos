@@ -3,7 +3,7 @@
 
 void SelectList::clear() {
 
-    table = NULL;
+    table = nullptr;
     idx = oldIdx = topIdx = 0;
     refresh = REFRESH_FULL;
     mode = MODE_RENDER;
@@ -17,6 +17,10 @@ void SelectList::set( TableEditable *tab) {
 }
 
 void SelectList::process( LcdWidget *lcd, Event *event) {
+
+    if( table->hasChanged()) {
+        refresh = REFRESH_FULL;
+    }
 
     if( refresh == REFRESH_FULL) {
         paint( lcd);
