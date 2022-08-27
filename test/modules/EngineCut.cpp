@@ -6,10 +6,10 @@ EngineCut::EngineCut() : Module( MODULE_ENGINE_CUT_TYPE, TEXT_MODULE_ENGINE_CUT)
     setDefaults();
 }
 
-void EngineCut::run( channelSet_t &channels) {
+void EngineCut::run( Controls &controls) {
 
-    if( Controls::evalSwitches( channels, cfg.trigger) ) {
-        channels.analogChannel[CHANNEL_THROTTLE] = PCT_TO_CHANNEL(cfg.cut_pct);
+    if( controls.evalSwitches( cfg.trigger) ) {
+        controls.analogSet( CHANNEL_THROTTLE, PCT_TO_CHANNEL(cfg.cut_pct));
     }
 }
 

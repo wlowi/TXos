@@ -35,9 +35,9 @@ bool Output::acceptChannels() const {
   return outputImpl->acceptChannels();  
 }
 
-void Output::setChannels( channelSet_t &channels) const {
+void Output::setChannels( Controls &controls) const {
 
     for( channel_t ch = 0; ch<CHANNELS; ch++) {
-        outputImpl->SetChannelValue( ch, channels.analogChannel[ch]);
+        outputImpl->SetChannelValue( ch, controls.analogGet(ch));
     }
 }

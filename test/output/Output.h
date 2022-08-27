@@ -35,7 +35,7 @@ class Output {
 
         /* Returns true if the PPM generator is ready to accept the next channel set */
         bool acceptChannels() const;
-        void setChannels( channelSet_t &channels) const;
+        void setChannels( Controls &controls) const;
 };
 
 #endif

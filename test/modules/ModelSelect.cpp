@@ -35,7 +35,7 @@ ModelSelect::ModelSelect() : Module( MODULE_MODEL_SELECT_TYPE, TEXT_MODULE_MODEL
 
 /* From Module */
 
-void ModelSelect::run( channelSet_t &channels) {
+void ModelSelect::run( Controls &controls) {
 
     // noop
 }

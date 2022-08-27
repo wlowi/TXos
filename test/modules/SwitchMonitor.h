@@ -9,13 +9,12 @@
 class SwitchMonitor : public Module {
 
     private:
-        switchSet_t last;
-        switchSet_t current;
-        switchSetConf_t conf;
+        Controls &current;
 
     public:
-        SwitchMonitor();
-        void run( channelSet_t &channels) final;
+        explicit SwitchMonitor( Controls &controls);
+        
+        void run( Controls &controls) final;
         void setDefaults() final;
 
         moduleSize_t getConfigSize() final;

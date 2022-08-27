@@ -147,36 +147,48 @@ typedef enum {
     /* 7 */ SW_CONF_CONTROL << 14   \
      )
 
+#define CONTROLS_SWITCH_CONF_GET( conf, sw)  (switchConf_t)((conf >> (sw << 1)) & 0x03)
+
+#define CONTROLS_SWITCH_GET( switches, sw)  (switchState_t)((switches >> (sw << 1)) & 0x03)
 
 extern const char *ChannelNames[CHANNELS];
 
-/* Timings for all channels */
-typedef struct channelSet_t {
+/* State of all controls.
+ * Controls are sticks, switches and logical switches.
+ */
+typedef struct controlSet_t {
     
     channelValue_t analogChannel[ CHANNELS ];
     switchSet_t switches;
     switchSetConf_t switchSetConf;
 
-} channelSet_t;
+} controlSet_t;
 
 class Controls {
 
     private:
-        switchSetConf_t switchSetConf;
+        controlSet_t controlSet;
 
     public:
         Controls();
 
         void init( switchSetConf_t conf);
-        void GetControlValues( channelSet_t &channels ) const;
+
+        /* Retrieve all analog (sticks) and digital (switches) control values
+         * from input implementation and update 'channels' structure.
+         */
+        void GetControlValues();
         
-        static void switchSet( switchSet_t &switches, switch_t sw, switchState_t value);
-        static switchState_t switchGet( switchSet_t switches, switch_t sw);
+        void analogSet( channel_t ch, channelValue_t value);
+        channelValue_t analogGet( channel_t ch);
 
-        static void switchConfSet( switchSetConf_t &switches, switch_t sw, switchConf_t conf);
-        static switchConf_t switchConfGet( switchSetConf_t switches, switch_t sw);
+        void switchSet( switch_t sw, switchState_t value);
+        switchState_t switchGet( switch_t sw);
 
-        static bool evalSwitches( const channelSet_t &channels, switchSet_t trigger);
+        void switchConfSet( switch_t sw, switchConf_t conf);
+        switchConf_t switchConfGet( switch_t sw);
+
+        bool evalSwitches( switchSet_t trigger);
 };
 
 #endif

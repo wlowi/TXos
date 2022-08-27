@@ -25,11 +25,11 @@ ServoReverse::ServoReverse() : Module( MODULE_SERVO_REVERSE_TYPE, TEXT_MODULE_SE
     setDefaults();
 }
 
-void ServoReverse::run( channelSet_t &channels) {
+void ServoReverse::run( Controls &controls) {
 
     for( channel_t ch = 0; ch < CHANNELS; ch++) {
         if( IS_BIT_SET( cfg.revBits, ch)) {
-            channels.analogChannel[ch] = -channels.analogChannel[ch];
+            controls.analogSet( ch, -controls.analogGet(ch));
         }
     }
 }

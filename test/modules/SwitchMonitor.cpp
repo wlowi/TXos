@@ -1,15 +1,13 @@
 
 #include "SwitchMonitor.h"
 
-SwitchMonitor::SwitchMonitor() : Module( MODULE_SWITCH_MONITOR_TYPE, TEXT_MODULE_SWITCHES) {
+SwitchMonitor::SwitchMonitor( Controls &controls) : Module( MODULE_SWITCH_MONITOR_TYPE, TEXT_MODULE_SWITCHES) , current( controls){
 
 }
 
-void SwitchMonitor::run( channelSet_t &channels) {
+void SwitchMonitor::run( Controls &controls) {
 
-    last = current;
-    current = channels.switches;
-    conf = channels.switchSetConf;
+    current = controls;
 }
 
 void SwitchMonitor::setDefaults() {
@@ -33,7 +31,7 @@ uint8_t *SwitchMonitor::getConfig() {
 
 bool SwitchMonitor::hasChanged() {
 
-    return last != current;
+    return true;
 }
 
 uint8_t SwitchMonitor::getItemCount() {
@@ -43,12 +41,12 @@ uint8_t SwitchMonitor::getItemCount() {
 
 const char *SwitchMonitor::getItemName( uint8_t row) {
 
-    switch( Controls::switchConfGet( conf, row)) {
+    switch( current.switchConfGet( row)) {
         case SW_CONF_UNUSED:
             return "---";
 
         case SW_CONF_2STATE:
-            return "BI";
+            return "BI ";
 
         case SW_CONF_3STATE:
             return "TRI";
@@ -56,6 +54,8 @@ const char *SwitchMonitor::getItemName( uint8_t row) {
         case SW_CONF_CONTROL:
             return "LOG";
     }
+
+    return "---";
 }
 
 uint8_t SwitchMonitor::getValueCount() {
@@ -65,7 +65,7 @@ uint8_t SwitchMonitor::getValueCount() {
 
 void SwitchMonitor::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
-    cell->setInt8( Controls::switchGet(current, row), 0, 3);
+    cell->setInt8( current.switchGet( row), 0, 3);
 }
 
 void SwitchMonitor::setValue( uint8_t row, uint8_t col, Cell *cell) {

@@ -149,12 +149,12 @@ uint8_t ModuleManager::parseModule( configBlockID_t modelID, Module &moduleRef) 
  * Call the run() method of each module in the list
  * and pass the reference to the channel set.
  */
-void ModuleManager::runModules( channelSet_t &channels) {
+void ModuleManager::runModules( Controls &controls) {
 
     Module *current = first;
 
     while( current != nullptr) {
-        current->run( channels);
+        current->run( controls);
         current = current->next;
     }
 }

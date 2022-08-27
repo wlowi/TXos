@@ -58,7 +58,7 @@ class Module : public TableEditable {
         friend class ModuleManager;
         
         /* */
-        virtual void run( channelSet_t &channels) = 0;
+        virtual void run( Controls &controls) = 0;
 
         /* Set default values for all configuration data of a module. */
         virtual void setDefaults() = 0;

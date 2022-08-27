@@ -25,19 +25,10 @@ ServoSubtrim::ServoSubtrim() : Module( MODULE_SERVO_SUBTRIM_TYPE, TEXT_MODULE_SE
     setDefaults();
 }
 
-void ServoSubtrim::run( channelSet_t &channels) {
+void ServoSubtrim::run( Controls &controls) {
 
     for( channel_t ch = 0; ch < CHANNELS; ch++) {
-        
-        channels.analogChannel[ch] += PCT_TO_CHANNEL( cfg.trim_pct[ch]);
-
-        if( channels.analogChannel[ch] > CHANNELVALUE_MAX) {
-            channels.analogChannel[ch] = CHANNELVALUE_MAX;
-        }
-
-        if( channels.analogChannel[ch] < CHANNELVALUE_MIN) {
-            channels.analogChannel[ch] = CHANNELVALUE_MIN;
-        }
+        controls.analogSet( ch, controls.analogGet( ch) + PCT_TO_CHANNEL( cfg.trim_pct[ch]));
     }
 }
 

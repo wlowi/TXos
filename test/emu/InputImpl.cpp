@@ -42,7 +42,7 @@ InputImpl::InputImpl( wxWindow *parent)
     hbox = new wxBoxSizer(wxHORIZONTAL);
     wxString choices[] = {wxT("0"), wxT("1"), wxT("2")};
     for( int sw = 0; sw < switches; sw++) {
-        switchConf_t conf = Controls::switchConfGet( SWITCH_CONFIGURATION, sw);
+        switchConf_t conf = CONTROLS_SWITCH_CONF_GET( SWITCH_CONFIGURATION, sw);
 
         wxRadioBox *swtch = nullptr;
         switchIDs[sw] = wxWindow::NewControlId();

@@ -87,8 +87,6 @@ const char *ChannelNames[CHANNELS] = {
     TEXT_CONTROL_CHANNEL_9
 };
 
-channelSet_t channels;
-
 #if defined( ARDUINO )
 
 const uint8_t AnalogPins[] = {
@@ -194,8 +192,8 @@ void setup( void) {
      */
     moduleManager.add( new ModelSelect());
     moduleManager.add( new Model());
-    moduleManager.add( new ServoMonitor());
-    moduleManager.add( new SwitchMonitor());
+    moduleManager.add( new ServoMonitor( controls));
+    moduleManager.add( new SwitchMonitor( controls));
     moduleManager.add( new EngineCut());
     moduleManager.add( new ServoReverse());
     moduleManager.add( new ServoSubtrim());
@@ -215,9 +213,9 @@ void setup( void) {
 void loop( void) {
 
     if( output.acceptChannels() ) {
-        controls.GetControlValues( channels);
-        moduleManager.runModules( channels);
-        output.setChannels( channels);
+        controls.GetControlValues();
+        moduleManager.runModules( controls);
+        output.setChannels( controls);
         
 #if defined( ARDUINO )
 #ifdef ENABLE_MEMDEBUG

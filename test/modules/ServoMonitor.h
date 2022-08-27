@@ -8,12 +8,12 @@
 class ServoMonitor : public Module {
 
     private:
-        switchSet_t last;
-        switchSet_t current;
+        Controls &current;
 
     public:
-        ServoMonitor();
-        void run( channelSet_t &channels) final;
+        explicit ServoMonitor( Controls &controls);
+        
+        void run( Controls &controls) final;
         void setDefaults() final;
 
         moduleSize_t getConfigSize() final;

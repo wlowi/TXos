@@ -1,14 +1,13 @@
 
 #include "ServoMonitor.h"
 
-ServoMonitor::ServoMonitor() : Module( MODULE_SERVO_MONITOR_TYPE, TEXT_MODULE_MONITOR) {
+ServoMonitor::ServoMonitor( Controls &controls) : Module( MODULE_SERVO_MONITOR_TYPE, TEXT_MODULE_MONITOR) , current( controls) {
 
 }
 
-void ServoMonitor::run( channelSet_t &channels) {
+void ServoMonitor::run( Controls &controls) {
 
-    last = current;
-    current = channels.switches;
+    current = controls;
 }
 
 void ServoMonitor::setDefaults() {
@@ -32,7 +31,7 @@ uint8_t *ServoMonitor::getConfig() {
 
 bool ServoMonitor::hasChanged() {
 
-    return last != current;
+    return true;
 }
 
 uint8_t ServoMonitor::getItemCount() {
@@ -52,7 +51,7 @@ uint8_t ServoMonitor::getValueCount() {
 
 void ServoMonitor::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
-    cell->setInt8( Controls::switchGet(current, row), 0, 3);
+    cell->setInt16( current.analogGet( row), 0, 3);
 }
 
 void ServoMonitor::setValue( uint8_t row, uint8_t col, Cell *cell) {

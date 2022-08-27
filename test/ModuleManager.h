@@ -59,7 +59,7 @@ class ModuleManager : public TableEditable {
         Module *getModuleByType( moduleType_t type);
         uint8_t parseModule( configBlockID_t modelID, Module &moduleRef);
 
-        void runModules( channelSet_t &channels);
+        void runModules( Controls &controls);
 
         void load( configBlockID_t modelID);
         void save( configBlockID_t modelID);

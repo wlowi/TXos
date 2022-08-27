@@ -16,7 +16,7 @@ Model::Model() : Module( MODULE_MODEL_TYPE, TEXT_MODULE_MODEL) {
 
 /* From Module */
 
-void Model::run( channelSet_t &channels) {
+void Model::run( Controls &controls) {
 
     channelValue_t a1;
     channelValue_t a2;
@@ -26,30 +26,29 @@ void Model::run( channelSet_t &channels) {
         break;
 
     case WINGMIX_2AIL:
-        channels.analogChannel[CHANNEL_AILERON2] = -channels.analogChannel[CHANNEL_AILERON];
+        controls.analogSet( CHANNEL_AILERON2, -controls.analogGet( CHANNEL_AILERON));
         break;
 
     case WINGMIX_DELTA:
-        a1 = channels.analogChannel[CHANNEL_AILERON];
-        a2 = -channels.analogChannel[CHANNEL_AILERON];
-        a1 += channels.analogChannel[CHANNEL_ELEVATOR];
-        a2 += channels.analogChannel[CHANNEL_ELEVATOR];
-        channels.analogChannel[CHANNEL_AILERON] = a1;
-        channels.analogChannel[CHANNEL_ELEVATOR] = a2;
+        a1 = controls.analogGet( CHANNEL_AILERON);
+        a2 = -a1;
+        a1 += controls.analogGet( CHANNEL_ELEVATOR);
+        a2 += controls.analogGet( CHANNEL_ELEVATOR);
+        controls.analogSet( CHANNEL_AILERON, a1);
+        controls.analogSet( CHANNEL_ELEVATOR, a2);
         break;
 
     case WINGMIX_VTAIL2:        
-        channels.analogChannel[CHANNEL_AILERON2] = -channels.analogChannel[CHANNEL_AILERON];
+        controls.analogSet( CHANNEL_AILERON2, -controls.analogGet( CHANNEL_AILERON));
 
         [[fallthrough]];
 
     case WINGMIX_VTAIL:
-        a1 = channels.analogChannel[CHANNEL_RUDDER];
-        a2 = channels.analogChannel[CHANNEL_RUDDER];
-        a1 += channels.analogChannel[CHANNEL_ELEVATOR];
-        a2 -= channels.analogChannel[CHANNEL_ELEVATOR];
-        channels.analogChannel[CHANNEL_RUDDER] = a1;
-        channels.analogChannel[CHANNEL_ELEVATOR] = a2;
+        a1 = a2 = controls.analogGet( CHANNEL_RUDDER);
+        a1 += controls.analogGet( CHANNEL_ELEVATOR);
+        a2 -= controls.analogGet( CHANNEL_ELEVATOR);
+        controls.analogSet( CHANNEL_RUDDER, a1);
+        controls.analogSet( CHANNEL_ELEVATOR, a2);
         break;
 
     default:

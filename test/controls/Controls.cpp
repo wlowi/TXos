@@ -31,72 +31,78 @@ Controls::Controls() = default;
 
 void Controls::init( switchSetConf_t conf) {
 
-    for( switch_t sw = 0; sw < SWITCHES; sw++) {
-        switchConf_t swConf = switchConfGet( conf, sw);
-
-        if( swConf == SW_CONF_UNUSED) {
-            swConf = SW_CONF_CONTROL;
-        }
-        
-        LOGV( "Controls::init: Switch %d type %d\n", sw, swConf);
-
-        switchConfSet( switchSetConf, sw, swConf);
-    }
-
-    inputImpl->init( switchSetConf);
+    controlSet.switchSetConf = conf;
+    inputImpl->init( controlSet.switchSetConf);
 }
 
-void Controls::GetControlValues( channelSet_t &channels) const {
+void Controls::GetControlValues() {
 
     for( channel_t ch = 0; ch < CHANNELS; ch++) {
-        channels.analogChannel[ch] = CHANNELVALUE_MID;
+        controlSet.analogChannel[ch] = CHANNELVALUE_MID;
     }
 
     for( channel_t ch = 0; ch < inputImpl->GetChannels(); ch++) {
-        channels.analogChannel[ch] = inputImpl->GetChannelValue( ch);
+        controlSet.analogChannel[ch] = inputImpl->GetChannelValue( ch);
     }
 
-    channels.switchSetConf = switchSetConf;
-    channels.switches = 0;
+    controlSet.switches = 0;
     for( switch_t sw = 0; sw < inputImpl->GetSwitches(); sw++) {
-        switchSet( channels.switches, sw, inputImpl->GetSwitchValue( sw));
+        switchSet( sw, inputImpl->GetSwitchValue( sw));
     }
 }
 
-void Controls::switchSet( switchSet_t &switches, switch_t sw, switchState_t value) {
+void Controls::analogSet( channel_t ch, channelValue_t value) {
 
-    switches |= ((value & 0x03) << (sw << 1));
+    if( value > CHANNELVALUE_MAX) {
+        value = CHANNELVALUE_MAX;
+    }
+
+    if( value < CHANNELVALUE_MIN) {
+        value = CHANNELVALUE_MIN;
+    }
+
+    controlSet.analogChannel[ch] = value;
 }
 
-switchState_t Controls::switchGet( switchSet_t switches, switch_t sw) {
+channelValue_t Controls::analogGet( channel_t ch) {
 
-    return (switchState_t)((switches >> (sw << 1)) & 0x03);
+    return controlSet.analogChannel[ch];
 }
 
-void Controls::switchConfSet( switchSetConf_t &switchConf, switch_t sw, switchConf_t conf) {
+void Controls::switchSet( switch_t sw, switchState_t value) {
 
-    switchConf |= ((conf & 0x03) << (sw << 1));
+    controlSet.switches |= ((value & 0x03) << (sw << 1));
 }
 
-switchConf_t Controls::switchConfGet( switchSetConf_t switchConf, switch_t sw) {
+switchState_t Controls::switchGet( switch_t sw) {
 
-    return (switchConf_t)((switchConf >> (sw << 1)) & 0x03);
+    return CONTROLS_SWITCH_GET( controlSet.switches, sw);
 }
 
-bool Controls::evalSwitches( const channelSet_t &channels, switchSet_t trigger) {
+void Controls::switchConfSet( switch_t sw, switchConf_t conf) {
+
+    controlSet.switchSetConf |= ((conf & 0x03) << (sw << 1));
+}
+
+switchConf_t Controls::switchConfGet( switch_t sw) {
+
+    return CONTROLS_SWITCH_CONF_GET( controlSet.switchSetConf, sw);
+}
+
+bool Controls::evalSwitches( switchSet_t trigger) {
 
     bool state = false;
 
     for( switch_t sw = 0; sw < SWITCHES; sw++) {
-        if( switchConfGet( channels.switchSetConf, sw) == SW_CONF_UNUSED) {
+        if( switchConfGet( sw) == SW_CONF_UNUSED) {
             continue;
         }
 
-        if( switchGet( trigger, sw) == SW_STATE_DONTCARE) {
+        if( CONTROLS_SWITCH_GET( trigger, sw) == SW_STATE_DONTCARE) {
             continue;
         }
 
-        if( switchGet( trigger, sw) != switchGet( channels.switches, sw) ) {
+        if( CONTROLS_SWITCH_GET( trigger, sw) != switchGet( sw) ) {
             state = false;
             break;
         } else {

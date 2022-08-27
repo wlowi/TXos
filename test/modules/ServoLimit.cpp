@@ -25,20 +25,20 @@ ServoLimit::ServoLimit() : Module( MODULE_SERVO_LIMIT_TYPE, TEXT_MODULE_SERVO_LI
     setDefaults();
 }
 
-void ServoLimit::run( channelSet_t &channels) {
+void ServoLimit::run( Controls &controls) {
 
     channelValue_t v;
 
     for( channel_t ch = 0; ch < CHANNELS; ch++) {
 
         v = PCT_TO_CHANNEL( cfg.posLimit_pct[ch]);
-        if( channels.analogChannel[ch] > v) {
-            channels.analogChannel[ch] = v;
+        if( controls.analogGet( ch) > v) {
+            controls.analogSet( ch, v);
         }
 
         v = PCT_TO_CHANNEL( cfg.negLimit_pct[ch]);
-        if( channels.analogChannel[ch] < v) {
-            channels.analogChannel[ch] = v;
+        if( controls.analogGet( ch) < v) {
+            controls.analogSet( ch, v);
         }
     }
 }

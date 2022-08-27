@@ -19,7 +19,7 @@ class EngineCut : public Module {
 
     public:
         EngineCut();
-        void run( channelSet_t &channels) final;
+        void run( Controls &controls) final;
         void setDefaults() final;
 
         moduleSize_t getConfigSize() final;

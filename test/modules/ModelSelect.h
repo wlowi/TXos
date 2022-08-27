@@ -41,7 +41,7 @@ class ModelSelect : public Module {
         ModelSelect();
 
         /* From Module */
-        void run( channelSet_t &channels) final;
+        void run( Controls &controls) final;
         void setDefaults() final;
         moduleSize_t getConfigSize() final;
         uint8_t *getConfig() final;
