@@ -1,49 +1,71 @@
 /*
  * TXos - RC Transmitter OS
  *
- * Output
- * ======
  * 
- * D5   PPM Out
+ * PPM Output
+ * ==========
+ * 
+ * PE3 D5    PPM Out
  * 
  * Switches
  * ========
  * 
- * D6   Digital 1
- * D7   Digital 2
- * D8   Digital 3
- * D9   Digital 4
- * D10  Digital 5
- * D11  Digital 6
+ * PA0 D22   Digital 1
+ * PA1 D23   Digital 2
+ * PA2 D24   Digital 3
+ * PA3 D25   Digital 4
+ * PA4 D26   Digital 5
+ * PA5 D27   Digital 6
+ * PA6 D28
+ * PA7 D29
  * 
  * Analog Input
  * ============
  * 
- * A0   Analog 1
- * A1   Analog 2
- * A2   Analog 3
- * A3   Analog 4
- * A4   Analog 5
- * A5   Analog 6
- * A7   Vcc Monitor
+ * PF0 A0    Analog 1
+ * PF1 A1    Analog 2
+ * PF2 A2    Analog 3
+ * PF3 A3    Analog 4
+ * PF4 A4    Analog 5
+ * PF5 A5    Analog 6
+ * PF6 A6
+ * PF7 A7
+ * 
+ * PK0 A8  PCINT16     Trim 1
+ * PK1 A9  PCINT17     Trim 2
+ * PK2 A10 PCINT18     Trim 3
+ * PK3 A11 PCINT19     Trim 4
+ * PK4 A12 PCINT20     ( Rotary Encoder A )
+ * PK5 A13 PCINT21     ( Rotary Encoder B )
+ * PK6 A14 PCINT22     ( Rotary Encoder Switch )
+ * PK7 A15 PCINT23     Vcc Monitor
  * 
  * Rotary Encoder
  * ==============
  * 
- * A10  Rotary Encoder A
- * A11  Rotary Encoder B
- * A12  Rotary Encoder Switch
+ * PK2 A12 PCINT20     Rotary Encoder A
+ * PK3 A13 PCINT21     Rotary Encoder B
+ * PK4 A14 PCINT22     Rotary Encoder Switch
+ * 
+ * Buzzer
+ * ======
+ * PC6 D31             Buzzer
+ * 
+ * Relais
+ * ======
+ * PE5 D2              HF on
+ * PE4 D3              Bind
  * 
  * Display
  * =======
- *            +5V    1  
- *            GND    2
- * D10        CS     3
- * RESET             4
- * D9         A0/DC  5
- * MOSI              6
- * SCK               7
- *            +3.3V  8
+ *                      +5V    1  
+ *                      GND    2
+ * PB4 D10 PCINT4       CS     3
+ *     RESET            RESET  4
+ * PH6 D9               A0/DC  5
+ * PB2 MOSI             DATA   6
+ * PB1 SCK              SCK    7
+ *                      +3.3V  8
  * 
  */
 

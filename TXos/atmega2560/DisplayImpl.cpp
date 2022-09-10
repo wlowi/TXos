@@ -22,6 +22,21 @@ static volatile int enc;
 #define ROTARYENC_BUTTON_SHORT_MSEC  10
 #define ROTARYENC_BUTTON_LONG_MSEC  500
 
+#define PIN_CLK     A12
+#define PIN_DIR     A13
+#define PIN_SWITCH  A14
+
+/* PK0 A8  PCINT16
+ * PK1 A9  PCINT17
+ * PK2 A10 PCINT18
+ * PK3 A11 PCINT19
+ * PK4 A12 PCINT20
+ * PK5 A13 PCINT21
+ * PK6 A14 PCINT22
+ * PK7 A15 PCINT23
+ */
+#define ROTARYENC_PCINT_MASK  (_BV(PCINT20) | _BV(PCINT21) | _BV(PCINT22))
+
 ISR( PCINT2_vect)
 {
     byte butVal;
@@ -29,9 +44,9 @@ ISR( PCINT2_vect)
 
     unsigned long now = millis();
 
-    encVal =  digitalRead( A10) ? ROTARYENC_CLK : 0;
-    encVal |= digitalRead( A11) ? ROTARYENC_DIR : 0;
-    butVal = digitalRead( A12) ? ROTARYENC_SWITCH : 0;
+    encVal =  digitalRead( PIN_CLK) ? ROTARYENC_CLK : 0;
+    encVal |= digitalRead( PIN_DIR) ? ROTARYENC_DIR : 0;
+    butVal = digitalRead( PIN_SWITCH) ? ROTARYENC_SWITCH : 0;
 
     if( (oldVal & ROTARYENC_SWITCH) && !butVal) { /* Button down */
         buttonDown_msec = now;
@@ -87,27 +102,24 @@ void DisplayImpl::init()
 {
     cli();
 
-    pinMode( A10, INPUT);
-    pinMode( A11, INPUT);
-    pinMode( A12, INPUT);
+    pinMode( PIN_CLK, INPUT);
+    pinMode( PIN_DIR, INPUT);
+    pinMode( PIN_SWITCH, INPUT);
 
-    digitalWrite( A10, HIGH);
-    digitalWrite( A11, HIGH);
-    digitalWrite( A12, HIGH);
+    /* Enable pull-up */
+    digitalWrite( PIN_CLK, HIGH);
+    digitalWrite( PIN_DIR, HIGH);
+    digitalWrite( PIN_SWITCH, HIGH);
     
-    /* PCINT18 == clk
-     * PCINT19 == dir
-     * PCINT20 == switch
-     */
-    PCMSK2 |= _BV(PCINT18) | _BV(PCINT19) | _BV(PCINT20);
+    PCMSK2 |= ROTARYENC_PCINT_MASK;
     PCICR |= _BV(PCIE2);
     
     enc = button = buttonDown_msec = 0;
     buttonIsDown = false;
 
-    oldVal  = digitalRead( A10) ? ROTARYENC_CLK    : 0;
-    oldVal |= digitalRead( A11) ? ROTARYENC_DIR    : 0;
-    oldVal |= digitalRead( A12) ? ROTARYENC_SWITCH : 0;
+    oldVal  = digitalRead( PIN_CLK) ? ROTARYENC_CLK    : 0;
+    oldVal |= digitalRead( PIN_DIR) ? ROTARYENC_DIR    : 0;
+    oldVal |= digitalRead( PIN_SWITCH) ? ROTARYENC_SWITCH : 0;
 
     sei();
 }
