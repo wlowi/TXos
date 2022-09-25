@@ -9,13 +9,13 @@ WX_LIBS = $(shell wx-config --libs)
 WX_CXXFLAGS_GEN = $(shell wx-config --cxxflags)
 WX_CXXFLAGS = $(subst -I,-isystem,$(WX_CXXFLAGS_GEN))
 
-EMU_OBJ = emu/EEPROM.o emu/InputImpl.o emu/OutputImpl.o emu/LcdWidget.o emu/DisplayImpl.o
+EMU_OBJ = emu/EEPROM.o emu/InputImpl.o emu/OutputImpl.o emu/PortsImpl.o emu/BuzzerImpl.o emu/LcdWidget.o emu/DisplayImpl.o
 
 CONTROLS_OBJ = controls/Controls.o
 
 UI_OBJ = ui/UserInterface.o ui/SelectList.o ui/Cell.o
 
-OUTPUT_OBJ = output/Output.o
+OUTPUT_OBJ = output/Output.o output/Ports.o output/Buzzer.o
 
 MODULE_OBJ = modules/ModelSelect.o modules/Model.o modules/EngineCut.o modules/ServoReverse.o modules/ServoSubtrim.o modules/ServoLimit.o modules/SwitchMonitor.o modules/ServoMonitor.o
 

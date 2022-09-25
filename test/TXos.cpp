@@ -2,6 +2,10 @@
  * TXos - RC Transmitter OS
  *
  * 
+ * ==============================
+ * Port usage
+ * ==============================
+ * 
  * PPM Output
  * ==========
  * 
@@ -67,6 +71,18 @@
  * PB1 SCK              SCK    7
  *                      +3.3V  8
  * 
+ * 
+ * ==============================
+ * Timer usage
+ * ==============================
+ * 
+ * Timer 0   8 bit       Arduino micros() millis() delay()...
+ * Timer 1  16 bit       PPM generation    OutputImpl.cpp
+ * Timer 2   8 bit 
+ * Timer 3  16 bit       Buzzer Sound      BuzzerImpl.cpp
+ * Timer 4  16 bit 
+ * Timer 5  16 bit 
+ * 
  */
 
 #include "TXos.h"
@@ -75,6 +91,8 @@
 
 #include "Controls.h"
 #include "Output.h"
+#include "Ports.h"
+#include "Buzzer.h"
 #include "UserInterface.h"
 
 #include "Module.h"
@@ -94,6 +112,8 @@
 #if defined( ARDUINO )
 #include "InputImpl.h"
 #include "OutputImpl.h"
+#include "PortsImpl.h"
+#include "BuzzerImpl.h"
 #include "DisplayImpl.h"
 #endif
 
@@ -109,21 +129,31 @@ const char *ChannelNames[CHANNELS] = {
     TEXT_CONTROL_CHANNEL_9
 };
 
+const buzzerCmd_t SoundWelcome[] = {
+  BUZZER_PLAY( 2),
+  BUZZER_PAUSE( 2),
+  BUZZER_REPEAT( 0, 3),
+  BUZZER_STOP()
+};
+
 #if defined( ARDUINO )
 
 const uint8_t AnalogPins[] = {
-  A0,A1,A2,A3,A4,A5
+  PORT_ANALOG_INPUT
 };
 
 const uint8_t SwitchPins[] = {
-  6,7,8,9,10,11
+  PORT_SWITCH_INPUT
 };
 
 InputImpl *inputImpl;
 OutputImpl *outputImpl;
+PortsImpl *portsImpl;
+BuzzerImpl *buzzerImpl;
 DisplayImpl *displayImpl;
 
 #undef ENABLE_MEMDEBUG
+#undef ENABLE_TIMING
 
 #ifdef ENABLE_MEMDEBUG
 
@@ -185,6 +215,8 @@ size_t memdebug[4];
 
 Controls controls;
 Output output;
+Ports ports;
+Buzzer buzzer( ports);
 UserInterface userInterface;
 ConfigBlock configBlock;
 SystemConfig systemConfig( configBlock);
@@ -194,17 +226,21 @@ void setup( void) {
 
 #if defined( ARDUINO )
 
-    inputImpl = new InputImpl( 6, AnalogPins,
-                               6, SwitchPins);
+    inputImpl = new InputImpl( PORT_ANALOG_INPUT_COUNT, AnalogPins,
+                               PORT_SWITCH_INPUT_COUNT, SwitchPins);
+                               
     outputImpl = new OutputImpl();
+    portsImpl = new PortsImpl();
+    buzzerImpl = new BuzzerImpl();
     displayImpl = new DisplayImpl();
 
-#ifdef ENABLE_MEMDEBUG
+#if defined( ENABLE_MEMDEBUG ) || defined( ENABLE_TIMING )
     Serial.begin(19200);
 #endif
 
 #endif
-
+    ports.init();
+    buzzer.init();
     userInterface.init();
 
     systemConfig.load();
@@ -230,14 +266,27 @@ void setup( void) {
     MEMDEBUG_INIT();
 #endif
 #endif
+
+    buzzer.play( SoundWelcome);
 }
 
 void loop( void) {
+#ifdef ENABLE_TIMING
+    unsigned long tstamp;
+#endif
 
     if( output.acceptChannels() ) {
+#ifdef ENABLE_TIMING
+        tstamp = micros();
+#endif
         controls.GetControlValues();
         moduleManager.runModules( controls);
         output.setChannels( controls);
+#ifdef ENABLE_TIMING
+        tstamp = micros() - tstamp;
+        Serial.print("M:");
+        Serial.println(tstamp);
+#endif
         
 #if defined( ARDUINO )
 #ifdef ENABLE_MEMDEBUG
@@ -247,5 +296,13 @@ void loop( void) {
 #endif     
     }
     
+#ifdef ENABLE_TIMING
+    tstamp = micros();
+#endif
     userInterface.handle();
+#ifdef ENABLE_TIMING
+    tstamp = micros() - tstamp;
+    Serial.print("U:");
+    Serial.println(tstamp);
+#endif
 }

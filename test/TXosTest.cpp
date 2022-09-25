@@ -4,6 +4,8 @@
 #include "InputImpl.h"
 #include "DisplayImpl.h"
 #include "OutputImpl.h"
+#include "PortsImpl.h"
+#include "BuzzerImpl.h"
 
 #include "EEPROM.h"
 
@@ -15,6 +17,8 @@ extern void loop( void);
 InputImpl *inputImpl;
 OutputImpl *outputImpl;
 DisplayImpl *displayImpl;
+PortsImpl *portsImpl;
+BuzzerImpl *buzzerImpl;
 
 class TXosTest : public wxApp
 {
@@ -95,6 +99,9 @@ MyFrame::MyFrame()
     hbox->Fit( this);
 
     Bind(wxEVT_IDLE, &MyFrame::handleIdle, this);
+
+    portsImpl = new PortsImpl();
+    buzzerImpl = new BuzzerImpl();
 }
  
 void MyFrame::OnClose(wxCloseEvent& event)

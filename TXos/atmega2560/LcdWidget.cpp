@@ -3,7 +3,7 @@
 
 #include <Adafruit_GFX.h>    // Core graphics library
 #include <Adafruit_ST7735.h> // Hardware-specific library for ST7735
-#include <Adafruit_ST7789.h> // Hardware-specific library for ST7789
+// #include <Adafruit_ST7789.h> // Hardware-specific library for ST7789
 #include <SPI.h>
 
 #define FONT_H (8 * fontSz)
