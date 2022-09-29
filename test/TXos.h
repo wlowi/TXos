@@ -8,7 +8,7 @@
 #include "Arduino.h"
 #include "Text.h"
 
-#define TXOS_VERSION "0.1"
+#define TXOS_VERSION "0.1.1"
 
 #if defined( ARDUINO )
     #define LOG( f )
@@ -36,5 +36,26 @@
 #define PORT_HF_RELAIS            2
 #define PORT_BIND_RELAIS          3
 #define PORT_BUZZER              31
+
+
+
+#define BDEBUG_LEN 30
+
+#define BDEBUG_ADD( c )          \
+do {                             \
+  if( bdebugi < BDEBUG_LEN-1) {  \
+    bdebug[bdebugi++] = c;       \
+    bdebug[bdebugi] = '\0';      \
+  }                              \
+} while( false)
+
+#define BDEBUG_CLEAR()           \
+do {                             \
+  bdebugi = 0;                   \
+  bdebug[0] = '\0';              \
+} while( false)
+
+extern char bdebug[];
+extern uint8_t bdebugi;
 
 #endif

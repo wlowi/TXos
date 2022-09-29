@@ -154,6 +154,7 @@ DisplayImpl *displayImpl;
 
 #undef ENABLE_MEMDEBUG
 #undef ENABLE_TIMING
+#undef ENABLE_BDEBUG
 
 #ifdef ENABLE_MEMDEBUG
 
@@ -222,6 +223,13 @@ ConfigBlock configBlock;
 SystemConfig systemConfig( configBlock);
 ModuleManager moduleManager( configBlock);
 
+
+#ifdef ENABLE_BDEBUG
+uint8_t bdebugi = 0;
+char bdebug[ BDEBUG_LEN ];
+#endif
+
+
 void setup( void) {
 
 #if defined( ARDUINO )
@@ -234,8 +242,12 @@ void setup( void) {
     buzzerImpl = new BuzzerImpl();
     displayImpl = new DisplayImpl();
 
-#if defined( ENABLE_MEMDEBUG ) || defined( ENABLE_TIMING )
+#if defined( ENABLE_MEMDEBUG ) || defined( ENABLE_TIMING ) || defined( ENABLE_BDEBUG )
     Serial.begin(19200);
+#endif
+
+#ifdef ENABLE_BDEBUG
+  bdebugi = 0;
 #endif
 
 #endif
