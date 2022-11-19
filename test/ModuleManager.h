@@ -35,14 +35,19 @@
 #define _ModuleManager_h_
 
 #include "TXos.h"
+#include "Menu.h"
 #include "Module.h"
 #include "ConfigBlock.h"
 
-class ModuleManager : public TableEditable {
+class ModuleManager {
     
     private:
-        Module *first = nullptr;
-        Module *last = nullptr;
+
+        Menu *systemMenu = new Menu( TEXT_SYSTEM_SETUP);
+        Menu *modelMenu = new Menu( TEXT_MODEL_SETUP);
+
+        Module *runlistFirst = nullptr;
+        Module *runlistLast = nullptr;
 
         ConfigBlock *blockService;
 
@@ -53,24 +58,20 @@ class ModuleManager : public TableEditable {
     public:
         explicit ModuleManager( ConfigBlock &svc);
 
-        void add( Module *modulePtr);
-        uint8_t getModuleCount();
-        Module *getModule( uint8_t idx);
-        Module *getModuleByType( moduleType_t type);
+        void addToSystemMenu( Module *modulePtr);
+        void addToModelMenu( Module *modulePtr);
+        void addToRunList( Module *modulePtr);
+
+        Menu *getSystemMenu();
+        Menu *getModelMenu();
+        
         uint8_t parseModule( configBlockID_t modelID, Module &moduleRef);
 
         void runModules( Controls &controls);
 
-        void load( configBlockID_t modelID);
-        void save( configBlockID_t modelID);
+        void loadModel( configBlockID_t modelID);
+        void saveModel( configBlockID_t modelID);
 
-        /* From Interface TableEditable */
-        const char *getName() final;
-        uint8_t getItemCount() final;
-        const char *getItemName( uint8_t row) final;
-        uint8_t getValueCount() final;
-        void getValue( uint8_t row, uint8_t col, Cell *cell) final;
-        void setValue( uint8_t row, uint8_t col, Cell *cell) final;
 };
 
 #endif

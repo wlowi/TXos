@@ -67,7 +67,7 @@ void ModelSelect::execute( uint8_t row) {
 
     LOGV("ModelSelect::execute( %d )\n", row);
 
-    moduleManager.load( row +1);
+    moduleManager.loadModel( row +1);
     systemConfig.setModelID( row +1);
 }
 

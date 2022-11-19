@@ -26,23 +26,23 @@
  * Analog Input
  * ============
  * 
- * PF0 A0    Analog 1
- * PF1 A1    Analog 2
- * PF2 A2    Analog 3
- * PF3 A3    Analog 4
- * PF4 A4    Analog 5
- * PF5 A5    Analog 6
- * PF6 A6
- * PF7 A7
+ * PF0 D54 A0    Analog 1
+ * PF1 D55 A1    Analog 2
+ * PF2 D56 A2    Analog 3
+ * PF3 D57 A3    Analog 4
+ * PF4 D58 A4    Analog 5
+ * PF5 D59 A5    Analog 6
+ * PF6 D60 A6
+ * PF7 D61 A7
  * 
- * PK0 A8  PCINT16     Trim 1
- * PK1 A9  PCINT17     Trim 2
- * PK2 A10 PCINT18     Trim 3
- * PK3 A11 PCINT19     Trim 4
- * PK4 A12 PCINT20     ( Rotary Encoder A )
- * PK5 A13 PCINT21     ( Rotary Encoder B )
- * PK6 A14 PCINT22     ( Rotary Encoder Switch )
- * PK7 A15 PCINT23     Vcc Monitor
+ * PK0 D62 A8  PCINT16     Trim 1
+ * PK1 D63 A9  PCINT17     Trim 2
+ * PK2 D64 A10 PCINT18     Trim 3
+ * PK3 D65 A11 PCINT19     Trim 4
+ * PK4 D66 A12 PCINT20     ( Rotary Encoder A )
+ * PK5 D67 A13 PCINT21     ( Rotary Encoder B )
+ * PK6 D68 A14 PCINT22     ( Rotary Encoder Switch )
+ * PK7 D69 A15 PCINT23     Vcc Monitor
  * 
  * Rotary Encoder
  * ==============
@@ -130,19 +130,24 @@ const char *ChannelNames[CHANNELS] = {
 };
 
 const buzzerCmd_t SoundWelcome[] = {
-  BUZZER_PLAY( 2),
-  BUZZER_PAUSE( 2),
+  BUZZER_PLAY( 1),
+  BUZZER_PAUSE( 1),
   BUZZER_REPEAT( 0, 3),
   BUZZER_STOP()
 };
 
 #if defined( ARDUINO )
 
-const uint8_t AnalogPins[] = {
-  PORT_ANALOG_INPUT
+/* All analog pins */
+#define ANALOG_PIN_COUNT (PORT_ANALOG_INPUT_COUNT + PORT_TRIM_INPUT_COUNT + PORT_AUX_INPUT_COUNT)
+const uint8_t AnalogPins[ANALOG_PIN_COUNT] = {
+  PORT_ANALOG_INPUT,
+  PORT_TRIM_INPUT,
+  PORT_AUX_INPUT
 };
 
-const uint8_t SwitchPins[] = {
+/* All switch pins */
+const uint8_t SwitchPins[PORT_SWITCH_INPUT_COUNT] = {
   PORT_SWITCH_INPUT
 };
 
@@ -232,11 +237,15 @@ char bdebug[ BDEBUG_LEN ];
 
 void setup( void) {
 
+#ifdef ENABLE_BDEBUG
+  BDEBUG_CLEAR();
+#endif
+
 #if defined( ARDUINO )
 
-    inputImpl = new InputImpl( PORT_ANALOG_INPUT_COUNT, AnalogPins,
+    inputImpl = new InputImpl( ANALOG_PIN_COUNT, AnalogPins,
                                PORT_SWITCH_INPUT_COUNT, SwitchPins);
-                               
+
     outputImpl = new OutputImpl();
     portsImpl = new PortsImpl();
     buzzerImpl = new BuzzerImpl();
@@ -244,10 +253,6 @@ void setup( void) {
 
 #if defined( ENABLE_MEMDEBUG ) || defined( ENABLE_TIMING ) || defined( ENABLE_BDEBUG )
     Serial.begin(19200);
-#endif
-
-#ifdef ENABLE_BDEBUG
-  bdebugi = 0;
 #endif
 
 #endif
@@ -258,18 +263,38 @@ void setup( void) {
     systemConfig.load();
 
     /* The order of modules is important.
+     * It defines the order with the menu.
+     */
+    moduleManager.addToSystemMenu( new ModelSelect());
+    ServoMonitor *servoMonitor = new ServoMonitor( controls);
+    moduleManager.addToSystemMenu( servoMonitor);
+    SwitchMonitor *switchMonitor = new SwitchMonitor( controls);
+    moduleManager.addToSystemMenu( switchMonitor);
+
+    Model *model = new Model();
+    moduleManager.addToModelMenu( model);
+    EngineCut *engineCut = new EngineCut();
+    moduleManager.addToModelMenu( engineCut);
+    ServoReverse *servoReverse = new ServoReverse();
+    moduleManager.addToModelMenu( servoReverse);
+    ServoSubtrim *servoSubtrim = new ServoSubtrim();
+    moduleManager.addToModelMenu( servoSubtrim);
+    ServoLimit *servoLimit = new ServoLimit();
+    moduleManager.addToModelMenu( servoLimit);
+
+    /* The order of modules is important.
      * It defines the order of execution in RunModules().
      */
-    moduleManager.add( new ModelSelect());
-    moduleManager.add( new Model());
-    moduleManager.add( new ServoMonitor( controls));
-    moduleManager.add( new SwitchMonitor( controls));
-    moduleManager.add( new EngineCut());
-    moduleManager.add( new ServoReverse());
-    moduleManager.add( new ServoSubtrim());
-    moduleManager.add( new ServoLimit());
+    moduleManager.addToRunList( model);
+    moduleManager.addToRunList( engineCut);
+    moduleManager.addToRunList( servoReverse);
+    moduleManager.addToRunList( servoSubtrim);
+    moduleManager.addToRunList( servoLimit);
+    moduleManager.addToRunList( servoMonitor);
+    moduleManager.addToRunList( switchMonitor);
 
-    moduleManager.load( systemConfig.getModelID());
+
+    moduleManager.loadModel( systemConfig.getModelID());
 
     controls.init( SWITCH_CONFIGURATION);
 
@@ -280,6 +305,11 @@ void setup( void) {
 #endif
 
     buzzer.play( SoundWelcome);
+
+#ifdef ENABLE_BDEBUG
+    Serial.print("D:");
+    Serial.println(bdebug);
+#endif
 }
 
 void loop( void) {
@@ -294,6 +324,13 @@ void loop( void) {
         controls.GetControlValues();
         moduleManager.runModules( controls);
         output.setChannels( controls);
+
+#ifdef ENABLE_BDEBUG
+    Serial.print("d:");
+    Serial.println(bdebug);
+    BDEBUG_CLEAR();
+#endif
+
 #ifdef ENABLE_TIMING
         tstamp = micros() - tstamp;
         Serial.print("M:");

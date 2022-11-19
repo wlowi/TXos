@@ -13,10 +13,13 @@
 #define MODE_RENDER     0
 #define MODE_EDIT       1
 
+#define GO_BACK         255
+
 class SelectList {
 
     private:
         TableEditable *table;
+        bool useBackItem = false;
         Cell cell;
         uint8_t idx;
         uint8_t oldIdx;
@@ -34,10 +37,10 @@ class SelectList {
         void selectedColors( LcdWidget *lcd) const;
         void headerColors( LcdWidget *lcd) const;
         void editColors( LcdWidget *lcd) const;
-        
+
     public:
         void clear();
-        void set( TableEditable *tab);
+        void set( TableEditable *tab, bool backItem);
         void process( LcdWidget *lcd, Event *event);
         void prev( uint8_t count);
         void next( uint8_t count);

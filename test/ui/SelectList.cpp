@@ -10,13 +10,16 @@ void SelectList::clear() {
     editCol = 0;
 }
 
-void SelectList::set( TableEditable *tab) {
+void SelectList::set( TableEditable *tab, bool backItem) {
 
     clear();
     table = tab;
+    useBackItem = backItem;
 }
 
 void SelectList::process( LcdWidget *lcd, Event *event) {
+
+    uint8_t tidx;
 
     if( table->hasChanged()) {
         refresh = REFRESH_FULL;
@@ -32,17 +35,20 @@ void SelectList::process( LcdWidget *lcd, Event *event) {
         switch( event->key) {
 
         case KEY_ENTER:
-            if( table->isEditable()) {
-                if( table->getValueCount() > 0 && idx > 0) {
-                    mode = MODE_EDIT;
-                    editCol = 0;
-                    table->getValue( idx-1, editCol, &cell);
+            if( !(useBackItem && idx == 0)) {
+                tidx = useBackItem ? idx-1 : idx;
+                if( table->isEditable()) {
+                    if( table->getValueCount() > 0) {
+                        mode = MODE_EDIT;
+                        editCol = 0;
+                        table->getValue( tidx, editCol, &cell);
+                        refresh = REFRESH_UPDATE;
+                    }
+                }
+                if( table->isExecutable()) {
+                    table->execute( tidx);
                     refresh = REFRESH_UPDATE;
                 }
-            }
-            if( table->isExecutable() && idx > 0) {
-                table->execute( idx-1);
-                refresh = REFRESH_UPDATE;
             }
             break;
 
@@ -64,8 +70,9 @@ void SelectList::process( LcdWidget *lcd, Event *event) {
 
     case MODE_EDIT:
 
+        tidx = useBackItem ? idx-1 : idx;
         cell.edit( event);
-        table->setValue( idx-1, editCol, &cell);
+        table->setValue( tidx, editCol, &cell);
         refresh = REFRESH_UPDATE;
 
         if( event->pending()) {
@@ -77,7 +84,7 @@ void SelectList::process( LcdWidget *lcd, Event *event) {
                     mode = MODE_RENDER;
                     editCol = 0;
                 } else {
-                    table->getValue( idx-1, editCol, &cell);
+                    table->getValue( tidx, editCol, &cell);
                 }  
                 refresh = REFRESH_UPDATE; 
                 break;
@@ -112,7 +119,7 @@ void SelectList::prev( uint8_t count) {
 
 void SelectList::next( uint8_t count) {
 
-    uint8_t items = table->getItemCount() +1;
+    uint8_t items = table->getItemCount() + (useBackItem ? 1 : 0);
 
     if( (idx + count) >= (items - 1) ) {
         idx = items-1;
@@ -123,6 +130,10 @@ void SelectList::next( uint8_t count) {
 
 uint8_t SelectList::current() const {
 
+    if( useBackItem) {
+        return (idx == 0) ? GO_BACK : idx -1;
+    }
+
     return idx;
 }
 
@@ -132,7 +143,7 @@ void SelectList::paint( LcdWidget *lcd) {
 
     uint8_t end;
     uint8_t lines = lcd->getLines();
-    uint8_t items = table->getItemCount() +1;
+    uint8_t items = table->getItemCount() + (useBackItem ? 1 : 0);
     const char *header = table->getName();
 
     lcd->setBg(0,0,0);
@@ -200,21 +211,26 @@ void SelectList::printItem( LcdWidget *lcd, uint8_t i) {
 
     Cell renderCell;
 
-    if( i == 0) {
-        lcd->print(TEXT_BACK);
-    } else {
-        lcd->print(table->getItemName(i-1));
-        for( uint8_t col = 0; col < table->getValueCount(); col++) {
-            table->getValue( i-1, col, &renderCell);
-            normalColors( lcd);
-            lcd->print(" ");
-            if( mode == MODE_EDIT && col == editCol) {
-                editColors( lcd);
-            } else {
-                normalColors( lcd);
-            }
-            renderCell.render( lcd);
+    if( useBackItem) {
+        if( i == 0) {
+            lcd->print(TEXT_BACK);
+            return;
+        } else {
+            i--;
         }
+    }
+
+    lcd->print(table->getItemName(i));
+    for( uint8_t col = 0; col < table->getValueCount(); col++) {
+        table->getValue( i, col, &renderCell);
+        normalColors( lcd);
+        lcd->print(" ");
+        if( mode == MODE_EDIT && col == editCol) {
+            editColors( lcd);
+        } else {
+            normalColors( lcd);
+        }
+        renderCell.render( lcd);
     }
 }
 

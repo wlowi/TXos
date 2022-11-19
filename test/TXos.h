@@ -24,12 +24,19 @@
 
 /* Port definitions */
 
+/* Analog sticks and other analog channels */
 #define PORT_ANALOG_INPUT_COUNT   6
 #define PORT_ANALOG_INPUT        A0,A1,A2,A3,A4,A5
 
+/* Analog trim inputs */
 #define PORT_TRIM_INPUT_COUNT     4
 #define PORT_TRIM_INPUT          A8,A9,A10,A11
 
+/* Auxiliary analog input: Vcc monitor */
+#define PORT_AUX_INPUT_COUNT      1
+#define PORT_AUX_INPUT          A15
+
+/* Two state or three state switches */
 #define PORT_SWITCH_INPUT_COUNT   6
 #define PORT_SWITCH_INPUT        22,23,24,25,26,27
 
@@ -39,7 +46,7 @@
 
 
 
-#define BDEBUG_LEN 30
+#define BDEBUG_LEN 40
 
 #define BDEBUG_ADD( c )          \
 do {                             \

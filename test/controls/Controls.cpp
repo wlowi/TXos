@@ -41,7 +41,7 @@ void Controls::GetControlValues() {
         controlSet.analogChannel[ch] = CHANNELVALUE_MID;
     }
 
-    for( channel_t ch = 0; ch < inputImpl->GetChannels(); ch++) {
+    for( channel_t ch = 0; ch < PORT_ANALOG_INPUT_COUNT; ch++) {
         controlSet.analogChannel[ch] = inputImpl->GetChannelValue( ch);
     }
 

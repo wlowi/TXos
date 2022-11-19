@@ -24,15 +24,19 @@ void UserInterface::handle() {
 
     switch (screen) {
     case SCREEN_INIT:
-        switchScreen( SCREEN_HOME);
+        switchToScreen( SCREEN_HOME);
         break;
     
     case SCREEN_HOME:
         homeScreen( event);
         break;
 
-    case SCREEN_SELECT:
-        selectScreen( event);
+    case SCREEN_MODEL:
+        modelScreen( event);
+        break;
+
+    case SCREEN_SYSTEM:
+        systemScreen( event);
         break;
 
     case SCREEN_CONFIG:
@@ -58,7 +62,7 @@ void UserInterface::homeScreen( Event *event) {
         lcd->printUInt( systemConfig.getModelID(), 3);
         lcd->println();
     
-        Model *model = (Model*)moduleManager.getModuleByType(MODULE_MODEL_TYPE);
+        Model *model = (Model*)moduleManager.getModelMenu()->getModuleByType(MODULE_MODEL_TYPE);
         lcd->print( model->getModelName());
 
         refresh = REFRESH_UPDATE;
@@ -70,32 +74,60 @@ void UserInterface::homeScreen( Event *event) {
     }
 
     if( event->key == KEY_ENTER) {
-        switchScreen( SCREEN_SELECT);
+        switchToScreen( SCREEN_MODEL);
     }
 }
 
-void UserInterface::selectScreen( Event *event) {
+void UserInterface::modelScreen( Event *event) {
 
     uint8_t idx;
 
     if( refresh == REFRESH_FULL) {
-        selectList.set( &moduleManager);
+        selectList.set( moduleManager.getModelMenu(), true);
         refresh = REFRESH_OK;
     }
 
     selectList.process( lcd, event);
 
     if( event->pending()) {
-        LOGV("UserInterface::selectScreen(): event pending %d\n", event->key);
+        LOGV("UserInterface::modelScreen(): event pending %d\n", event->key);
         switch( event->key) {
         case KEY_ENTER:
             idx = selectList.current();
-            if( idx == 0) {
-                switchScreen( SCREEN_HOME);
+            if( idx == GO_BACK) {
+                switchToScreen( SCREEN_HOME);
             } else {
-                module = moduleManager.getModule(idx-1);
-                LOGV("UserInterface::selectScreen(): Module %s\n", module ? module->getName() : "NULL");
-                switchScreen( SCREEN_CONFIG);
+                module = moduleManager.getModelMenu()->getModule(idx);
+                LOGV("UserInterface::modelScreen(): Module %s\n", module ? module->getName() : "NULL");
+                switchToScreen( SCREEN_CONFIG);
+            }
+            break;
+        }
+    }
+}
+
+void UserInterface::systemScreen( Event *event) {
+
+    uint8_t idx;
+
+    if( refresh == REFRESH_FULL) {
+        selectList.set( moduleManager.getSystemMenu(), true);
+        refresh = REFRESH_OK;
+    }
+
+    selectList.process( lcd, event);
+
+    if( event->pending()) {
+        LOGV("UserInterface::systemScreen(): event pending %d\n", event->key);
+        switch( event->key) {
+        case KEY_ENTER:
+            idx = selectList.current();
+            if( idx == GO_BACK) {
+                switchToScreen( SCREEN_MODEL);
+            } else {
+                module = moduleManager.getSystemMenu()->getModule(idx);
+                LOGV("UserInterface::systemScreen(): Module %s\n", module ? module->getName() : "NULL");
+                switchToScreen( SCREEN_CONFIG);
             }
             break;
         }
@@ -108,12 +140,12 @@ void UserInterface::configScreen( Event *event) {
 
     if( module == NULL) {
         LOG("** UserInterface::configScreen(): No module\n");
-        switchScreen(SCREEN_SELECT);
+        switchToScreen(SCREEN_HOME);
         return;
     }
 
     if( refresh == REFRESH_FULL) {
-        selectList.set( module);
+        selectList.set( module, true);
         refresh = REFRESH_OK;
     }
 
@@ -123,16 +155,16 @@ void UserInterface::configScreen( Event *event) {
         switch( event->key) {
         case KEY_ENTER:
             idx = selectList.current();
-            if( idx == 0) {
-                moduleManager.save( systemConfig.getModelID());
-                switchScreen( SCREEN_SELECT);
+            if( idx == GO_BACK) {
+                moduleManager.saveModel( systemConfig.getModelID());
+                switchToScreen( SCREEN_HOME);
             }
             break;
         }
     }
 }
 
-void UserInterface::switchScreen( uint8_t scr) {
+void UserInterface::switchToScreen( uint8_t scr) {
 
     screen = scr;
     refresh = REFRESH_FULL;

@@ -54,7 +54,7 @@ configBlock_rc ConfigBlock::readBlock( configBlockID_t id) {
  */
 configBlock_rc ConfigBlock::formatBlock( configBlockID_t id) {
 
-    LOGV("ConfigBlock::formatlock( %d )\n", id);
+    LOGV("ConfigBlock::formatBlock( %d )\n", id);
     if( id > CONFIG_BLOCKID_INVALID && id < CONFIG_BLOCKS) {
 
         blockID = id;

@@ -2,8 +2,10 @@
 #include <util/atomic.h>
 
 #include "OutputImpl.h"
+#include "InputImpl.h"
 
 extern OutputImpl *outputImpl;
+extern InputImpl *inputImpl;
 
 /* PPM generation state machine state.
  * Used in the interrupt routine.
@@ -49,7 +51,7 @@ ISR( TIMER1_COMPA_vect) {
         nextTimerValue_usec = PPM_SPACE_usec;
 
         outputImpl->switchSet();
-        // AnalogInput::start();
+        inputImpl->start();
 
         inFrameTime_usec = 0;
         outputState = END_OF_SPACE;

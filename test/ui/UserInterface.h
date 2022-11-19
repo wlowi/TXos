@@ -9,8 +9,9 @@
 
 #define SCREEN_INIT     0
 #define SCREEN_HOME     1
-#define SCREEN_SELECT   2
-#define SCREEN_CONFIG   3
+#define SCREEN_MODEL    2
+#define SCREEN_SYSTEM   3
+#define SCREEN_CONFIG   4
 
 #define REFRESH_OK      0
 #define REFRESH_FULL    1
@@ -28,10 +29,11 @@ class UserInterface {
         SelectList selectList;
 
         void homeScreen(Event *event);
-        void selectScreen(Event *event);
+        void modelScreen(Event *event);
+        void systemScreen(Event *event);
         void configScreen(Event *event);
         
-        void switchScreen( uint8_t scr);
+        void switchToScreen( uint8_t scr);
 
     public:
         void init();

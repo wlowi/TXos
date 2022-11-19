@@ -51,11 +51,14 @@ class Module : public TableEditable {
     private:
         const char *moduleName;
         moduleType_t moduleType;
-        Module *next = nullptr;
+
+        Module *menuNext = nullptr;
+        Module *runlistNext = nullptr;
 
     public:
         Module( moduleType_t type, const char *name);
         friend class ModuleManager;
+        friend class Menu;
         
         /* */
         virtual void run( Controls &controls) = 0;

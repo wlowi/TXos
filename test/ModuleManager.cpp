@@ -27,73 +27,38 @@ ModuleManager::ModuleManager( ConfigBlock &svc) : blockService( &svc) {
 /*
  * Add a module.
  */
-void ModuleManager::add( Module *modulePtr) {
+void ModuleManager::addToSystemMenu( Module *modulePtr) {
 
-    modulePtr->next = nullptr;
+    systemMenu->addModule( modulePtr);
+}
 
-    if( first == nullptr) {
-        first = last = modulePtr;
+void ModuleManager::addToModelMenu( Module *modulePtr) {
+
+    modelMenu->addModule( modulePtr);
+}
+
+Menu *ModuleManager::getSystemMenu() {
+
+    return systemMenu;
+}
+
+Menu *ModuleManager::getModelMenu() {
+
+    return modelMenu;
+}
+
+void ModuleManager::addToRunList( Module *modulePtr) {
+
+    modulePtr->runlistNext = nullptr;
+
+    if( runlistFirst == nullptr) {
+        runlistFirst = runlistLast = modulePtr;
     } else {
-        last->next = modulePtr;
-        last = modulePtr;
+        runlistLast->runlistNext = modulePtr;
+        runlistLast = modulePtr;
     }
 }
 
-/*
- * Return number of modules.
- * NOTE: This is stored nowhere. The method walks through the list of modules.
- *       This could be changed for efficiency.
- */
-uint8_t ModuleManager::getModuleCount() {
-
-    Module *current = first;
-    uint8_t cnt = 0;
-
-    while( current != nullptr) {
-        cnt++;
-        current = current->next;
-    }
-
-    return cnt;
-}
-
-/*
- * Get a module by its index in the list.
- * NOTE: This funktion returns a nullptr if idx > number of modules in the list.
- */
-Module *ModuleManager::getModule( uint8_t idx) {
-
-    Module *current = first;
-    uint8_t cnt = 0;
-
-    while( current != nullptr) {
-        if( cnt == idx) {
-            break;
-        }
-        cnt++;
-        current = current->next;
-    }
-
-    return current;
-}
-
-/*
- * Return a module by type.
- * NOTE: This method returns a nullptr if there is no module of that type.
- */
-Module *ModuleManager::getModuleByType( moduleType_t type) {
-
-    Module *current = first;
-
-    while( current != nullptr) {
-        if( current->getConfigType() == type) {
-            break;
-        }
-        current = current->next;
-    }
-
-    return current;
-}
 
 #define GET( p, s)                              \
     do {                                        \
@@ -151,11 +116,11 @@ uint8_t ModuleManager::parseModule( configBlockID_t modelID, Module &moduleRef) 
  */
 void ModuleManager::runModules( Controls &controls) {
 
-    Module *current = first;
+    Module *current = runlistFirst;
 
     while( current != nullptr) {
         current->run( controls);
-        current = current->next;
+        current = current->runlistNext;
     }
 }
 
@@ -163,7 +128,7 @@ void ModuleManager::runModules( Controls &controls) {
  * Read configuration block from EEPROM and distribute
  * configuration data to each module.
  */
-void ModuleManager::load( configBlockID_t modelID) {
+void ModuleManager::loadModel( configBlockID_t modelID) {
 
     blockService->readBlock( modelID);
 
@@ -172,14 +137,14 @@ void ModuleManager::load( configBlockID_t modelID) {
     } else {
         LOGV("** ModuleManager::load(): Block %d is invalid.\n", modelID);
         setDefaults();
-        save( modelID);
+        saveModel( modelID);
     }
 }
 
 /*
  * Generate configuration block for all modules and write to EEPROM.
  */
-void ModuleManager::save( configBlockID_t modelID) {
+void ModuleManager::saveModel( configBlockID_t modelID) {
 
     generateBlock( modelID);
 
@@ -207,7 +172,7 @@ void ModuleManager::parseBlock() {
 
         LOGV("ModuleManager::parseBlock(): GET type=%d size=%d\n", type, size);
 
-        current = getModuleByType( type);
+        current = modelMenu->getModuleByType( type);
         if( current == nullptr) {
             LOGV("** ModuleManager::parseBlock(): No module of type=%d\n", type);
             break;
@@ -269,7 +234,7 @@ void ModuleManager::generateBlock(configBlockID_t modelID) {
     moduleType_t type;
     moduleSize_t size;
     moduleSize_t totalSize = 0;
-    Module *current = first;
+    Module *current = modelMenu->getFirstModule();
 
     blockService->formatBlock( modelID);
 
@@ -298,7 +263,7 @@ void ModuleManager::generateBlock(configBlockID_t modelID) {
             }
         }
 
-        current = current->next;
+        current = current->menuNext;
     }
 
     // Terminating invalid module type
@@ -313,41 +278,11 @@ void ModuleManager::generateBlock(configBlockID_t modelID) {
  */
 void ModuleManager::setDefaults() {
 
-    Module *current = first;
+    Module *current = modelMenu->getFirstModule();
 
     while( current != nullptr) {
         current->setDefaults();
-        current = current->next;
+        current = current->menuNext;
     }
 }
 
-/* Interface TableEditable */
-
-const char *ModuleManager::getName() {
-
-    return TEXT_SELECT;
-}
-
-uint8_t ModuleManager::getItemCount() {
-
-    return getModuleCount();
-}
-
-const char *ModuleManager::getItemName( uint8_t row) {
-
-    Module *mod = getModule( row);
-    return mod->getName();
-}
-
-uint8_t ModuleManager::getValueCount() {
-
-    return 0;
-}
-
-void ModuleManager::getValue( uint8_t row, uint8_t col, Cell *cell) {
-    // Nothing
-}
-
-void ModuleManager::setValue( uint8_t row, uint8_t col, Cell *cell) {
-    // Nothing
-}

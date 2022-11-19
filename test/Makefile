@@ -13,7 +13,7 @@ EMU_OBJ = emu/EEPROM.o emu/InputImpl.o emu/OutputImpl.o emu/PortsImpl.o emu/Buzz
 
 CONTROLS_OBJ = controls/Controls.o
 
-UI_OBJ = ui/UserInterface.o ui/SelectList.o ui/Cell.o
+UI_OBJ = ui/UserInterface.o ui/SelectList.o ui/Cell.o ui/Menu.o
 
 OUTPUT_OBJ = output/Output.o output/Ports.o output/Buzzer.o
 
