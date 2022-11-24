@@ -81,6 +81,18 @@ Module *Menu::getModuleByType( moduleType_t type) {
 
 /* Interface TableEditable */
 
+bool Menu::isExecutable( uint8_t row) {
+
+    Module *mod = getModule( row);
+    return mod->isModuleExecutable(); 
+}
+
+void Menu::execute( uint8_t row ) {
+
+    Module *mod = getModule( row);
+    mod->moduleExecute(); 
+}
+
 const char *Menu::getName() {
 
     return header;

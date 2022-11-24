@@ -20,8 +20,7 @@ class ServoMonitor : public Module {
         uint8_t *getConfig() final;
 
         /* From TableEditable */
-        bool isEditable() final { return false; }
-        bool hasChanged() final;
+        bool isEditable( uint8_t row) final { return false; }
 
         uint8_t getItemCount() final;
         const char *getItemName( uint8_t row) final;

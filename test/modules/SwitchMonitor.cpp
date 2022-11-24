@@ -29,11 +29,6 @@ uint8_t *SwitchMonitor::getConfig() {
 
 /* From TableEditable */
 
-bool SwitchMonitor::hasChanged() {
-
-    return true;
-}
-
 uint8_t SwitchMonitor::getItemCount() {
 
     return SWITCHES;

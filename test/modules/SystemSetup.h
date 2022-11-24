@@ -1,19 +1,16 @@
 
-#ifndef _SwitchMonitor_h_
-#define _SwitchMonitor_h_
+#ifndef _SystemSetup_h_
+#define _SystemSetup_h_
 
 #include "TXos.h"
 #include "Module.h"
-#include "Controls.h"
 
-class SwitchMonitor : public Module {
-
-    private:
-        Controls &current;
+class SystemSetup : public Module {
 
     public:
-        explicit SwitchMonitor( Controls &controls);
+        explicit SystemSetup();
         
+        /* From MOdule */
         void run( Controls &controls) final;
         void setDefaults() final;
 
@@ -22,6 +19,9 @@ class SwitchMonitor : public Module {
 
         /* From TableEditable */
         bool isEditable( uint8_t row) final { return false; }
+        bool isModuleExecutable() final { return true; }
+
+        void moduleExecute() final;
 
         uint8_t getItemCount() final;
         const char *getItemName( uint8_t row) final;

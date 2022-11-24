@@ -108,6 +108,7 @@
 #include "ServoReverse.h"
 #include "ServoSubtrim.h"
 #include "ServoLimit.h"
+#include "SystemSetup.h"
 
 #if defined( ARDUINO )
 #include "InputImpl.h"
@@ -271,6 +272,7 @@ void setup( void) {
     SwitchMonitor *switchMonitor = new SwitchMonitor( controls);
     moduleManager.addToSystemMenu( switchMonitor);
 
+    moduleManager.addToModelMenu( new SystemSetup());
     Model *model = new Model();
     moduleManager.addToModelMenu( model);
     EngineCut *engineCut = new EngineCut();

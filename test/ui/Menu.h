@@ -14,7 +14,7 @@ class Menu : public TableEditable {
         Module *last = nullptr;
 
     public:
-        Menu( const char *hdr);
+        explicit Menu( const char *hdr);
 
         void addModule( Module *modulePtr);
 
@@ -24,6 +24,10 @@ class Menu : public TableEditable {
         Module *getModuleByType( moduleType_t type);
 
         /* From Interface TableEditable */
+        bool isEditable( uint8_t row) final { return false; }
+        bool isExecutable( uint8_t row) final;
+        void execute( uint8_t row ) final;
+
         const char *getName() final;
         uint8_t getItemCount() final;
         const char *getItemName( uint8_t row) final;

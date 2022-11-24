@@ -58,12 +58,17 @@ class TableEditable {
     public:
         virtual const char *getName() = 0;
 
-        virtual bool isEditable() { return true; }
-        virtual bool isExecutable() { return false; }
-        /* Returns true if a value has changed without user interaction */
-        virtual bool hasChanged() { return false; }
+        virtual bool isEditable( uint8_t row) { return true; }
+        
+        /* Check whether the module itself is executable. 
+         * This will call moduleExecute() of the module if it is 
+         * activated within a menu.
+         */
+        virtual bool isModuleExecutable() { return false; }
+        virtual bool isExecutable( uint8_t row) { return false; }
 
         /* Called when isExecute() returns true and the user presses the ENTER key */
+        virtual void moduleExecute() { /* default implementation does nothing */ }
         virtual void execute( uint8_t row ) { /* default implementation does nothing */ }
 
         virtual uint8_t getItemCount() = 0;
@@ -71,6 +76,8 @@ class TableEditable {
 
         virtual uint8_t getValueCount() = 0;
 
+        /* Returns true if a value has changed without user interaction */
+        virtual bool hasChanged( uint8_t row, uint8_t col) { return false; }
         virtual void getValue( uint8_t row, uint8_t col, Cell *cell) = 0;
         virtual void setValue( uint8_t row, uint8_t col, Cell *cell) = 0;
 };

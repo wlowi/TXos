@@ -41,6 +41,7 @@ typedef uint8_t moduleSize_t;
 #define MODULE_MODEL_TYPE               ((moduleType_t)2)
 #define MODULE_SERVO_MONITOR_TYPE       ((moduleType_t)3)
 #define MODULE_SWITCH_MONITOR_TYPE      ((moduleType_t)4)
+#define MODULE_SYSTEM_SETUP_TYPE        ((moduleType_t)5)
 #define MODULE_ENGINE_CUT_TYPE          ((moduleType_t)10)
 #define MODULE_SERVO_REVERSE_TYPE       ((moduleType_t)20)
 #define MODULE_SERVO_SUBTRIM_TYPE       ((moduleType_t)21)

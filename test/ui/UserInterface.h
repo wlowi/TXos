@@ -32,12 +32,11 @@ class UserInterface {
         void modelScreen(Event *event);
         void systemScreen(Event *event);
         void configScreen(Event *event);
-        
-        void switchToScreen( uint8_t scr);
 
     public:
         void init();
         void handle();
+        void switchToScreen( uint8_t scr);
 };
 
 #endif

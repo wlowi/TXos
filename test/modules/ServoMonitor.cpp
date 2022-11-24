@@ -29,11 +29,6 @@ uint8_t *ServoMonitor::getConfig() {
 
 /* From TableEditable */
 
-bool ServoMonitor::hasChanged() {
-
-    return true;
-}
-
 uint8_t ServoMonitor::getItemCount() {
 
     return CHANNELS;

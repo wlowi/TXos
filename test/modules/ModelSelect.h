@@ -47,8 +47,8 @@ class ModelSelect : public Module {
         uint8_t *getConfig() final;
 
         /* From TableEditable */
-        bool isEditable() final { return false; }; // override
-        bool isExecutable() final { return true; }; // override
+        bool isEditable( uint8_t row) final { return false; }; // override
+        bool isExecutable( uint8_t row) final { return true; }; // override
         void execute( uint8_t row ) final; // override
 
         uint8_t getItemCount() final;

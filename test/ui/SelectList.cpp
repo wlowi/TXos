@@ -21,10 +21,6 @@ void SelectList::process( LcdWidget *lcd, Event *event) {
 
     uint8_t tidx;
 
-    if( table->hasChanged()) {
-        refresh = REFRESH_FULL;
-    }
-
     if( refresh == REFRESH_FULL) {
         paint( lcd);
         refresh = REFRESH_OK;
@@ -37,7 +33,8 @@ void SelectList::process( LcdWidget *lcd, Event *event) {
         case KEY_ENTER:
             if( !(useBackItem && idx == 0)) {
                 tidx = useBackItem ? idx-1 : idx;
-                if( table->isEditable()) {
+                if( table->isEditable( tidx)) {
+                    LOGV("SelectList::process(): Is Editable (idx=%d)\n", tidx);
                     if( table->getValueCount() > 0) {
                         mode = MODE_EDIT;
                         editCol = 0;
@@ -45,7 +42,8 @@ void SelectList::process( LcdWidget *lcd, Event *event) {
                         refresh = REFRESH_UPDATE;
                     }
                 }
-                if( table->isExecutable()) {
+                if( table->isExecutable( tidx)) {
+                    LOGV("SelectList::process(): Is Executable (idx=%d)\n", tidx);
                     table->execute( tidx);
                     refresh = REFRESH_UPDATE;
                 }

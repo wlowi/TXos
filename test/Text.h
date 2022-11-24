@@ -32,6 +32,7 @@
 #define TEXT_MODULE_SERVO_LIMIT     CC("Servo limit")
 #define TEXT_MODULE_SERVO_REVERSE   CC("Servo reverse")
 #define TEXT_MODULE_SERVO_SUBTRIM   CC("Servo subtrim")
+#define TEXT_MODULE_SYSTEM_SETUP    CC("System Setup")
 
 // Control channels (3 letters max.)
 #define TEXT_CONTROL_CHANNEL_1      CC("THR")

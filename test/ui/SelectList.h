@@ -37,13 +37,13 @@ class SelectList {
         void selectedColors( LcdWidget *lcd) const;
         void headerColors( LcdWidget *lcd) const;
         void editColors( LcdWidget *lcd) const;
-
-    public:
-        void clear();
-        void set( TableEditable *tab, bool backItem);
-        void process( LcdWidget *lcd, Event *event);
         void prev( uint8_t count);
         void next( uint8_t count);
+        void clear();
+
+    public:
+        void set( TableEditable *tab, bool backItem);
+        void process( LcdWidget *lcd, Event *event);
         uint8_t current() const;
 };
 
