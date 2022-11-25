@@ -30,7 +30,7 @@ class InputImpl
         
         channel_t GetChannels();
         switch_t GetSwitches();
-        channelValue_t GetAnalogValue( channel_t ch);
+        channelValue_t GetChannelValue( channel_t ch);
         switchState_t GetSwitchValue( switch_t sw);
 };
 

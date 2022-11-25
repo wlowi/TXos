@@ -117,7 +117,7 @@ switch_t InputImpl::GetSwitches() {
     return switches;
 }
 
-channelValue_t InputImpl::GetAnalogValue( channel_t ch) {
+channelValue_t InputImpl::GetChannelValue( channel_t ch) {
 
     channelValue_t v;
     
