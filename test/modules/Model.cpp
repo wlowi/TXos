@@ -77,47 +77,39 @@ uint8_t *Model::getConfig() {
 
 /* From TableEditable */
 
-uint8_t Model::getItemCount() {
+uint8_t Model::getRowCount() {
 
     return 2;
 }
 
-const char *Model::getItemName( uint8_t row) {
+const char *Model::getRowName( uint8_t row) {
 
-    switch( row) {
-    case 0: // model name
+    if( row == 0) {
         return TEXT_MODEL_NAME;
-
-    default: // wingmix type
+    } else {
         return TEXT_WINGMIX;
     }
 }
 
-uint8_t Model::getValueCount() {
+uint8_t Model::getColCount( uint8_t row) {
 
     return 1;
 }
 
 void Model::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
-    switch( row) {
-    case 0: // model name
-        cell->setString( cfg.modelName, MODEL_NAME_LEN);
-        break;
-
-    default: // wingmix type
-        cell->setList( wingMixNames, WINGMIX_OPTION_NUM, cfg.wingMix);
+    if( row == 0) {
+        cell->setString( 5, cfg.modelName, MODEL_NAME_LEN);
+    } else {
+        cell->setList( 5, wingMixNames, WINGMIX_OPTION_NUM, cfg.wingMix);
     }
 }
 
 void Model::setValue( uint8_t row, uint8_t col, Cell *cell) {
 
-    switch( row) {
-    case 0: // model name
-        // nothing to do. inplace edit
-        break;
-
-    default: // wingmix type
+    if( row == 0) {
+        // nothing to do. inplace string edit
+    } else {
         cfg.wingMix = cell->getList();
     }
 }

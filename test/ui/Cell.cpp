@@ -3,6 +3,8 @@
 
 void Cell::render( LcdWidget *lcd) const {
 
+    lcd->setColumn( screenCol);
+
     switch( type) {
         case BOOLEAN_T:
             if( value.boolV) {
@@ -27,6 +29,7 @@ void Cell::render( LcdWidget *lcd) const {
         case LIST_T:
             lcd->print( value.list[value.intV]);
             break;
+
         default:
             // ignore
             break;
@@ -109,38 +112,43 @@ void Cell::edit( Event *event) {
     }
 }
 
-void Cell::setBool( bool v) {
+void Cell::setBool( uint8_t screenX, bool v) {
 
+    screenCol = screenX;
     type = BOOLEAN_T;
     value.boolV = v;
 }
 
-void Cell::setInt8( int8_t v, int16_t nmin, int16_t nmax) {
+void Cell::setInt8( uint8_t screenX, int8_t v, int16_t nmin, int16_t nmax) {
 
+    screenCol = screenX;
     type = INT8_T;
     value.intV = v;
     numericMin = nmin;
     numericMax = nmax;
 }
 
-void Cell::setInt16( int16_t v, int16_t nmin, int16_t nmax) {
+void Cell::setInt16( uint8_t screenX, int16_t v, int16_t nmin, int16_t nmax) {
 
+    screenCol = screenX;
     type = INT16_T;
     value.intV = v;
     numericMin = nmin;
     numericMax = nmax;
 }
 
-void Cell::setString( char *v, uint8_t sz) {
+void Cell::setString( uint8_t screenX, char *v, uint8_t sz) {
 
+    screenCol = screenX;
     type = STRING_T;
     value.string = v;
     value.size = sz;
     value.intV = 0; // character index for editing.
 }
 
-void Cell::setList( const char **v, uint8_t sz, uint8_t curr) {
+void Cell::setList( uint8_t screenX, const char **v, uint8_t sz, uint8_t curr) {
 
+    screenCol = screenX;
     type = LIST_T;
     value.list = v;
     value.size = sz;

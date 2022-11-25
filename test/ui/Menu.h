@@ -24,14 +24,14 @@ class Menu : public TableEditable {
         Module *getModuleByType( moduleType_t type);
 
         /* From Interface TableEditable */
-        bool isEditable( uint8_t row) final { return false; }
-        bool isExecutable( uint8_t row) final;
-        void execute( uint8_t row ) final;
+        bool isRowEditable( uint8_t row) final { return false; }
+        bool isRowExecutable( uint8_t row) final;
+        void rowExecute( uint8_t row ) final;
 
         const char *getName() final;
-        uint8_t getItemCount() final;
-        const char *getItemName( uint8_t row) final;
-        uint8_t getValueCount() final;
+        uint8_t getRowCount() final;
+        const char *getRowName( uint8_t row) final;
+        uint8_t getColCount( uint8_t row) final;
         void getValue( uint8_t row, uint8_t col, Cell *cell) final;
         void setValue( uint8_t row, uint8_t col, Cell *cell) final;
 

@@ -31,7 +31,9 @@ class LcdWidget
         unsigned int getLines();
         unsigned int getColumns();
         void setCursor( unsigned int r, unsigned int c);
-        
+        void setRow( unsigned int r);
+        void setColumn( unsigned int c);
+
         void print( const char str[]);
         void println( const char str[]);
         void println();

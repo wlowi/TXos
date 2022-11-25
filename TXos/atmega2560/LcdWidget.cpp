@@ -49,7 +49,7 @@ LcdWidget::LcdWidget()
 void LcdWidget::clear()
 {
     tft.fillScreen( bgCol565);
-	  textX = textY = 0;
+    textX = textY = 0;
 }
 
 void LcdWidget::setBg( unsigned char r, unsigned char g, unsigned char b)
@@ -64,32 +64,46 @@ void LcdWidget::setFg( unsigned char r, unsigned char g, unsigned char b)
 
 void LcdWidget::setFontSize( unsigned int sz)
 {
-	if( sz < 1) { fontSz = 1; }
-	else if( sz > 3) { fontSz = 3; }
-	else { fontSz = sz; }
+    if( sz < 1) { fontSz = 1; }
+    else if( sz > 3) { fontSz = 3; }
+    else { fontSz = sz; }
 
-  tft.setTextSize( fontSz);
+    tft.setTextSize( fontSz);
 }
 
 unsigned int LcdWidget::getLines() {
 
-	return lines[fontSz];
+    return lines[fontSz];
 }
 
 unsigned int LcdWidget::getColumns() {
 
-	return columns[fontSz];
+    return columns[fontSz];
 }
 
 void LcdWidget::setCursor( unsigned int r, unsigned int c)
 {
-	textX = c * FONT_W;
-	textY = r * FONT_H;
+    textX = c * FONT_W;
+    textY = r * FONT_H;
 
-	if( textX > width) { textX = width; }
-	if( textY > height) { textY = height; }
+    if( textX > width) { textX = width; }
+    if( textY > height) { textY = height; }
 
-  tft.setCursor( textX, textY);
+    tft.setCursor( textX, textY);
+}
+
+void LcdWidget::setRow( unsigned int r)
+{
+    textY = r * FONT_H;
+    if( textY > height) { textY = height; }
+    tft.setCursor( textX, textY);
+}
+
+void LcdWidget::setColumn( unsigned int c)
+{
+    textX = c * FONT_W;
+    if( textX > width) { textX = width; }
+    tft.setCursor( textX, textY);
 }
 
 void LcdWidget::print( const char str[])
@@ -107,7 +121,7 @@ void LcdWidget::print( const char str[])
 void LcdWidget::println( const char str[])
 {
     print( str);
-	  println();
+    println();
 }
 
 void LcdWidget::println() {
@@ -119,109 +133,109 @@ void LcdWidget::println() {
 
 void LcdWidget::printInt( int val) {
 
-  printInt( val, 0, ' ');
+    printInt( val, 0, ' ');
 }
 
 void LcdWidget::printInt( int val, uint8_t width) {
 
-  printInt( val, width, ' ');
+    printInt( val, width, ' ');
 }
 
 void LcdWidget::printInt( int val, uint8_t width, char filler) {
 
-  int8_t neg = 0;
-  unsigned int uval;
+    int8_t neg = 0;
+    unsigned int uval;
 
-  if( val < 0) {
-    uval = -val;
-    neg = 1;
-  } else {
-    uval = val;
-  }
+    if( val < 0) {
+        uval = -val;
+        neg = 1;
+    } else {
+        uval = val;
+    }
   
-  printIntGeneric( uval, neg, width, filler);
+    printIntGeneric( uval, neg, width, filler);
 }
 
 void LcdWidget::printUInt( unsigned int val) {
 
-  printIntGeneric( val, 0, 0, ' ');
+    printIntGeneric( val, 0, 0, ' ');
 }
 
 void LcdWidget::printUInt( unsigned int val, uint8_t width) {
   
-  printIntGeneric( val, 0, width, ' ');
+    printIntGeneric( val, 0, width, ' ');
 }
 
 void LcdWidget::printUInt( unsigned int val, uint8_t width, char filler) {
   
-  printIntGeneric( val, 0, width, filler);
+    printIntGeneric( val, 0, width, filler);
 }
 
 /* private */
 
 void LcdWidget::printChar( char ch)
 {
-  tft.drawChar( textX, textY, ch, fgCol565, bgCol565, fontSz);
-  textX += FONT_W;
+    tft.drawChar( textX, textY, ch, fgCol565, bgCol565, fontSz);
+    textX += FONT_W;
 }
 
 pixel LcdWidget::rgbToCol565( unsigned char r, unsigned char g, unsigned char b)
 {
-  pixel col565 = ((r >> 3) << 11)
-               | ((g >> 2) << 5)
-               | (b >> 3);
+    pixel col565 = ((r >> 3) << 11)
+                | ((g >> 2) << 5)
+                | (b >> 3);
 
-  return col565;  
+    return col565;  
 }
 
 void LcdWidget::printIntGeneric( unsigned int val, int8_t neg, uint8_t width, char filler) {
 
-	uint8_t bufflen = (width == 0) ? 6 : width;
-	char buff[ bufflen+1 ];
-	uint8_t p = bufflen;
+    uint8_t bufflen = (width == 0) ? 6 : width;
+    char buff[ bufflen+1 ];
+    uint8_t p = bufflen;
 
-	buff[p--] = '\0';
+    buff[p--] = '\0';
 
-  	// p >= 0 here
-  	if( val == 0) {
+    // p >= 0 here
+    if( val == 0) {
     	buff[p] = '0';
-  	} else {
+    } else {
     	for(;;) {
-      		buff[p] = (val % 10) + '0';
-      		val /= 10;
-      		if( val == 0) { // done
-        		break;
-      		} else if( p == 0) {
-        		neg = -1; // indicates overflow
-        		break;
-      		}
+            buff[p] = (val % 10) + '0';
+      	    val /= 10;
+      	    if( val == 0) { // done
+        	break;
+      	    } else if( p == 0) {
+        	neg = -1; // indicates overflow
+        	break;
+      	    }
         
-      		p--;
-    	}
-  	}
+      	    p--;
+         }
+    }
 
-  	if( neg == 1) { // indicates negative sign
-    	if( p == 0) {
-      		neg = -1; // indicates overflow
+    if( neg == 1) { // indicates negative sign
+        if( p == 0) {
+            neg = -1; // indicates overflow
     	} else {
-      		p--;
-      	buff[p] = '-';
+      	    p--;
+      	    buff[p] = '-';
     	}
-  	}
+    }
     
-  	if( neg < 0) { // indicates overflow
-    	for( p = 0; p < bufflen; p++) {
-      		buff[p] = '*'; 
+    if( neg < 0) { // indicates overflow
+        for( p = 0; p < bufflen; p++) {
+            buff[p] = '*'; 
     	}
     	p = 0;
-  	} else {
-	    if( width > 0) {
-    		while( p > 0) {
-        		p--;
-        		buff[p] = filler;
-      		}
+    } else {
+        if( width > 0) {
+    	    while( p > 0) {
+                p--;
+        	buff[p] = filler;
+      	    }
     	}
-  	}
+    }
     
-  	print( &buff[p] );
+    print( &buff[p] );
 }

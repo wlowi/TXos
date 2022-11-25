@@ -30,47 +30,39 @@ uint8_t *EngineCut::getConfig() {
 }
 
 /* From TableEditable */
-uint8_t EngineCut::getItemCount() {
+uint8_t EngineCut::getRowCount() {
 
     return 2;
 }
 
-const char *EngineCut::getItemName( uint8_t row) {
+const char *EngineCut::getRowName( uint8_t row) {
 
-    switch( row) {
-    case 0:
+    if( row == 0) {
         return TEXT_SWITCH;
-
-    default: 
+    } else {
         return TEXT_THR;
     }
 }
 
-uint8_t EngineCut::getValueCount() {
+uint8_t EngineCut::getColCount( uint8_t row) {
 
     return 1;
 }
 
 void EngineCut::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
-    switch( row) {
-    case 0:
-        cell->setInt8( cfg.trigger, PERCENT_MIN, PERCENT_MAX);
-        break;
-
-    default:
-        cell->setInt8( cfg.cut_pct, PERCENT_MIN, PERCENT_MAX);
+    if( row == 0) {
+        cell->setInt8( 7, cfg.trigger, PERCENT_MIN, PERCENT_MAX);
+    } else {
+        cell->setInt8( 7, cfg.cut_pct, PERCENT_MIN, PERCENT_MAX);
     }
 }
 
 void EngineCut::setValue( uint8_t row, uint8_t col, Cell *cell) {
 
-    switch( row) {
-    case 0:
+    if( row == 0) {
         cfg.trigger = cell->getInt8();
-        break;
-
-    default:
+    } else {
         cfg.cut_pct = cell->getInt8();
     }
 }

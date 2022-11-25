@@ -53,24 +53,24 @@ uint8_t *ServoSubtrim::getConfig() {
 
 /* From TableEditable */
 
-uint8_t ServoSubtrim::getItemCount() {
+uint8_t ServoSubtrim::getRowCount() {
 
     return CHANNELS;
 }
 
-const char *ServoSubtrim::getItemName( uint8_t row) {
+const char *ServoSubtrim::getRowName( uint8_t row) {
 
     return ChannelNames[row];
 }
 
-uint8_t ServoSubtrim::getValueCount() {
+uint8_t ServoSubtrim::getColCount( uint8_t row) {
 
     return 1;
 }
 
 void ServoSubtrim::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
-    cell->setInt8( cfg.trim_pct[row], PERCENT_MIN, PERCENT_MAX);
+    cell->setInt8( 4, cfg.trim_pct[row], PERCENT_MIN, PERCENT_MAX);
 }
 
 void ServoSubtrim::setValue( uint8_t row, uint8_t col, Cell *cell) {

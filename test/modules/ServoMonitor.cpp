@@ -29,27 +29,32 @@ uint8_t *ServoMonitor::getConfig() {
 
 /* From TableEditable */
 
-uint8_t ServoMonitor::getItemCount() {
+uint8_t ServoMonitor::getRowCount() {
 
     return CHANNELS;
 }
 
-const char *ServoMonitor::getItemName( uint8_t row) {
+const char *ServoMonitor::getRowName( uint8_t row) {
 
     return ChannelNames[row];
 }
 
-uint8_t ServoMonitor::getValueCount() {
+uint8_t ServoMonitor::getColCount( uint8_t row) {
 
     return 1;
 }
 
 void ServoMonitor::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
-    cell->setInt16( current.analogGet( row), 0, 3);
+    cell->setInt16( 4, current.analogGet( row), 0, 3);
 }
 
 void ServoMonitor::setValue( uint8_t row, uint8_t col, Cell *cell) {
 
     /* no-op */
+}
+
+bool ServoMonitor::hasChanged( uint8_t row, uint8_t col) {
+
+    return true;
 }

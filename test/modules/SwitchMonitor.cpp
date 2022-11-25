@@ -29,12 +29,12 @@ uint8_t *SwitchMonitor::getConfig() {
 
 /* From TableEditable */
 
-uint8_t SwitchMonitor::getItemCount() {
+uint8_t SwitchMonitor::getRowCount() {
 
     return SWITCHES;
 }
 
-const char *SwitchMonitor::getItemName( uint8_t row) {
+const char *SwitchMonitor::getRowName( uint8_t row) {
 
     switch( current.switchConfGet( row)) {
         case SW_CONF_UNUSED:
@@ -53,17 +53,22 @@ const char *SwitchMonitor::getItemName( uint8_t row) {
     return "---";
 }
 
-uint8_t SwitchMonitor::getValueCount() {
+uint8_t SwitchMonitor::getColCount( uint8_t row) {
 
     return 1;
 }
 
 void SwitchMonitor::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
-    cell->setInt8( current.switchGet( row), 0, 3);
+    cell->setInt8( 4, current.switchGet( row), 0, 3);
 }
 
 void SwitchMonitor::setValue( uint8_t row, uint8_t col, Cell *cell) {
 
     /* no-op */
+}
+
+bool SwitchMonitor::hasChanged( uint8_t row, uint8_t col) {
+
+    return true;
 }

@@ -26,9 +26,9 @@ class EngineCut : public Module {
         uint8_t *getConfig() final;
 
         /* From TableEditable */
-        uint8_t getItemCount() final;
-        const char *getItemName( uint8_t row) final;
-        uint8_t getValueCount() final;
+        uint8_t getRowCount() final;
+        const char *getRowName( uint8_t row) final;
+        uint8_t getColCount( uint8_t row) final;
         void getValue( uint8_t row, uint8_t col, Cell *cell) final;
         void setValue( uint8_t row, uint8_t col, Cell *cell) final;
 };

@@ -5,6 +5,7 @@ void SelectList::clear() {
 
     table = nullptr;
     idx = oldIdx = topIdx = 0;
+    visibleRows = 0;
     refresh = REFRESH_FULL;
     mode = MODE_RENDER;
     editCol = 0;
@@ -29,22 +30,21 @@ void SelectList::process( LcdWidget *lcd, Event *event) {
     switch( mode) {
     case MODE_RENDER:
         switch( event->key) {
-
         case KEY_ENTER:
             if( !(useBackItem && idx == 0)) {
                 tidx = useBackItem ? idx-1 : idx;
-                if( table->isEditable( tidx)) {
+                if( table->isRowEditable( tidx)) {
                     LOGV("SelectList::process(): Is Editable (idx=%d)\n", tidx);
-                    if( table->getValueCount() > 0) {
+                    if( table->getColCount( tidx) > 0) {
                         mode = MODE_EDIT;
                         editCol = 0;
                         table->getValue( tidx, editCol, &cell);
                         refresh = REFRESH_UPDATE;
                     }
                 }
-                if( table->isExecutable( tidx)) {
+                if( table->isRowExecutable( tidx)) {
                     LOGV("SelectList::process(): Is Executable (idx=%d)\n", tidx);
-                    table->execute( tidx);
+                    table->rowExecute( tidx);
                     refresh = REFRESH_UPDATE;
                 }
             }
@@ -61,7 +61,13 @@ void SelectList::process( LcdWidget *lcd, Event *event) {
             break;
 
         default:
-            // ignore
+            for( tidx = topIdx; tidx < topIdx + visibleRows; tidx++) {
+                for( uint8_t col = 0; col < table->getColCount(tidx); col++) {
+                    if( table->hasChanged( tidx, col)) {
+                        LOGV("P %d %d\n", tidx, col);
+                    }        
+                }
+            }
             break;
         }   
         break;
@@ -71,14 +77,14 @@ void SelectList::process( LcdWidget *lcd, Event *event) {
         tidx = useBackItem ? idx-1 : idx;
         cell.edit( event);
         table->setValue( tidx, editCol, &cell);
-        refresh = REFRESH_UPDATE;
+        refresh = REFRESH_CELL;
 
         if( event->pending()) {
             switch( event->key) {
 
             case KEY_ENTER:
                 editCol++;
-                if( editCol >= table->getValueCount()) {
+                if( editCol >= table->getColCount( tidx)) {
                     mode = MODE_RENDER;
                     editCol = 0;
                 } else {
@@ -99,7 +105,7 @@ void SelectList::process( LcdWidget *lcd, Event *event) {
         break;
     }
 
-    if( refresh == REFRESH_UPDATE) {
+    if( refresh == REFRESH_UPDATE || refresh == REFRESH_CELL) {
         update( lcd);
         event->markProcessed();
         refresh = REFRESH_OK;
@@ -117,7 +123,7 @@ void SelectList::prev( uint8_t count) {
 
 void SelectList::next( uint8_t count) {
 
-    uint8_t items = table->getItemCount() + (useBackItem ? 1 : 0);
+    uint8_t items = table->getRowCount() + (useBackItem ? 1 : 0);
 
     if( (idx + count) >= (items - 1) ) {
         idx = items-1;
@@ -139,9 +145,6 @@ uint8_t SelectList::current() const {
 
 void SelectList::paint( LcdWidget *lcd) {
 
-    uint8_t end;
-    uint8_t lines = lcd->getLines();
-    uint8_t items = table->getItemCount() + (useBackItem ? 1 : 0);
     const char *header = table->getName();
 
     lcd->setBg(0,0,0);
@@ -151,13 +154,11 @@ void SelectList::paint( LcdWidget *lcd) {
         headerColors( lcd);
         lcd->setCursor( 0, 0);
         lcd->print(header);
-        lines--;
     }
 
     adjustTopIdx( lcd);
-    end = (items < lines) ? items : lines;
-
-    for( uint8_t i = topIdx; i < topIdx + end; i++) {        
+    
+    for( uint8_t i = topIdx; i < topIdx + visibleRows; i++) {        
         refreshLine( lcd, i);
     }
 
@@ -179,10 +180,13 @@ void SelectList::update( LcdWidget *lcd) {
 bool SelectList::adjustTopIdx( LcdWidget *lcd) {
 
     uint8_t lines = lcd->getLines();
+    uint8_t items = table->getRowCount() + (useBackItem ? 1 : 0);
 
     if( table->getName()) {
         lines--;
     }
+
+    visibleRows = (items < lines) ? items : lines;
 
     if( topIdx > idx) {
         topIdx = idx;
@@ -218,11 +222,14 @@ void SelectList::printItem( LcdWidget *lcd, uint8_t i) {
         }
     }
 
-    lcd->print(table->getItemName(i));
-    for( uint8_t col = 0; col < table->getValueCount(); col++) {
+    if( refresh != REFRESH_CELL) {
+        lcd->print(table->getRowName(i));
+    }
+
+    for( uint8_t col = 0; col < table->getColCount(i); col++) {
         table->getValue( i, col, &renderCell);
         normalColors( lcd);
-        lcd->print(" ");
+
         if( mode == MODE_EDIT && col == editCol) {
             editColors( lcd);
         } else {

@@ -37,17 +37,17 @@ void SystemSetup::moduleExecute() {
     userInterface.switchToScreen( SCREEN_SYSTEM);
 }
 
-uint8_t SystemSetup::getItemCount() {
+uint8_t SystemSetup::getRowCount() {
 
     return 0;
 }
 
-const char *SystemSetup::getItemName( uint8_t row) {
+const char *SystemSetup::getRowName( uint8_t row) {
 
     return "?";
 }
 
-uint8_t SystemSetup::getValueCount() {
+uint8_t SystemSetup::getColCount( uint8_t row) {
 
     return 0;
 }

@@ -53,24 +53,24 @@ uint8_t *ServoReverse::getConfig() {
 
 /* From TableEditable */
 
-uint8_t ServoReverse::getItemCount() {
+uint8_t ServoReverse::getRowCount() {
 
     return CHANNELS;
 }
 
-const char *ServoReverse::getItemName( uint8_t row) {
+const char *ServoReverse::getRowName( uint8_t row) {
 
     return ChannelNames[row];
 }
 
-uint8_t ServoReverse::getValueCount() {
+uint8_t ServoReverse::getColCount( uint8_t row) {
 
     return 1;
 }
 
 void ServoReverse::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
-    cell->setBool( IS_BIT_SET( cfg.revBits, row));
+    cell->setBool( 4, IS_BIT_SET( cfg.revBits, row));
 }
 
 void ServoReverse::setValue( uint8_t row, uint8_t col, Cell *cell) {

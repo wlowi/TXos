@@ -9,6 +9,7 @@
 #define REFRESH_OK      0
 #define REFRESH_FULL    1
 #define REFRESH_UPDATE  2
+#define REFRESH_CELL    3
 
 #define MODE_RENDER     0
 #define MODE_EDIT       1
@@ -24,6 +25,7 @@ class SelectList {
         uint8_t idx;
         uint8_t oldIdx;
         uint8_t topIdx;
+        uint8_t visibleRows;
         uint8_t refresh;
         uint8_t mode;
         uint8_t editCol;

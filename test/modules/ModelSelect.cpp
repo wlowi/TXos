@@ -63,7 +63,7 @@ uint8_t *ModelSelect::getConfig() {
  * Called when we select a model.
  * This will load the model configuration.
  */
-void ModelSelect::execute( uint8_t row) {
+void ModelSelect::rowExecute( uint8_t row) {
 
     LOGV("ModelSelect::execute( %d )\n", row);
 
@@ -71,12 +71,12 @@ void ModelSelect::execute( uint8_t row) {
     systemConfig.setModelID( row +1);
 }
 
-uint8_t ModelSelect::getItemCount() {
+uint8_t ModelSelect::getRowCount() {
 
     return CONFIG_MODEL_COUNT;
 }
 
-const char *ModelSelect::getItemName( uint8_t row) {
+const char *ModelSelect::getRowName( uint8_t row) {
 
     int8_t p = MODELNO_STRING_LEN;
 
@@ -100,7 +100,7 @@ const char *ModelSelect::getItemName( uint8_t row) {
     return modelNo;
 }
 
-uint8_t ModelSelect::getValueCount() {
+uint8_t ModelSelect::getColCount( uint8_t row) {
 
     return 1;
 }
@@ -108,12 +108,12 @@ uint8_t ModelSelect::getValueCount() {
 void ModelSelect::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
     if( moduleManager.parseModule( row +1, model) == CONFIGBLOCK_RC_OK) {
-        cell->setString( model.getModelName(), MODEL_NAME_LEN);
+        cell->setString( MODELNO_STRING_LEN+1, model.getModelName(), MODEL_NAME_LEN);
     } else {
         /* Config block for this model is uninitialized.
          * Display model number instead of name.
          */
-        cell->setString( modelNo, 1);
+        cell->setString( MODELNO_STRING_LEN+1, modelNo, 1);
     }
 }
 

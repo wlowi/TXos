@@ -47,13 +47,13 @@ class ModelSelect : public Module {
         uint8_t *getConfig() final;
 
         /* From TableEditable */
-        bool isEditable( uint8_t row) final { return false; }; // override
-        bool isExecutable( uint8_t row) final { return true; }; // override
-        void execute( uint8_t row ) final; // override
+        bool isRowEditable( uint8_t row) final { return false; }; // override
+        bool isRowExecutable( uint8_t row) final { return true; }; // override
+        void rowExecute( uint8_t row ) final; // override
 
-        uint8_t getItemCount() final;
-        const char *getItemName( uint8_t row) final;
-        uint8_t getValueCount() final;
+        uint8_t getRowCount() final;
+        const char *getRowName( uint8_t row) final;
+        uint8_t getColCount( uint8_t) final;
         void getValue( uint8_t row, uint8_t col, Cell *cell) final;
         void setValue( uint8_t row, uint8_t col, Cell *cell) final;
 };

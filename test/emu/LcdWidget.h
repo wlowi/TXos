@@ -49,6 +49,8 @@ class LcdWidget : public wxPanel
         unsigned int getLines();
         unsigned int getColumns();
         void setCursor( unsigned int r, unsigned int c);
+        void setRow( unsigned int r);
+        void setColumn( unsigned int c);
         
         void setPixel( unsigned int x, unsigned int y);
         void setPixel( unsigned int x, unsigned int y, unsigned char r, unsigned char g, unsigned char b);
