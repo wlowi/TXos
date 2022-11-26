@@ -227,7 +227,8 @@ Ports ports;
 Buzzer buzzer( ports);
 UserInterface userInterface;
 ConfigBlock configBlock;
-SystemConfig systemConfig( configBlock);
+SystemConfig systemConfig;
+ModelSelect modelSelect;
 ModuleManager moduleManager( configBlock);
 
 
@@ -262,12 +263,11 @@ void setup( void) {
     buzzer.init();
     userInterface.init();
 
-    systemConfig.load();
-
     /* The order of modules is important.
      * It defines the order with the menu.
      */
-    moduleManager.addToSystemMenu( new ModelSelect());
+    
+    moduleManager.addToSystemMenu( &modelSelect);
     ServoMonitor *servoMonitor = new ServoMonitor( controls);
     moduleManager.addToSystemMenu( servoMonitor);
     SwitchMonitor *switchMonitor = new SwitchMonitor( controls);
@@ -299,8 +299,9 @@ void setup( void) {
     moduleManager.addToRunList( servoMonitor);
     moduleManager.addToRunList( switchMonitor);
 
+    systemConfig.load();
 
-    moduleManager.loadModel( systemConfig.getModelID());
+    moduleManager.loadModel( modelSelect.getModelID());
 
     controls.init( SWITCH_CONFIGURATION);
 

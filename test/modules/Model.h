@@ -5,6 +5,10 @@
 #include "TXos.h"
 #include "Module.h"
 
+/* First and last valid model ID */
+#define MODEL_ID_MIN        (configBlockID_t)1)
+#define MODEL_ID_MAX        CONFIG_MODEL_COUNT
+
 typedef uint8_t wingMix_t;
 
 #define WINGMIX_OPTION_NUM  ((uint8_t)5)

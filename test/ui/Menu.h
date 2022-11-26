@@ -16,6 +16,8 @@ class Menu : public TableEditable {
     public:
         explicit Menu( const char *hdr);
 
+        void setDefaults();
+
         void addModule( Module *modulePtr);
 
         uint8_t getModuleCount();

@@ -20,7 +20,9 @@
 
 #include "SystemConfig.h"
 
-SystemConfig::SystemConfig( ConfigBlock &svc) : blockService( &svc){
+extern ModuleManager moduleManager;
+
+SystemConfig::SystemConfig() {
 
 }
 
@@ -29,14 +31,9 @@ SystemConfig::SystemConfig( ConfigBlock &svc) : blockService( &svc){
  */
 void SystemConfig::load() {
 
-    blockService->readBlock( SYSTEMCONFIG_BLOCKID);
+    LOG("\nSystemConfig::load(): loading system config\n");
 
-    if( blockService->isBlockValid()) {
-        parseBlock();
-    } else {
-        setDefaults();
-        save();
-    }
+    moduleManager.loadSystemConfig( SYSTEMCONFIG_BLOCKID); 
 }
 
 /*
@@ -44,75 +41,7 @@ void SystemConfig::load() {
  */
 void SystemConfig::save() {
 
-    generateBlock();
-    blockService->writeBlock();
-}
+    LOG("\nSystemConfig::save(): saving system config\n");
 
-configBlockID_t SystemConfig::getModelID() const {
-
-    return cfg.modelID;
-}
-
-void SystemConfig::setModelID( configBlockID_t model) {
-
-    cfg.modelID = model;
-    save();
-}
-
-/* private */
-
-/*
- * Copy system configuration from block and verify the data.
- *
- * This should be called after blockService->readBlock()
- */
-void SystemConfig::parseBlock() {
-
-    if( sizeof( cfg) <= CONFIG_PAYLOAD_SIZE) {
-        blockService->memcpy( (uint8_t*)&cfg, blockService->getPayload(), sizeof(cfg));
-        verify();
-    } else {
-        LOGV( "** SystemConfig::parseBlock(): Config size (%ld) > CONFIG_PAYLOAD_SIZE (%ld)\n",
-             sizeof( cfg), CONFIG_PAYLOAD_SIZE);
-    }
-}
-
-/*
- * Verify system configuration then format the system configuration block and 
- * copy the system configuration into the block.
- * 
- * This should be called before blockService->writeBlock()
- */
-void SystemConfig::generateBlock() {
-
-    verify();
-
-    blockService->formatBlock( SYSTEMCONFIG_BLOCKID);
-
-    if( sizeof( cfg) <= CONFIG_PAYLOAD_SIZE) {
-        blockService->memcpy( blockService->getPayload(), (uint8_t*)&cfg, sizeof(cfg));
-    } else {
-        LOGV( "** SystemConfig::parseBlock(): Config size (%ld) > CONFIG_PAYLOAD_SIZE (%ld)\n",
-             sizeof( cfg), CONFIG_PAYLOAD_SIZE);
-    }
-}
-
-/*
- * Set all system configuration data to its default.
- */
-void SystemConfig::setDefaults() {
-
-    cfg.modelID = (configBlockID_t)1;
-}
-
-/*
- * Verify system configuration. 
- * If invalid data is found, set a default value.
- */
-void SystemConfig::verify() {
-
-    if( cfg.modelID < 1 || cfg.modelID > CONFIG_MODEL_COUNT) {
-        LOGV( "** SystemConfig::verify(): Failed. invalid modelID=%d\n", cfg.modelID);
-        cfg.modelID = 1;
-    }
+    moduleManager.saveSystemConfig( SYSTEMCONFIG_BLOCKID);
 }

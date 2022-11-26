@@ -51,9 +51,8 @@ class ModuleManager {
 
         ConfigBlock *blockService;
 
-        void parseBlock();
-        void generateBlock( configBlockID_t modelID);
-        void setDefaults();
+        void parseBlock( Menu *menu);
+        void generateBlock( configBlockID_t modelID, Menu *menu);
 
     public:
         explicit ModuleManager( ConfigBlock &svc);
@@ -72,6 +71,8 @@ class ModuleManager {
         void loadModel( configBlockID_t modelID);
         void saveModel( configBlockID_t modelID);
 
+        void loadSystemConfig(configBlockID_t blockID);
+        void saveSystemConfig(configBlockID_t blockID);
 };
 
 #endif

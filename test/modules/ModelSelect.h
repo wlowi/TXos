@@ -31,15 +31,25 @@
 
 #define MODELNO_STRING_LEN    (3)
 
+typedef struct modelSelect_t {
+
+    configBlockID_t modelID;
+
+} modelSelect_t;
+
 class ModelSelect : public Module {
 
     private:
-        char modelNo[MODELNO_STRING_LEN +1]; // Temporarty space for numeric model ID
-        Model model;
+        modelSelect_t cfg;
+
+        char modelNo[MODELNO_STRING_LEN +1]; // Temporary space for numeric model ID
+        Model model;                         // Temporary to display model name
         
     public:
         ModelSelect();
 
+        configBlockID_t getModelID() const;
+        
         /* From Module */
         void run( Controls &controls) final;
         void setDefaults() final;

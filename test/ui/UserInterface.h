@@ -3,9 +3,9 @@
 #define _UserInterface_h_
 
 #include "TXos.h"
-#include "DisplayImpl.h"
 #include "SelectList.h"
 #include "TableEditable.h"
+#include "Menu.h"
 
 #define SCREEN_INIT     0
 #define SCREEN_HOME     1
@@ -29,8 +29,7 @@ class UserInterface {
         SelectList selectList;
 
         void homeScreen(Event *event);
-        void modelScreen(Event *event);
-        void systemScreen(Event *event);
+        void menuScreen(Event *event, Menu *menu);
         void configScreen(Event *event);
 
     public:

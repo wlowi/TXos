@@ -36,6 +36,7 @@ void EEPROMClass::loadFromFile() {
         file.close();
     } else {
         printf("NO FILE: %s\n", EEPROM_FILENAME);
+        saveToFile();
     }
 }
 

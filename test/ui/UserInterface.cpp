@@ -3,10 +3,12 @@
 #include "ModuleManager.h"
 #include "Model.h"
 #include "SystemConfig.h"
+#include "ModelSelect.h"
 
 extern DisplayImpl *displayImpl;
 extern ModuleManager moduleManager;
 extern SystemConfig systemConfig;
+extern ModelSelect modelSelect;
 
 void UserInterface::init() {
 
@@ -32,11 +34,11 @@ void UserInterface::handle() {
         break;
 
     case SCREEN_MODEL:
-        modelScreen( event);
+        menuScreen( event, moduleManager.getModelMenu());
         break;
 
     case SCREEN_SYSTEM:
-        systemScreen( event);
+        menuScreen( event, moduleManager.getSystemMenu());
         break;
 
     case SCREEN_CONFIG:
@@ -59,7 +61,7 @@ void UserInterface::homeScreen( Event *event) {
         lcd->println( TXOS_VERSION);
 
         lcd->print( TEXT_MODEL);
-        lcd->printUInt( systemConfig.getModelID(), 3);
+        lcd->printUInt( modelSelect.getModelID(), 3);
         lcd->println();
     
         Model *model = (Model*)moduleManager.getModelMenu()->getModuleByType(MODULE_MODEL_TYPE);
@@ -78,55 +80,27 @@ void UserInterface::homeScreen( Event *event) {
     }
 }
 
-void UserInterface::modelScreen( Event *event) {
+void UserInterface::menuScreen( Event *event, Menu *menu) {
 
     uint8_t idx;
 
     if( refresh == REFRESH_FULL) {
-        selectList.set( moduleManager.getModelMenu(), true);
+        selectList.set( menu, true);
         refresh = REFRESH_OK;
     }
 
     selectList.process( lcd, event);
 
     if( event->pending()) {
-        LOGV("UserInterface::modelScreen(): event pending %d\n", event->key);
+        LOGV("UserInterface::menuScreen(): event pending %d\n", event->key);
         switch( event->key) {
         case KEY_ENTER:
             idx = selectList.current();
             if( idx == GO_BACK) {
                 switchToScreen( SCREEN_HOME);
             } else {
-                module = moduleManager.getModelMenu()->getModule(idx);
-                LOGV("UserInterface::modelScreen(): Module %s\n", module ? module->getName() : "NULL");
-                switchToScreen( SCREEN_CONFIG);
-            }
-            break;
-        }
-    }
-}
-
-void UserInterface::systemScreen( Event *event) {
-
-    uint8_t idx;
-
-    if( refresh == REFRESH_FULL) {
-        selectList.set( moduleManager.getSystemMenu(), true);
-        refresh = REFRESH_OK;
-    }
-
-    selectList.process( lcd, event);
-
-    if( event->pending()) {
-        LOGV("UserInterface::systemScreen(): event pending %d\n", event->key);
-        switch( event->key) {
-        case KEY_ENTER:
-            idx = selectList.current();
-            if( idx == GO_BACK) {
-                switchToScreen( SCREEN_MODEL);
-            } else {
-                module = moduleManager.getSystemMenu()->getModule(idx);
-                LOGV("UserInterface::systemScreen(): Module %s\n", module ? module->getName() : "NULL");
+                module = menu->getModule(idx);
+                LOGV("UserInterface::menuScreen(): Module %s\n", module ? module->getName() : "NULL");
                 switchToScreen( SCREEN_CONFIG);
             }
             break;
@@ -156,7 +130,8 @@ void UserInterface::configScreen( Event *event) {
         case KEY_ENTER:
             idx = selectList.current();
             if( idx == GO_BACK) {
-                moduleManager.saveModel( systemConfig.getModelID());
+                moduleManager.saveModel( modelSelect.getModelID());
+                systemConfig.save();
                 switchToScreen( SCREEN_HOME);
             }
             break;

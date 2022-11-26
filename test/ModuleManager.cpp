@@ -130,13 +130,15 @@ void ModuleManager::runModules( Controls &controls) {
  */
 void ModuleManager::loadModel( configBlockID_t modelID) {
 
+    LOGV("\nModuleManager::loadModel(): loading model %d\n", modelID);
+
     blockService->readBlock( modelID);
 
     if( blockService->isBlockValid()) {
-        parseBlock();
+        parseBlock( modelMenu);
     } else {
-        LOGV("** ModuleManager::load(): Block %d is invalid.\n", modelID);
-        setDefaults();
+        LOGV("** ModuleManager::loadModel(): Block %d is invalid.\n", modelID);
+        modelMenu->setDefaults();
         saveModel( modelID);
     }
 }
@@ -146,16 +148,46 @@ void ModuleManager::loadModel( configBlockID_t modelID) {
  */
 void ModuleManager::saveModel( configBlockID_t modelID) {
 
-    generateBlock( modelID);
+    LOGV("\nModuleManager::saveModel(): saving model %d\n", modelID);
 
+    generateBlock( modelID, modelMenu);
     blockService->writeBlock();
 }
 
+
+/*
+ * Load and parse system configuration.
+ */
+void ModuleManager::loadSystemConfig(configBlockID_t blockID) {
+
+    LOG("\nModuleManager::loadSystemConfig(): loading system config\n");
+
+    blockService->readBlock( blockID);
+
+    if( blockService->isBlockValid()) {
+        parseBlock( systemMenu);
+    } else {
+        LOG("** ModuleManager::loadSystemConfig(): system config is invalid, saving defaults\n");
+        systemMenu->setDefaults();
+        saveSystemConfig( blockID);
+    }
+}
+
+/*
+ * Generate and store system configuration.
+ */
+void ModuleManager::saveSystemConfig(configBlockID_t blockID) {
+
+    LOG("\nModuleManager::saveSystemConfig(): saving system config\n");
+
+    generateBlock( blockID, systemMenu);
+    blockService->writeBlock();
+}
 /*
  * Parse data in configuration block and distribute data to 
  * each module.
  */
-void ModuleManager::parseBlock() {
+void ModuleManager::parseBlock( Menu *menu) {
 
     const uint8_t *payload;
     moduleType_t type;
@@ -172,7 +204,7 @@ void ModuleManager::parseBlock() {
 
         LOGV("ModuleManager::parseBlock(): GET type=%d size=%d\n", type, size);
 
-        current = modelMenu->getModuleByType( type);
+        current = menu->getModuleByType( type);
         if( current == nullptr) {
             LOGV("** ModuleManager::parseBlock(): No module of type=%d\n", type);
             break;
@@ -189,13 +221,6 @@ void ModuleManager::parseBlock() {
         GET( (uint8_t*)&type, sizeof(moduleType_t));
     }
 }
-
-#define PUT( p, s)                              \
-    do {                                        \
-        blockService->memcpy( payload, p, s);   \
-        payload += s;                           \
-        totalSize += s;                         \
-    } while( 0 )
 
 /*
  * Walk through all modules and write configuration data of
@@ -228,13 +253,21 @@ void ModuleManager::parseBlock() {
  * -----------
  */
 
-void ModuleManager::generateBlock(configBlockID_t modelID) {
+#define PUT( p, s)                              \
+    do {                                        \
+        blockService->memcpy( payload, p, s);   \
+        payload += s;                           \
+        totalSize += s;                         \
+    } while( 0 )
+
+
+void ModuleManager::generateBlock( configBlockID_t modelID, Menu *menu) {
 
     uint8_t *payload;
     moduleType_t type;
     moduleSize_t size;
     moduleSize_t totalSize = 0;
-    Module *current = modelMenu->getFirstModule();
+    Module *current = menu->getFirstModule();
 
     blockService->formatBlock( modelID);
 
@@ -272,17 +305,3 @@ void ModuleManager::generateBlock(configBlockID_t modelID) {
 
     LOGV("ModuleManager::generateBlock(): Payload %d bytes\n", totalSize);
 }
-
-/*
- * Set default configuration for all modules in the list.
- */
-void ModuleManager::setDefaults() {
-
-    Module *current = modelMenu->getFirstModule();
-
-    while( current != nullptr) {
-        current->setDefaults();
-        current = current->menuNext;
-    }
-}
-

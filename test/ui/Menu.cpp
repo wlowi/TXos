@@ -6,6 +6,16 @@ Menu::Menu( const char *hdr) : header( hdr)
 
 }
 
+void Menu::setDefaults() {
+
+    Module *current = first;
+
+    while( current != nullptr) {
+        current->setDefaults();
+        current = current->menuNext;
+    }
+}
+
 void Menu::addModule( Module *modulePtr) {
 
     modulePtr->menuNext = nullptr;

@@ -35,38 +35,17 @@
 
 #include "TXos.h"
 #include "ConfigBlock.h"
+#include "ModuleManager.h"
 
 #define SYSTEMCONFIG_BLOCKID    ((configBlockID_t)0)
 
-typedef struct systemConfig_t {
-
-        configBlockID_t modelID;
-
-        /* ToDo:
-         * Stick calibration data
-         */
-
-} systemConfig_t;
-
 class SystemConfig {
 
-    private:
-        ConfigBlock *blockService;
-
-        systemConfig_t cfg;
-        
-        void parseBlock();
-        void generateBlock();
-        void setDefaults();
-        void verify();
-
     public:
-        explicit SystemConfig( ConfigBlock &svc);
+        explicit SystemConfig();
+
         void load();
         void save();
-
-        configBlockID_t getModelID() const;
-        void setModelID( configBlockID_t model);
 };
 
 #endif

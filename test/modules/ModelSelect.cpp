@@ -23,14 +23,17 @@
  */
 
 #include "ModelSelect.h"
-#include "SystemConfig.h"
 
 extern ModuleManager moduleManager;
-extern SystemConfig systemConfig;
 
 ModelSelect::ModelSelect() : Module( MODULE_MODEL_SELECT_TYPE, TEXT_MODULE_MODEL_SELECT) {
 
     setDefaults();
+}
+
+configBlockID_t ModelSelect::getModelID() const {
+
+    return cfg.modelID;
 }
 
 /* From Module */
@@ -42,19 +45,19 @@ void ModelSelect::run( Controls &controls) {
 
 void ModelSelect::setDefaults() {
 
-    // noop
+    cfg.modelID = 1;
 }
 
 /* From Module */
 
 moduleSize_t ModelSelect::getConfigSize() {
 
-    return 0;
+    return (moduleSize_t)sizeof( cfg);
 }
 
 uint8_t *ModelSelect::getConfig() {
 
-    return nullptr;
+    return (uint8_t*)&cfg;
 }
 
 /* From TableEditable */
@@ -67,8 +70,8 @@ void ModelSelect::rowExecute( uint8_t row) {
 
     LOGV("ModelSelect::execute( %d )\n", row);
 
-    moduleManager.loadModel( row +1);
-    systemConfig.setModelID( row +1);
+    cfg.modelID = row +1;
+    moduleManager.loadModel( cfg.modelID);
 }
 
 uint8_t ModelSelect::getRowCount() {
