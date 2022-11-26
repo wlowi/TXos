@@ -1,10 +1,14 @@
 
 #include "InputImpl.h"
 
+#define SLIDER_MIN   300
+#define SLIDER_MAX   700
+#define SLIDER_INIT  500
+
 InputImpl::InputImpl( wxWindow *parent)
     : wxBoxSizer(wxVERTICAL)
 {
-    this->channels = CONTROL_CHANNELS;
+    this->channels = PORT_ANALOG_INPUT_COUNT;
     this->switches = SWITCHES;
 
     sliderIDs = new wxWindowID[channels];
@@ -26,7 +30,7 @@ InputImpl::InputImpl( wxWindow *parent)
     for( int channel=0; channel<channels; channel++) {
         sliderIDs[channel] = wxWindow::NewControlId();
         wxBoxSizer *vbox = new wxBoxSizer(wxVERTICAL);
-        wxSlider *slider = new wxSlider(parent, sliderIDs[channel],0,-1000,1000, wxDefaultPosition, wxSize(-1,200), wxSL_VERTICAL);
+        wxSlider *slider = new wxSlider(parent, sliderIDs[channel],SLIDER_INIT,SLIDER_MIN,SLIDER_MAX, wxDefaultPosition, wxSize(-1,200), wxSL_VERTICAL | wxSL_INVERSE);
         vbox->Add( slider);
         wxString str;
         str.Printf(wxT("CH%d"), channel+1);
@@ -94,19 +98,25 @@ void InputImpl::init( switchSetConf_t conf) {
      */
 }
 
-channel_t InputImpl::GetChannels() {
-
-    return channels;
-}
-
 switch_t InputImpl::GetSwitches() {
 
     return switches;
 }
 
-channelValue_t InputImpl::GetChannelValue( int ch) {
+
+channelValue_t InputImpl::GetStickValue( int ch) {
 
     return chValues[ch];
+}
+
+channelValue_t InputImpl::GetTrimValue( int ch) {
+
+    return 512;
+}
+
+channelValue_t InputImpl::GetAuxValue( int ch) {
+
+    return 760;
 }
 
 switchState_t InputImpl::GetSwitchValue( int sw) {
@@ -118,7 +128,7 @@ void InputImpl::OnScroll( wxScrollEvent& event) {
 
     for( int i=0; i<channels; i++) {
         if( sliderIDs[i] == event.GetId()) {
-            chValues[i] = -event.GetPosition();
+            chValues[i] = event.GetPosition();
 //            printf("HandleScroll %d %d\n", event.GetId(), values[i]);
             break;
         }

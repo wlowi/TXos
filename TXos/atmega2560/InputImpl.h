@@ -27,10 +27,12 @@ class InputImpl
 
         void start();
         void setMux();
-        
-        channel_t GetChannels();
+
         switch_t GetSwitches();
-        channelValue_t GetChannelValue( channel_t ch);
+
+        channelValue_t GetStickValue( channel_t ch);
+        channelValue_t GetTrimValue( channel_t ch);
+        channelValue_t GetAuxValue( channel_t ch);
         switchState_t GetSwitchValue( switch_t sw);
 };
 

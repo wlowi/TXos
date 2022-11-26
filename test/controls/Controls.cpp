@@ -42,7 +42,15 @@ void Controls::GetControlValues() {
     }
 
     for( channel_t ch = 0; ch < PORT_ANALOG_INPUT_COUNT; ch++) {
-        controlSet.analogChannel[ch] = inputImpl->GetChannelValue( ch);
+        controlSet.stickChannel[ch] = inputImpl->GetStickValue( ch);
+    }
+
+    for( channel_t ch = 0; ch < PORT_TRIM_INPUT_COUNT; ch++) {
+        controlSet.trimChannel[ch] = inputImpl->GetTrimValue( ch);
+    }
+
+    for( channel_t ch = 0; ch < PORT_AUX_INPUT_COUNT; ch++) {
+        controlSet.auxChannel[ch] = inputImpl->GetAuxValue( ch);
     }
 
     controlSet.switches = 0;
@@ -51,14 +59,29 @@ void Controls::GetControlValues() {
     }
 }
 
+channelValue_t Controls::stickGet( channel_t ch) {
+
+    return controlSet.stickChannel[ch];
+}
+
+channelValue_t Controls::trimGet( channel_t ch) {
+
+    return controlSet.trimChannel[ch];
+}
+
+channelValue_t Controls::auxGet( channel_t ch) {
+
+    return controlSet.auxChannel[ch];
+}
+
 void Controls::analogSet( channel_t ch, channelValue_t value) {
 
-    if( value > CHANNELVALUE_MAX) {
-        value = CHANNELVALUE_MAX;
+    if( value > CHANNELVALUE_MAX_LIMIT) {
+        value = CHANNELVALUE_MAX_LIMIT;
     }
 
-    if( value < CHANNELVALUE_MIN) {
-        value = CHANNELVALUE_MIN;
+    if( value < CHANNELVALUE_MIN_LIMIT) {
+        value = CHANNELVALUE_MIN_LIMIT;
     }
 
     controlSet.analogChannel[ch] = value;

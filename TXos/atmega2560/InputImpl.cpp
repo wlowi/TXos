@@ -107,17 +107,12 @@ void InputImpl::setMux() {
     }
 }
 
-channel_t InputImpl::GetChannels() {
-
-    return adcInputs;
-}
-
 switch_t InputImpl::GetSwitches() {
 
     return switches;
 }
-
-channelValue_t InputImpl::GetChannelValue( channel_t ch) {
+        
+channelValue_t InputImpl::GetStickValue( channel_t ch) {
 
     channelValue_t v;
     
@@ -131,6 +126,16 @@ channelValue_t InputImpl::GetChannelValue( channel_t ch) {
     LOGV("InputImpl::GetChannelValue: Illegal channel no. %s", ch);
     
     return 0;
+}
+
+channelValue_t InputImpl::GetTrimValue( channel_t ch) {
+
+  return 512;
+}
+
+channelValue_t InputImpl::GetAuxValue( channel_t ch) {
+
+  return 512;
 }
 
 switchState_t InputImpl::GetSwitchValue( switch_t sw) {

@@ -28,9 +28,11 @@ class InputImpl : public wxBoxSizer
 
         void init( switchSetConf_t conf);
 
-        channel_t GetChannels();
         switch_t GetSwitches();
-        channelValue_t GetChannelValue( int ch);
+
+        channelValue_t GetStickValue( int ch);
+        channelValue_t GetTrimValue( int ch);
+        channelValue_t GetAuxValue( int ch);
         switchState_t GetSwitchValue( int sw);
 
         void OnScroll( wxScrollEvent& event);

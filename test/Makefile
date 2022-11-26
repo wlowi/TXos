@@ -17,7 +17,7 @@ UI_OBJ = ui/UserInterface.o ui/SelectList.o ui/Cell.o ui/Menu.o
 
 OUTPUT_OBJ = output/Output.o output/Ports.o output/Buzzer.o
 
-MODULE_OBJ = modules/ModelSelect.o modules/Model.o modules/EngineCut.o modules/ServoReverse.o modules/ServoSubtrim.o modules/ServoLimit.o modules/SwitchMonitor.o modules/ServoMonitor.o modules/SystemSetup.o
+MODULE_OBJ = modules/ModelSelect.o modules/Model.o modules/EngineCut.o modules/ServoReverse.o modules/ServoSubtrim.o modules/ServoLimit.o modules/SwitchMonitor.o modules/ServoMonitor.o modules/SystemSetup.o modules/CalibrateSticks.o
 
 CXXFLAGS += -g -O -Wall -Wpedantic -Wextra -Wno-unused-parameter
 

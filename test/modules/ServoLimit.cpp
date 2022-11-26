@@ -46,8 +46,8 @@ void ServoLimit::run( Controls &controls) {
 void ServoLimit::setDefaults() {
 
     for( channel_t ch = 0; ch < CHANNELS; ch++) {
-        cfg.posLimit_pct[ch] = PERCENT_MAX;
-        cfg.negLimit_pct[ch] = PERCENT_MIN;
+        cfg.posLimit_pct[ch] = PERCENT_MAX_LIMIT;
+        cfg.negLimit_pct[ch] = PERCENT_MIN_LIMIT;
     }
 }
 
@@ -83,9 +83,9 @@ uint8_t ServoLimit::getColCount( uint8_t row) {
 void ServoLimit::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
     if( col == 0) {
-        cell->setInt8( 4, cfg.negLimit_pct[row], PERCENT_MIN, PERCENT_MAX);
+        cell->setInt8( 4, cfg.negLimit_pct[row], PERCENT_MIN_LIMIT, PERCENT_MAX_LIMIT);
     } else {
-        cell->setInt8( 9, cfg.posLimit_pct[row], PERCENT_MIN, PERCENT_MAX);
+        cell->setInt8( 9, cfg.posLimit_pct[row], PERCENT_MIN_LIMIT, PERCENT_MAX_LIMIT);
     }
 }
 

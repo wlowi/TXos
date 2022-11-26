@@ -39,7 +39,7 @@ void SelectList::process( LcdWidget *lcd, Event *event) {
                 // table row always > 0
                 row = useBackItem ? tableRow-1 : tableRow;
                 if( table->isRowEditable( row)) {
-                    LOGV("SelectList::process(): Is Editable (idx=%d)\n", row);
+                    LOGV("SelectList::process(): Is Row Editable (row=%d) => Y\n", row);
                     if( table->getColCount( row) > 0) {
                         mode = MODE_EDIT;
                         tableCol = 0;
@@ -48,7 +48,7 @@ void SelectList::process( LcdWidget *lcd, Event *event) {
                     }
                 }
                 if( table->isRowExecutable( row)) {
-                    LOGV("SelectList::process(): Is Executable (idx=%d)\n", row);
+                    LOGV("SelectList::process(): Is Row Executable (row=%d) => Y\n", row);
                     table->rowExecute( row);
                     refresh = REFRESH_UPDATE;
                 }
@@ -76,7 +76,6 @@ void SelectList::process( LcdWidget *lcd, Event *event) {
 
                 for( uint8_t col = 0; col < table->getColCount(row); col++) {
                     if( table->hasChanged( row, col)) {
-                        LOGV("P %d %d\n", row, col);
                         refreshLine( lcd, tRow);
                     }        
                 }

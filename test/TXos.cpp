@@ -109,6 +109,7 @@
 #include "ServoSubtrim.h"
 #include "ServoLimit.h"
 #include "SystemSetup.h"
+#include "CalibrateSticks.h"
 
 #if defined( ARDUINO )
 #include "InputImpl.h"
@@ -271,6 +272,8 @@ void setup( void) {
     moduleManager.addToSystemMenu( servoMonitor);
     SwitchMonitor *switchMonitor = new SwitchMonitor( controls);
     moduleManager.addToSystemMenu( switchMonitor);
+    CalibrateSticks *calibrateSticks = new CalibrateSticks();
+    moduleManager.addToSystemMenu( calibrateSticks);
 
     moduleManager.addToModelMenu( new SystemSetup());
     Model *model = new Model();
@@ -287,6 +290,7 @@ void setup( void) {
     /* The order of modules is important.
      * It defines the order of execution in RunModules().
      */
+    moduleManager.addToRunList( calibrateSticks);
     moduleManager.addToRunList( model);
     moduleManager.addToRunList( engineCut);
     moduleManager.addToRunList( servoReverse);

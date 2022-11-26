@@ -32,9 +32,6 @@
  * generating the PPM signal.
  */
 #define CHANNELS                ((channel_t)9)
-/* The number of actual analog input channels.
- */
-#define CONTROL_CHANNELS        ((channel_t)6)
 
 /* This identifies a channel number.
  */
@@ -57,8 +54,11 @@ typedef uint16_t timingUsec_t;
 
 #define CHANNELVALUE_MID        ((channelValue_t)    0)
 
-#define CHANNELVALUE_MIN        ((channelValue_t)-1250)
-#define CHANNELVALUE_MAX        ((channelValue_t) 1250)
+#define CHANNELVALUE_MIN        ((channelValue_t)-1000)
+#define CHANNELVALUE_MAX        ((channelValue_t) 1000)
+
+#define CHANNELVALUE_MIN_LIMIT  ((channelValue_t)-1250)
+#define CHANNELVALUE_MAX_LIMIT  ((channelValue_t) 1250)
 
 #define CHANNEL_THROTTLE        ((channel_t)0)
 #define CHANNEL_AILERON         ((channel_t)1)
@@ -72,8 +72,8 @@ typedef uint16_t timingUsec_t;
 /* This represents a percentage from -125% to 125%
  */
 typedef int8_t percent_t;
-#define PERCENT_MAX ((percent_t)125)
-#define PERCENT_MIN ((percent_t)-125)
+#define PERCENT_MAX_LIMIT       ((percent_t)125)
+#define PERCENT_MIN_LIMIT       ((percent_t)-125)
 
 #define PCT_TO_CHANNEL( p) ((channelValue_t)p*10)
 
@@ -106,7 +106,7 @@ typedef enum {
 
 } switchState_t;
 
-#define SW_STATE_ALL_DONTCARE  ((switchSet_t)UINT16_MAX)
+#define SW_STATE_ALL_DONTCARE  ((switchSet_t)0xffff)
 
 
 /* Switch configuration
@@ -158,7 +158,14 @@ extern const char *ChannelNames[CHANNELS];
  */
 typedef struct controlSet_t {
     
+    /* Raw analog input channels */
+    channelValue_t stickChannel[ PORT_ANALOG_INPUT_COUNT ];
+    channelValue_t trimChannel[ PORT_TRIM_INPUT_COUNT ];
+    channelValue_t auxChannel[ PORT_AUX_INPUT_COUNT ];
+
+    /* Calibrated and mixed analog channels */
     channelValue_t analogChannel[ CHANNELS ];
+
     switchSet_t switches;
     switchSetConf_t switchSetConf;
 
@@ -178,7 +185,11 @@ class Controls {
          * from input implementation and update 'channels' structure.
          */
         void GetControlValues();
-        
+
+        channelValue_t stickGet( channel_t ch);
+        channelValue_t trimGet( channel_t ch);
+        channelValue_t auxGet( channel_t ch);
+
         void analogSet( channel_t ch, channelValue_t value);
         channelValue_t analogGet( channel_t ch);
 

@@ -8,7 +8,7 @@
 #include "Arduino.h"
 #include "Text.h"
 
-#define TXOS_VERSION "0.1.1"
+#define TXOS_VERSION "0.1.2"
 
 #if defined( ARDUINO )
     #define LOG( f )
