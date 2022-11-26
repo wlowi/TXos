@@ -46,7 +46,7 @@ uint8_t ServoMonitor::getColCount( uint8_t row) {
 
 void ServoMonitor::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
-    cell->setInt16( 4, current.analogGet( row), 0, 3);
+    cell->setInt16( 4, CHANNEL_TO_PCT ( current.analogGet( row)), 0, 3);
 }
 
 void ServoMonitor::setValue( uint8_t row, uint8_t col, Cell *cell) {

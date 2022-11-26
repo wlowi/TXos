@@ -38,6 +38,7 @@ InputImpl::InputImpl( wxWindow *parent)
         hbox->Add( vbox);
         hbox->AddSpacer(10);
         slider->Bind( wxEVT_SCROLL_THUMBTRACK, &InputImpl::OnScroll, this, sliderIDs[channel]);
+        chValues[channel] = SLIDER_INIT;
     }
 
     Add( hbox);
