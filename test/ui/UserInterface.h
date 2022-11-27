@@ -22,7 +22,9 @@ class UserInterface {
     private:
         LcdWidget *lcd;
 
-        uint8_t screen;
+#define SCREEN_STACK_SIZE   5
+        uint8_t screen[SCREEN_STACK_SIZE];
+        uint8_t screenPtr;
         uint8_t refresh;
         
         TableEditable *module;
@@ -35,7 +37,9 @@ class UserInterface {
     public:
         void init();
         void handle();
-        void switchToScreen( uint8_t scr);
+        void switchScreen( uint8_t scr);
+        void pushScreen( uint8_t scr);
+        void popScreen();
 };
 
 #endif

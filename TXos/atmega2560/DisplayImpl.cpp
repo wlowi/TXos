@@ -137,6 +137,10 @@ Event *DisplayImpl::getEvent() {
       event.key = KEY_ENTER;
       event.count = 1;
       button = 0;
+    } else if( button == ROTARYENC_BUTTON_LONG) {
+      event.key = KEY_CLEAR;
+      event.count = 1;
+      button = 0;
     } else if( enc > 0) {
       event.key = KEY_UP;
       event.count = (enc >> 2);

@@ -34,7 +34,7 @@ uint8_t *SystemSetup::getConfig() {
 void SystemSetup::moduleExecute() {
 
     LOG("SystemSetup::execute(): called\n");
-    userInterface.switchToScreen( SCREEN_SYSTEM);
+    userInterface.pushScreen( SCREEN_SYSTEM);
 }
 
 uint8_t SystemSetup::getRowCount() {

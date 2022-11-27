@@ -4,16 +4,28 @@
 #include "Model.h"
 #include "SystemConfig.h"
 #include "ModelSelect.h"
+#include "Buzzer.h"
 
 extern DisplayImpl *displayImpl;
 extern ModuleManager moduleManager;
 extern SystemConfig systemConfig;
 extern ModelSelect modelSelect;
+extern Buzzer buzzer;
+
+const buzzerCmd_t SoundClear[] = {
+  BUZZER_PLAY( 1),
+  BUZZER_PAUSE( 1),
+  BUZZER_REPEAT( 0, 2),
+  BUZZER_STOP()
+};
 
 void UserInterface::init() {
 
     module = NULL;
-    screen = SCREEN_INIT;
+    
+    screen[0] = SCREEN_INIT;
+    screenPtr = 0;
+
     lcd = displayImpl->getLCD();
     lcd->clear();
     lcd->setFontSize( 2);
@@ -24,9 +36,13 @@ void UserInterface::handle() {
 
     Event *event = displayImpl->getEvent();
 
-    switch (screen) {
+    if( event->key != KEY_NONE) {
+        LOGV("\nUserInterface::handle(): Event %d (count=%d)\n", event->key, event->count);
+    }
+    
+    switch (screen[screenPtr]) {
     case SCREEN_INIT:
-        switchToScreen( SCREEN_HOME);
+        switchScreen( SCREEN_HOME);
         break;
     
     case SCREEN_HOME:
@@ -75,8 +91,13 @@ void UserInterface::homeScreen( Event *event) {
         refresh = REFRESH_OK;
     }
 
-    if( event->key == KEY_ENTER) {
-        switchToScreen( SCREEN_MODEL);
+    switch( event->key) {
+    case KEY_ENTER:
+        pushScreen( SCREEN_MODEL);
+        break;
+    
+    case KEY_CLEAR:
+        buzzer.play( SoundClear);
     }
 }
 
@@ -97,11 +118,11 @@ void UserInterface::menuScreen( Event *event, Menu *menu) {
         case KEY_ENTER:
             idx = selectList.current();
             if( idx == GO_BACK) {
-                switchToScreen( SCREEN_HOME);
+                popScreen();
             } else {
                 module = menu->getModule(idx);
                 LOGV("UserInterface::menuScreen(): Module %s\n", module ? module->getName() : "NULL");
-                switchToScreen( SCREEN_CONFIG);
+                pushScreen( SCREEN_CONFIG);
             }
             break;
         }
@@ -114,7 +135,7 @@ void UserInterface::configScreen( Event *event) {
 
     if( module == NULL) {
         LOG("** UserInterface::configScreen(): No module\n");
-        switchToScreen(SCREEN_HOME);
+        popScreen();
         return;
     }
 
@@ -132,16 +153,31 @@ void UserInterface::configScreen( Event *event) {
             if( idx == GO_BACK) {
                 moduleManager.saveModel( modelSelect.getModelID());
                 systemConfig.save();
-                switchToScreen( SCREEN_HOME);
+                popScreen();
             }
             break;
         }
     }
 }
 
-void UserInterface::switchToScreen( uint8_t scr) {
+void UserInterface::switchScreen( uint8_t scr) {
 
-    screen = scr;
+    screen[screenPtr] = scr;
     refresh = REFRESH_FULL;
-    LOGV("UserInterface::switchScreen(): Switch to %d\n", scr);
+    LOGV("UserInterface::switchScreen(): Switch to %d\n", screen[screenPtr]);
+}
+
+void UserInterface::pushScreen( uint8_t scr) {
+
+    if( screenPtr < SCREEN_STACK_SIZE-1) screenPtr++;
+    screen[screenPtr] = scr;
+    refresh = REFRESH_FULL;
+    LOGV("UserInterface::pushScreen(): Switch to %d\n", screen[screenPtr]);
+}
+
+void UserInterface::popScreen() {
+
+    if( screenPtr > 0) screenPtr--;
+    refresh = REFRESH_FULL;
+    LOGV("UserInterface::popScreen(): Switch to %d\n", screen[screenPtr]);
 }

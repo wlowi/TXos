@@ -1,11 +1,21 @@
 
 TODO:
 
-Ports interface and implmentation to control relais and buzzer.
+User interface: Alert messages
 
-Analog input for sticks and trim via interrupt.
+Module: Rate & Expo
 
-Switches input
+Module: Timer
+
+Module: Geber Switches
+
+System Module: Bind
+
+Input implementation: Switches input
+
+Display implementation: Fix encoder
+
+Display Vcc
 
 Module processing within PPM generation frame.
 

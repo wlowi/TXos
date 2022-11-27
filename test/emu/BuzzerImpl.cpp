@@ -28,8 +28,10 @@ void BuzzerImpl::init( Ports &p) {
 
 void BuzzerImpl::off() {
 
+    LOG("BuzzerImpl::off(): called\n");
 }
 
 void BuzzerImpl::play( const buzzerCmd_t sound[]) {
 
+    LOG("BuzzerImpl::play(): called\n");
 }

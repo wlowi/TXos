@@ -18,7 +18,11 @@ DisplayImpl::DisplayImpl( wxWindow *parent) : wxBoxSizer(wxVERTICAL) {
     b = new wxButton(parent, wxID_OK, wxT("Enter"));
     Add( b);
     b->Bind( wxEVT_BUTTON, &DisplayImpl::OnButton, this, wxID_OK);
-    
+
+    b = new wxButton(parent, wxID_CLEAR, wxT("Clear"));
+    Add( b);
+    b->Bind( wxEVT_BUTTON, &DisplayImpl::OnButton, this, wxID_CLEAR);
+
     b = new wxButton(parent, wxID_DOWN, wxT("Down"));
     Add( b);
     b->Bind( wxEVT_BUTTON, &DisplayImpl::OnButton, this, wxID_DOWN);
@@ -41,6 +45,10 @@ void DisplayImpl::OnButton( wxCommandEvent &btnEvent) {
             break;
         case wxID_OK:
             key = KEY_ENTER;
+            count = 1;
+            break;
+        case wxID_CLEAR:
+            key = KEY_CLEAR;
             count = 1;
             break;
         case wxID_DOWN:
