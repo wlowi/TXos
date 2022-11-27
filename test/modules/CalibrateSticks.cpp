@@ -81,16 +81,18 @@ bool CalibrateSticks::isRowExecutable( uint8_t row) {
 void CalibrateSticks::rowExecute( uint8_t row ) {
 
     switch( calibrationStep) {
-        case CALIBRATION_STEP_NONE:
-            calibrationStep = CALIBRATION_STEP_CENTER;
-            break;
+    case CALIBRATION_STEP_NONE:
+        calibrationStep = CALIBRATION_STEP_CENTER;
+        break;
 
-        case CALIBRATION_STEP_CENTER:
-            calibrationStep = CALIBRATION_STEP_MINMAX;
-            break;
-        case CALIBRATION_STEP_MINMAX:
-            calibrationStep = CALIBRATION_STEP_NONE;
-            break;
+    case CALIBRATION_STEP_CENTER:
+        calibrationStep = CALIBRATION_STEP_MINMAX;
+        break;
+        
+    case CALIBRATION_STEP_MINMAX:
+    default:
+        calibrationStep = CALIBRATION_STEP_NONE;
+        break;
     }
 }
 

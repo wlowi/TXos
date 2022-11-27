@@ -9,8 +9,6 @@ Module: Timer
 
 Module: Geber Switches
 
-System Module: Bind
-
 Input implementation: Switches input
 
 Display implementation: Fix encoder

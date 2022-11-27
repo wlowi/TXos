@@ -111,6 +111,8 @@
 #include "SystemSetup.h"
 #include "CalibrateSticks.h"
 #include "CalibrateTrim.h"
+#include "Bind.h"
+#include "RangeTest.h"
 
 #if defined( ARDUINO )
 #include "InputImpl.h"
@@ -275,6 +277,10 @@ void setup( void) {
     moduleManager.addToSystemMenu( servoMonitor);
     SwitchMonitor *switchMonitor = new SwitchMonitor( controls);
     moduleManager.addToSystemMenu( switchMonitor);
+    Bind *bind = new Bind();
+    moduleManager.addToSystemMenu( bind);
+    RangeTest *rangeTest = new RangeTest();
+    moduleManager.addToSystemMenu( rangeTest);
     CalibrateSticks *calibrateSticks = new CalibrateSticks();
     moduleManager.addToSystemMenu( calibrateSticks);
     CalibrateTrim *calibrateTrim = new CalibrateTrim();

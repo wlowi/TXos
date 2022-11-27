@@ -24,16 +24,18 @@
 #define CC( t ) ((const char*)t)
 
 // Module Names (13 letters max.)       1234567890123
+#define TEXT_MODULE_BIND            CC("Bind RX")
 #define TEXT_MODULE_CAL_STICKS      CC("Calib. Sticks")
 #define TEXT_MODULE_CAL_TRIM        CC("Calib. Trim")
-#define TEXT_MODULE_MODEL_SELECT    CC("Model Select")
-#define TEXT_MODULE_MODEL           CC("Model")
-#define TEXT_MODULE_MONITOR         CC("Monitor")
-#define TEXT_MODULE_SWITCHES        CC("Switches")
 #define TEXT_MODULE_ENGINE_CUT      CC("Engine Cut")
+#define TEXT_MODULE_MODEL           CC("Model")
+#define TEXT_MODULE_MODEL_SELECT    CC("Model Select")
+#define TEXT_MODULE_MONITOR         CC("Monitor")
+#define TEXT_MODULE_RANGE_TEST      CC("Range Test")
 #define TEXT_MODULE_SERVO_LIMIT     CC("Servo limit")
 #define TEXT_MODULE_SERVO_REVERSE   CC("Servo reverse")
 #define TEXT_MODULE_SERVO_SUBTRIM   CC("Servo subtrim")
+#define TEXT_MODULE_SWITCHES        CC("Switches")
 #define TEXT_MODULE_SYSTEM_SETUP    CC("System Setup")
 
 // Control channels (3 letters max.)

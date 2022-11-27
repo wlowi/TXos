@@ -20,4 +20,6 @@
 
 typedef uint8_t byte;
 
+#define delay( s)
+
 #endif
