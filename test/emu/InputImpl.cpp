@@ -112,7 +112,7 @@ channelValue_t InputImpl::GetStickValue( int ch) {
 
 channelValue_t InputImpl::GetTrimValue( int ch) {
 
-    return 512;
+    return 511;
 }
 
 channelValue_t InputImpl::GetAuxValue( int ch) {

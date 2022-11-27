@@ -66,6 +66,10 @@ typedef uint16_t timingUsec_t;
 #define CHANNEL_RUDDER          ((channel_t)3)
 #define CHANNEL_AILERON2        ((channel_t)4)
 
+#define TRIMVALUE_MID           ((channelValue_t)   0)
+#define TRIMVALUE_MIN_LIMIT     ((channelValue_t)-250)
+#define TRIMVALUE_MAX_LIMIT     ((channelValue_t) 250)
+
 #define H( v ) ((uint8_t)(v >> 8))
 #define L( v ) ((uint8_t)(v & 0xff))
 

@@ -18,20 +18,20 @@
 
 */
 
-#include "CalibrateSticks.h"
+#include "CalibrateTrim.h"
 
-CalibrateSticks::CalibrateSticks() : Module( MODULE_CAL_STICKS_TYPE, TEXT_MODULE_CAL_STICKS) {
+CalibrateTrim::CalibrateTrim() : Module( MODULE_CAL_TRIM_TYPE, TEXT_MODULE_CAL_TRIM) {
 
     setDefaults();
 }
 
-void CalibrateSticks::run( Controls &controls) {
+void CalibrateTrim::run( Controls &controls) {
 
     long v;
 
-    for( channel_t ch = 0; ch < PORT_ANALOG_INPUT_COUNT; ch++) {
+    for( channel_t ch = 0; ch < PORT_TRIM_INPUT_COUNT; ch++) {
 
-        v = controls.stickGet( ch);
+        v = controls.trimGet( ch);
 
         if( calibrationStep == CALIBRATION_STEP_CENTER) {
 
@@ -48,21 +48,21 @@ void CalibrateSticks::run( Controls &controls) {
         } else {
 
             if( v > cfg.midPos[ch]) {
-                v = ((long)(v - cfg.midPos[ch]) * (CHANNELVALUE_MAX_LIMIT - CHANNELVALUE_MID)) / (cfg.maxPos[ch] - cfg.midPos[ch]);
+                v = ((long)(v - cfg.midPos[ch]) * (TRIMVALUE_MAX_LIMIT - TRIMVALUE_MID)) / (cfg.maxPos[ch] - cfg.midPos[ch]);
             } else if( v < cfg.midPos[ch]) {
-                v = ((long)(v - cfg.midPos[ch]) * (CHANNELVALUE_MID - CHANNELVALUE_MIN_LIMIT)) / (cfg.midPos[ch] - cfg.minPos[ch]);
+                v = ((long)(v - cfg.midPos[ch]) * (TRIMVALUE_MID - TRIMVALUE_MIN_LIMIT)) / (cfg.midPos[ch] - cfg.minPos[ch]);
             } else {
-                v = CHANNELVALUE_MID;
+                v = TRIMVALUE_MID;
             }
 
-            controls.analogSet( ch, (channelValue_t)v);
+            controls.analogSet( ch, controls.analogGet(ch) + (channelValue_t)v);
         }
     }
 }
 
-void CalibrateSticks::setDefaults() {
+void CalibrateTrim::setDefaults() {
 
-    for( channel_t ch = 0; ch < PORT_ANALOG_INPUT_COUNT; ch++) {        
+    for( channel_t ch = 0; ch < PORT_TRIM_INPUT_COUNT; ch++) {        
         cfg.minPos[ch] = 0;
         cfg.midPos[ch] = 511;
         cfg.maxPos[ch] = 1023;
@@ -73,12 +73,12 @@ void CalibrateSticks::setDefaults() {
 
 /* From Module */
 
-bool CalibrateSticks::isRowExecutable( uint8_t row) {
+bool CalibrateTrim::isRowExecutable( uint8_t row) {
 
     return (row == 0);
 }
 
-void CalibrateSticks::rowExecute( uint8_t row ) {
+void CalibrateTrim::rowExecute( uint8_t row ) {
 
     switch( calibrationStep) {
         case CALIBRATION_STEP_NONE:
@@ -94,34 +94,34 @@ void CalibrateSticks::rowExecute( uint8_t row ) {
     }
 }
 
-moduleSize_t CalibrateSticks::getConfigSize() {
+moduleSize_t CalibrateTrim::getConfigSize() {
 
     return (moduleSize_t)sizeof( cfg);
 }
 
-uint8_t *CalibrateSticks::getConfig() {
+uint8_t *CalibrateTrim::getConfig() {
 
     return (uint8_t*)&cfg;
 }
 
 /* From TableEditable */
 
-uint8_t CalibrateSticks::getRowCount() {
+uint8_t CalibrateTrim::getRowCount() {
 
-    return PORT_ANALOG_INPUT_COUNT +1;
+    return PORT_TRIM_INPUT_COUNT +1;
 }
 
-const char *CalibrateSticks::getRowName( uint8_t row) {
+const char *CalibrateTrim::getRowName( uint8_t row) {
 
     return (row == 0) ? "RUN" : " ";
 }
 
-uint8_t CalibrateSticks::getColCount( uint8_t row) {
+uint8_t CalibrateTrim::getColCount( uint8_t row) {
 
     return (row == 0) ? 1 : 2;
 }
 
-void CalibrateSticks::getValue( uint8_t row, uint8_t col, Cell *cell) {
+void CalibrateTrim::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
     if( row == 0) {
 
@@ -144,15 +144,15 @@ void CalibrateSticks::getValue( uint8_t row, uint8_t col, Cell *cell) {
     } else {
 
         if( col == 0) {
-            cell->setInt16( 1, cfg.minPos[row-1], CHANNELVALUE_MIN_LIMIT, CHANNELVALUE_MAX_LIMIT);
+            cell->setInt16( 1, cfg.minPos[row-1], TRIMVALUE_MIN_LIMIT, TRIMVALUE_MAX_LIMIT);
         } else {
-            cell->setInt16( 7, cfg.maxPos[row-1], CHANNELVALUE_MIN_LIMIT, CHANNELVALUE_MAX_LIMIT);
+            cell->setInt16( 7, cfg.maxPos[row-1], TRIMVALUE_MIN_LIMIT, TRIMVALUE_MAX_LIMIT);
         }
 
     }
 }
 
-void CalibrateSticks::setValue( uint8_t row, uint8_t col, Cell *cell) {
+void CalibrateTrim::setValue( uint8_t row, uint8_t col, Cell *cell) {
 
     /* noop */
 }

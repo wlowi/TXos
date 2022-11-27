@@ -5,8 +5,24 @@
 #include "TXos.h"
 #include "Controls.h"
 
+/* 10 bit ADC => 1023 */
+#define ADC_RESOLUTION 1023
+
+/* Invert raw channel values */
+#define INVERT_CH1
+#define INVERT_CH2
+#define INVERT_CH3
+#undef  INVERT_CH4
+
 class InputImpl
 {
+    private:
+        channel_t stickCount;
+        channel_t trimCount;
+        channel_t auxCount;
+
+        channelValue_t GetAnalogValue( channel_t ch);
+
     public:
         
         const uint8_t *analogPins;
@@ -15,12 +31,12 @@ class InputImpl
         int *swValues = NULL;
         channelValue_t *adcValues = NULL;
 
-        channel_t adcInputs;
+        channel_t adcInputs;  /* Total number of ADC inputs */
         switch_t switches;
 
         uint8_t mux;
 
-        InputImpl( channel_t adcInputs, const uint8_t analogPins[],
+        InputImpl( channel_t stickCnt, channel_t trimCnt, channel_t auxCnt, const uint8_t analogPins[],
                    switch_t switches, const uint8_t switchPins[]);
 
         void init( switchSetConf_t conf);

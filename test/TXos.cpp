@@ -110,6 +110,7 @@
 #include "ServoLimit.h"
 #include "SystemSetup.h"
 #include "CalibrateSticks.h"
+#include "CalibrateTrim.h"
 
 #if defined( ARDUINO )
 #include "InputImpl.h"
@@ -246,8 +247,10 @@ void setup( void) {
 
 #if defined( ARDUINO )
 
-    inputImpl = new InputImpl( ANALOG_PIN_COUNT, AnalogPins,
-                               PORT_SWITCH_INPUT_COUNT, SwitchPins);
+    inputImpl = new InputImpl( PORT_ANALOG_INPUT_COUNT, PORT_TRIM_INPUT_COUNT, PORT_AUX_INPUT_COUNT,
+                               AnalogPins,
+                               PORT_SWITCH_INPUT_COUNT,
+                               SwitchPins);
 
     outputImpl = new OutputImpl();
     portsImpl = new PortsImpl();
@@ -274,6 +277,8 @@ void setup( void) {
     moduleManager.addToSystemMenu( switchMonitor);
     CalibrateSticks *calibrateSticks = new CalibrateSticks();
     moduleManager.addToSystemMenu( calibrateSticks);
+    CalibrateTrim *calibrateTrim = new CalibrateTrim();
+    moduleManager.addToSystemMenu( calibrateTrim);
 
     moduleManager.addToModelMenu( new SystemSetup());
     Model *model = new Model();
@@ -291,6 +296,7 @@ void setup( void) {
      * It defines the order of execution in RunModules().
      */
     moduleManager.addToRunList( calibrateSticks);
+    moduleManager.addToRunList( calibrateTrim);
     moduleManager.addToRunList( model);
     moduleManager.addToRunList( engineCut);
     moduleManager.addToRunList( servoReverse);

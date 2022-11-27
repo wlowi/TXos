@@ -25,6 +25,7 @@
 
 // Module Names (13 letters max.)       1234567890123
 #define TEXT_MODULE_CAL_STICKS      CC("Calib. Sticks")
+#define TEXT_MODULE_CAL_TRIM        CC("Calib. Trim")
 #define TEXT_MODULE_MODEL_SELECT    CC("Model Select")
 #define TEXT_MODULE_MODEL           CC("Model")
 #define TEXT_MODULE_MONITOR         CC("Monitor")

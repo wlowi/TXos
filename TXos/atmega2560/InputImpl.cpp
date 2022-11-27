@@ -19,6 +19,19 @@ ISR(ADC_vect) {
     
     if( inputImpl->mux < inputImpl->adcInputs -1) {
 
+#ifdef INVERT_CH1
+      if( inputImpl->mux == 0) v = ADC_RESOLUTION -v;
+#endif
+#ifdef INVERT_CH2
+      if( inputImpl->mux == 1) v = ADC_RESOLUTION -v;
+#endif
+#ifdef INVERT_CH3
+      if( inputImpl->mux == 2) v = ADC_RESOLUTION -v;
+#endif
+#ifdef INVERT_CH4
+      if( inputImpl->mux == 3) v = ADC_RESOLUTION -v;
+#endif
+
       inputImpl->adcValues[inputImpl->mux] = v;
       
       inputImpl->mux++;
@@ -31,10 +44,15 @@ ISR(ADC_vect) {
     }
 }
 
-InputImpl::InputImpl( channel_t adcInputs, const uint8_t analogPins[],
-                      switch_t switches, const uint8_t switchPins[])
+InputImpl::InputImpl( channel_t stickCnt, channel_t trimCnt, channel_t auxCnt,
+                      const uint8_t analogPins[],
+                      switch_t switches,
+                      const uint8_t switchPins[])
 {
-    this->adcInputs = adcInputs;
+    this->stickCount = stickCnt;
+    this->trimCount = trimCnt;
+    this->auxCount = auxCnt;
+    this->adcInputs = stickCnt + trimCnt + auxCnt;
     this->switches = switches;
 
     this->analogPins = analogPins;
@@ -114,8 +132,41 @@ switch_t InputImpl::GetSwitches() {
         
 channelValue_t InputImpl::GetStickValue( channel_t ch) {
 
-    channelValue_t v;
+    if( ch < stickCount) {
+      return GetAnalogValue( ch);
+    }
+
+    LOGV("InputImpl::GetStickValue: Illegal channel no. %s", ch);
     
+    return 0;
+}
+
+channelValue_t InputImpl::GetTrimValue( channel_t ch) {
+
+  if( ch < trimCount) {
+      return GetAnalogValue( ch + stickCount);
+  }
+
+  LOGV("InputImpl::GetTrimValue: Illegal channel no. %s", ch);
+
+  return 0;
+}
+
+channelValue_t InputImpl::GetAuxValue( channel_t ch) {
+
+  if( ch < auxCount) {
+      return GetAnalogValue( ch + stickCount + trimCount);
+  }
+
+  LOGV("InputImpl::GetAuxValue: Illegal channel no. %s", ch);
+
+  return 0;
+}
+
+channelValue_t InputImpl::GetAnalogValue( channel_t ch) {
+
+    channelValue_t v;
+
     if( ch < adcInputs) {
       ATOMIC_BLOCK( ATOMIC_RESTORESTATE) {
           v = adcValues[ch];
@@ -123,19 +174,9 @@ channelValue_t InputImpl::GetStickValue( channel_t ch) {
       return v;
     }
 
-    LOGV("InputImpl::GetChannelValue: Illegal channel no. %s", ch);
-    
+    LOGV("InputImpl::GetStickValue: Illegal channel no. %s", ch);
+
     return 0;
-}
-
-channelValue_t InputImpl::GetTrimValue( channel_t ch) {
-
-  return 512;
-}
-
-channelValue_t InputImpl::GetAuxValue( channel_t ch) {
-
-  return 512;
 }
 
 switchState_t InputImpl::GetSwitchValue( switch_t sw) {
