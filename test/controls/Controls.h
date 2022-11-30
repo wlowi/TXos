@@ -141,12 +141,12 @@ typedef enum {
  */
 #define SWITCH_CONFIGURATION        \
     ((switchConf_t)                 \
-    /* 0 */ SW_CONF_3STATE        | \
+    /* 0 */ SW_CONF_2STATE        | \
     /* 1 */ SW_CONF_3STATE  <<  2 | \
     /* 2 */ SW_CONF_3STATE  <<  4 | \
-    /* 3 */ SW_CONF_3STATE  <<  6 | \
-    /* 4 */ SW_CONF_2STATE  <<  8 | \
-    /* 5 */ SW_CONF_2STATE  << 10 | \
+    /* 3 */ SW_CONF_2STATE  <<  6 | \
+    /* 4 */ SW_CONF_3STATE  <<  8 | \
+    /* 5 */ SW_CONF_3STATE  << 10 | \
     /* 6 */ SW_CONF_CONTROL << 12 | \
     /* 7 */ SW_CONF_CONTROL << 14   \
      )
@@ -171,7 +171,6 @@ typedef struct controlSet_t {
     channelValue_t analogChannel[ CHANNELS ];
 
     switchSet_t switches;
-    switchSetConf_t switchSetConf;
 
 } controlSet_t;
 
@@ -183,7 +182,7 @@ class Controls {
     public:
         Controls();
 
-        void init( switchSetConf_t conf);
+        void init();
 
         /* Retrieve all analog (sticks) and digital (switches) control values
          * from input implementation and update 'channels' structure.
@@ -200,7 +199,6 @@ class Controls {
         void switchSet( switch_t sw, switchState_t value);
         switchState_t switchGet( switch_t sw);
 
-        void switchConfSet( switch_t sw, switchConf_t conf);
         switchConf_t switchConfGet( switch_t sw);
 
         bool evalSwitches( switchSet_t trigger);

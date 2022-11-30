@@ -16,6 +16,11 @@ class InputImpl : public wxBoxSizer
     private:
         channel_t channels;
         switch_t switches;
+        switchSetConf_t switchConf;
+
+        channel_t stickCount;
+        channel_t trimCount;
+        channel_t auxCount;
 
         wxWindowID *sliderIDs = nullptr;
         channelValue_t *chValues = nullptr;
@@ -23,10 +28,13 @@ class InputImpl : public wxBoxSizer
         switchState_t *swValues = nullptr;
 
     public:
-        explicit InputImpl( wxWindow *parent);
+        explicit InputImpl( wxWindow *parent,
+                            channel_t stickCnt, channel_t trimCnt, channel_t auxCnt,
+                            switch_t switches, switchSetConf_t conf);
+
         ~InputImpl( void) final;
 
-        void init( switchSetConf_t conf);
+        void init();
 
         switch_t GetSwitches();
 
@@ -34,6 +42,7 @@ class InputImpl : public wxBoxSizer
         channelValue_t GetTrimValue( int ch);
         channelValue_t GetAuxValue( int ch);
         switchState_t GetSwitchValue( int sw);
+        switchSetConf_t GetSwitchSetConf();
 
         void OnScroll( wxScrollEvent& event);
         void OnSwitch( wxCommandEvent& event);

@@ -1,9 +1,10 @@
 
 #include "DisplayImpl.h"
 
-DisplayImpl::DisplayImpl( wxWindow *parent) : wxBoxSizer(wxVERTICAL) {
+DisplayImpl::DisplayImpl( wxWindow *parent) : wxStaticBoxSizer(wxVERTICAL, parent, "UI") {
 
     lcd = new LcdWidget(parent, wxID_ANY, 160, 128, 1);
+    AddSpacer(20);
     Add( lcd);
     AddSpacer(20);
 
@@ -30,6 +31,8 @@ DisplayImpl::DisplayImpl( wxWindow *parent) : wxBoxSizer(wxVERTICAL) {
     b = new wxButton(parent, wxID_BACKWARD, wxT("Down 10"));
     Add( b);
     b->Bind( wxEVT_BUTTON, &DisplayImpl::OnButton, this, wxID_BACKWARD);
+
+    AddSpacer(20);
 }
 
 void DisplayImpl::OnButton( wxCommandEvent &btnEvent) {

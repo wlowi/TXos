@@ -10,7 +10,7 @@
 
 #include "Arduino.h"
 
-class OutputImpl : public wxBoxSizer
+class OutputImpl : public wxStaticBoxSizer
 {
     private:
         wxWindowID *channelIDs = NULL;

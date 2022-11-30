@@ -27,7 +27,7 @@ class Event {
         bool pending() const { return key != KEY_NONE; }
 };
 
-class DisplayImpl : public wxBoxSizer {
+class DisplayImpl : public wxStaticBoxSizer {
 
     private:
         LcdWidget *lcd;

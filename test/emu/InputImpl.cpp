@@ -5,11 +5,18 @@
 #define SLIDER_MAX   700
 #define SLIDER_INIT  500
 
-InputImpl::InputImpl( wxWindow *parent)
+InputImpl::InputImpl( wxWindow *parent,
+                      channel_t stickCnt, channel_t trimCnt, channel_t auxCnt,
+                      switch_t switches, switchSetConf_t conf)
     : wxBoxSizer(wxVERTICAL)
 {
-    this->channels = PORT_ANALOG_INPUT_COUNT;
-    this->switches = SWITCHES;
+    this->stickCount = stickCnt;
+    this->trimCount = trimCnt;
+    this->auxCount = auxCnt;
+
+    this->channels = stickCnt + trimCnt + auxCnt;
+    this->switches = switches;
+    this->switchConf = conf;
 
     sliderIDs = new wxWindowID[channels];
     chValues = new channelValue_t[channels];
@@ -25,18 +32,46 @@ InputImpl::InputImpl( wxWindow *parent)
         swValues[i] = SW_STATE_0;
     }
 
+    /* A horizontal box that contains sliders (stick, trim and aux analog inputs) */
+
     wxBoxSizer *hbox = new wxBoxSizer(wxHORIZONTAL);
+    wxStaticBoxSizer *hboxInner;
 
     for( int channel=0; channel<channels; channel++) {
-        sliderIDs[channel] = wxWindow::NewControlId();
+
+        if( channel == 0) {
+            hboxInner = new wxStaticBoxSizer( wxHORIZONTAL, parent, "Sticks");
+            hbox->Add( hboxInner);
+            hbox->AddSpacer(10);
+        } else if( channel == stickCount) {
+            hboxInner = new wxStaticBoxSizer(wxHORIZONTAL, parent, "Trim");
+            hbox->Add( hboxInner);
+            hbox->AddSpacer(10);
+        } else if( channel == stickCount + trimCount) {
+            hboxInner = new wxStaticBoxSizer(wxHORIZONTAL, parent, "Aux");
+            hbox->Add( hboxInner);
+            hbox->AddSpacer(10);
+        }
+
+        /* A vertical box that contains the slider and the slider name as static text */
         wxBoxSizer *vbox = new wxBoxSizer(wxVERTICAL);
+
+        sliderIDs[channel] = wxWindow::NewControlId();
         wxSlider *slider = new wxSlider(parent, sliderIDs[channel],SLIDER_INIT,SLIDER_MIN,SLIDER_MAX, wxDefaultPosition, wxSize(-1,200), wxSL_VERTICAL | wxSL_INVERSE);
         vbox->Add( slider);
         wxString str;
-        str.Printf(wxT("CH%d"), channel+1);
+        if( channel < stickCount) {
+            str.Printf(wxT("CH%d"), channel+1);
+        } else if( channel < stickCount + trimCount) {
+            str.Printf(wxT("Trim%d"), channel+1-stickCount);
+        } else {
+            str.Printf(wxT("AUX%d"), channel+1-stickCount-trimCount);        
+        }
         vbox->Add( new wxStaticText(parent, wxID_ANY, str));
-        hbox->Add( vbox);
-        hbox->AddSpacer(10);
+
+        hboxInner->Add( vbox);
+        hboxInner->AddSpacer(10);
+
         slider->Bind( wxEVT_SCROLL_THUMBTRACK, &InputImpl::OnScroll, this, sliderIDs[channel]);
         chValues[channel] = SLIDER_INIT;
     }
@@ -44,10 +79,12 @@ InputImpl::InputImpl( wxWindow *parent)
     Add( hbox);
     AddSpacer(10); 
 
-    hbox = new wxBoxSizer(wxHORIZONTAL);
+    /* Another horizontal box that contains all switches */
+
+    hbox = new wxStaticBoxSizer(wxHORIZONTAL, parent, "Switches");
     wxString choices[] = {wxT("0"), wxT("1"), wxT("2")};
     for( int sw = 0; sw < switches; sw++) {
-        switchConf_t conf = CONTROLS_SWITCH_CONF_GET( SWITCH_CONFIGURATION, sw);
+        switchConf_t conf = CONTROLS_SWITCH_CONF_GET( switchConf, sw);
 
         wxRadioBox *swtch = nullptr;
         switchIDs[sw] = wxWindow::NewControlId();
@@ -92,7 +129,7 @@ InputImpl::~InputImpl( void) {
     }
 }
 
-void InputImpl::init( switchSetConf_t conf) {
+void InputImpl::init() {
 
     /* This is a no-op as all the initialization
      * has already be done in the constructor.
@@ -112,17 +149,22 @@ channelValue_t InputImpl::GetStickValue( int ch) {
 
 channelValue_t InputImpl::GetTrimValue( int ch) {
 
-    return 511;
+    return chValues[ch + stickCount];
 }
 
 channelValue_t InputImpl::GetAuxValue( int ch) {
 
-    return 760;
+    return chValues[ch + stickCount + trimCount];
 }
 
 switchState_t InputImpl::GetSwitchValue( int sw) {
 
     return swValues[sw];
+}
+
+switchSetConf_t InputImpl::GetSwitchSetConf() {
+
+    return switchConf;
 }
 
 void InputImpl::OnScroll( wxScrollEvent& event) {

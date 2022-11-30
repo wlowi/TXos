@@ -29,10 +29,9 @@ extern InputImpl *inputImpl;
 
 Controls::Controls() = default;
 
-void Controls::init( switchSetConf_t conf) {
+void Controls::init() {
 
-    controlSet.switchSetConf = conf;
-    inputImpl->init( controlSet.switchSetConf);
+    inputImpl->init();
 }
 
 void Controls::GetControlValues() {
@@ -102,14 +101,9 @@ switchState_t Controls::switchGet( switch_t sw) {
     return CONTROLS_SWITCH_GET( controlSet.switches, sw);
 }
 
-void Controls::switchConfSet( switch_t sw, switchConf_t conf) {
-
-    controlSet.switchSetConf |= ((conf & 0x03) << (sw << 1));
-}
-
 switchConf_t Controls::switchConfGet( switch_t sw) {
 
-    return CONTROLS_SWITCH_CONF_GET( controlSet.switchSetConf, sw);
+    return CONTROLS_SWITCH_CONF_GET( inputImpl->GetSwitchSetConf(), sw);
 }
 
 bool Controls::evalSwitches( switchSet_t trigger) {

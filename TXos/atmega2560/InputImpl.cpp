@@ -2,8 +2,10 @@
 #include <util/atomic.h>
 
 #include "InputImpl.h"
+#include "PortsImpl.h"
 
 extern InputImpl *inputImpl;
+extern PortsImpl *portsImpl;
 
 /* 
  * ADC conversion complete interrupt. 
@@ -46,7 +48,7 @@ ISR(ADC_vect) {
 
 InputImpl::InputImpl( channel_t stickCnt, channel_t trimCnt, channel_t auxCnt,
                       const uint8_t analogPins[],
-                      switch_t switches,
+                      switch_t switches, switchSetConf_t conf,
                       const uint8_t switchPins[])
 {
     this->stickCount = stickCnt;
@@ -54,23 +56,18 @@ InputImpl::InputImpl( channel_t stickCnt, channel_t trimCnt, channel_t auxCnt,
     this->auxCount = auxCnt;
     this->adcInputs = stickCnt + trimCnt + auxCnt;
     this->switches = switches;
-
+    this->switchConf = conf;
     this->analogPins = analogPins;
     this->switchPins = switchPins;
 
-    swValues = new int[switches];
     adcValues = new channelValue_t[adcInputs];
-
-    for( int i=0; i<switches; i++) {
-        swValues[i] = 0;
-    }
 
     for( int i=0; i<adcInputs; i++) {
         adcValues[i] = 0;
     }
 }
 
-void InputImpl::init( switchSetConf_t conf) {
+void InputImpl::init() {
 
     ATOMIC_BLOCK( ATOMIC_RESTORESTATE) {
     
@@ -94,6 +91,10 @@ void InputImpl::init( switchSetConf_t conf) {
             } else {
                 DIDR2 |= (1 << (adc - A8));
             }
+        }
+
+        for( uint8_t i=0; i<switches; i++) {
+          portsImpl->portInit( switchPins[i], INPUT);
         }
     }
 }
@@ -181,11 +182,44 @@ channelValue_t InputImpl::GetAnalogValue( channel_t ch) {
 
 switchState_t InputImpl::GetSwitchValue( switch_t sw) {
 
-    if( sw < switches) {
-      return SW_STATE_0;
+    bool s1, s2;
+    switchConf_t swConf;
+    switchState_t state = SW_STATE_DONTCARE;
+
+    if( sw >= switches) {
+      LOGV("InputImpl::GetSwitchValue: Illegal switch no. %s", sw);
+      return SW_STATE_DONTCARE;
+    }
+      
+    swConf = CONTROLS_SWITCH_CONF_GET( switchConf, sw);
+    
+    switch( swConf) {
+
+      case SW_CONF_2STATE:
+        state = portsImpl->portGet(switchPins[sw]) ? SW_STATE_0 : SW_STATE_1;
+        break;
+        
+      case SW_CONF_3STATE:
+        portsImpl->portInit( switchPins[sw], INPUT);
+        s1 = portsImpl->portGet(switchPins[sw]);
+        portsImpl->portInit( switchPins[sw], INPUT_PULLUP);
+        s2 = portsImpl->portGet(switchPins[sw]);
+
+        if( !(s1 || s2)) state = SW_STATE_2;
+        else if( s1 && s2) state = SW_STATE_0;
+        else state = SW_STATE_1;
+        break;
+        
+      case SW_CONF_UNUSED:
+      case SW_CONF_CONTROL:
+      default:
+        state = SW_STATE_DONTCARE;
     }
 
-    LOGV("InputImpl::GetSwitchValue: Illegal switch no. %s", sw);
+    return state;
+}
 
-    return SW_STATE_DONTCARE;
+switchSetConf_t InputImpl::GetSwitchSetConf() {
+  
+  return switchConf;
 }

@@ -251,7 +251,7 @@ void setup( void) {
 
     inputImpl = new InputImpl( PORT_ANALOG_INPUT_COUNT, PORT_TRIM_INPUT_COUNT, PORT_AUX_INPUT_COUNT,
                                AnalogPins,
-                               PORT_SWITCH_INPUT_COUNT,
+                               PORT_SWITCH_INPUT_COUNT, SWITCH_CONFIGURATION,
                                SwitchPins);
 
     outputImpl = new OutputImpl();
@@ -315,7 +315,7 @@ void setup( void) {
 
     moduleManager.loadModel( modelSelect.getModelID());
 
-    controls.init( SWITCH_CONFIGURATION);
+    controls.init();
 
 #if defined( ARDUINO )
 #ifdef ENABLE_MEMDEBUG

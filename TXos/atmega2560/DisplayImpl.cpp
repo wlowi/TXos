@@ -3,7 +3,7 @@
 
 static volatile byte oldVal;
 
-static volatile unsigned int buttonDown_msec;
+static volatile unsigned long buttonDown_msec;
 static volatile boolean buttonIsDown;
 static volatile byte button;
 static volatile int enc;
@@ -20,7 +20,7 @@ static volatile int enc;
 #define ROTARYENC_BUTTON_LONG  2
 
 #define ROTARYENC_BUTTON_SHORT_MSEC  10
-#define ROTARYENC_BUTTON_LONG_MSEC  500
+#define ROTARYENC_BUTTON_LONG_MSEC  400
 
 #define PIN_CLK     A12
 #define PIN_DIR     A13
@@ -77,13 +77,8 @@ ISR( PCINT2_vect)
     /* This avoids change of encoder value while button is pressed */
     if( !buttonIsDown) {
 
-        switch( (oldVal & ROTARYENC_ENC_MASK) ^ encVal) {
-        case ROTARYENC_CLK:
+        if( ((oldVal & ROTARYENC_ENC_MASK) ^ encVal) == ROTARYENC_CLK) {
             if( encVal == 0 || encVal == 3) enc--; else enc++;
-            break;
-        case ROTARYENC_DIR:
-            if( encVal == 0 || encVal == 3) enc++; else enc--;
-            break;
         }
 
         oldVal &= ~ROTARYENC_ENC_MASK;
@@ -141,13 +136,13 @@ Event *DisplayImpl::getEvent() {
       event.key = KEY_CLEAR;
       event.count = 1;
       button = 0;
-    } else if( enc > 0) {
-      event.key = KEY_UP;
-      event.count = (enc >> 2);
-      enc = 0;
-    } else if( enc < 0) {
+    } else if( enc >= 2) {
       event.key = KEY_DOWN;
-      event.count = -(enc >> 2);
+      event.count = 1;
+      enc = 0;
+    } else if( enc <= -2) {
+      event.key = KEY_UP;
+      event.count = 1;
       enc = 0;
     } else {
       event.key = KEY_NONE;
