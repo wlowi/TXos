@@ -20,7 +20,7 @@ static volatile int enc;
 #define ROTARYENC_BUTTON_LONG  2
 
 #define ROTARYENC_BUTTON_SHORT_MSEC  10
-#define ROTARYENC_BUTTON_LONG_MSEC  400
+#define ROTARYENC_BUTTON_LONG_MSEC  300
 
 #define PIN_CLK     A12
 #define PIN_DIR     A13

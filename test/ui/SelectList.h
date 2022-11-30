@@ -21,7 +21,7 @@ class SelectList {
     private:
         TableEditable *table;
         bool useBackItem = false;
-        Cell cell;
+        Cell editCell;
         
         uint8_t screenTableRows;  /* screen height available for table data
                                    * including back item, excluding header
@@ -50,10 +50,6 @@ class SelectList {
         void printLine( LcdWidget *lcd, uint8_t i);
         void paint( LcdWidget *lcd);
         void update( LcdWidget *lcd);
-        void normalColors( LcdWidget *lcd) const;
-        void selectedColors( LcdWidget *lcd) const;
-        void headerColors( LcdWidget *lcd) const;
-        void editColors( LcdWidget *lcd) const;
         void prev( uint8_t count);
         void next( uint8_t count);
         void clear();

@@ -43,7 +43,7 @@ void SelectList::process( LcdWidget *lcd, Event *event) {
                     if( table->getColCount( row) > 0) {
                         mode = MODE_EDIT;
                         tableCol = 0;
-                        table->getValue( row, tableCol, &cell);
+                        table->getValue( row, tableCol, &editCell);
                         refresh = REFRESH_UPDATE;
                     }
                 }
@@ -88,8 +88,8 @@ void SelectList::process( LcdWidget *lcd, Event *event) {
 
         row = useBackItem ? tableRow-1 : tableRow;
 
-        cell.edit( event);
-        table->setValue( row, tableCol, &cell);
+        editCell.edit( event);
+        table->setValue( row, tableCol, &editCell);
         refresh = REFRESH_CELL;
 
         if( event->pending()) {
@@ -100,8 +100,8 @@ void SelectList::process( LcdWidget *lcd, Event *event) {
                 if( tableCol >= table->getColCount( row)) {
                     mode = MODE_RENDER;
                     tableCol = 0;
-                } else {
-                    table->getValue( row, tableCol, &cell);
+                } else { /* Get next cell to edit */
+                    table->getValue( row, tableCol, &editCell);
                 }  
                 refresh = REFRESH_UPDATE; 
                 break;
@@ -164,7 +164,7 @@ void SelectList::paint( LcdWidget *lcd) {
     lcd->clear();
 
     if( header) {
-        headerColors( lcd);
+        lcd->headerColors();
         lcd->setCursor( 0, 0);
         lcd->print(header);
     }
@@ -221,8 +221,6 @@ bool SelectList::adjustTopRow( LcdWidget *lcd) {
  */
 void SelectList::refreshLine( LcdWidget *lcd, uint8_t row) {
 
-    (tableRow == row) ? selectedColors( lcd) : normalColors( lcd);
-        
     lcd->setCursor( row - tableTopRow + screenHeaderOffs, 0);
     printLine( lcd, row);
 }
@@ -233,6 +231,9 @@ void SelectList::refreshLine( LcdWidget *lcd, uint8_t row) {
 void SelectList::printLine( LcdWidget *lcd, uint8_t row) {
 
     Cell renderCell;
+    bool edit;
+
+    (tableRow == row) ? lcd->selectedColors() : lcd->normalColors();
 
     if( useBackItem) {
         if( row == 0) {
@@ -248,38 +249,15 @@ void SelectList::printLine( LcdWidget *lcd, uint8_t row) {
     }
 
     for( uint8_t col = 0; col < table->getColCount(row); col++) {
-        table->getValue( row, col, &renderCell);
-        normalColors( lcd);
 
-        if( mode == MODE_EDIT && col == tableCol) {
-            editColors( lcd);
+        edit = (mode == MODE_EDIT && col == tableCol);
+        
+        if( edit) {
+            editCell.render( lcd, edit);
         } else {
-            normalColors( lcd);
+            table->getValue( row, col, &renderCell);
+            renderCell.render( lcd, edit);
         }
-        renderCell.render( lcd);
     }
 }
 
-void SelectList::normalColors( LcdWidget *lcd) const {
-
-    lcd->setBg(0,0,0);
-    lcd->setFg(255,255,255);
-}
-
-void SelectList::selectedColors( LcdWidget *lcd) const {
-
-    lcd->setBg(255,255,0);
-    lcd->setFg(0,0,0);
-}
-
-void SelectList::headerColors( LcdWidget *lcd) const {
-
-    lcd->setBg(0,0,0);
-    lcd->setFg(0,255,0);
-}
-
-void SelectList::editColors( LcdWidget *lcd) const {
-
-    lcd->setBg(255,255,255);
-    lcd->setFg(0,0,0);
-}

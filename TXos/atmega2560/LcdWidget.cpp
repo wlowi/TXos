@@ -171,6 +171,35 @@ void LcdWidget::printUInt( unsigned int val, uint8_t width, char filler) {
     printIntGeneric( val, 0, width, filler);
 }
 
+void LcdWidget::printStr( const char str[], uint8_t width) {
+
+    printStr( str, width, -1);
+}
+
+void LcdWidget::printStr( const char str[], uint8_t width, int8_t editIdx) {
+
+  int8_t p = 0;
+
+  if( !str) { return; }
+
+  while( str[p] && p < width) {
+    if( p == editIdx) {
+      saveColors();
+      selectedColors();
+    }
+    printChar( str[p]);
+    if( p == editIdx) {
+      restoreColors();
+    }
+    p++;
+  }
+
+  while( p < width) {
+    printChar( ' ');
+    p++;
+  }
+}
+
 /* private */
 
 void LcdWidget::printChar( char ch)
@@ -238,4 +267,40 @@ void LcdWidget::printIntGeneric( unsigned int val, int8_t neg, uint8_t width, ch
     }
     
     print( &buff[p] );
+}
+
+void LcdWidget::normalColors() {
+
+    setBg(0,0,0);
+    setFg(255,255,255);
+}
+
+void LcdWidget::selectedColors() {
+
+    setBg(255,255,0);
+    setFg(0,0,0);
+}
+
+void LcdWidget::headerColors() {
+
+    setBg(0,0,0);
+    setFg(0,255,0);
+}
+
+void LcdWidget::editColors() {
+
+    setBg(255,255,255);
+    setFg(0,0,0);
+}
+
+void LcdWidget::saveColors() {
+
+    savedBgCol = bgCol565;
+    savedFgCol = fgCol565;
+}
+
+void LcdWidget::restoreColors() {
+
+    bgCol565 = savedBgCol;
+    fgCol565 = savedFgCol;
 }

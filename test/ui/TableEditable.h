@@ -51,7 +51,7 @@ class Cell {
         char *getString() const;
         uint8_t getList() const;
 
-        void render( LcdWidget *lcd) const;
+        void render( LcdWidget *lcd, bool edit) const;
         void edit( Event *event);
 };
 

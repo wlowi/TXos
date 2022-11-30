@@ -13,6 +13,8 @@ class LcdWidget
         unsigned int height;
         pixel fgCol565;
         pixel bgCol565;
+        pixel savedFgCol;
+        pixel savedBgCol;
         unsigned int fontSz; // 1 - 3
         unsigned int textX;
         unsigned int textY;
@@ -45,6 +47,17 @@ class LcdWidget
         void printUInt( unsigned int val);
         void printUInt( unsigned int val, uint8_t width);
         void printUInt( unsigned int val, uint8_t width, char filler);
+
+        void printStr( const char str[], uint8_t width);
+        void printStr( const char str[], uint8_t width, int8_t editIdx);
+
+        void normalColors();
+        void selectedColors();
+        void headerColors();
+        void editColors();
+
+        void saveColors();
+        void restoreColors();    
 };
 
 #endif

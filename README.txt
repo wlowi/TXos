@@ -7,8 +7,6 @@ Cell editing: Switch number
 
 Cell editing: Switch number and state
 
-Cell editing: improve String edit
-
 Module: Rate & Expo
 
 Module: Timer
@@ -16,6 +14,8 @@ Module: Timer
 Module: Geber Switches
 
 User interface: Display Vcc
+
+Module: Phases
 
 Module processing within PPM generation frame.
 

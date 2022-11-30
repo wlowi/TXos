@@ -1,9 +1,15 @@
 
 #include "TableEditable.h"
 
-void Cell::render( LcdWidget *lcd) const {
+void Cell::render( LcdWidget *lcd, bool edit) const {
 
     lcd->setColumn( screenCol);
+
+    if( edit) {
+        lcd->editColors();
+    } else {
+        lcd->normalColors();
+    }
 
     switch( type) {
         case BOOLEAN_T:
@@ -23,7 +29,11 @@ void Cell::render( LcdWidget *lcd) const {
             break;
 
         case STRING_T:
-            lcd->print( value.string);
+            if( edit) {
+                lcd->printStr( value.string, value.size, (int8_t)value.intV);
+            } else {
+                lcd->printStr( value.string, value.size);
+            }
             break;
 
         case LIST_T:
@@ -58,6 +68,9 @@ void Cell::edit( Event *event) {
         } else if( event->key == KEY_UP) {
             value.intV += event->count;
             event->markProcessed();
+        } else if( event->key == KEY_CLEAR) {
+            value.intV = 0;
+            event->markProcessed();
         }
 
         if( value.intV > numericMax) {
@@ -72,21 +85,31 @@ void Cell::edit( Event *event) {
     case STRING_T:
         if( event->key == KEY_ENTER) {
             if( value.intV >= (value.size-1)) {
-                break; // done
+                /* intV = character index for editing.
+                 * Done when we move beyond sting length.
+                 */
+                break;
             } else {
+                /* Move to next character in string */
                 value.intV++;
                 event->markProcessed();
             }
         } else if( event->key == KEY_DOWN) {
+            /* Previous letter in alphabet. */
             if( value.string[value.intV] > ' ') {
                 value.string[value.intV]--;
                 event->markProcessed();
             }
         } else if( event->key == KEY_UP) {
+            /* Next letter in alphabet. */
             if( value.string[value.intV] < 126) {
                 value.string[value.intV]++;
                 event->markProcessed();
             }
+        } else if( event->key == KEY_CLEAR) {
+            /* Space character. */
+            value.string[value.intV] = ' ';
+            event->markProcessed();
         }
         break;
 
