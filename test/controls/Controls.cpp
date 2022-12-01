@@ -106,7 +106,40 @@ switchConf_t Controls::switchConfGet( switch_t sw) {
     return CONTROLS_SWITCH_CONF_GET( inputImpl->GetSwitchSetConf(), sw);
 }
 
-bool Controls::evalSwitches( switchSet_t trigger) {
+void Controls::copySwitchName( char *b, switch_t sw) {
+
+    const char *swType;
+
+    /* b must be of length TEXT_SW_NAME_length +1 */
+
+    if( sw == SWITCH_NONE) {
+        strcpy( b, TEXT_SW_TYPE_UNUSED);
+    } else {
+        b[0] = '1' + sw;
+        b[1] = '-';
+        switch (switchConfGet(sw)) {
+        case SW_CONF_2STATE:
+            swType = TEXT_SW_TYPE_2_STATE;
+            break;
+
+        case SW_CONF_3STATE:
+            swType = TEXT_SW_TYPE_3_STATE;
+            break;
+
+        case SW_CONF_CHANNEL:
+            swType = TEXT_SW_TYPE_CHANNEL;
+            break;
+
+        case SW_CONF_UNUSED:
+        default:
+            swType = TEXT_SW_TYPE_UNUSED;
+            break;
+        }
+        strcpy( &b[2], swType);
+    }
+}
+
+bool Controls::evalSwitches( switchSetState_t trigger) {
 
     bool state = false;
 

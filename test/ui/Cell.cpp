@@ -1,7 +1,11 @@
 
 #include "TableEditable.h"
 
+extern Controls controls;
+
 void Cell::render( LcdWidget *lcd, bool edit) const {
+
+    char switchName[TEXT_SW_NAME_length+1];
 
     lcd->setColumn( screenCol);
 
@@ -14,9 +18,9 @@ void Cell::render( LcdWidget *lcd, bool edit) const {
     switch( type) {
         case BOOLEAN_T:
             if( value.boolV) {
-                lcd->print( "Y");
+                lcd->printStr( TEXT_ON, TEXT_ON_OFF_length);
             } else {
-                lcd->print( "N");
+                lcd->printStr( TEXT_OFF, TEXT_ON_OFF_length);
             }
             break;
 
@@ -37,7 +41,15 @@ void Cell::render( LcdWidget *lcd, bool edit) const {
             break;
 
         case LIST_T:
-            lcd->print( value.list[value.intV]);
+            lcd->printStr( value.list[value.intV], value.size);
+            break;
+
+        case SWITCH_T:
+            controls.copySwitchName( switchName, (switch_t)value.intV);
+            lcd->printStr( switchName, TEXT_SW_NAME_length);
+            break;
+
+        case SWITCH_SET_STATE_T:
             break;
 
         default:
@@ -122,13 +134,41 @@ void Cell::edit( Event *event) {
             event->markProcessed();
         } else if( event->key == KEY_UP) {
             value.intV += event->count;
-            if( value.intV >= value.size) {
-                value.intV = value.size-1;
+            if( value.intV >= value.count) {
+                value.intV = value.count-1;
             }
             event->markProcessed();
         }
         break;
 
+    case SWITCH_T:
+        if( event->key == KEY_DOWN) {
+            if( value.intV != SWITCH_NONE) {
+                value.intV -= event->count;
+                if( value.intV < 0) {
+                    value.intV = SWITCH_NONE;
+                }
+            }
+            event->markProcessed();
+        } else if( event->key == KEY_UP) {
+            if( value.intV == SWITCH_NONE) {
+                value.intV = 0;
+            } else {
+                value.intV += event->count;
+                if( value.intV >= SWITCHES) {
+                    value.intV = SWITCHES -1;
+                }
+            }
+            event->markProcessed();
+        } else if( event->key == KEY_CLEAR) {
+            value.intV = SWITCH_NONE;
+            event->markProcessed();
+        }
+        break;
+
+    case SWITCH_SET_STATE_T:
+        break;
+        
     default:
         // ignore
         break;
@@ -169,13 +209,37 @@ void Cell::setString( uint8_t screenX, char *v, uint8_t sz) {
     value.intV = 0; // character index for editing.
 }
 
-void Cell::setList( uint8_t screenX, const char **v, uint8_t sz, uint8_t curr) {
+void Cell::setList( uint8_t screenX, const char **v, uint8_t count, uint8_t curr) {
+
+    uint8_t i;
+    uint8_t sz;
 
     screenCol = screenX;
     type = LIST_T;
     value.list = v;
-    value.size = sz;
+    value.count = count;
     value.intV = curr;
+
+    /* determine max option string length */
+    value.size = 0;
+    for( i=0; i<count; i++) {
+        sz = strlen( v[i]);
+        if( sz > value.size) { value.size = sz; }
+    }
+}
+
+void Cell::setSwitch( uint8_t screenX, switch_t v) {
+
+    screenCol = screenX;
+    type = SWITCH_T;
+    value.intV = v;
+}
+
+void Cell::setSwitchSetState( uint8_t screenX, switchSetState_t v) {
+
+    screenCol = screenX;
+    type = SWITCH_SET_STATE_T;
+    value.intV = v;
 }
 
 bool Cell::getBool() const {
@@ -201,4 +265,14 @@ char *Cell::getString() const {
 uint8_t Cell::getList() const {
 
     return (uint8_t)value.intV;
+}
+
+switch_t Cell::getSwitch() const {
+
+    return (switch_t)value.intV;
+}
+
+switchSetState_t Cell::getSwitchSetState() const {
+
+    return (switchSetState_t)value.intV;
 }

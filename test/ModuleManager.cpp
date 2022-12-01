@@ -132,13 +132,14 @@ void ModuleManager::loadModel( configBlockID_t modelID) {
 
     LOGV("\nModuleManager::loadModel(): loading model %d\n", modelID);
 
+    modelMenu->setDefaults();
+
     blockService->readBlock( modelID);
 
     if( blockService->isBlockValid()) {
         parseBlock( modelMenu);
     } else {
         LOGV("** ModuleManager::loadModel(): Block %d is invalid.\n", modelID);
-        modelMenu->setDefaults();
         saveModel( modelID);
     }
 }

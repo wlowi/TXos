@@ -10,6 +10,7 @@ class SwitchMonitor : public Module {
 
     private:
         Controls &current;
+        char switchName[TEXT_SW_NAME_length+1];
 
     public:
         explicit SwitchMonitor( Controls &controls);

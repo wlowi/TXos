@@ -6,6 +6,7 @@
 #define _TableEditable_h_
 
 #include "TXos.h"
+#include "Controls.h"
 #include "DisplayImpl.h"
 
 enum TableEditType_t {
@@ -14,6 +15,8 @@ enum TableEditType_t {
     INT16_T,
     STRING_T,
     LIST_T,
+    SWITCH_T,
+    SWITCH_SET_STATE_T
 };
 
 typedef struct CellType_t {    
@@ -22,8 +25,10 @@ typedef struct CellType_t {
     
     int16_t intV;
     
-    uint8_t size;
+    uint8_t size;        /* String length */
     char *string;
+
+    uint8_t count;       /* List size */
     const char **list;
 
 } CellType_t;
@@ -44,12 +49,16 @@ class Cell {
         void setInt16( uint8_t screenX, int16_t v, int16_t nmin, int16_t nmax);
         void setString( uint8_t screenX, char *v, uint8_t sz);
         void setList( uint8_t screenX, const char **v, uint8_t sz, uint8_t curr);
+        void setSwitch( uint8_t screenX, switch_t v);
+        void setSwitchSetState( uint8_t screenX, switchSetState_t v);
 
         bool getBool() const;
         int8_t getInt8() const;
         int16_t getInt16() const;
         char *getString() const;
         uint8_t getList() const;
+        switch_t getSwitch() const;
+        switchSetState_t getSwitchSetState() const;
 
         void render( LcdWidget *lcd, bool edit) const;
         void edit( Event *event);

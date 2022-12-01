@@ -27,18 +27,21 @@
 #define TEXT_MODULE_BIND            CC("Bind RX")
 #define TEXT_MODULE_CAL_STICKS      CC("Calib. Sticks")
 #define TEXT_MODULE_CAL_TRIM        CC("Calib. Trim")
+#define TEXT_MODULE_DUAL_EXPO       CC("Dual & Expo")
 #define TEXT_MODULE_ENGINE_CUT      CC("Engine Cut")
 #define TEXT_MODULE_MODEL           CC("Model")
 #define TEXT_MODULE_MODEL_SELECT    CC("Model Select")
 #define TEXT_MODULE_MONITOR         CC("Monitor")
+#define TEXT_MODULE_PHASES          CC("Phases")
 #define TEXT_MODULE_RANGE_TEST      CC("Range Test")
 #define TEXT_MODULE_SERVO_LIMIT     CC("Servo limit")
 #define TEXT_MODULE_SERVO_REVERSE   CC("Servo reverse")
 #define TEXT_MODULE_SERVO_SUBTRIM   CC("Servo subtrim")
 #define TEXT_MODULE_SWITCHES        CC("Switches")
 #define TEXT_MODULE_SYSTEM_SETUP    CC("System Setup")
+#define TEXT_MODULE_TIMER           CC("Timer")
 
-// Control channels (3 letters max.)
+// Control channels (3 letters fixed)
 #define TEXT_CONTROL_CHANNEL_1      CC("THR")
 #define TEXT_CONTROL_CHANNEL_2      CC("AIL")
 #define TEXT_CONTROL_CHANNEL_3      CC("ELV")
@@ -49,7 +52,7 @@
 #define TEXT_CONTROL_CHANNEL_8      CC("CH8")
 #define TEXT_CONTROL_CHANNEL_9      CC("CH9")
 
-// Output channels (3 letters max.)
+// Output channels (3 letters fixed)
 #define TEXT_OUT_CHANNEL_1          CC("S1")
 #define TEXT_OUT_CHANNEL_2          CC("S2")
 #define TEXT_OUT_CHANNEL_3          CC("S3")
@@ -59,6 +62,21 @@
 #define TEXT_OUT_CHANNEL_7          CC("S7")
 #define TEXT_OUT_CHANNEL_8          CC("S8")
 #define TEXT_OUT_CHANNEL_9          CC("S9")
+
+// Switch types (3 letters fixed)
+// Note name length is 5 because the format include switch number
+// n-ttt  (1-TRI)
+#define TEXT_SW_NAME_length         5
+#define TEXT_SW_TYPE_UNUSED         CC("---")
+#define TEXT_SW_TYPE_2_STATE        CC("BI")
+#define TEXT_SW_TYPE_3_STATE        CC("TRI")
+#define TEXT_SW_TYPE_CHANNEL        CC("CH")
+
+// Calibration steps (9 letters max)
+#define TEXT_CALIB_length           9
+#define TEXT_CALIB_CENTER           CC("CENTER")
+#define TEXT_CALIB_MINMAX           CC("MINMAX")
+#define TEXT_CALIB_NONE             CC("CALIBRATE")
 
 // Misc
 #define TEXT_TXOS                   CC("TXos ")
@@ -71,10 +89,19 @@
 #define TEXT_SWITCH                 CC("Switch")
 #define TEXT_THR                    CC("THR")
 #define TEXT_WINGMIX                CC("Mix")
-#define TEXT_WINGMIX_1AIL           CC(" 1-Ail")
-#define TEXT_WINGMIX_2AIL           CC(" 2-Ail")
-#define TEXT_WINGMIX_DELTA          CC(" Delta")
-#define TEXT_WINGMIX_VTAIL          CC(" V-Mix")
+
+// Wing mix options
+#define TEXT_WINGMIX_length         6
+#define TEXT_WINGMIX_1AIL           CC("1-Ail")
+#define TEXT_WINGMIX_2AIL           CC("2-Ail")
+#define TEXT_WINGMIX_DELTA          CC("Delta")
+#define TEXT_WINGMIX_VTAIL          CC("V-Mix")
 #define TEXT_WINGMIX_VTAIL2         CC("V-Mix2")
+
+// Binary states
+#define TEXT_ON_OFF_length          3
+#define TEXT_ON                     CC("On")
+#define TEXT_OFF                    CC("Off")
+
 
 #endif

@@ -211,7 +211,7 @@ switchState_t InputImpl::GetSwitchValue( switch_t sw) {
         break;
         
       case SW_CONF_UNUSED:
-      case SW_CONF_CONTROL:
+      case SW_CONF_CHANNEL:
       default:
         state = SW_STATE_DONTCARE;
     }

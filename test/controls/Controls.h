@@ -90,11 +90,12 @@ typedef uint8_t switch_t;
 
 #define SWITCHES        ((switch_t)8)
 
+#define SWITCH_NONE     ((switch_t)255)
 
 /* Type representing the state of 8 switches.
  * Two bits per switch allow for 4 states: (switchState_t)
  */
-typedef uint16_t switchSet_t;
+typedef uint16_t switchSetState_t;
 
 /*  0 State 0
  *  1 State 1
@@ -110,7 +111,7 @@ typedef enum {
 
 } switchState_t;
 
-#define SW_STATE_ALL_DONTCARE  ((switchSet_t)0xffff)
+#define SW_STATE_ALL_DONTCARE  ((switchSetState_t)0xffff)
 
 
 /* Switch configuration
@@ -121,14 +122,14 @@ typedef uint16_t switchSetConf_t;
 /*  0 Switch is unused
  *  1 Switch is 2-state
  *  2 Switch is 3-state
- *  3 Switch is control switch
+ *  3 Switch is channel switch
  */
 typedef enum {
 
     SW_CONF_UNUSED = 0,
     SW_CONF_2STATE = 1,
     SW_CONF_3STATE = 2,
-    SW_CONF_CONTROL = 3
+    SW_CONF_CHANNEL = 3
 
 } switchConf_t;
 
@@ -147,8 +148,8 @@ typedef enum {
     /* 3 */ SW_CONF_2STATE  <<  6 | \
     /* 4 */ SW_CONF_3STATE  <<  8 | \
     /* 5 */ SW_CONF_3STATE  << 10 | \
-    /* 6 */ SW_CONF_CONTROL << 12 | \
-    /* 7 */ SW_CONF_CONTROL << 14   \
+    /* 6 */ SW_CONF_CHANNEL << 12 | \
+    /* 7 */ SW_CONF_CHANNEL << 14   \
      )
 
 #define CONTROLS_SWITCH_CONF_GET( conf, sw)  (switchConf_t)((conf >> (sw << 1)) & 0x03)
@@ -170,7 +171,7 @@ typedef struct controlSet_t {
     /* Calibrated and mixed analog channels */
     channelValue_t analogChannel[ CHANNELS ];
 
-    switchSet_t switches;
+    switchSetState_t switches;
 
 } controlSet_t;
 
@@ -198,10 +199,11 @@ class Controls {
 
         void switchSet( switch_t sw, switchState_t value);
         switchState_t switchGet( switch_t sw);
-
         switchConf_t switchConfGet( switch_t sw);
 
-        bool evalSwitches( switchSet_t trigger);
+        void copySwitchName( char *b, switch_t sw);
+
+        bool evalSwitches( switchSetState_t trigger);
 };
 
 #endif

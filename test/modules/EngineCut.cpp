@@ -52,7 +52,7 @@ uint8_t EngineCut::getColCount( uint8_t row) {
 void EngineCut::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
     if( row == 0) {
-        cell->setInt8( 7, cfg.trigger, PERCENT_MIN_LIMIT, PERCENT_MAX_LIMIT);
+        cell->setSwitchSetState( 7, cfg.trigger);
     } else {
         cell->setInt8( 7, cfg.cut_pct, PERCENT_MIN_LIMIT, PERCENT_MAX_LIMIT);
     }
@@ -61,7 +61,7 @@ void EngineCut::getValue( uint8_t row, uint8_t col, Cell *cell) {
 void EngineCut::setValue( uint8_t row, uint8_t col, Cell *cell) {
 
     if( row == 0) {
-        cfg.trigger = cell->getInt8();
+        cfg.trigger = cell->getSwitchSetState();
     } else {
         cfg.cut_pct = cell->getInt8();
     }

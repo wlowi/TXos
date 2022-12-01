@@ -129,19 +129,19 @@ void CalibrateTrim::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
         switch( calibrationStep) {
         case CALIBRATION_STEP_CENTER:
-            strcpy( stepName, "CENTER   ");
+            strcpy( stepName, TEXT_CALIB_CENTER);
             break;
 
         case CALIBRATION_STEP_MINMAX:
-            strcpy( stepName, "MIN-MAX  ");
+            strcpy( stepName, TEXT_CALIB_MINMAX);
             break;
 
         case CALIBRATION_STEP_NONE:
         default:
-            strcpy( stepName, "CALIBRATE");
+            strcpy( stepName, TEXT_CALIB_NONE);
         }
 
-        cell->setString( 4, stepName, 9);
+        cell->setString( 4, stepName, TEXT_CALIB_length);
 
     } else {
 

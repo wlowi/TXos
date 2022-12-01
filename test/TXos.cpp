@@ -113,6 +113,9 @@
 #include "CalibrateTrim.h"
 #include "Bind.h"
 #include "RangeTest.h"
+#include "DualExpo.h"
+#include "Phases.h"
+#include "Timer.h"
 
 #if defined( ARDUINO )
 #include "InputImpl.h"
@@ -289,6 +292,12 @@ void setup( void) {
     moduleManager.addToModelMenu( new SystemSetup());
     Model *model = new Model();
     moduleManager.addToModelMenu( model);
+    DualExpo *dualExpo = new DualExpo();
+    moduleManager.addToModelMenu( dualExpo);
+    Phases *phases = new Phases();
+    moduleManager.addToModelMenu( phases);
+    Timer *timer = new Timer();
+    moduleManager.addToModelMenu( timer);
     EngineCut *engineCut = new EngineCut();
     moduleManager.addToModelMenu( engineCut);
     ServoReverse *servoReverse = new ServoReverse();
@@ -303,6 +312,7 @@ void setup( void) {
      */
     moduleManager.addToRunList( calibrateSticks);
     moduleManager.addToRunList( calibrateTrim);
+    moduleManager.addToRunList( dualExpo);
     moduleManager.addToRunList( model);
     moduleManager.addToRunList( engineCut);
     moduleManager.addToRunList( servoReverse);
@@ -310,6 +320,8 @@ void setup( void) {
     moduleManager.addToRunList( servoLimit);
     moduleManager.addToRunList( servoMonitor);
     moduleManager.addToRunList( switchMonitor);
+    moduleManager.addToRunList( phases);
+    moduleManager.addToRunList( timer);
 
     systemConfig.load();
 
