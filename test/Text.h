@@ -34,12 +34,13 @@
 #define TEXT_MODULE_MONITOR         CC("Monitor")
 #define TEXT_MODULE_PHASES          CC("Phases")
 #define TEXT_MODULE_RANGE_TEST      CC("Range Test")
-#define TEXT_MODULE_SERVO_LIMIT     CC("Servo limit")
-#define TEXT_MODULE_SERVO_REVERSE   CC("Servo reverse")
-#define TEXT_MODULE_SERVO_SUBTRIM   CC("Servo subtrim")
+#define TEXT_MODULE_SERVO_LIMIT     CC("Servo Limit")
+#define TEXT_MODULE_SERVO_REVERSE   CC("Servo Reverse")
+#define TEXT_MODULE_SERVO_SUBTRIM   CC("Servo Subtrim")
 #define TEXT_MODULE_SWITCHES        CC("Switches")
 #define TEXT_MODULE_SYSTEM_SETUP    CC("System Setup")
 #define TEXT_MODULE_TIMER           CC("Timer")
+#define TEXT_MODULE_VCC_MONITOR     CC("Bat. Warning")
 
 // Control channels (3 letters fixed)
 #define TEXT_CONTROL_CHANNEL_1      CC("THR")
@@ -89,6 +90,8 @@
 #define TEXT_SWITCH                 CC("Switch")
 #define TEXT_THR                    CC("THR")
 #define TEXT_WINGMIX                CC("Mix")
+#define TEXT_WARN                   CC("Warn")
+#define TEXT_ALERT                  CC("Alert")
 
 // Wing mix options
 #define TEXT_WINGMIX_length         6

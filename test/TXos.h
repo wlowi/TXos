@@ -19,6 +19,9 @@
     #define LOGV( f, ... ) printf( f, __VA_ARGS__)
 #endif
 
+/* Holds small float values with 2 fractional digits. */
+typedef int16_t float16;
+
 #define MODEL_NAME_LEN          ((uint8_t)8)
 #define MODEL_NAME_DEFAULT      CC("--------")
 

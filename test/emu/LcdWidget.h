@@ -8,7 +8,7 @@
     #include <wx/wx.h>
 #endif
 
-#include "Arduino.h"
+#include "TXos.h"
 
 typedef uint16_t pixel;
 
@@ -36,7 +36,7 @@ class LcdWidget : public wxPanel
         wxColor col565ToCol( pixel col565);
         void printChar( wxDC &dc, char ch);
 		void charLine( wxDC &dc, char l);
-        void printIntGeneric( unsigned int val, int8_t neg, uint8_t width, char filler);
+        void printIntGeneric( unsigned int val, int8_t neg, uint8_t width, uint8_t dot, char filler);
 
     public:
         LcdWidget( wxWindow *parent, wxWindowID id, unsigned int width, unsigned int height, unsigned int pixSz = 1);
@@ -71,10 +71,15 @@ class LcdWidget : public wxPanel
         void printStr( const char str[], uint8_t width);
         void printStr( const char str[], uint8_t width, int8_t editIdx);
 
+        void printFloat16( float16 val, uint8_t width);
+
         void normalColors();
         void selectedColors();
         void headerColors();
         void editColors();
+        void okColors();
+        void warnColors();
+        void alertColors();
 
         void saveColors();
         void restoreColors();

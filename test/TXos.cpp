@@ -39,7 +39,7 @@
  * PK1 D63 A9  PCINT17     Trim 2
  * PK2 D64 A10 PCINT18     Trim 3
  * PK3 D65 A11 PCINT19     Trim 4
- * PK4 D66 A12 PCINT20     ( Rotary Encoder A )
+ * PK4 D66 A12 PCINT20     ( Rotary Encoder A ).
  * PK5 D67 A13 PCINT21     ( Rotary Encoder B )
  * PK6 D68 A14 PCINT22     ( Rotary Encoder Switch )
  * PK7 D69 A15 PCINT23     Vcc Monitor
@@ -116,6 +116,7 @@
 #include "DualExpo.h"
 #include "Phases.h"
 #include "Timer.h"
+#include "VccMonitor.h"
 
 #if defined( ARDUINO )
 #include "InputImpl.h"
@@ -261,7 +262,7 @@ void setup( void) {
     portsImpl = new PortsImpl();
     buzzerImpl = new BuzzerImpl();
     displayImpl = new DisplayImpl();
-
+    
 #if defined( ENABLE_MEMDEBUG ) || defined( ENABLE_TIMING ) || defined( ENABLE_BDEBUG )
     Serial.begin(19200);
 #endif
@@ -288,6 +289,8 @@ void setup( void) {
     moduleManager.addToSystemMenu( calibrateSticks);
     CalibrateTrim *calibrateTrim = new CalibrateTrim();
     moduleManager.addToSystemMenu( calibrateTrim);
+    VccMonitor *vccMonitor = new VccMonitor();
+    moduleManager.addToSystemMenu( vccMonitor);
 
     moduleManager.addToModelMenu( new SystemSetup());
     Model *model = new Model();
@@ -322,6 +325,7 @@ void setup( void) {
     moduleManager.addToRunList( switchMonitor);
     moduleManager.addToRunList( phases);
     moduleManager.addToRunList( timer);
+    moduleManager.addToRunList( vccMonitor);
 
     systemConfig.load();
 

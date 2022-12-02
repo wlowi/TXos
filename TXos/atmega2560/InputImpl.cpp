@@ -19,7 +19,7 @@ ISR(ADC_vect) {
     /* Disable ADC */
     ADCSRA &= ~_BV(ADEN);
     
-    if( inputImpl->mux < inputImpl->adcInputs -1) {
+    if( inputImpl->mux < inputImpl->adcInputs) {
 
 #ifdef INVERT_CH1
       if( inputImpl->mux == 0) v = ADC_RESOLUTION -v;
@@ -37,10 +37,7 @@ ISR(ADC_vect) {
       inputImpl->adcValues[inputImpl->mux] = v;
       
       inputImpl->mux++;
-      inputImpl->setMux();
-      
-      ADCSRA |= _BV(ADEN) | _BV(ADSC) | _BV(ADIE);
-      
+      inputImpl->setMux();      
     } else {
       /* done */
     }
@@ -104,25 +101,30 @@ void InputImpl::start() {
     ATOMIC_BLOCK( ATOMIC_RESTORESTATE) {
       
        mux = 0;
-
        setMux();
 
-       ADCSRA |= _BV(ADEN) | _BV(ADSC) | _BV(ADIE);
     }
 }
 
 void InputImpl::setMux() {
 
-    uint8_t adc = analogPins[mux];
+    uint8_t adc;
 
-    ADMUX &= ~(_BV(MUX4) | _BV(MUX3) | _BV(MUX2) | _BV(MUX1) | _BV(MUX0));
+    if( mux < adcInputs) {
+
+        adc = analogPins[mux];
+
+        ADMUX &= ~(_BV(MUX4) | _BV(MUX3) | _BV(MUX2) | _BV(MUX1) | _BV(MUX0));
         
-    if( adc < A8) {
-        ADMUX |= (adc - A0);
-        ADCSRB &= ~_BV(MUX5);
-    } else {
-        ADMUX |= (adc - A8);
-        ADCSRB |= _BV(MUX5);
+        if( adc < A8) {
+          ADMUX |= (adc - A0);
+          ADCSRB &= ~_BV(MUX5);
+        } else {
+          ADMUX |= (adc - A8);
+          ADCSRB |= _BV(MUX5);
+        }
+          
+        ADCSRA |= _BV(ADEN) | _BV(ADSC) | _BV(ADIE);
     }
 }
 

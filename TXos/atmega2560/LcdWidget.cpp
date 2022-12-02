@@ -153,22 +153,22 @@ void LcdWidget::printInt( int val, uint8_t width, char filler) {
         uval = val;
     }
   
-    printIntGeneric( uval, neg, width, filler);
+    printIntGeneric( uval, neg, width, 0, filler);
 }
 
 void LcdWidget::printUInt( unsigned int val) {
 
-    printIntGeneric( val, 0, 0, ' ');
+    printIntGeneric( val, 0, 0, 0, ' ');
 }
 
 void LcdWidget::printUInt( unsigned int val, uint8_t width) {
   
-    printIntGeneric( val, 0, width, ' ');
+    printIntGeneric( val, 0, width, 0, ' ');
 }
 
 void LcdWidget::printUInt( unsigned int val, uint8_t width, char filler) {
   
-    printIntGeneric( val, 0, width, filler);
+    printIntGeneric( val, 0, width, 0, filler);
 }
 
 void LcdWidget::printStr( const char str[], uint8_t width) {
@@ -200,6 +200,11 @@ void LcdWidget::printStr( const char str[], uint8_t width, int8_t editIdx) {
   }
 }
 
+void LcdWidget::printFloat16( float16 val, uint8_t width) {
+
+  printIntGeneric( val, 0, width, 2, ' ');
+}
+
 /* private */
 
 void LcdWidget::printChar( char ch)
@@ -217,7 +222,7 @@ pixel LcdWidget::rgbToCol565( unsigned char r, unsigned char g, unsigned char b)
     return col565;  
 }
 
-void LcdWidget::printIntGeneric( unsigned int val, int8_t neg, uint8_t width, char filler) {
+void LcdWidget::printIntGeneric( unsigned int val, int8_t neg, uint8_t width, uint8_t dot, char filler) {
 
     uint8_t bufflen = (width == 0) ? 6 : width;
     char buff[ bufflen+1 ];
@@ -230,17 +235,28 @@ void LcdWidget::printIntGeneric( unsigned int val, int8_t neg, uint8_t width, ch
     	buff[p] = '0';
     } else {
     	for(;;) {
-            buff[p] = (val % 10) + '0';
-      	    val /= 10;
-      	    if( val == 0) { // done
+        buff[p] = (val % 10) + '0';
+      	val /= 10;
+      	if( val == 0 && dot == 0) { // done
         	break;
-      	    } else if( p == 0) {
+      	} else if( p == 0) {
         	neg = -1; // indicates overflow
         	break;
-      	    }
+      	}
         
-      	    p--;
-         }
+      	p--;
+            
+        if( dot > 0) {
+          dot--;
+          if( dot == 0) {
+            buff[p] = '.';
+            if( p == 0) {
+              break;
+            }
+            p--;
+          }
+        }
+      }
     }
 
     if( neg == 1) { // indicates negative sign
@@ -291,6 +307,24 @@ void LcdWidget::editColors() {
 
     setBg(255,255,255);
     setFg(0,0,0);
+}
+
+void LcdWidget::okColors() {
+
+    setBg(0,0,0);
+    setFg(0,255,0);
+}
+
+void LcdWidget::warnColors() {
+
+    setBg(0,0,0);
+    setFg(255,127,80);
+}
+
+void LcdWidget::alertColors() {
+
+    setBg(0,0,0);
+    setFg(255,0,0);
 }
 
 void LcdWidget::saveColors() {

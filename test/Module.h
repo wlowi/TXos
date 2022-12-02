@@ -37,22 +37,26 @@ typedef uint8_t moduleSize_t;
 
 /* List all available modules here */
 
-#define MODULE_MODEL_SELECT_TYPE        ((moduleType_t)1)
-#define MODULE_MODEL_TYPE               ((moduleType_t)2)
+/* System modules */
+#define MODULE_SYSTEM_SETUP_TYPE        ((moduleType_t)1)
+#define MODULE_MODEL_SELECT_TYPE        ((moduleType_t)2)
 #define MODULE_SERVO_MONITOR_TYPE       ((moduleType_t)3)
 #define MODULE_SWITCH_MONITOR_TYPE      ((moduleType_t)4)
-#define MODULE_SYSTEM_SETUP_TYPE        ((moduleType_t)5)
-#define MODULE_CAL_STICKS_TYPE          ((moduleType_t)6)
-#define MODULE_CAL_TRIM_TYPE            ((moduleType_t)7)
-#define MODULE_BIND_TYPE                ((moduleType_t)8)
-#define MODULE_RANGE_TEST_TYPE          ((moduleType_t)9)
-#define MODULE_ENGINE_CUT_TYPE          ((moduleType_t)10)
-#define MODULE_DUAL_EXPO_TYPE           ((moduleType_t)11)
-#define MODULE_TIMER_TYPE               ((moduleType_t)12)
-#define MODULE_PHASES_TYPE              ((moduleType_t)13)
-#define MODULE_SERVO_REVERSE_TYPE       ((moduleType_t)20)
-#define MODULE_SERVO_SUBTRIM_TYPE       ((moduleType_t)21)
-#define MODULE_SERVO_LIMIT_TYPE         ((moduleType_t)22)
+#define MODULE_CAL_STICKS_TYPE          ((moduleType_t)5)
+#define MODULE_CAL_TRIM_TYPE            ((moduleType_t)6)
+#define MODULE_BIND_TYPE                ((moduleType_t)7)
+#define MODULE_RANGE_TEST_TYPE          ((moduleType_t)8)
+#define MODULE_VCC_MONITOR_TYPE         ((moduleType_t)9)
+
+/* Model specific modules */
+#define MODULE_MODEL_TYPE               ((moduleType_t)50)
+#define MODULE_ENGINE_CUT_TYPE          ((moduleType_t)51)
+#define MODULE_DUAL_EXPO_TYPE           ((moduleType_t)52)
+#define MODULE_TIMER_TYPE               ((moduleType_t)53)
+#define MODULE_PHASES_TYPE              ((moduleType_t)54)
+#define MODULE_SERVO_REVERSE_TYPE       ((moduleType_t)55)
+#define MODULE_SERVO_SUBTRIM_TYPE       ((moduleType_t)56)
+#define MODULE_SERVO_LIMIT_TYPE         ((moduleType_t)57)
 
 class Module : public TableEditable {
 

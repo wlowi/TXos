@@ -5,6 +5,7 @@
 #include "SystemConfig.h"
 #include "ModelSelect.h"
 #include "Buzzer.h"
+#include "VccMonitor.h"
 
 extern DisplayImpl *displayImpl;
 extern ModuleManager moduleManager;
@@ -68,6 +69,8 @@ void UserInterface::handle() {
 
 void UserInterface::homeScreen( Event *event) {
 
+    VccMonitor *vccMonitor = (VccMonitor*)moduleManager.getSystemMenu()->getModuleByType( MODULE_VCC_MONITOR_TYPE);
+
     if( refresh == REFRESH_FULL) {
         lcd->setBg(0,0,0);
         lcd->setFg(255,255,255);
@@ -76,19 +79,36 @@ void UserInterface::homeScreen( Event *event) {
         lcd->print( TEXT_TXOS);
         lcd->println( TXOS_VERSION);
 
-        lcd->print( TEXT_MODEL);
-        lcd->printUInt( modelSelect.getModelID(), 3);
-        lcd->println();
-    
+        lcd->setCursor(1, 0);
+        lcd->printUInt( modelSelect.getModelID(), 2);
+        lcd->print(": ");
         Model *model = (Model*)moduleManager.getModelMenu()->getModuleByType(MODULE_MODEL_TYPE);
         lcd->print( model->getModelName());
 
-        refresh = REFRESH_UPDATE;
-    }
+        lcd->setCursor(3, 3);
+        lcd->print("NORMAL");
 
-    if( refresh == REFRESH_UPDATE) {
+        lcd->setCursor(5, 0);
+        lcd->print("00:00");
+
+        lcd->warnColors();
+        lcd->setCursor(6, 0);
+        lcd->print("warn test");
+
+        lcd->alertColors();
+        lcd->setCursor(7, 0);
+        lcd->print("alert test");
 
         refresh = REFRESH_OK;
+    }
+
+    if( vccMonitor) {
+        if( vccMonitor->vccHasChanged()) {
+            lcd->setCursor(5, 7);
+            lcd->okColors();
+            lcd->printFloat16( vccMonitor->getVcc(), 5);
+            lcd->print( "V");
+        }
     }
 
     switch( event->key) {

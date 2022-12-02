@@ -2,7 +2,7 @@
 #ifndef _LcdWidget_h_
 #define _LcdWidget_h_
 
-#include "Arduino.h"
+#include "TXos.h"
 
 typedef uint16_t pixel;
 
@@ -20,7 +20,7 @@ class LcdWidget
         unsigned int textY;
 
         pixel rgbToCol565( unsigned char r, unsigned char g, unsigned char b);
-        void printIntGeneric( unsigned int val, int8_t neg, uint8_t width, char filler);
+        void printIntGeneric( unsigned int val, int8_t neg, uint8_t width, uint8_t dot, char filler);
         void printChar( char ch);
 
     public:
@@ -51,10 +51,15 @@ class LcdWidget
         void printStr( const char str[], uint8_t width);
         void printStr( const char str[], uint8_t width, int8_t editIdx);
 
+        void printFloat16( float16 val, uint8_t width);
+        
         void normalColors();
         void selectedColors();
         void headerColors();
         void editColors();
+        void okColors();
+        void warnColors();
+        void alertColors();
 
         void saveColors();
         void restoreColors();    
