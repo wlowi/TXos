@@ -28,6 +28,9 @@ typedef struct vccMonitor_t {
 
     float16 warnLevel;
     float16 alertLevel;
+    
+    /* Fine tune Vcc (battery) voltage read from ADC */
+    int8_t vccAdjust;
 
 } vccMonitor_t;
 
@@ -35,6 +38,7 @@ class VccMonitor : public Module {
 
     private:
         vccMonitor_t cfg;
+
         float16 prevVcc;
         float16 vcc;
 
@@ -43,7 +47,9 @@ class VccMonitor : public Module {
 
         bool vccHasChanged() const;
         float16 getVcc() const;
-        
+        bool belowWarn() const;
+        bool belowAlert() const;
+
         /* From Module */
         void run( Controls &controls) final;
         void setDefaults() final;
@@ -51,6 +57,7 @@ class VccMonitor : public Module {
         uint8_t *getConfig() final;
 
         /* From TableEditable */
+        bool isColEditable( uint8_t row, uint8_t col) final;
         uint8_t getRowCount() final;
         const char *getRowName( uint8_t row) final;
         uint8_t getColCount( uint8_t row) final;

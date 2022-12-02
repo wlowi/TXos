@@ -1,8 +1,15 @@
 
-TODO:
------
+Board:
+======
+Arduino Mega or Mega 2560
 
-User interface: Alert messages
+Required libraries:
+===================
+Adafruit ST7735 library
+
+
+TODO:
+=====
 
 Cell editing: Switch number and state
     1-BI-0
@@ -11,11 +18,10 @@ Cell editing: Switch number and state
 
 Cell editing: Integer as float
 
-Module: Vcc Monitor
-
 Module: Rate & Expo
 
 Module: Geber Switches
+
 Module: Timer
 
 User interface: Screen Layout

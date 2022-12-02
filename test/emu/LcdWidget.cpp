@@ -717,7 +717,7 @@ void LcdWidget::okColors() {
 void LcdWidget::warnColors() {
 
     setBg(0,0,0);
-    setFg(255,127,80);
+    setFg(255,165,0);
 }
 
 void LcdWidget::alertColors() {

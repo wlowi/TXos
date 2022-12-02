@@ -19,6 +19,9 @@
 */
 
 #include "ModuleManager.h"
+#include "UserInterface.h"
+
+extern UserInterface userInterface;
 
 ModuleManager::ModuleManager( ConfigBlock &svc) : blockService( &svc) {
 
@@ -140,6 +143,7 @@ void ModuleManager::loadModel( configBlockID_t modelID) {
         parseBlock( modelMenu);
     } else {
         LOGV("** ModuleManager::loadModel(): Block %d is invalid.\n", modelID);
+        userInterface.postMessage( 1, MSG_MODEL_LOAD_FAILED);
         saveModel( modelID);
     }
 }
@@ -169,6 +173,7 @@ void ModuleManager::loadSystemConfig(configBlockID_t blockID) {
         parseBlock( systemMenu);
     } else {
         LOG("** ModuleManager::loadSystemConfig(): system config is invalid, saving defaults\n");
+        userInterface.postMessage( 1, MSG_BAD_SYSCONFIG);
         systemMenu->setDefaults();
         saveSystemConfig( blockID);
     }

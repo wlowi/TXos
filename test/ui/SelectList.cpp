@@ -36,17 +36,10 @@ void SelectList::process( LcdWidget *lcd, Event *event) {
         switch( event->key) {
         case KEY_ENTER:
             if( !(useBackItem && tableRow == 0)) {
-                // table row always > 0
+                // tableRow is always > 0
                 row = useBackItem ? tableRow-1 : tableRow;
-                if( table->isRowEditable( row)) {
-                    LOGV("SelectList::process(): Is Row Editable (row=%d) => Y\n", row);
-                    if( table->getColCount( row) > 0) {
-                        mode = MODE_EDIT;
-                        tableCol = 0;
-                        table->getValue( row, tableCol, &editCell);
-                        refresh = REFRESH_UPDATE;
-                    }
-                }
+                firstEditableCol( row);
+
                 if( table->isRowExecutable( row)) {
                     LOGV("SelectList::process(): Is Row Executable (row=%d) => Y\n", row);
                     table->rowExecute( row);
@@ -97,13 +90,7 @@ void SelectList::process( LcdWidget *lcd, Event *event) {
 
             case KEY_ENTER:
                 tableCol++;
-                if( tableCol >= table->getColCount( row)) {
-                    mode = MODE_RENDER;
-                    tableCol = 0;
-                } else { /* Get next cell to edit */
-                    table->getValue( row, tableCol, &editCell);
-                }  
-                refresh = REFRESH_UPDATE; 
+                skipNonEditableCol( row);
                 break;
 
             default:
@@ -123,6 +110,39 @@ void SelectList::process( LcdWidget *lcd, Event *event) {
         event->markProcessed();
         refresh = REFRESH_OK;
     }
+}
+
+void SelectList::firstEditableCol( uint8_t row) {
+
+    if( table->isRowEditable( row)) {
+        LOGV("SelectList::process(): Is Row Editable (row=%d) => Y\n", row);
+
+        if( table->getColCount( row) > 0) {
+            mode = MODE_EDIT;
+            tableCol = 0;
+            skipNonEditableCol( row);
+        }
+    }
+}
+
+void SelectList::skipNonEditableCol( uint8_t row) {
+
+    for(;;) {
+        if( tableCol >= table->getColCount( row)) {
+            mode = MODE_RENDER;
+            tableCol = 0;
+            break;
+    
+        } else if( !table->isColEditable( row, tableCol)) {
+            tableCol++;
+            continue;
+
+        } else { /* Get next cell to edit */
+            table->getValue( row, tableCol, &editCell);
+            break;
+        }
+    }
+    refresh = REFRESH_UPDATE;  
 }
 
 void SelectList::prev( uint8_t count) {

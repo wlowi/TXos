@@ -35,12 +35,22 @@ float16 VccMonitor::getVcc() const {
     return vcc;
 }
 
+bool VccMonitor::belowWarn() const {
+
+    return vcc < cfg.warnLevel; 
+}
+
+bool VccMonitor::belowAlert() const {
+
+    return vcc < cfg.alertLevel;
+}
+
 void VccMonitor::run( Controls &controls) {
 
     long v = controls.auxGet( 0);
 
-    v = v * 500L / 1024L;
-    v = v * 32L / 10L;
+    v = v * (ADC_VOLTAGE + cfg.vccAdjust) / ADC_VCC_RESOLUTION;
+    v = v * (ADC_VOLTAGE_DIVIDER_R1 + ADC_VOLTAGE_DIVIDER_R2) / ADC_VOLTAGE_DIVIDER_R2;
 
     vcc = (float16)v;
 }
@@ -49,8 +59,9 @@ void VccMonitor::setDefaults() {
 
     vcc = 1200;
     prevVcc = 1200;
-    cfg.warnLevel = 960;
-    cfg.alertLevel = 880;
+    cfg.vccAdjust = 0;
+    cfg.warnLevel = VCC_WARN_LEVEL_PER_CELL * VCC_CELLS;
+    cfg.alertLevel = VCC_ALERT_LEVEL_PER_CELL * VCC_CELLS;
 }
 
 /* From Module */
@@ -69,37 +80,57 @@ uint8_t *VccMonitor::getConfig() {
 
 uint8_t VccMonitor::getRowCount() {
 
-    return 2;
+    return 3;
 }
 
 const char *VccMonitor::getRowName( uint8_t row) {
 
     if( row == 0) {
         return TEXT_WARN;
-    } else {
+    } else if( row == 1) {
         return TEXT_ALERT;
+    } else {
+        return TEXT_VCC_ADJUST;
     }
+}
+
+bool VccMonitor::isColEditable( uint8_t row, uint8_t col) {
+
+    return col == 0;
 }
 
 uint8_t VccMonitor::getColCount( uint8_t row) {
 
+    if( row == 2) {
+        return 2;
+    }
     return 1;
 }
 
 void VccMonitor::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
     if( row == 0) {
-        cell->setInt16( 6, cfg.warnLevel, 0, 1200);
+        cell->setFloat16( 8, cfg.warnLevel, 5, 0, 1200);
+    } else if( row == 1) {
+        cell->setFloat16( 8, cfg.alertLevel, 5, 0, 1200);
     } else {
-        cell->setInt16( 6, cfg.alertLevel, 0, 1200);
+        if( col == 0) {
+            cell->setInt8( 3, cfg.vccAdjust, -100, 100);
+        } else {
+            cell->setFloat16( 8, vcc, 5, 0, 2500);
+        }
     }
 }
 
 void VccMonitor::setValue( uint8_t row, uint8_t col, Cell *cell) {
 
     if( row == 0) {
-        cfg.warnLevel = cell->getInt16();
+        cfg.warnLevel = cell->getFloat16();
+    } else if( row == 1) {
+        cfg.alertLevel = cell->getFloat16();
     } else {
-        cfg.alertLevel = cell->getInt16();
+        if( col == 0) {
+            cfg.vccAdjust = cell->getFloat16();
+        }
     }
 }

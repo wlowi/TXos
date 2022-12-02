@@ -50,6 +50,8 @@ class SelectList {
         void printLine( LcdWidget *lcd, uint8_t i);
         void paint( LcdWidget *lcd);
         void update( LcdWidget *lcd);
+        void firstEditableCol( uint8_t row);
+        void skipNonEditableCol( uint8_t row);
         void prev( uint8_t count);
         void next( uint8_t count);
         void clear();

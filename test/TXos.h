@@ -8,7 +8,7 @@
 #include "Arduino.h"
 #include "Text.h"
 
-#define TXOS_VERSION "0.1.7"
+#define TXOS_VERSION "0.1.8"
 
 #if defined( ARDUINO )
     #define LOG( f )
@@ -19,35 +19,26 @@
     #define LOGV( f, ... ) printf( f, __VA_ARGS__)
 #endif
 
-/* Holds small float values with 2 fractional digits. */
+/* Holds small float values with 2 fractional digits.
+ * This is currently only used to display battery voltage.
+ *
+ * Note that you can add and subtract float16 values
+ * but you cannot simply multiply or devide float16 values.
+ */
 typedef int16_t float16;
+
+/* This identifies a channel number.
+ */
+typedef uint8_t channel_t;
+
+/* Numeric switch identifier.
+ */
+typedef uint8_t switch_t;
+
+#include "TXosConfig.h"
 
 #define MODEL_NAME_LEN          ((uint8_t)8)
 #define MODEL_NAME_DEFAULT      CC("--------")
-
-/* Port definitions */
-
-/* Analog sticks and other analog channels */
-#define PORT_ANALOG_INPUT_COUNT   6
-#define PORT_ANALOG_INPUT        A0,A1,A2,A3,A4,A5
-
-/* Analog trim inputs */
-#define PORT_TRIM_INPUT_COUNT     4
-#define PORT_TRIM_INPUT          A8,A9,A10,A11
-
-/* Auxiliary analog input: Vcc monitor */
-#define PORT_AUX_INPUT_COUNT      1
-#define PORT_AUX_INPUT          A15
-
-/* Two state or three state switches */
-#define PORT_SWITCH_INPUT_COUNT   6
-#define PORT_SWITCH_INPUT        22,23,24,25,26,27
-
-#define PORT_HF_RELAIS            2
-#define PORT_BIND_RELAIS          3
-#define PORT_BUZZER              31
-
-
 
 #define BDEBUG_LEN 40
 

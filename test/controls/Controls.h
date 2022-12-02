@@ -27,16 +27,6 @@
 
 #include "TXos.h"
 
-/* The number of transmitter channels.
- * This is the number of channels that will be used to when
- * generating the PPM signal.
- */
-#define CHANNELS                ((channel_t)9)
-
-/* This identifies a channel number.
- */
-typedef uint8_t channel_t;
-
 /* The internal representation of a channel value is a signed integer.
  * 0 represents mid position. The range is [-1000,1000]
  */
@@ -82,13 +72,6 @@ typedef int8_t percent_t;
 #define PCT_TO_CHANNEL( p) ((channelValue_t)p*10)
 
 #define CHANNEL_TO_PCT( c) ((percent_t)(c/10))
-
-
-/* Numeric switch identifier
- */
-typedef uint8_t switch_t;
-
-#define SWITCHES        ((switch_t)8)
 
 #define SWITCH_NONE     ((switch_t)255)
 

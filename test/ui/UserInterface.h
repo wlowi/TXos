@@ -27,6 +27,13 @@ class UserInterface {
         uint8_t screenPtr;
         uint8_t refresh;
         
+        uint8_t screenWidth;
+
+        uint8_t message1; /* displayed messages */
+        uint8_t message2;
+        uint8_t post1;    /* posted messages */
+        uint8_t post2;
+
         TableEditable *module;
         SelectList selectList;
 
@@ -37,6 +44,10 @@ class UserInterface {
     public:
         void init();
         void handle();
+
+        void postMessage( uint8_t line, uint8_t msg);
+
+        void toScreen( uint8_t scr);
         void switchScreen( uint8_t scr);
         void pushScreen( uint8_t scr);
         void popScreen();

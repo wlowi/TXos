@@ -32,6 +32,10 @@ void Cell::render( LcdWidget *lcd, bool edit) const {
             lcd->printInt( value.intV, 6);
             break;
 
+        case FLOAT16:
+            lcd->printFloat16( value.intV, value.size);
+            break;
+
         case STRING_T:
             if( edit) {
                 lcd->printStr( value.string, value.size, (int8_t)value.intV);
@@ -74,6 +78,7 @@ void Cell::edit( Event *event) {
 
     case INT8_T:
     case INT16_T:
+    case FLOAT16:
         if( event->key == KEY_DOWN) {
             value.intV -= event->count;
             event->markProcessed();
@@ -200,6 +205,16 @@ void Cell::setInt16( uint8_t screenX, int16_t v, int16_t nmin, int16_t nmax) {
     numericMax = nmax;
 }
 
+void Cell::setFloat16( uint8_t screenX, float16 v, uint8_t width, float16 nmin, float16 nmax) {
+
+    screenCol = screenX;
+    type = FLOAT16;
+    value.intV = v;
+    value.size = width; /* display width */
+    numericMin = nmin;
+    numericMax = nmax;
+}
+
 void Cell::setString( uint8_t screenX, char *v, uint8_t sz) {
 
     screenCol = screenX;
@@ -253,6 +268,11 @@ int8_t Cell::getInt8() const {
 }
 
 int16_t Cell::getInt16() const {
+
+    return value.intV;
+}
+
+float16 Cell::getFloat16() const {
 
     return value.intV;
 }

@@ -20,6 +20,13 @@ const buzzerCmd_t SoundClear[] = {
   BUZZER_STOP()
 };
 
+const char *messageText[] = {
+    TEXT_MSG_NONE,
+    TEXT_MSG_BAD_SYSCONFIG,
+    TEXT_MSG_LOW_BATT,
+    TEXT_MSG_MODEL_LOAD_FAILED
+};
+
 void UserInterface::init() {
 
     module = NULL;
@@ -27,9 +34,16 @@ void UserInterface::init() {
     screen[0] = SCREEN_INIT;
     screenPtr = 0;
 
+    message1 = message2 = 0;
+    post1 = post2 = 0;
+
     lcd = displayImpl->getLCD();
+    
     lcd->clear();
     lcd->setFontSize( 2);
+ 
+    screenWidth = lcd->getColumns();
+ 
     lcd->println(TEXT_BOOTING);
 }
 
@@ -90,26 +104,39 @@ void UserInterface::homeScreen( Event *event) {
 
         lcd->setCursor(5, 0);
         lcd->print("00:00");
-
-        lcd->warnColors();
-        lcd->setCursor(6, 0);
-        lcd->print("warn test");
-
-        lcd->alertColors();
-        lcd->setCursor(7, 0);
-        lcd->print("alert test");
-
-        refresh = REFRESH_OK;
     }
 
     if( vccMonitor) {
-        if( vccMonitor->vccHasChanged()) {
+        if( refresh == REFRESH_FULL || vccMonitor->vccHasChanged()) {
             lcd->setCursor(5, 7);
-            lcd->okColors();
+            if( vccMonitor->belowAlert()) {
+                lcd->alertColors();
+                postMessage(0, MSG_LOW_BATT);
+            } else if( vccMonitor->belowWarn()) {
+                lcd->warnColors();
+            } else {
+                lcd->okColors();
+            }
             lcd->printFloat16( vccMonitor->getVcc(), 5);
             lcd->print( "V");
         }
     }
+
+    if( refresh == REFRESH_FULL || post1 != message1) {
+        message1 = post1;
+        lcd->warnColors();
+        lcd->setCursor(6, 0);
+        lcd->printStr(messageText[message1], screenWidth);
+    }
+
+    if( refresh == REFRESH_FULL || post2 != message2) {
+        message2 = post2;
+        lcd->warnColors();
+        lcd->setCursor(7, 0);
+        lcd->printStr(messageText[message2], screenWidth);
+    }
+
+    refresh = REFRESH_OK;
 
     switch( event->key) {
     case KEY_ENTER:
@@ -117,6 +144,9 @@ void UserInterface::homeScreen( Event *event) {
         break;
     
     case KEY_CLEAR:
+        if( post1 || post2) {
+            post1 = post2 = 0;
+        }
         buzzer.play( SoundClear);
     }
 }
@@ -178,6 +208,25 @@ void UserInterface::configScreen( Event *event) {
             break;
         }
     }
+}
+
+void UserInterface::postMessage( uint8_t line, uint8_t msg) {
+
+    if( msg < MSG_COUNT) {
+        if( line == 0) {
+            post1 = msg;
+        } else{
+            post2 = msg;
+        }
+    }
+}
+
+void UserInterface::toScreen( uint8_t scr) {
+
+    screenPtr = 0;
+    screen[screenPtr] = scr;
+    refresh = REFRESH_FULL;
+    LOGV("UserInterface::switchScreen(): Switch to %d\n", screen[screenPtr]);
 }
 
 void UserInterface::switchScreen( uint8_t scr) {

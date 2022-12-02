@@ -13,6 +13,7 @@ enum TableEditType_t {
     BOOLEAN_T,
     INT8_T,
     INT16_T,
+    FLOAT16,
     STRING_T,
     LIST_T,
     SWITCH_T,
@@ -47,6 +48,7 @@ class Cell {
         void setBool( uint8_t screenX, bool v);
         void setInt8( uint8_t screenX, int8_t v, int16_t nmin, int16_t nmax);
         void setInt16( uint8_t screenX, int16_t v, int16_t nmin, int16_t nmax);
+        void setFloat16( uint8_t screenX, float16 v, uint8_t sz, float16 nmin, float16 nmax);
         void setString( uint8_t screenX, char *v, uint8_t sz);
         void setList( uint8_t screenX, const char **v, uint8_t sz, uint8_t curr);
         void setSwitch( uint8_t screenX, switch_t v);
@@ -55,6 +57,7 @@ class Cell {
         bool getBool() const;
         int8_t getInt8() const;
         int16_t getInt16() const;
+        float16 getFloat16() const;
         char *getString() const;
         uint8_t getList() const;
         switch_t getSwitch() const;
@@ -71,6 +74,8 @@ class TableEditable {
 
         /* Return true if values of the row are editable */
         virtual bool isRowEditable( uint8_t row) { return true; }
+        /* Return true if the value of this cell is editable */
+        virtual bool isColEditable( uint8_t row, uint8_t col) { return true; }
 
         /* Return true if rowExecute should be called 
          * when the row is activated. 

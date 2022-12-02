@@ -23,8 +23,10 @@
  */
 
 #include "ModelSelect.h"
+#include "UserInterface.h"
 
 extern ModuleManager moduleManager;
+extern UserInterface userInterface;
 
 ModelSelect::ModelSelect() : Module( MODULE_MODEL_SELECT_TYPE, TEXT_MODULE_MODEL_SELECT) {
 
@@ -72,6 +74,7 @@ void ModelSelect::rowExecute( uint8_t row) {
 
     cfg.modelID = row +1;
     moduleManager.loadModel( cfg.modelID);
+    userInterface.toScreen( SCREEN_HOME);
 }
 
 uint8_t ModelSelect::getRowCount() {

@@ -92,6 +92,7 @@
 #define TEXT_WINGMIX                CC("Mix")
 #define TEXT_WARN                   CC("Warn")
 #define TEXT_ALERT                  CC("Alert")
+#define TEXT_VCC_ADJUST             CC("+/-")
 
 // Wing mix options
 #define TEXT_WINGMIX_length         6
@@ -106,5 +107,19 @@
 #define TEXT_ON                     CC("On")
 #define TEXT_OFF                    CC("Off")
 
+/* User interface warnings and messages */
+#define MSG_COUNT                   4
+
+#define MSG_NONE                    0 //1234567890123
+#define TEXT_MSG_NONE               CC(" ")
+
+#define MSG_BAD_SYSCONFIG           1 //1234567890123
+#define TEXT_MSG_BAD_SYSCONFIG      CC("Bad Sysconfig")
+
+#define MSG_LOW_BATT                2 //1234567890123
+#define TEXT_MSG_LOW_BATT           CC("Low Battery")
+
+#define MSG_MODEL_LOAD_FAILED       3 //1234567890123
+#define TEXT_MSG_MODEL_LOAD_FAILED  CC("Mdl load Err")
 
 #endif
