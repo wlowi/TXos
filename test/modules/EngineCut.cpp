@@ -8,25 +8,29 @@ EngineCut::EngineCut() : Module( MODULE_ENGINE_CUT_TYPE, TEXT_MODULE_ENGINE_CUT)
 
 void EngineCut::run( Controls &controls) {
 
-    if( controls.evalSwitches( cfg.trigger) ) {
-        controls.analogSet( CHANNEL_THROTTLE, PCT_TO_CHANNEL(cfg.cut_pct));
+    if( controls.evalSwitches( CFG->trigger) ) {
+        controls.analogSet( CHANNEL_THROTTLE, PCT_TO_CHANNEL(CFG->cut_pct));
     }
 }
 
 void EngineCut::setDefaults() {
 
-    cfg.cut_pct = -100;
-    cfg.trigger = SW_STATE_ALL_DONTCARE;
+    INIT_NON_PHASED_CONFIGURATION(
+
+        CFG->cut_pct = -100;
+        CFG->trigger = SW_STATE_ALL_DONTCARE;
+
+    )
 }
 
 moduleSize_t EngineCut::getConfigSize() {
 
-    return (moduleSize_t)sizeof( cfg);
+    return (moduleSize_t)sizeof( configuration);
 }
 
 uint8_t *EngineCut::getConfig() {
 
-    return (uint8_t*)&cfg;
+    return (uint8_t*)&configuration;
 }
 
 /* From TableEditable */
@@ -52,17 +56,17 @@ uint8_t EngineCut::getColCount( uint8_t row) {
 void EngineCut::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
     if( row == 0) {
-        cell->setSwitchSetState( 7, cfg.trigger);
+        cell->setSwitchSetState( 7, CFG->trigger);
     } else {
-        cell->setInt8( 7, cfg.cut_pct, PERCENT_MIN_LIMIT, PERCENT_MAX_LIMIT);
+        cell->setInt8( 7, CFG->cut_pct, PERCENT_MIN_LIMIT, PERCENT_MAX_LIMIT);
     }
 }
 
 void EngineCut::setValue( uint8_t row, uint8_t col, Cell *cell) {
 
     if( row == 0) {
-        cfg.trigger = cell->getSwitchSetState();
+        CFG->trigger = cell->getSwitchSetState();
     } else {
-        cfg.cut_pct = cell->getInt8();
+        CFG->cut_pct = cell->getInt8();
     }
 }

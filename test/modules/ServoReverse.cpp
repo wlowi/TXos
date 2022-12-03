@@ -28,7 +28,7 @@ ServoReverse::ServoReverse() : Module( MODULE_SERVO_REVERSE_TYPE, TEXT_MODULE_SE
 void ServoReverse::run( Controls &controls) {
 
     for( channel_t ch = 0; ch < CHANNELS; ch++) {
-        if( IS_BIT_SET( cfg.revBits, ch)) {
+        if( IS_BIT_SET( CFG->revBits, ch)) {
             controls.analogSet( ch, -controls.analogGet(ch));
         }
     }
@@ -36,19 +36,23 @@ void ServoReverse::run( Controls &controls) {
 
 void ServoReverse::setDefaults() {
 
-    cfg.revBits = 0;
+    INIT_NON_PHASED_CONFIGURATION(
+
+        CFG->revBits = 0;
+
+    )
 }
 
 /* From Module */
 
 moduleSize_t ServoReverse::getConfigSize() {
 
-    return (moduleSize_t)sizeof( cfg);
+    return (moduleSize_t)sizeof( configuration);
 }
 
 uint8_t *ServoReverse::getConfig() {
 
-    return (uint8_t*)&cfg;
+    return (uint8_t*)&configuration;
 }
 
 /* From TableEditable */
@@ -70,14 +74,14 @@ uint8_t ServoReverse::getColCount( uint8_t row) {
 
 void ServoReverse::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
-    cell->setBool( 4, IS_BIT_SET( cfg.revBits, row));
+    cell->setBool( 4, IS_BIT_SET( CFG->revBits, row));
 }
 
 void ServoReverse::setValue( uint8_t row, uint8_t col, Cell *cell) {
     
     if( cell->getBool()) {
-        BIT_SET( cfg.revBits, row);
+        BIT_SET( CFG->revBits, row);
     } else {
-        BIT_CLEAR( cfg.revBits, row);
+        BIT_CLEAR( CFG->revBits, row);
     }
 }

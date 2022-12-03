@@ -25,7 +25,6 @@
 #ifndef _ModelSelect_h_
 #define _ModelSelect_h_
 
-#include "TXos.h"
 #include "ModuleManager.h"
 #include "Model.h"
 
@@ -39,9 +38,9 @@ typedef struct modelSelect_t {
 
 class ModelSelect : public Module {
 
-    private:
-        modelSelect_t cfg;
+    NON_PHASED_CONFIG( modelSelect_t)
 
+    private:
         char modelNo[MODELNO_STRING_LEN +1]; // Temporary space for numeric model ID
         Model model;                         // Temporary to display model name
         

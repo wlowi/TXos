@@ -21,10 +21,11 @@
 #ifndef _RangeTest_h_
 #define _RangeTest_h_
 
-#include "TXos.h"
 #include "Module.h"
 
 class RangeTest : public Module {
+
+    NO_CONFIG()
 
     private:
 

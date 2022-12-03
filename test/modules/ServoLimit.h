@@ -21,7 +21,6 @@
 #ifndef _ServoLimit_h_
 #define _ServoLimit_h_
 
-#include "TXos.h"
 #include "Module.h"
 
 typedef struct servoLimit_t {
@@ -33,8 +32,7 @@ typedef struct servoLimit_t {
 
 class ServoLimit : public Module {
 
-    private:
-        servoLimit_t cfg;
+    NON_PHASED_CONFIG( servoLimit_t)
 
     public:
         ServoLimit();

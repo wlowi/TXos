@@ -21,7 +21,6 @@
 #ifndef _Timer_h_
 #define _Timer_h_
 
-#include "TXos.h"
 #include "Module.h"
 
 typedef struct flightTimer_t {
@@ -32,8 +31,7 @@ typedef struct flightTimer_t {
 
 class Timer : public Module {
 
-    private:
-        flightTimer_t cfg;
+    NON_PHASED_CONFIG( flightTimer_t)
 
     public:
         Timer();

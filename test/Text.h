@@ -65,12 +65,12 @@
 #define TEXT_OUT_CHANNEL_9          CC("S9")
 
 // Switch types (3 letters fixed)
-// Note name length is 5 because the format include switch number
-// n-ttt  (1-TRI)
-#define TEXT_SW_NAME_length         5
-#define TEXT_SW_TYPE_UNUSED         CC("---")
+// Note name length is 4 because the format includes the switch number
+// n-tt  (1-BI)
+#define TEXT_SW_NAME_length         4
+#define TEXT_SW_TYPE_UNUSED         CC("----")
 #define TEXT_SW_TYPE_2_STATE        CC("BI")
-#define TEXT_SW_TYPE_3_STATE        CC("TRI")
+#define TEXT_SW_TYPE_3_STATE        CC("TR")
 #define TEXT_SW_TYPE_CHANNEL        CC("CH")
 
 // Calibration steps (9 letters max)
@@ -78,6 +78,17 @@
 #define TEXT_CALIB_CENTER           CC("CENTER")
 #define TEXT_CALIB_MINMAX           CC("MINMAX")
 #define TEXT_CALIB_NONE             CC("CALIBRATE")
+
+// Phases (7 letters max.)
+#define TEXT_PHASES_count           7
+#define TEXT_PHASE_NAME_length      7
+#define TEXT_PHASE_NORMAL           CC("Normal")
+#define TEXT_PHASE_THERMAL          CC("Thermal")
+#define TEXT_PHASE_SPEED            CC("Speed")
+#define TEXT_PHASE_START            CC("Start")
+#define TEXT_PHASE_LAND             CC("Landing")
+#define TEXT_PHASE_ACRO             CC("Acro")
+#define TEXT_PHASE_ACRO2            CC("Acro 2")
 
 // Misc
 #define TEXT_TXOS                   CC("TXos ")
@@ -93,6 +104,9 @@
 #define TEXT_WARN                   CC("Warn")
 #define TEXT_ALERT                  CC("Alert")
 #define TEXT_VCC_ADJUST             CC("+/-")
+#define TEXT_PHASE                  CC("Phase")
+#define TEXT_RATE                   CC("Rate")
+#define TEXT_EXPO                   CC("Expo")
 
 // Wing mix options
 #define TEXT_WINGMIX_length         6
@@ -108,7 +122,7 @@
 #define TEXT_OFF                    CC("Off")
 
 /* User interface warnings and messages */
-#define MSG_COUNT                   4
+#define TEXT_MSG_count              5
 
 #define MSG_NONE                    0 //1234567890123
 #define TEXT_MSG_NONE               CC(" ")
@@ -120,6 +134,9 @@
 #define TEXT_MSG_LOW_BATT           CC("Low Battery")
 
 #define MSG_MODEL_LOAD_FAILED       3 //1234567890123
-#define TEXT_MSG_MODEL_LOAD_FAILED  CC("Mdl load Err")
+#define TEXT_MSG_MODEL_LOAD_FAILED  CC("Mod. load err")
+
+#define MSG_CONFIG_SIZE             4 //1234567890123
+#define TEXT_MSG_CONFIG_SIZE        CC("Mod. cfg size")
 
 #endif

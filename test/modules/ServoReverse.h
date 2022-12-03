@@ -21,7 +21,6 @@
 #ifndef _ServoReverse_h_
 #define _ServoReverse_h_
 
-#include "TXos.h"
 #include "Module.h"
 
 typedef struct servoReverse_t {
@@ -32,8 +31,7 @@ typedef struct servoReverse_t {
 
 class ServoReverse : public Module {
 
-    private:
-        servoReverse_t cfg;
+    NON_PHASED_CONFIG( servoReverse_t)
 
     public:
         ServoReverse();

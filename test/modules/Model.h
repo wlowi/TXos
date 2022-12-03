@@ -2,7 +2,6 @@
 #ifndef _Model_h_
 #define _Model_h_
 
-#include "TXos.h"
 #include "Module.h"
 
 /* First and last valid model ID */
@@ -28,13 +27,12 @@ typedef struct model_t {
 
 class Model : public Module {
 
-    private:
-        model_t cfg;
+    NON_PHASED_CONFIG( model_t)
 
     public:
         Model();
 
-        char *getModelName() { return cfg.modelName; }
+        char *getModelName() { return CFG->modelName; }
 
         /* From Module */
         void run( Controls &controls) final;

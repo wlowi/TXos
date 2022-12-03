@@ -16,6 +16,18 @@ void Menu::setDefaults() {
     }
 }
 
+void Menu::switchPhase( phase_t phase) {
+
+    LOGV("Menu::switchPhase(): new phase %d\n", phase);
+
+    Module *current = first;
+
+    while( current != nullptr) {
+        current->switchPhase( phase);
+        current = current->menuNext;
+    }
+}
+
 void Menu::addModule( Module *modulePtr) {
 
     modulePtr->menuNext = nullptr;

@@ -2,7 +2,6 @@
 #ifndef _EngineCut_h_
 #define _EngineCut_h_
 
-#include "TXos.h"
 #include "Module.h"
 
 typedef struct engineCut_t {
@@ -14,8 +13,7 @@ typedef struct engineCut_t {
 
 class EngineCut : public Module {
 
-    private:
-        engineCut_t cfg;
+    NON_PHASED_CONFIG( engineCut_t)
 
     public:
         EngineCut();

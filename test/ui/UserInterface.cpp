@@ -5,7 +5,7 @@
 #include "SystemConfig.h"
 #include "ModelSelect.h"
 #include "Buzzer.h"
-#include "VccMonitor.h"
+
 
 extern DisplayImpl *displayImpl;
 extern ModuleManager moduleManager;
@@ -24,7 +24,8 @@ const char *messageText[] = {
     TEXT_MSG_NONE,
     TEXT_MSG_BAD_SYSCONFIG,
     TEXT_MSG_LOW_BATT,
-    TEXT_MSG_MODEL_LOAD_FAILED
+    TEXT_MSG_MODEL_LOAD_FAILED,
+    TEXT_MSG_CONFIG_SIZE
 };
 
 void UserInterface::init() {
@@ -36,6 +37,9 @@ void UserInterface::init() {
 
     message1 = message2 = 0;
     post1 = post2 = 0;
+
+    lastPhase = 255;
+    lastVcc = 0;
 
     lcd = displayImpl->getLCD();
     
@@ -84,42 +88,52 @@ void UserInterface::handle() {
 void UserInterface::homeScreen( Event *event) {
 
     VccMonitor *vccMonitor = (VccMonitor*)moduleManager.getSystemMenu()->getModuleByType( MODULE_VCC_MONITOR_TYPE);
+    Phases *phases = (Phases*)moduleManager.getModelMenu()->getModuleByType( MODULE_PHASES_TYPE);
+    Timer *timer = (Timer*)moduleManager.getModelMenu()->getModuleByType( MODULE_TIMER_TYPE);
 
     if( refresh == REFRESH_FULL) {
-        lcd->setBg(0,0,0);
-        lcd->setFg(255,255,255);
+        lcd->normalColors();
         lcd->clear();
 
         lcd->print( TEXT_TXOS);
-        lcd->println( TXOS_VERSION);
+        lcd->print( TXOS_VERSION);
 
         lcd->setCursor(1, 0);
         lcd->printUInt( modelSelect.getModelID(), 2);
         lcd->print(": ");
         Model *model = (Model*)moduleManager.getModelMenu()->getModuleByType(MODULE_MODEL_TYPE);
-        lcd->print( model->getModelName());
+        lcd->printStr( model->getModelName(), MODEL_NAME_LEN);
+    }
 
+    if( phases &&  (refresh == REFRESH_FULL || phases->getPhase() != lastPhase)) {
+        lastPhase = phases->getPhase();
+
+        lcd->normalColors();
         lcd->setCursor(3, 3);
-        lcd->print("NORMAL");
+        lcd->printStr(phases->getPhaseName(), TEXT_PHASE_NAME_length);
+    }
 
+    if( timer && (refresh == REFRESH_FULL )) {
+
+        lcd->normalColors();
         lcd->setCursor(5, 0);
         lcd->print("00:00");
     }
 
-    if( vccMonitor) {
-        if( refresh == REFRESH_FULL || vccMonitor->vccHasChanged()) {
-            lcd->setCursor(5, 7);
-            if( vccMonitor->belowAlert()) {
-                lcd->alertColors();
-                postMessage(0, MSG_LOW_BATT);
-            } else if( vccMonitor->belowWarn()) {
-                lcd->warnColors();
-            } else {
-                lcd->okColors();
-            }
-            lcd->printFloat16( vccMonitor->getVcc(), 5);
-            lcd->print( "V");
+    if( vccMonitor && (refresh == REFRESH_FULL || vccMonitor->getVcc() != lastVcc)) {
+        lastVcc = vccMonitor->getVcc();
+
+        if( vccMonitor->belowAlert()) {
+            lcd->alertColors();
+            postMessage(0, MSG_LOW_BATT);
+        } else if( vccMonitor->belowWarn()) {
+            lcd->warnColors();
+        } else {
+            lcd->okColors();
         }
+        lcd->setCursor(5, 7);
+        lcd->printFloat16( vccMonitor->getVcc(), 5);
+        lcd->print( "V");
     }
 
     if( refresh == REFRESH_FULL || post1 != message1) {
@@ -212,7 +226,7 @@ void UserInterface::configScreen( Event *event) {
 
 void UserInterface::postMessage( uint8_t line, uint8_t msg) {
 
-    if( msg < MSG_COUNT) {
+    if( msg < TEXT_MSG_count) {
         if( line == 0) {
             post1 = msg;
         } else{

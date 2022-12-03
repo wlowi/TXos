@@ -19,6 +19,19 @@
 */
 
 #include "Phases.h"
+#include "ModuleManager.h"
+
+extern ModuleManager moduleManager;
+
+const char *phaseNames[TEXT_PHASES_count] = {
+    TEXT_PHASE_NORMAL,
+    TEXT_PHASE_THERMAL,
+    TEXT_PHASE_SPEED,
+    TEXT_PHASE_START,
+    TEXT_PHASE_LAND,
+    TEXT_PHASE_ACRO,
+    TEXT_PHASE_ACRO2
+};
 
 Phases::Phases() : Module( MODULE_PHASES_TYPE, TEXT_MODULE_PHASES) {
 
@@ -27,35 +40,77 @@ Phases::Phases() : Module( MODULE_PHASES_TYPE, TEXT_MODULE_PHASES) {
 
 void Phases::run( Controls &controls) {
 
+    switchState_t state;
+
+    if( CFG->sw == SWITCH_NONE) {
+        return;
+    }
+
+    state = controls.switchGet( CFG->sw);
+
+    if( state < PHASES && state != phase) {
+        phase = state;
+        LOGV("Phases::run: switch to phase %d\n", phase);
+        moduleManager.switchPhase( phase);
+    }
 }
 
 void Phases::setDefaults() {
 
-    cfg.sw = SWITCH_NONE;
+    INIT_NON_PHASED_CONFIGURATION(
+
+        CFG->sw = SWITCH_NONE;
+
+        phase = 0;
+
+        for( phase_t p = 0; p < PHASES; p++) {
+            CFG->phaseName[p] = p;
+        }
+
+    )
+}
+
+phase_t Phases::getPhase() {
+
+    return phase;
+}
+
+const char *Phases::getPhaseName() {
+
+    return phaseNames[CFG->phaseName[phase]];
 }
 
 /* From Module */
 
 moduleSize_t Phases::getConfigSize() {
 
-    return (moduleSize_t)sizeof( cfg);
+    return (moduleSize_t)sizeof( configuration);
 }
 
 uint8_t *Phases::getConfig() {
 
-    return (uint8_t*)&cfg;
+    return (uint8_t*)&configuration;
 }
 
 /* From TableEditable */
 
 uint8_t Phases::getRowCount() {
 
-    return 1;
+    /* One for the switch + number of phases */
+    return 1 + PHASES;
 }
 
 const char *Phases::getRowName( uint8_t row) {
 
-    return TEXT_SWITCH;
+    if( row == 0) {
+        return TEXT_SWITCH;
+    }
+
+    strcpy( phaseText, "Ph-");
+    phaseText[3] = '0'+row-1;
+    phaseText[4] = '\0';
+
+    return phaseText;
 }
 
 uint8_t Phases::getColCount( uint8_t row) {
@@ -65,10 +120,18 @@ uint8_t Phases::getColCount( uint8_t row) {
 
 void Phases::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
-    cell->setSwitch( 7, cfg.sw);
+    if( row == 0) {
+        cell->setSwitch( 7, CFG->sw);
+    } else {
+        cell->setList( 6, phaseNames, TEXT_PHASES_count, CFG->phaseName[row-1]);
+    }
 }
 
 void Phases::setValue( uint8_t row, uint8_t col, Cell *cell) {
 
-    cfg.sw = cell->getSwitch();
+    if( row == 0) {
+        CFG->sw = cell->getSwitch();
+    } else {
+        CFG->phaseName[row-1] = cell->getList();
+    }
 }

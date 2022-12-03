@@ -21,10 +21,11 @@
 #ifndef _Bind_h_
 #define _Bind_h_
 
-#include "TXos.h"
 #include "Module.h"
 
 class Bind : public Module {
+
+    NO_CONFIG()
 
     private:
 

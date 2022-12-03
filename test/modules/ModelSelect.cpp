@@ -35,7 +35,7 @@ ModelSelect::ModelSelect() : Module( MODULE_MODEL_SELECT_TYPE, TEXT_MODULE_MODEL
 
 configBlockID_t ModelSelect::getModelID() const {
 
-    return cfg.modelID;
+    return CFG->modelID;
 }
 
 /* From Module */
@@ -47,19 +47,23 @@ void ModelSelect::run( Controls &controls) {
 
 void ModelSelect::setDefaults() {
 
-    cfg.modelID = 1;
+    INIT_NON_PHASED_CONFIGURATION(
+
+        CFG->modelID = 1;
+
+    )
 }
 
 /* From Module */
 
 moduleSize_t ModelSelect::getConfigSize() {
 
-    return (moduleSize_t)sizeof( cfg);
+    return (moduleSize_t)sizeof( configuration);
 }
 
 uint8_t *ModelSelect::getConfig() {
 
-    return (uint8_t*)&cfg;
+    return (uint8_t*)&configuration;
 }
 
 /* From TableEditable */
@@ -72,8 +76,8 @@ void ModelSelect::rowExecute( uint8_t row) {
 
     LOGV("ModelSelect::execute( %d )\n", row);
 
-    cfg.modelID = row +1;
-    moduleManager.loadModel( cfg.modelID);
+    CFG->modelID = row +1;
+    moduleManager.loadModel( CFG->modelID);
     userInterface.toScreen( SCREEN_HOME);
 }
 

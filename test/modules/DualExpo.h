@@ -21,19 +21,18 @@
 #ifndef _DualExpo_h_
 #define _DualExpo_h_
 
-#include "TXos.h"
 #include "Module.h"
 
 typedef struct dualExpo_t {
 
-    switch_t sw;
+    percent_t rate;
+    percent_t expo;
 
 } dualExpo_t;
 
 class DualExpo : public Module {
 
-    private:
-        dualExpo_t cfg;
+    PHASED_CONFIG( dualExpo_t )
 
     public:
         DualExpo();
@@ -45,6 +44,8 @@ class DualExpo : public Module {
         uint8_t *getConfig() final;
 
         /* From TableEditable */
+        bool isRowEditable( uint8_t row) final;
+
         uint8_t getRowCount() final;
         const char *getRowName( uint8_t row) final;
         uint8_t getColCount( uint8_t row) final;

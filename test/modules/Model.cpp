@@ -21,7 +21,7 @@ void Model::run( Controls &controls) {
     channelValue_t a1;
     channelValue_t a2;
 
-    switch( cfg.wingMix) {
+    switch( CFG->wingMix) {
     case WINGMIX_1AIL:
         break;
 
@@ -61,18 +61,22 @@ void Model::run( Controls &controls) {
 
 void Model::setDefaults() {
 
-    memcpy( cfg.modelName, MODEL_NAME_DEFAULT, MODEL_NAME_LEN +1);
-    cfg.wingMix = WINGMIX_1AIL;
+    INIT_NON_PHASED_CONFIGURATION(
+
+        memcpy( CFG->modelName, MODEL_NAME_DEFAULT, MODEL_NAME_LEN +1);
+        CFG->wingMix = WINGMIX_1AIL;
+
+    )
 }
 
 moduleSize_t Model::getConfigSize() {
 
-    return (moduleSize_t)sizeof( cfg);
+    return (moduleSize_t)sizeof( configuration);
 }
 
 uint8_t *Model::getConfig() {
 
-    return (uint8_t*)&cfg;
+    return (uint8_t*)&configuration;
 }
 
 /* From TableEditable */
@@ -99,9 +103,9 @@ uint8_t Model::getColCount( uint8_t row) {
 void Model::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
     if( row == 0) {
-        cell->setString( 5, cfg.modelName, MODEL_NAME_LEN);
+        cell->setString( 5, CFG->modelName, MODEL_NAME_LEN);
     } else {
-        cell->setList( 5, wingMixNames, WINGMIX_OPTION_NUM, cfg.wingMix);
+        cell->setList( 5, wingMixNames, WINGMIX_OPTION_NUM, CFG->wingMix);
     }
 }
 
@@ -110,6 +114,6 @@ void Model::setValue( uint8_t row, uint8_t col, Cell *cell) {
     if( row == 0) {
         // nothing to do. inplace string edit
     } else {
-        cfg.wingMix = cell->getList();
+        CFG->wingMix = cell->getList();
     }
 }

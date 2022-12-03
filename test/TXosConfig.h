@@ -32,6 +32,11 @@
  */
 #define SWITCHES                 ((switch_t)8)
 
+/* Number of phases.
+ * A value > 3 does not make any sense because we only 
+ * have tri-state switches.
+ */
+#define PHASES                   ((phase_t)3)
 
 /* Port definitions */
 
@@ -73,6 +78,6 @@
 #define VCC_CELLS                   8
 /* Voltage mutliplied by 100 to maintain 2 fractional digits. */
 #define VCC_WARN_LEVEL_PER_CELL   125
-#define VCC_ALERT_LEVEL_PER_CELL  115
+#define VCC_ALERT_LEVEL_PER_CELL  120
 
 #endif

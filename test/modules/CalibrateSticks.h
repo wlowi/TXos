@@ -21,7 +21,6 @@
 #ifndef _CalibrateSticks_h_
 #define _CalibrateSticks_h_
 
-#include "TXos.h"
 #include "Module.h"
 
 typedef struct calibrateSticks_t {
@@ -34,9 +33,9 @@ typedef struct calibrateSticks_t {
 
 class CalibrateSticks : public Module {
 
-    private:
-        calibrateSticks_t cfg;
+    NON_PHASED_CONFIG( calibrateSticks_t)
 
+    private:
         uint8_t calibrationStep;
 #define CALIBRATION_STEP_NONE     0
 #define CALIBRATION_STEP_CENTER   1

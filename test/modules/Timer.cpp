@@ -31,19 +31,23 @@ void Timer::run( Controls &controls) {
 
 void Timer::setDefaults() {
 
-    cfg.swSetState = SW_STATE_ALL_DONTCARE;
+    INIT_NON_PHASED_CONFIGURATION(
+
+        CFG->swSetState = SW_STATE_ALL_DONTCARE;
+
+    )
 }
 
 /* From Module */
 
 moduleSize_t Timer::getConfigSize() {
 
-    return (moduleSize_t)sizeof( cfg);
+    return (moduleSize_t)sizeof( configuration);
 }
 
 uint8_t *Timer::getConfig() {
 
-    return (uint8_t*)&cfg;
+    return (uint8_t*)&configuration;
 }
 
 /* From TableEditable */
@@ -65,10 +69,10 @@ uint8_t Timer::getColCount( uint8_t row) {
 
 void Timer::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
-    cell->setSwitchSetState( 7, cfg.swSetState);
+    cell->setSwitchSetState( 7, CFG->swSetState);
 }
 
 void Timer::setValue( uint8_t row, uint8_t col, Cell *cell) {
 
-    cfg.swSetState = cell->getSwitchSetState();
+    CFG->swSetState = cell->getSwitchSetState();
 }

@@ -25,11 +25,6 @@ VccMonitor::VccMonitor() : Module( MODULE_VCC_MONITOR_TYPE, TEXT_MODULE_VCC_MONI
     setDefaults();
 }
 
-bool VccMonitor::vccHasChanged() const {
-
-    return vcc != prevVcc;
-}
-
 float16 VccMonitor::getVcc() const {
 
     return vcc;
@@ -37,19 +32,19 @@ float16 VccMonitor::getVcc() const {
 
 bool VccMonitor::belowWarn() const {
 
-    return vcc < cfg.warnLevel; 
+    return vcc < CFG->warnLevel; 
 }
 
 bool VccMonitor::belowAlert() const {
 
-    return vcc < cfg.alertLevel;
+    return vcc < CFG->alertLevel;
 }
 
 void VccMonitor::run( Controls &controls) {
 
     long v = controls.auxGet( 0);
 
-    v = v * (ADC_VOLTAGE + cfg.vccAdjust) / ADC_VCC_RESOLUTION;
+    v = v * (ADC_VOLTAGE + CFG->vccAdjust) / ADC_VCC_RESOLUTION;
     v = v * (ADC_VOLTAGE_DIVIDER_R1 + ADC_VOLTAGE_DIVIDER_R2) / ADC_VOLTAGE_DIVIDER_R2;
 
     vcc = (float16)v;
@@ -58,22 +53,26 @@ void VccMonitor::run( Controls &controls) {
 void VccMonitor::setDefaults() {
 
     vcc = 1200;
-    prevVcc = 1200;
-    cfg.vccAdjust = 0;
-    cfg.warnLevel = VCC_WARN_LEVEL_PER_CELL * VCC_CELLS;
-    cfg.alertLevel = VCC_ALERT_LEVEL_PER_CELL * VCC_CELLS;
+
+    INIT_NON_PHASED_CONFIGURATION(
+
+        CFG->vccAdjust = 0;
+        CFG->warnLevel = VCC_WARN_LEVEL_PER_CELL * VCC_CELLS;
+        CFG->alertLevel = VCC_ALERT_LEVEL_PER_CELL * VCC_CELLS;
+
+    )
 }
 
 /* From Module */
 
 moduleSize_t VccMonitor::getConfigSize() {
 
-    return (moduleSize_t)sizeof( cfg);
+    return (moduleSize_t)sizeof( configuration);
 }
 
 uint8_t *VccMonitor::getConfig() {
 
-    return (uint8_t*)&cfg;
+    return (uint8_t*)&configuration;
 }
 
 /* From TableEditable */
@@ -110,12 +109,12 @@ uint8_t VccMonitor::getColCount( uint8_t row) {
 void VccMonitor::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
     if( row == 0) {
-        cell->setFloat16( 8, cfg.warnLevel, 5, 0, 1200);
+        cell->setFloat16( 8, CFG->warnLevel, 5, 0, 1200);
     } else if( row == 1) {
-        cell->setFloat16( 8, cfg.alertLevel, 5, 0, 1200);
+        cell->setFloat16( 8, CFG->alertLevel, 5, 0, 1200);
     } else {
         if( col == 0) {
-            cell->setInt8( 3, cfg.vccAdjust, -100, 100);
+            cell->setInt8( 3, CFG->vccAdjust, -100, 100);
         } else {
             cell->setFloat16( 8, vcc, 5, 0, 2500);
         }
@@ -125,12 +124,12 @@ void VccMonitor::getValue( uint8_t row, uint8_t col, Cell *cell) {
 void VccMonitor::setValue( uint8_t row, uint8_t col, Cell *cell) {
 
     if( row == 0) {
-        cfg.warnLevel = cell->getFloat16();
+        CFG->warnLevel = cell->getFloat16();
     } else if( row == 1) {
-        cfg.alertLevel = cell->getFloat16();
+        CFG->alertLevel = cell->getFloat16();
     } else {
         if( col == 0) {
-            cfg.vccAdjust = cell->getFloat16();
+            CFG->vccAdjust = cell->getFloat16();
         }
     }
 }

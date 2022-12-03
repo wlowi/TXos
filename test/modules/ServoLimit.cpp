@@ -31,12 +31,12 @@ void ServoLimit::run( Controls &controls) {
 
     for( channel_t ch = 0; ch < CHANNELS; ch++) {
 
-        v = PCT_TO_CHANNEL( cfg.posLimit_pct[ch]);
+        v = PCT_TO_CHANNEL( CFG->posLimit_pct[ch]);
         if( controls.analogGet( ch) > v) {
             controls.analogSet( ch, v);
         }
 
-        v = PCT_TO_CHANNEL( cfg.negLimit_pct[ch]);
+        v = PCT_TO_CHANNEL( CFG->negLimit_pct[ch]);
         if( controls.analogGet( ch) < v) {
             controls.analogSet( ch, v);
         }
@@ -45,22 +45,26 @@ void ServoLimit::run( Controls &controls) {
 
 void ServoLimit::setDefaults() {
 
-    for( channel_t ch = 0; ch < CHANNELS; ch++) {
-        cfg.posLimit_pct[ch] = PERCENT_MAX_LIMIT;
-        cfg.negLimit_pct[ch] = PERCENT_MIN_LIMIT;
-    }
+    INIT_NON_PHASED_CONFIGURATION(
+
+        for( channel_t ch = 0; ch < CHANNELS; ch++) {
+            CFG->posLimit_pct[ch] = PERCENT_MAX_LIMIT;
+            CFG->negLimit_pct[ch] = PERCENT_MIN_LIMIT;
+        }
+
+    )
 }
 
 /* From Module */
 
 moduleSize_t ServoLimit::getConfigSize() {
 
-    return (moduleSize_t)sizeof( cfg);
+    return (moduleSize_t)sizeof( configuration);
 }
 
 uint8_t *ServoLimit::getConfig() {
 
-    return (uint8_t*)&cfg;
+    return (uint8_t*)&configuration;
 }
 
 /* From TableEditable */
@@ -83,17 +87,17 @@ uint8_t ServoLimit::getColCount( uint8_t row) {
 void ServoLimit::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
     if( col == 0) {
-        cell->setInt8( 4, cfg.negLimit_pct[row], PERCENT_MIN_LIMIT, PERCENT_MAX_LIMIT);
+        cell->setInt8( 4, CFG->negLimit_pct[row], PERCENT_MIN_LIMIT, PERCENT_MAX_LIMIT);
     } else {
-        cell->setInt8( 9, cfg.posLimit_pct[row], PERCENT_MIN_LIMIT, PERCENT_MAX_LIMIT);
+        cell->setInt8( 9, CFG->posLimit_pct[row], PERCENT_MIN_LIMIT, PERCENT_MAX_LIMIT);
     }
 }
 
 void ServoLimit::setValue( uint8_t row, uint8_t col, Cell *cell) {
 
     if( col == 0) {
-        cfg.negLimit_pct[row] = cell->getInt8();
+        CFG->negLimit_pct[row] = cell->getInt8();
     } else {
-        cfg.posLimit_pct[row] = cell->getInt8();
+        CFG->posLimit_pct[row] = cell->getInt8();
     }
 }

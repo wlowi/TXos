@@ -75,6 +75,9 @@ class Module : public TableEditable {
         /* */
         virtual void run( Controls &controls) = 0;
 
+        /* Called whenever a flight phase changes. */
+        virtual void switchPhase(phase_t ph) = 0;
+
         /* Set default values for all configuration data of a module. */
         virtual void setDefaults() = 0;
 
@@ -90,5 +93,7 @@ class Module : public TableEditable {
         /* From Interface TableEditable */
         const char *getName() final;
 };
+
+#include "Phases.h"
 
 #endif

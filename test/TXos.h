@@ -8,7 +8,7 @@
 #include "Arduino.h"
 #include "Text.h"
 
-#define TXOS_VERSION "0.1.8"
+#define TXOS_VERSION "0.1.9"
 
 #if defined( ARDUINO )
     #define LOG( f )
@@ -35,7 +35,13 @@ typedef uint8_t channel_t;
  */
 typedef uint8_t switch_t;
 
+/* Phase number
+ */
+typedef uint8_t phase_t;
+
+
 #include "TXosConfig.h"
+
 
 #define MODEL_NAME_LEN          ((uint8_t)8)
 #define MODEL_NAME_DEFAULT      CC("--------")

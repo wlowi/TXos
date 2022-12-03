@@ -21,22 +21,70 @@
 #ifndef _Phases_h_
 #define _Phases_h_
 
-#include "TXos.h"
 #include "Module.h"
+
+#define NO_CONFIG()                     \
+public:                                 \
+    void switchPhase(phase_t ph) { /* no op */ }
+
+#define PHASED_CONFIG( c_t )            \
+private:                                \
+    c_t configuration[ PHASES ];        \
+    c_t *cfgPtr;                        \
+    phase_t phase;                      \
+public:                                 \
+    void switchPhase(phase_t ph);
+
+#define INIT_PHASED_CONFIGURATION( block )          \
+    for( phase_t phase=0; phase<PHASES; phase++) {  \
+        cfgPtr = &configuration[phase];             \
+        block                                       \
+    }                                               \
+    cfgPtr = &configuration[0];
+
+
+#define NON_PHASED_CONFIG( c_t )        \
+private:                                \
+    c_t configuration;                  \
+    c_t *cfgPtr;                        \
+public:                                 \
+    void switchPhase(phase_t ph) { /* no op */ }
+
+#define INIT_NON_PHASED_CONFIGURATION( block ) \
+    cfgPtr = &configuration;                   \
+    block
+
+
+#define CFG cfgPtr
+
+#define SWITCH_PHASE( p)                \
+do {                                    \
+    if( p < PHASES) {                   \
+        cfgPtr = &configuration[p];     \
+    }                                   \
+} while( false)
 
 typedef struct phases_t {
 
     switch_t sw;
+    phase_t phaseName[PHASES]; 
 
 } phases_t;
 
 class Phases : public Module {
 
+    NON_PHASED_CONFIG( phases_t )
+
     private:
-        phases_t cfg;
+        phase_t phase;
+
+        char phaseText[5];
 
     public:
         Phases();
+
+        phase_t getPhase();
+        const char *getPhaseName();
 
         /* From Module */
         void run( Controls &controls) final;

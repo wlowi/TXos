@@ -21,7 +21,6 @@
 #ifndef _ServoSubtrim_h_
 #define _ServoSubtrim_h_
 
-#include "TXos.h"
 #include "Module.h"
 
 typedef struct servoSubtrim_t {
@@ -32,8 +31,7 @@ typedef struct servoSubtrim_t {
 
 class ServoSubtrim : public Module {
 
-    private:
-        servoSubtrim_t cfg;
+    PHASED_CONFIG( servoSubtrim_t)
 
     public:
         ServoSubtrim();

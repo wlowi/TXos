@@ -6,6 +6,9 @@
 #include "SelectList.h"
 #include "TableEditable.h"
 #include "Menu.h"
+#include "VccMonitor.h"
+#include "Phases.h"
+#include "Timer.h"
 
 #define SCREEN_INIT     0
 #define SCREEN_HOME     1
@@ -33,6 +36,9 @@ class UserInterface {
         uint8_t message2;
         uint8_t post1;    /* posted messages */
         uint8_t post2;
+
+        phase_t lastPhase;
+        float16 lastVcc;
 
         TableEditable *module;
         SelectList selectList;

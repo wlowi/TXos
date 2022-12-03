@@ -31,31 +31,57 @@ void DualExpo::run( Controls &controls) {
 
 void DualExpo::setDefaults() {
 
-    cfg.sw = SWITCH_NONE;
+    INIT_PHASED_CONFIGURATION(
+
+        CFG->rate = 100;
+        CFG->expo = 0;
+
+    )
 }
 
 /* From Module */
 
 moduleSize_t DualExpo::getConfigSize() {
 
-    return (moduleSize_t)sizeof( cfg);
+    return (moduleSize_t)sizeof( configuration);
 }
 
 uint8_t *DualExpo::getConfig() {
 
-    return (uint8_t*)&cfg;
+    return (uint8_t*)&configuration;
+}
+
+void DualExpo::switchPhase(phase_t ph) {
+
+    LOGV("DualExpo::switchPhase: new phase %d\n", ph);
+    SWITCH_PHASE( ph);
 }
 
 /* From TableEditable */
 
 uint8_t DualExpo::getRowCount() {
 
-    return 1;
+    return 3;
 }
 
 const char *DualExpo::getRowName( uint8_t row) {
 
-    return TEXT_SWITCH;
+    if( row == 0) {
+        return TEXT_PHASE;
+    } else if( row == 1) {
+        return TEXT_RATE;
+    }
+
+    return TEXT_EXPO;
+}
+
+bool DualExpo::isRowEditable( uint8_t row) {
+
+    if( row == 0) {
+        return false;
+    }
+
+    return true;
 }
 
 uint8_t DualExpo::getColCount( uint8_t row) {
@@ -65,10 +91,22 @@ uint8_t DualExpo::getColCount( uint8_t row) {
 
 void DualExpo::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
-    cell->setSwitch( 7, cfg.sw);
+    if( row == 0) {
+        cell->setInt8( 7, phase, 0, PHASES);
+    } else if( row == 1) {
+        cell->setInt8( 7, CFG->rate, PERCENT_MIN_LIMIT, PERCENT_MAX_LIMIT);
+    } else {
+        cell->setInt8( 7, CFG->expo, 0, 100);
+    }
 }
 
 void DualExpo::setValue( uint8_t row, uint8_t col, Cell *cell) {
 
-    cfg.sw = cell->getSwitch();
+    if( row == 0) {
+        /* noop */
+    } else if( row == 1) {
+        CFG->rate = cell->getInt8();
+    } else {
+        CFG->expo = cell->getInt8();
+    }
 }

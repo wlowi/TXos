@@ -21,7 +21,6 @@
 #ifndef _VccMonitor_h_
 #define _VccMonitor_h_
 
-#include "TXos.h"
 #include "Module.h"
 
 typedef struct vccMonitor_t {
@@ -36,16 +35,14 @@ typedef struct vccMonitor_t {
 
 class VccMonitor : public Module {
 
-    private:
-        vccMonitor_t cfg;
+    NON_PHASED_CONFIG( vccMonitor_t)
 
-        float16 prevVcc;
+    private:
         float16 vcc;
 
     public:
         VccMonitor();
 
-        bool vccHasChanged() const;
         float16 getVcc() const;
         bool belowWarn() const;
         bool belowAlert() const;

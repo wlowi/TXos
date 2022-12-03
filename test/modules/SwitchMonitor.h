@@ -2,11 +2,11 @@
 #ifndef _SwitchMonitor_h_
 #define _SwitchMonitor_h_
 
-#include "TXos.h"
 #include "Module.h"
-#include "Controls.h"
 
 class SwitchMonitor : public Module {
+
+    NO_CONFIG()
 
     private:
         Controls &current;

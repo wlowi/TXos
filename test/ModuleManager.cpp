@@ -127,6 +127,13 @@ void ModuleManager::runModules( Controls &controls) {
     }
 }
 
+void ModuleManager::switchPhase( phase_t phase) {
+
+    LOGV("\nModuleManager::switchPhase(): new phase %d\n", phase);
+    /* System modules do not have phases. */
+    modelMenu->switchPhase( phase);
+}
+
 /*
  * Read configuration block from EEPROM and distribute
  * configuration data to each module.
@@ -219,6 +226,7 @@ void ModuleManager::parseBlock( Menu *menu) {
         if( current->getConfigSize() != size) {
             LOGV("** ModuleManager::parseBlock(): Config size mismatch of module type=%d %d != %d\n",
                 type, current->getConfigSize(), size);
+            userInterface.postMessage( 1, MSG_CONFIG_SIZE);
             break;
         }
 

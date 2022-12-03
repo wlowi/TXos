@@ -2,11 +2,12 @@
 #ifndef _SystemSetup_h_
 #define _SystemSetup_h_
 
-#include "TXos.h"
 #include "Module.h"
 
 class SystemSetup : public Module {
 
+    NO_CONFIG()
+    
     public:
         explicit SystemSetup();
         

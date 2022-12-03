@@ -21,7 +21,6 @@
 #ifndef _CalibrateTrim_h_
 #define _CalibrateTrim_h_
 
-#include "TXos.h"
 #include "Module.h"
 
 typedef struct calibrateTrim_t {
@@ -34,9 +33,9 @@ typedef struct calibrateTrim_t {
 
 class CalibrateTrim : public Module {
 
-    private:
-        calibrateTrim_t cfg;
+    NON_PHASED_CONFIG( calibrateTrim_t)
 
+    private:
         uint8_t calibrationStep;
 #define CALIBRATION_STEP_NONE     0
 #define CALIBRATION_STEP_CENTER   1

@@ -35,22 +35,22 @@ void CalibrateSticks::run( Controls &controls) {
 
         if( calibrationStep == CALIBRATION_STEP_CENTER) {
 
-            cfg.midPos[ch] = cfg.maxPos[ch] = cfg.minPos[ch] = (channelValue_t)v;
+            CFG->midPos[ch] = CFG->maxPos[ch] = CFG->minPos[ch] = (channelValue_t)v;
 
         } else if( calibrationStep == CALIBRATION_STEP_MINMAX) {
 
-            if( v < cfg.minPos[ch]) {
-                cfg.minPos[ch] = (channelValue_t)v;
-            } else if( v > cfg.maxPos[ch]) {
-                cfg.maxPos[ch] = (channelValue_t)v;
+            if( v < CFG->minPos[ch]) {
+                CFG->minPos[ch] = (channelValue_t)v;
+            } else if( v > CFG->maxPos[ch]) {
+                CFG->maxPos[ch] = (channelValue_t)v;
             }
 
         } else {
 
-            if( v > cfg.midPos[ch]) {
-                v = ((long)(v - cfg.midPos[ch]) * (CHANNELVALUE_MAX_LIMIT - CHANNELVALUE_MID)) / (cfg.maxPos[ch] - cfg.midPos[ch]);
-            } else if( v < cfg.midPos[ch]) {
-                v = ((long)(v - cfg.midPos[ch]) * (CHANNELVALUE_MID - CHANNELVALUE_MIN_LIMIT)) / (cfg.midPos[ch] - cfg.minPos[ch]);
+            if( v > CFG->midPos[ch]) {
+                v = ((long)(v - CFG->midPos[ch]) * (CHANNELVALUE_MAX_LIMIT - CHANNELVALUE_MID)) / (CFG->maxPos[ch] - CFG->midPos[ch]);
+            } else if( v < CFG->midPos[ch]) {
+                v = ((long)(v - CFG->midPos[ch]) * (CHANNELVALUE_MID - CHANNELVALUE_MIN_LIMIT)) / (CFG->midPos[ch] - CFG->minPos[ch]);
             } else {
                 v = CHANNELVALUE_MID;
             }
@@ -62,11 +62,15 @@ void CalibrateSticks::run( Controls &controls) {
 
 void CalibrateSticks::setDefaults() {
 
-    for( channel_t ch = 0; ch < PORT_ANALOG_INPUT_COUNT; ch++) {        
-        cfg.minPos[ch] = 0;
-        cfg.midPos[ch] = 511;
-        cfg.maxPos[ch] = 1023;
-    }
+    INIT_NON_PHASED_CONFIGURATION(
+
+        for( channel_t ch = 0; ch < PORT_ANALOG_INPUT_COUNT; ch++) {        
+            CFG->minPos[ch] = 0;
+            CFG->midPos[ch] = 511;
+            CFG->maxPos[ch] = 1023;
+        }
+
+    )
 
     calibrationStep = CALIBRATION_STEP_NONE;
 }
@@ -98,12 +102,12 @@ void CalibrateSticks::rowExecute( uint8_t row ) {
 
 moduleSize_t CalibrateSticks::getConfigSize() {
 
-    return (moduleSize_t)sizeof( cfg);
+    return (moduleSize_t)sizeof( configuration);
 }
 
 uint8_t *CalibrateSticks::getConfig() {
 
-    return (uint8_t*)&cfg;
+    return (uint8_t*)&configuration;
 }
 
 /* From TableEditable */
@@ -146,9 +150,9 @@ void CalibrateSticks::getValue( uint8_t row, uint8_t col, Cell *cell) {
     } else {
 
         if( col == 0) {
-            cell->setInt16( 1, cfg.minPos[row-1], CHANNELVALUE_MIN_LIMIT, CHANNELVALUE_MAX_LIMIT);
+            cell->setInt16( 1, CFG->minPos[row-1], CHANNELVALUE_MIN_LIMIT, CHANNELVALUE_MAX_LIMIT);
         } else {
-            cell->setInt16( 7, cfg.maxPos[row-1], CHANNELVALUE_MIN_LIMIT, CHANNELVALUE_MAX_LIMIT);
+            cell->setInt16( 7, CFG->maxPos[row-1], CHANNELVALUE_MIN_LIMIT, CHANNELVALUE_MAX_LIMIT);
         }
 
     }

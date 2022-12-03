@@ -2,10 +2,11 @@
 #ifndef _ServoMonitor_h_
 #define _ServoMonitor_h_
 
-#include "TXos.h"
 #include "Module.h"
 
 class ServoMonitor : public Module {
+
+    NO_CONFIG()
 
     private:
         Controls &current;
