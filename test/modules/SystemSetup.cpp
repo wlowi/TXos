@@ -8,6 +8,8 @@ SystemSetup::SystemSetup() : Module( MODULE_SYSTEM_SETUP_TYPE, TEXT_MODULE_SYSTE
 
 }
 
+/* From Module */
+
 void SystemSetup::run( Controls &controls) {
 
 }
@@ -15,18 +17,6 @@ void SystemSetup::run( Controls &controls) {
 void SystemSetup::setDefaults() {
 
     /* no-op */
-}
-
-moduleSize_t SystemSetup::getConfigSize() {
-
-    /* no-op */
-    return 0;
-}
-
-uint8_t *SystemSetup::getConfig() {
-
-    /* no-op */
-    return nullptr;
 }
 
 /* From TableEditable */

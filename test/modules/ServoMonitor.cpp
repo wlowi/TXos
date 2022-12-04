@@ -5,6 +5,8 @@ ServoMonitor::ServoMonitor( Controls &controls) : Module( MODULE_SERVO_MONITOR_T
 
 }
 
+/* From Module */
+
 void ServoMonitor::run( Controls &controls) {
 
     current = controls;
@@ -13,18 +15,6 @@ void ServoMonitor::run( Controls &controls) {
 void ServoMonitor::setDefaults() {
 
     /* no-op */
-}
-
-moduleSize_t ServoMonitor::getConfigSize() {
-
-    /* no-op */
-    return 0;
-}
-
-uint8_t *ServoMonitor::getConfig() {
-
-    /* no-op */
-    return nullptr;
 }
 
 /* From TableEditable */

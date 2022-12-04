@@ -54,18 +54,6 @@ void ModelSelect::setDefaults() {
     )
 }
 
-/* From Module */
-
-moduleSize_t ModelSelect::getConfigSize() {
-
-    return (moduleSize_t)sizeof( configuration);
-}
-
-uint8_t *ModelSelect::getConfig() {
-
-    return (uint8_t*)&configuration;
-}
-
 /* From TableEditable */
 
 /*

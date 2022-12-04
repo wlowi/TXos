@@ -6,6 +6,8 @@ EngineCut::EngineCut() : Module( MODULE_ENGINE_CUT_TYPE, TEXT_MODULE_ENGINE_CUT)
     setDefaults();
 }
 
+/* From Module */
+
 void EngineCut::run( Controls &controls) {
 
     if( controls.evalSwitches( CFG->trigger) ) {
@@ -21,16 +23,6 @@ void EngineCut::setDefaults() {
         CFG->trigger = SW_STATE_ALL_DONTCARE;
 
     )
-}
-
-moduleSize_t EngineCut::getConfigSize() {
-
-    return (moduleSize_t)sizeof( configuration);
-}
-
-uint8_t *EngineCut::getConfig() {
-
-    return (uint8_t*)&configuration;
 }
 
 /* From TableEditable */

@@ -52,8 +52,6 @@ class ModelSelect : public Module {
         /* From Module */
         void run( Controls &controls) final;
         void setDefaults() final;
-        moduleSize_t getConfigSize() final;
-        uint8_t *getConfig() final;
 
         /* From TableEditable */
         bool isRowEditable( uint8_t row) final { return false; }; // override

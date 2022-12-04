@@ -40,6 +40,8 @@ bool VccMonitor::belowAlert() const {
     return vcc < CFG->alertLevel;
 }
 
+/* From Module */
+
 void VccMonitor::run( Controls &controls) {
 
     long v = controls.auxGet( 0);
@@ -61,18 +63,6 @@ void VccMonitor::setDefaults() {
         CFG->alertLevel = VCC_ALERT_LEVEL_PER_CELL * VCC_CELLS;
 
     )
-}
-
-/* From Module */
-
-moduleSize_t VccMonitor::getConfigSize() {
-
-    return (moduleSize_t)sizeof( configuration);
-}
-
-uint8_t *VccMonitor::getConfig() {
-
-    return (uint8_t*)&configuration;
 }
 
 /* From TableEditable */

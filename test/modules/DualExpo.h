@@ -23,10 +23,12 @@
 
 #include "Module.h"
 
+#define DUAL_EXPO_CHANNELS 3
+
 typedef struct dualExpo_t {
 
-    percent_t rate;
-    percent_t expo;
+    /* Dual Rate and expo for Aileron/Elevator/Rudder */
+    percent_t value[2 * DUAL_EXPO_CHANNELS];
 
 } dualExpo_t;
 
@@ -34,17 +36,21 @@ class DualExpo : public Module {
 
     PHASED_CONFIG( dualExpo_t )
 
+    private:
+        bool postRefresh;
+
     public:
         DualExpo();
 
         /* From Module */
         void run( Controls &controls) final;
         void setDefaults() final;
-        moduleSize_t getConfigSize() final;
-        uint8_t *getConfig() final;
 
         /* From TableEditable */
+        bool needsRefresh() final;
         bool isRowEditable( uint8_t row) final;
+        /* Return true if the value of this cell is editable */
+        bool isColEditable( uint8_t row, uint8_t col) final;
 
         uint8_t getRowCount() final;
         const char *getRowName( uint8_t row) final;

@@ -20,10 +20,14 @@
 
 #include "DualExpo.h"
 
+extern const char *ChannelNames[CHANNELS];
+
 DualExpo::DualExpo() : Module( MODULE_DUAL_EXPO_TYPE, TEXT_MODULE_DUAL_EXPO) {
 
     setDefaults();
 }
+
+/* From Module */
 
 void DualExpo::run( Controls &controls) {
 
@@ -33,46 +37,50 @@ void DualExpo::setDefaults() {
 
     INIT_PHASED_CONFIGURATION(
 
-        CFG->rate = 100;
-        CFG->expo = 0;
-
+        for( channel_t ch = 0; ch < DUAL_EXPO_CHANNELS; ch += 2) {
+            CFG->value[ch] = 100; /* Rate */
+            CFG->value[ch+1] = 0; /* Expo */
+        }
     )
-}
 
-/* From Module */
-
-moduleSize_t DualExpo::getConfigSize() {
-
-    return (moduleSize_t)sizeof( configuration);
-}
-
-uint8_t *DualExpo::getConfig() {
-
-    return (uint8_t*)&configuration;
+    postRefresh = false;
 }
 
 void DualExpo::switchPhase(phase_t ph) {
 
     LOGV("DualExpo::switchPhase: new phase %d\n", ph);
     SWITCH_PHASE( ph);
+    postRefresh = true;
 }
 
 /* From TableEditable */
 
+bool DualExpo::needsRefresh() { 
+    
+    if( postRefresh) {
+        postRefresh = false;
+        return true;
+    }
+
+    return false;
+}
+
 uint8_t DualExpo::getRowCount() {
 
-    return 3;
+    return 2 * DUAL_EXPO_CHANNELS +1;
 }
 
 const char *DualExpo::getRowName( uint8_t row) {
 
     if( row == 0) {
         return TEXT_PHASE;
-    } else if( row == 1) {
-        return TEXT_RATE;
+    } else if( row < 3) {
+        return ChannelNames[CHANNEL_AILERON];
+    } else if( row < 5) {
+        return ChannelNames[CHANNEL_ELEVATOR];
+    } else {
+        return ChannelNames[CHANNEL_RUDDER];
     }
-
-    return TEXT_EXPO;
 }
 
 bool DualExpo::isRowEditable( uint8_t row) {
@@ -84,29 +92,51 @@ bool DualExpo::isRowEditable( uint8_t row) {
     return true;
 }
 
+bool DualExpo::isColEditable( uint8_t row, uint8_t col) {
+
+    if( col == 1) {
+        return true;
+    }
+
+    return false;
+}
+
 uint8_t DualExpo::getColCount( uint8_t row) {
 
-    return 1;
+    if( row == 0) {
+        return 1;
+    }
+
+    return 2;
 }
 
 void DualExpo::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
-    if( row == 0) {
-        cell->setInt8( 7, phase, 0, PHASES);
-    } else if( row == 1) {
-        cell->setInt8( 7, CFG->rate, PERCENT_MIN_LIMIT, PERCENT_MAX_LIMIT);
+    if( col == 0) {
+        if( row == 0) {
+            cell->setInt8( 7, phase, 0, PHASES);
+        } else {
+            if( row % 2) {
+                cell->setLabel( 4, TEXT_RATE, 4);
+            } else {
+                cell->setLabel( 4, TEXT_EXPO, 4);
+            }
+        }
     } else {
-        cell->setInt8( 7, CFG->expo, 0, 100);
+        if( row > 0) {
+            cell->setInt8( 9, CFG->value[row-1], 0, row % 2 ? PERCENT_MAX_LIMIT : 100);
+        }
     }
 }
 
 void DualExpo::setValue( uint8_t row, uint8_t col, Cell *cell) {
 
-    if( row == 0) {
-        /* noop */
-    } else if( row == 1) {
-        CFG->rate = cell->getInt8();
-    } else {
-        CFG->expo = cell->getInt8();
+    if( col == 0) {
+
+        /* no op */
+
+    } else if( row > 0) {
+
+        CFG->value[row-1] = cell->getInt8();    
     }
 }

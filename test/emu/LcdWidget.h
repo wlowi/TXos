@@ -44,7 +44,11 @@ class LcdWidget : public wxPanel
         void OnSize( wxSizeEvent& event);
         void OnPaint( wxPaintEvent& event);
 
+        /* Clear screen and move cursor to top-left position */
         void clear();
+        /* Clear to end of line but do not move the cursor */
+        void clearEOL();
+
         void setBg( unsigned char r, unsigned char g, unsigned char b);
         void setFg( unsigned char r, unsigned char g, unsigned char b);
         void setFontSize( unsigned int sz);

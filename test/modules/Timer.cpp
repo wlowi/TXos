@@ -25,6 +25,8 @@ Timer::Timer() : Module( MODULE_TIMER_TYPE, TEXT_MODULE_TIMER) {
     setDefaults();
 }
 
+/* From Module */
+
 void Timer::run( Controls &controls) {
 
 }
@@ -36,18 +38,6 @@ void Timer::setDefaults() {
         CFG->swSetState = SW_STATE_ALL_DONTCARE;
 
     )
-}
-
-/* From Module */
-
-moduleSize_t Timer::getConfigSize() {
-
-    return (moduleSize_t)sizeof( configuration);
-}
-
-uint8_t *Timer::getConfig() {
-
-    return (uint8_t*)&configuration;
 }
 
 /* From TableEditable */

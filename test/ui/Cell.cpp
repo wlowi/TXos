@@ -44,6 +44,10 @@ void Cell::render( LcdWidget *lcd, bool edit) const {
             }
             break;
 
+        case LABEL_T:
+            lcd->printStr( value.label, value.size);
+            break;
+
         case LIST_T:
             lcd->printStr( value.list[value.intV], value.size);
             break;
@@ -222,6 +226,14 @@ void Cell::setString( uint8_t screenX, char *v, uint8_t sz) {
     value.string = v;
     value.size = sz;
     value.intV = 0; // character index for editing.
+}
+
+void Cell::setLabel( uint8_t screenX, const char *v, uint8_t sz) {
+
+    screenCol = screenX;
+    type = LABEL_T;
+    value.label = v;
+    value.size = sz;
 }
 
 void Cell::setList( uint8_t screenX, const char **v, uint8_t count, uint8_t curr) {

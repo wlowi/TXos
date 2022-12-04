@@ -69,16 +69,6 @@ void Model::setDefaults() {
     )
 }
 
-moduleSize_t Model::getConfigSize() {
-
-    return (moduleSize_t)sizeof( configuration);
-}
-
-uint8_t *Model::getConfig() {
-
-    return (uint8_t*)&configuration;
-}
-
 /* From TableEditable */
 
 uint8_t Model::getRowCount() {

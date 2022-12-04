@@ -25,6 +25,8 @@ ServoReverse::ServoReverse() : Module( MODULE_SERVO_REVERSE_TYPE, TEXT_MODULE_SE
     setDefaults();
 }
 
+/* From Module */
+
 void ServoReverse::run( Controls &controls) {
 
     for( channel_t ch = 0; ch < CHANNELS; ch++) {
@@ -41,18 +43,6 @@ void ServoReverse::setDefaults() {
         CFG->revBits = 0;
 
     )
-}
-
-/* From Module */
-
-moduleSize_t ServoReverse::getConfigSize() {
-
-    return (moduleSize_t)sizeof( configuration);
-}
-
-uint8_t *ServoReverse::getConfig() {
-
-    return (uint8_t*)&configuration;
 }
 
 /* From TableEditable */

@@ -7,6 +7,8 @@ SwitchMonitor::SwitchMonitor( Controls &controls) : Module( MODULE_SWITCH_MONITO
 
 }
 
+/* From Module */
+
 void SwitchMonitor::run( Controls &controls) {
 
     current = controls;
@@ -15,18 +17,6 @@ void SwitchMonitor::run( Controls &controls) {
 void SwitchMonitor::setDefaults() {
 
     /* no-op */
-}
-
-moduleSize_t SwitchMonitor::getConfigSize() {
-
-    /* no-op */
-    return 0;
-}
-
-uint8_t *SwitchMonitor::getConfig() {
-
-    /* no-op */
-    return nullptr;
 }
 
 /* From TableEditable */

@@ -42,7 +42,7 @@ LcdWidget::LcdWidget()
 
     setFg( 255, 255, 255);
     setBg( 0, 0, 0);
-	  setFontSize( 1);
+    setFontSize( 1);
     clear();
 }
 
@@ -50,6 +50,11 @@ void LcdWidget::clear()
 {
     tft.fillScreen( bgCol565);
     textX = textY = 0;
+}
+
+void LcdWidget::clearEOL()
+{
+    tft.fillRect( textX, textY, width - textX, 8*fontSz, bgCol565);
 }
 
 void LcdWidget::setBg( unsigned char r, unsigned char g, unsigned char b)
@@ -178,31 +183,31 @@ void LcdWidget::printStr( const char str[], uint8_t width) {
 
 void LcdWidget::printStr( const char str[], uint8_t width, int8_t editIdx) {
 
-  int8_t p = 0;
+    int8_t p = 0;
 
-  if( !str) { return; }
+    if( !str) { return; }
 
-  while( str[p] && p < width) {
-    if( p == editIdx) {
-      saveColors();
-      selectedColors();
+    while( str[p] && p < width) {
+        if( p == editIdx) {
+            saveColors();
+            selectedColors();
+        }
+        printChar( str[p]);
+        if( p == editIdx) {
+            restoreColors();
+        }
+        p++;
     }
-    printChar( str[p]);
-    if( p == editIdx) {
-      restoreColors();
-    }
-    p++;
-  }
 
-  while( p < width) {
-    printChar( ' ');
-    p++;
-  }
+    while( p < width) {
+        printChar( ' ');
+        p++;
+    }
 }
 
 void LcdWidget::printFloat16( float16 val, uint8_t width) {
 
-  printIntGeneric( val, 0, width, 2, ' ');
+    printIntGeneric( val, 0, width, 2, ' ');
 }
 
 /* private */

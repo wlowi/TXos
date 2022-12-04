@@ -15,6 +15,7 @@ enum TableEditType_t {
     INT16_T,
     FLOAT16,
     STRING_T,
+    LABEL_T,
     LIST_T,
     SWITCH_T,
     SWITCH_SET_STATE_T
@@ -28,6 +29,7 @@ typedef struct CellType_t {
     
     uint8_t size;        /* String length */
     char *string;
+    const char *label;
 
     uint8_t count;       /* List size */
     const char **list;
@@ -50,6 +52,7 @@ class Cell {
         void setInt16( uint8_t screenX, int16_t v, int16_t nmin, int16_t nmax);
         void setFloat16( uint8_t screenX, float16 v, uint8_t sz, float16 nmin, float16 nmax);
         void setString( uint8_t screenX, char *v, uint8_t sz);
+        void setLabel( uint8_t screenX, const char *v, uint8_t sz);
         void setList( uint8_t screenX, const char **v, uint8_t sz, uint8_t curr);
         void setSwitch( uint8_t screenX, switch_t v);
         void setSwitchSetState( uint8_t screenX, switchSetState_t v);
@@ -96,6 +99,9 @@ class TableEditable {
         virtual const char *getRowName( uint8_t row) = 0;
 
         virtual uint8_t getColCount( uint8_t row) = 0;
+
+        /* Table requests full redraw */
+        virtual bool needsRefresh() { return false; };
 
         /* Returns true if a value has changed without user interaction */
         virtual bool hasChanged( uint8_t row, uint8_t col) { return false; }

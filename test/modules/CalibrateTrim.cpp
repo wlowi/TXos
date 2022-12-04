@@ -25,6 +25,8 @@ CalibrateTrim::CalibrateTrim() : Module( MODULE_CAL_TRIM_TYPE, TEXT_MODULE_CAL_T
     setDefaults();
 }
 
+/* From Module */
+
 void CalibrateTrim::run( Controls &controls) {
 
     long v;
@@ -75,7 +77,7 @@ void CalibrateTrim::setDefaults() {
     calibrationStep = CALIBRATION_STEP_NONE;
 }
 
-/* From Module */
+/* From TableEditable */
 
 bool CalibrateTrim::isRowExecutable( uint8_t row) {
 
@@ -99,18 +101,6 @@ void CalibrateTrim::rowExecute( uint8_t row ) {
         break;
     }
 }
-
-moduleSize_t CalibrateTrim::getConfigSize() {
-
-    return (moduleSize_t)sizeof( configuration);
-}
-
-uint8_t *CalibrateTrim::getConfig() {
-
-    return (uint8_t*)&configuration;
-}
-
-/* From TableEditable */
 
 uint8_t CalibrateTrim::getRowCount() {
 

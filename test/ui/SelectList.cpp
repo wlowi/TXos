@@ -29,6 +29,8 @@ void SelectList::process( LcdWidget *lcd, Event *event) {
     if( refresh == REFRESH_FULL) {
         paint( lcd);
         refresh = REFRESH_OK;
+    } else if ( table->needsRefresh()) {
+        updateTable( lcd);
     }
 
     switch( mode) {
@@ -106,7 +108,7 @@ void SelectList::process( LcdWidget *lcd, Event *event) {
     }
 
     if( refresh == REFRESH_UPDATE || refresh == REFRESH_CELL) {
-        update( lcd);
+        updateRow( lcd);
         event->markProcessed();
         refresh = REFRESH_OK;
     }
@@ -189,8 +191,14 @@ void SelectList::paint( LcdWidget *lcd) {
         lcd->print(header);
     }
 
+    updateTable( lcd);
+}
+
+void SelectList::updateTable( LcdWidget *lcd) {
+
     adjustTopRow( lcd);
-    
+    refresh = REFRESH_UPDATE;
+
     for( uint8_t row = tableTopRow; row < tableTopRow + tableVisibleRows; row++) {        
         refreshLine( lcd, row);
     }
@@ -198,10 +206,10 @@ void SelectList::paint( LcdWidget *lcd) {
     tableOldRow = tableRow;
 }
 
-void SelectList::update( LcdWidget *lcd) {
+void SelectList::updateRow( LcdWidget *lcd) {
 
     if( adjustTopRow( lcd)) {
-        paint( lcd);
+        updateTable( lcd);
 
     } else {
         refreshLine( lcd, tableOldRow);
@@ -258,6 +266,8 @@ void SelectList::printLine( LcdWidget *lcd, uint8_t row) {
     if( useBackItem) {
         if( row == 0) {
             lcd->print(TEXT_BACK);
+            lcd->normalColors();
+            lcd->clearEOL();
             return;
         } else {
             row--;
@@ -266,6 +276,8 @@ void SelectList::printLine( LcdWidget *lcd, uint8_t row) {
 
     if( refresh != REFRESH_CELL) {
         lcd->print( table->getRowName(row));
+        lcd->normalColors();
+        lcd->clearEOL();
     }
 
     for( uint8_t col = 0; col < table->getColCount(row); col++) {

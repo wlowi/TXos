@@ -25,6 +25,8 @@ ServoSubtrim::ServoSubtrim() : Module( MODULE_SERVO_SUBTRIM_TYPE, TEXT_MODULE_SE
     setDefaults();
 }
 
+/* From Module */
+
 void ServoSubtrim::run( Controls &controls) {
 
     for( channel_t ch = 0; ch < CHANNELS; ch++) {
@@ -34,31 +36,13 @@ void ServoSubtrim::run( Controls &controls) {
 
 void ServoSubtrim::setDefaults() {
 
-    INIT_PHASED_CONFIGURATION(
+    INIT_NON_PHASED_CONFIGURATION(
 
         for( channel_t ch = 0; ch < CHANNELS; ch++) {
             CFG->trim_pct[ch] = 0;
         }
 
     )
-}
-
-/* From Module */
-
-moduleSize_t ServoSubtrim::getConfigSize() {
-
-    return (moduleSize_t)sizeof( configuration);
-}
-
-uint8_t *ServoSubtrim::getConfig() {
-
-    return (uint8_t*)&configuration;
-}
-
-void ServoSubtrim::switchPhase(phase_t ph) {
-
-    LOGV("ServoSubtrim::switchPhase: new phase %d\n", ph);
-    SWITCH_PHASE( ph);
 }
 
 /* From TableEditable */

@@ -20,6 +20,8 @@ Cell editing: Integer as float
 
 Module: Rate & Expo
 
+Module: Phase Trim
+
 Module: Geber Switches
 
 Module: Timer
@@ -29,6 +31,8 @@ Module: Phases
 Module: Mixer
 
 Module: Servo speed
+
+Buzzer: Permanent Alarm Sound
 
 Module processing within PPM generation frame.
 

@@ -25,6 +25,8 @@ ServoLimit::ServoLimit() : Module( MODULE_SERVO_LIMIT_TYPE, TEXT_MODULE_SERVO_LI
     setDefaults();
 }
 
+/* From Module */
+
 void ServoLimit::run( Controls &controls) {
 
     channelValue_t v;
@@ -53,18 +55,6 @@ void ServoLimit::setDefaults() {
         }
 
     )
-}
-
-/* From Module */
-
-moduleSize_t ServoLimit::getConfigSize() {
-
-    return (moduleSize_t)sizeof( configuration);
-}
-
-uint8_t *ServoLimit::getConfig() {
-
-    return (uint8_t*)&configuration;
 }
 
 /* From TableEditable */

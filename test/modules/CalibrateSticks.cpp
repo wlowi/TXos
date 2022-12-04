@@ -25,6 +25,8 @@ CalibrateSticks::CalibrateSticks() : Module( MODULE_CAL_STICKS_TYPE, TEXT_MODULE
     setDefaults();
 }
 
+/* From Module */
+
 void CalibrateSticks::run( Controls &controls) {
 
     long v;
@@ -75,7 +77,7 @@ void CalibrateSticks::setDefaults() {
     calibrationStep = CALIBRATION_STEP_NONE;
 }
 
-/* From Module */
+/* From TableEditable */
 
 bool CalibrateSticks::isRowExecutable( uint8_t row) {
 
@@ -99,18 +101,6 @@ void CalibrateSticks::rowExecute( uint8_t row ) {
         break;
     }
 }
-
-moduleSize_t CalibrateSticks::getConfigSize() {
-
-    return (moduleSize_t)sizeof( configuration);
-}
-
-uint8_t *CalibrateSticks::getConfig() {
-
-    return (uint8_t*)&configuration;
-}
-
-/* From TableEditable */
 
 uint8_t CalibrateSticks::getRowCount() {
 

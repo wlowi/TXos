@@ -28,6 +28,8 @@ Bind::Bind() : Module( MODULE_BIND_TYPE, TEXT_MODULE_BIND) {
     setDefaults();
 }
 
+/* From Module */
+
 void Bind::run( Controls &controls) {
 
     /* noop */
@@ -38,7 +40,7 @@ void Bind::setDefaults() {
     bindStep = BIND_STEP_NONE;
 }
 
-/* From Module */
+/* From TableEditable */
 
 bool Bind::isRowExecutable( uint8_t row) {
 
@@ -68,18 +70,6 @@ void Bind::rowExecute( uint8_t row ) {
         break;
     }
 }
-
-moduleSize_t Bind::getConfigSize() {
-
-    return 0;
-}
-
-uint8_t *Bind::getConfig() {
-
-    return nullptr;
-}
-
-/* From TableEditable */
 
 uint8_t Bind::getRowCount() {
 

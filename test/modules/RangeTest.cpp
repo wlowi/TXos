@@ -28,6 +28,8 @@ RangeTest::RangeTest() : Module( MODULE_RANGE_TEST_TYPE, TEXT_MODULE_RANGE_TEST)
     setDefaults();
 }
 
+/* From Module */
+
 void RangeTest::run( Controls &controls) {
 
     /* noop */
@@ -38,7 +40,7 @@ void RangeTest::setDefaults() {
     rangeTestStep = RANGETEST_STEP_NONE;
 }
 
-/* From Module */
+/* From TableEditable */
 
 bool RangeTest::isRowExecutable( uint8_t row) {
 
@@ -60,18 +62,6 @@ void RangeTest::rowExecute( uint8_t row ) {
         break;
     }
 }
-
-moduleSize_t RangeTest::getConfigSize() {
-
-    return 0;
-}
-
-uint8_t *RangeTest::getConfig() {
-
-    return nullptr;
-}
-
-/* From TableEditable */
 
 uint8_t RangeTest::getRowCount() {
 

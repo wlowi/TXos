@@ -41,8 +41,6 @@ class Bind : public Module {
         /* From Module */
         void run( Controls &controls) final;
         void setDefaults() final;
-        moduleSize_t getConfigSize() final;
-        uint8_t *getConfig() final;
 
         /* From TableEditable */
         uint8_t getRowCount() final;

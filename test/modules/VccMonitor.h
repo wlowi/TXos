@@ -50,8 +50,6 @@ class VccMonitor : public Module {
         /* From Module */
         void run( Controls &controls) final;
         void setDefaults() final;
-        moduleSize_t getConfigSize() final;
-        uint8_t *getConfig() final;
 
         /* From TableEditable */
         bool isColEditable( uint8_t row, uint8_t col) final;

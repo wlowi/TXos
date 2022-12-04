@@ -347,6 +347,20 @@ void LcdWidget::clear()
     Refresh();
 }
 
+void LcdWidget::clearEOL()
+{
+    unsigned int x;
+    unsigned int y;
+
+    for( x=textX; x<width; x++) {
+        for( y=textY; y<textY + (8*fontSz); y++) {
+            buffer[ XY_TO_I(x,y) ] = bgCol565;
+        }
+    }
+    
+    Refresh();
+}
+
 void LcdWidget::setBg( unsigned char r, unsigned char g, unsigned char b)
 {
     bgCol565 = rgbToCol565( r, g ,b);

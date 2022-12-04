@@ -38,6 +38,18 @@ Phases::Phases() : Module( MODULE_PHASES_TYPE, TEXT_MODULE_PHASES) {
     setDefaults();
 }
 
+phase_t Phases::getPhase() {
+
+    return phase;
+}
+
+const char *Phases::getPhaseName() {
+
+    return phaseNames[CFG->phaseName[phase]];
+}
+
+/* From Module */
+
 void Phases::run( Controls &controls) {
 
     switchState_t state;
@@ -68,28 +80,6 @@ void Phases::setDefaults() {
         }
 
     )
-}
-
-phase_t Phases::getPhase() {
-
-    return phase;
-}
-
-const char *Phases::getPhaseName() {
-
-    return phaseNames[CFG->phaseName[phase]];
-}
-
-/* From Module */
-
-moduleSize_t Phases::getConfigSize() {
-
-    return (moduleSize_t)sizeof( configuration);
-}
-
-uint8_t *Phases::getConfig() {
-
-    return (uint8_t*)&configuration;
 }
 
 /* From TableEditable */

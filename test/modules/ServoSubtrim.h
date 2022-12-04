@@ -31,7 +31,7 @@ typedef struct servoSubtrim_t {
 
 class ServoSubtrim : public Module {
 
-    PHASED_CONFIG( servoSubtrim_t)
+    NON_PHASED_CONFIG( servoSubtrim_t)
 
     public:
         ServoSubtrim();
@@ -39,8 +39,6 @@ class ServoSubtrim : public Module {
         /* From Module */
         void run( Controls &controls) final;
         void setDefaults() final;
-        moduleSize_t getConfigSize() final;
-        uint8_t *getConfig() final;
 
         /* From TableEditable */
         uint8_t getRowCount() final;
