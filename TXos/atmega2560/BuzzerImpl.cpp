@@ -78,8 +78,10 @@ void BuzzerImpl::init( Ports &p) {
  */
 void BuzzerImpl::off() {
 
-    alarm = false;
     stopSound(); 
+
+    alarm = false;
+    soundAlarm = NULL;
 }
 
 /* 
@@ -118,18 +120,15 @@ void BuzzerImpl::play( const buzzerCmd_t s[]) {
 
 void BuzzerImpl::playPermanent( const buzzerCmd_t s[]) {
 
-    uint8_t i;
-    
-    stopSound();
-
-    alarm = true;
-
-    for( i = 0; (i < BUZZER_SOUND_LEN-1) && (BUZZER_CMD( s[i]) != BUZZER_STOP_CMD); i++ ) {
-        sound[i] = soundAlarm[i] = s[i];
+    if( alarm && s == soundAlarm) {
+      return;
     }
-    sound[i] = soundAlarm[i] = BUZZER_STOP();
 
-    processNext();
+    stopSound();
+    alarm = true;
+    soundAlarm = s;
+    
+    play( s);
 }
 
 /*

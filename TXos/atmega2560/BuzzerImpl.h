@@ -33,7 +33,7 @@ class BuzzerImpl {
     private:
         Ports *ports;
         buzzerCmd_t sound[BUZZER_SOUND_LEN];
-        buzzerCmd_t soundAlarm[BUZZER_SOUND_LEN];
+        buzzerCmd_t *soundAlarm;
         bool alarm;
 
     public:
