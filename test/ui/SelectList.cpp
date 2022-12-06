@@ -114,6 +114,11 @@ void SelectList::process( LcdWidget *lcd, Event *event) {
     }
 }
 
+void SelectList::cancelEdit() {
+
+    mode = MODE_RENDER;
+}
+
 void SelectList::firstEditableCol( uint8_t row) {
 
     if( table->isRowEditable( row)) {

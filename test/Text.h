@@ -80,8 +80,9 @@
 #define TEXT_CALIB_NONE             CC("CALIBRATE")
 
 // Phases (7 letters max.)
-#define TEXT_PHASES_count           7
 #define TEXT_PHASE_NAME_length      7
+#define TEXT_NOPHASE                CC("NOPHASE")
+#define TEXT_PHASES_count           7
 #define TEXT_PHASE_NORMAL           CC("Normal")
 #define TEXT_PHASE_THERMAL          CC("Thermal")
 #define TEXT_PHASE_SPEED            CC("Speed")

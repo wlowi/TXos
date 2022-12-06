@@ -33,7 +33,9 @@ class BuzzerImpl {
     private:
         Ports *ports;
         buzzerCmd_t sound[BUZZER_SOUND_LEN];
-        
+        buzzerCmd_t soundAlarm[BUZZER_SOUND_LEN];
+        bool alarm;
+
     public:
         BuzzerImpl();
 
@@ -41,12 +43,14 @@ class BuzzerImpl {
         
         void off();
         void play( const buzzerCmd_t s[]);
+        void playPermanent( const buzzerCmd_t sound[]);
 
         /* Cannot be private because it is called from ISR */
         void processNext();
 
     private:
         void scheduleInterrupt( uint8_t t);
+        void stopSound();
 };
 
 #endif

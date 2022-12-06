@@ -19,8 +19,28 @@
 */
 
 #include "DualExpo.h"
+#include "ModuleManager.h"
+#include "UserInterface.h"
+
+extern UserInterface userInterface;
+extern ModuleManager moduleManager;
 
 extern const char *ChannelNames[CHANNELS];
+
+#define EXPO_LOOKUP_TABLE_SIZE   10
+
+const channelValue_t expoLookup[EXPO_LOOKUP_TABLE_SIZE] = {
+    0,      // 0-10%       0 - 125
+    7,      // 10-10%    126 - 250
+    17,     // 20-30%    251 - 375
+    35,     // 30-40%    376 - 500
+    64,     // 40-50%    501 - 625
+    111,    // 50-60%    626 - 750
+    190,    // 60-70%    751 - 875
+    320,    // 70-80%    876 - 1000
+    534,    // 80-90%   1001 - 1125
+    886     // 90-100%  1126 - 1200
+};
 
 DualExpo::DualExpo() : Module( MODULE_DUAL_EXPO_TYPE, TEXT_MODULE_DUAL_EXPO) {
 
@@ -31,6 +51,46 @@ DualExpo::DualExpo() : Module( MODULE_DUAL_EXPO_TYPE, TEXT_MODULE_DUAL_EXPO) {
 
 void DualExpo::run( Controls &controls) {
 
+    /* Expo */
+    applyExpo( controls, CHANNEL_AILERON, CFG->value[1]);
+    applyExpo( controls, CHANNEL_ELEVATOR, CFG->value[3]);
+    applyExpo( controls, CHANNEL_RUDDER, CFG->value[5]);
+
+    /* Rate */
+    applyRate( controls, CHANNEL_AILERON, CFG->value[0]);
+    applyRate( controls, CHANNEL_ELEVATOR, CFG->value[2]);
+    applyRate( controls, CHANNEL_RUDDER, CFG->value[4]);
+}
+
+void DualExpo::applyRate( Controls &controls, channel_t ch, percent_t pct) {
+
+    long v;
+    
+    v = controls.analogGet( ch);
+
+    v = v * pct / PERCENT_MAX_LIMIT;
+
+    controls.analogSet( ch, (channelValue_t)v);
+}
+
+void DualExpo::applyExpo( Controls &controls, channel_t ch, percent_t pct) {
+
+    long v, w;
+    uint8_t lookupIdx;
+
+    v = controls.analogGet( ch);
+
+    for( lookupIdx = 0; lookupIdx < (EXPO_LOOKUP_TABLE_SIZE-1); lookupIdx++) {
+        if( v < (CHANNELVALUE_MAX_LIMIT / 10) * (lookupIdx +1)) {
+            break;
+        }
+    }
+
+    w = (((long)pct * expoLookup[lookupIdx]) + ((100 - pct) * v)) / 100L;
+    if( ch == CHANNEL_AILERON)
+        LOGV("in: %ld pct: %d lookup: %d out:%ld\n", v, pct, lookupIdx, w);
+
+    controls.analogSet( ch, (channelValue_t)w);
 }
 
 void DualExpo::setDefaults() {
@@ -43,13 +103,25 @@ void DualExpo::setDefaults() {
         }
     )
 
+    switchPhase( 0);
     postRefresh = false;
 }
 
 void DualExpo::switchPhase(phase_t ph) {
 
     LOGV("DualExpo::switchPhase: new phase %d\n", ph);
+
+    userInterface.cancelEdit();
+
     SWITCH_PHASE( ph);
+    
+    Phases *phases = (Phases*)moduleManager.getModelMenu()->getModuleByType( MODULE_PHASES_TYPE);
+    if( phases) {
+        phaseName = phases->getPhaseName();
+    } else {
+        phaseName = TEXT_NOPHASE;
+    }
+    
     postRefresh = true;
 }
 
@@ -114,7 +186,7 @@ void DualExpo::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
     if( col == 0) {
         if( row == 0) {
-            cell->setInt8( 7, phase, 0, PHASES);
+            cell->setLabel( 6, phaseName, TEXT_PHASE_NAME_length);
         } else {
             if( row % 2) {
                 cell->setLabel( 4, TEXT_RATE, 4);

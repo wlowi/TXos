@@ -55,7 +55,7 @@ void BuzzerImpl::init( Ports &p) {
       
         ports = &p;
         sound[0] = BUZZER_STOP();
-    
+        
         off();
     
         /* Don't use output compare pins */
@@ -78,6 +78,15 @@ void BuzzerImpl::init( Ports &p) {
  */
 void BuzzerImpl::off() {
 
+    alarm = false;
+    stopSound(); 
+}
+
+/* 
+ * Cancel sound sequence.
+ */
+void BuzzerImpl::stopSound() {
+
     ATOMIC_BLOCK( ATOMIC_RESTORESTATE) {
       
         /* Disable all timer 3 compare A interrupt */
@@ -95,16 +104,30 @@ void BuzzerImpl::off() {
  */
 void BuzzerImpl::play( const buzzerCmd_t s[]) {
 
-    uint8_t i = 0;
+    uint8_t i;
     
-    off();
+    stopSound();
 
-    while( (i < BUZZER_SOUND_LEN-1) && (BUZZER_CMD( s[i]) != BUZZER_STOP_CMD) ) {
+    for( i = 0; (i < BUZZER_SOUND_LEN-1) && (BUZZER_CMD( s[i]) != BUZZER_STOP_CMD); i++ ) {
         sound[i] = s[i];
-        i++;
     }
-
     sound[i] = BUZZER_STOP();
+
+    processNext();
+}
+
+void BuzzerImpl::playPermanent( const buzzerCmd_t s[]) {
+
+    uint8_t i;
+    
+    stopSound();
+
+    alarm = true;
+
+    for( i = 0; (i < BUZZER_SOUND_LEN-1) && (BUZZER_CMD( s[i]) != BUZZER_STOP_CMD); i++ ) {
+        sound[i] = soundAlarm[i] = s[i];
+    }
+    sound[i] = soundAlarm[i] = BUZZER_STOP();
 
     processNext();
 }
@@ -115,9 +138,10 @@ void BuzzerImpl::play( const buzzerCmd_t s[]) {
 void BuzzerImpl::processNext() {
 
     bool notDone;
+    uint8_t i;
   
     if( sndIdx >= BUZZER_SOUND_LEN) {
-        off();
+        stopSound();
         return;
     }
 
@@ -128,7 +152,15 @@ void BuzzerImpl::processNext() {
     
             switch( BUZZER_CMD( sound[sndIdx])) {
                 case BUZZER_STOP_CMD:
-                    off();
+                    stopSound();
+                    if( alarm) {
+                      /* Repeat alarm */
+                      for( i = 0; (i < BUZZER_SOUND_LEN-1) && (BUZZER_CMD( soundAlarm[i]) != BUZZER_STOP_CMD); i++ ) {
+                        sound[i] = soundAlarm[i];
+                      }
+                      sound[i] = BUZZER_STOP();
+                      notDone = true;
+                    }
                     break;
       
                 case BUZZER_PLAY_CMD:

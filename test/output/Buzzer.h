@@ -103,6 +103,7 @@ class Buzzer {
         
         void off();
         void play( const buzzerCmd_t sound[]);
+        void playPermanent( const buzzerCmd_t sound[]);
 };
 
 #endif

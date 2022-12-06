@@ -60,6 +60,7 @@ class SelectList {
     public:
         void set( TableEditable *tab, bool backItem);
         void process( LcdWidget *lcd, Event *event);
+        void cancelEdit();
         uint8_t current() const;
 };
 

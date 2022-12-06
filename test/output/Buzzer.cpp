@@ -43,3 +43,9 @@ void Buzzer::play( const buzzerCmd_t sound[]) {
 
   buzzerImpl->play( sound);
 }
+
+/* Play sound sequence in the background */
+void Buzzer::playPermanent( const buzzerCmd_t sound[]) {
+
+  buzzerImpl->playPermanent( sound);
+}

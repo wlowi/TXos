@@ -7,3 +7,4 @@ test/EEPROM.DAT*
 test/TXosTest
 txboardmega/*-bak
 txboardmega/*.bck
+doc/expo.ods

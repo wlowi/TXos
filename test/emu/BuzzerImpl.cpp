@@ -35,3 +35,8 @@ void BuzzerImpl::play( const buzzerCmd_t sound[]) {
 
     LOG("BuzzerImpl::play(): called\n");
 }
+
+void BuzzerImpl::playPermanent( const buzzerCmd_t sound[]) {
+
+    LOG("BuzzerImpl::playPermanent(): called\n");
+}

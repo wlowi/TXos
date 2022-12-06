@@ -20,6 +20,15 @@ const buzzerCmd_t SoundClear[] = {
   BUZZER_STOP()
 };
 
+const buzzerCmd_t SoundAlarm[] = {
+  BUZZER_PAUSE( 20),
+  BUZZER_PLAY( 1),
+  BUZZER_PAUSE( 1),
+  BUZZER_REPEAT( 1, 5),
+  BUZZER_PAUSE( 20),
+  BUZZER_STOP()
+};
+
 const char *messageText[] = {
     TEXT_MSG_NONE,
     TEXT_MSG_BAD_SYSCONFIG,
@@ -126,6 +135,7 @@ void UserInterface::homeScreen( Event *event) {
         if( vccMonitor->belowAlert()) {
             lcd->alertColors();
             postMessage(0, MSG_LOW_BATT);
+            buzzer.playPermanent( SoundAlarm);
         } else if( vccMonitor->belowWarn()) {
             lcd->warnColors();
         } else {
@@ -159,9 +169,12 @@ void UserInterface::homeScreen( Event *event) {
     
     case KEY_CLEAR:
         if( post1 || post2) {
+            /* Clear messages and switch off alarm */
             post1 = post2 = 0;
+            buzzer.off();
+        } else {
+            buzzer.play( SoundClear);
         }
-        buzzer.play( SoundClear);
     }
 }
 
@@ -222,6 +235,11 @@ void UserInterface::configScreen( Event *event) {
             break;
         }
     }
+}
+
+void UserInterface::cancelEdit() {
+
+    selectList.cancelEdit();
 }
 
 void UserInterface::postMessage( uint8_t line, uint8_t msg) {

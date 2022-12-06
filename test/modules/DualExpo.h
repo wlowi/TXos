@@ -38,6 +38,10 @@ class DualExpo : public Module {
 
     private:
         bool postRefresh;
+        const char *phaseName;
+        
+        void applyRate( Controls &controls, channel_t ch, percent_t pct);
+        void applyExpo( Controls &controls, channel_t ch, percent_t pct);
 
     public:
         DualExpo();
