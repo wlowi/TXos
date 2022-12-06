@@ -88,7 +88,7 @@ void DualExpo::applyExpo( Controls &controls, channel_t ch, percent_t pct) {
 
     w = (((long)pct * expoLookup[lookupIdx]) + ((100 - pct) * v)) / 100L;
     if( ch == CHANNEL_AILERON)
-        LOGV("in: %ld pct: %d lookup: %d out:%ld\n", v, pct, lookupIdx, w);
+        // LOGV("in: %ld pct: %d lookup: %d out:%ld\n", v, pct, lookupIdx, w);
 
     controls.analogSet( ch, (channelValue_t)w);
 }
@@ -196,7 +196,7 @@ void DualExpo::getValue( uint8_t row, uint8_t col, Cell *cell) {
         }
     } else {
         if( row > 0) {
-            cell->setInt8( 9, CFG->value[row-1], 0, row % 2 ? PERCENT_MAX_LIMIT : 100);
+            cell->setInt8( 9, CFG->value[row-1], 0, 0, row % 2 ? PERCENT_MAX_LIMIT : 100);
         }
     }
 }

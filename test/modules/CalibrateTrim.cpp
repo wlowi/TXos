@@ -140,9 +140,9 @@ void CalibrateTrim::getValue( uint8_t row, uint8_t col, Cell *cell) {
     } else {
 
         if( col == 0) {
-            cell->setInt16( 1, CFG->minPos[row-1], TRIMVALUE_MIN_LIMIT, TRIMVALUE_MAX_LIMIT);
+            cell->setInt16( 1, CFG->minPos[row-1], 0, TRIMVALUE_MIN_LIMIT, TRIMVALUE_MAX_LIMIT);
         } else {
-            cell->setInt16( 7, CFG->maxPos[row-1], TRIMVALUE_MIN_LIMIT, TRIMVALUE_MAX_LIMIT);
+            cell->setInt16( 7, CFG->maxPos[row-1], 0, TRIMVALUE_MIN_LIMIT, TRIMVALUE_MAX_LIMIT);
         }
 
     }

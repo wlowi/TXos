@@ -108,6 +108,7 @@
 #define TEXT_PHASE                  CC("Phase")
 #define TEXT_RATE                   CC("Rate")
 #define TEXT_EXPO                   CC("Expo")
+#define TEXT_TIME                   CC("Time")
 
 // Wing mix options
 #define TEXT_WINGMIX_length         6

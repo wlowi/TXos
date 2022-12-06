@@ -26,6 +26,7 @@
 typedef struct flightTimer_t {
 
     switchSetState_t swSetState;
+    uint16_t time_sec;
 
 } flightTimer_t;
 
@@ -33,8 +34,14 @@ class Timer : public Module {
 
     NON_PHASED_CONFIG( flightTimer_t)
 
+    private:
+        uint16_t time_sec;
+
     public:
         Timer();
+
+        uint16_t timeSec();
+        void reset();
 
         /* From Module */
         void run( Controls &controls) final;

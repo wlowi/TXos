@@ -104,7 +104,7 @@ void VccMonitor::getValue( uint8_t row, uint8_t col, Cell *cell) {
         cell->setFloat16( 8, CFG->alertLevel, 5, 0, 1200);
     } else {
         if( col == 0) {
-            cell->setInt8( 3, CFG->vccAdjust, -100, 100);
+            cell->setInt8( 3, CFG->vccAdjust, 0, -100, 100);
         } else {
             cell->setFloat16( 8, vcc, 5, 0, 2500);
         }

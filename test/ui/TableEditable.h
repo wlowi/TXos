@@ -48,9 +48,9 @@ class Cell {
 
     public:
         void setBool( uint8_t screenX, bool v);
-        void setInt8( uint8_t screenX, int8_t v, int16_t nmin, int16_t nmax);
-        void setInt16( uint8_t screenX, int16_t v, int16_t nmin, int16_t nmax);
-        void setFloat16( uint8_t screenX, float16 v, uint8_t sz, float16 nmin, float16 nmax);
+        void setInt8( uint8_t screenX, int8_t v, uint8_t width, int16_t nmin, int16_t nmax);
+        void setInt16( uint8_t screenX, int16_t v, uint8_t width, int16_t nmin, int16_t nmax);
+        void setFloat16( uint8_t screenX, float16 v, uint8_t width, float16 nmin, float16 nmax);
         void setString( uint8_t screenX, char *v, uint8_t sz);
         void setLabel( uint8_t screenX, const char *v, uint8_t sz);
         void setList( uint8_t screenX, const char **v, uint8_t sz, uint8_t curr);
@@ -68,6 +68,7 @@ class Cell {
 
         void render( LcdWidget *lcd, bool edit) const;
         void edit( Event *event);
+        bool isEditable();
 };
 
 class TableEditable {

@@ -6,6 +6,11 @@
 #define _TXos_h
 
 #include "Arduino.h"
+
+#if defined( ARDUINO )
+# include <util/atomic.h>
+#endif
+
 #include "Text.h"
 
 #define TXOS_VERSION "0.1.10"

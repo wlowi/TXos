@@ -140,9 +140,9 @@ void CalibrateSticks::getValue( uint8_t row, uint8_t col, Cell *cell) {
     } else {
 
         if( col == 0) {
-            cell->setInt16( 1, CFG->minPos[row-1], CHANNELVALUE_MIN_LIMIT, CHANNELVALUE_MAX_LIMIT);
+            cell->setInt16( 1, CFG->minPos[row-1], 0, CHANNELVALUE_MIN_LIMIT, CHANNELVALUE_MAX_LIMIT);
         } else {
-            cell->setInt16( 7, CFG->maxPos[row-1], CHANNELVALUE_MIN_LIMIT, CHANNELVALUE_MAX_LIMIT);
+            cell->setInt16( 7, CFG->maxPos[row-1], 0, CHANNELVALUE_MIN_LIMIT, CHANNELVALUE_MAX_LIMIT);
         }
 
     }

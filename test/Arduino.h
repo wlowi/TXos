@@ -22,4 +22,9 @@ typedef uint8_t byte;
 
 #define delay( s)
 
+/* From AVR atomic.h */
+
+#define ATOMIC_BLOCK( s )
+#define ATOMIC_RESTORESTATE
+
 #endif

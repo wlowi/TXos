@@ -146,6 +146,10 @@ void SelectList::skipNonEditableCol( uint8_t row) {
 
         } else { /* Get next cell to edit */
             table->getValue( row, tableCol, &editCell);
+            if( !editCell.isEditable()) {
+                tableCol++;
+                continue;
+            }
             break;
         }
     }

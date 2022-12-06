@@ -40,7 +40,7 @@ uint8_t SwitchMonitor::getColCount( uint8_t row) {
 
 void SwitchMonitor::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
-    cell->setInt8( TEXT_SW_NAME_length +1, current.switchGet( row), 0, 3);
+    cell->setInt8( TEXT_SW_NAME_length +1, current.switchGet( row), 0, 0, 2);
 }
 
 void SwitchMonitor::setValue( uint8_t row, uint8_t col, Cell *cell) {

@@ -50,7 +50,7 @@ void EngineCut::getValue( uint8_t row, uint8_t col, Cell *cell) {
     if( row == 0) {
         cell->setSwitchSetState( 7, CFG->trigger);
     } else {
-        cell->setInt8( 7, CFG->cut_pct, PERCENT_MIN_LIMIT, PERCENT_MAX_LIMIT);
+        cell->setInt8( 7, CFG->cut_pct, 0, PERCENT_MIN_LIMIT, PERCENT_MAX_LIMIT);
     }
 }
 

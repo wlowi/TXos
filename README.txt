@@ -24,6 +24,18 @@ Module: Geber Switches
 
 Module: Timer
 
+  1234567890123
+ +-------------+
+1|Timer        |
+2|<back>       |
+3|Switch 1-TR:2|
+4|Time   00:00 |
+5|             |
+6|             |
+7|             |
+8|             |
+ +-------------+
+
 Module: Mixer
 
 Module: Servo speed

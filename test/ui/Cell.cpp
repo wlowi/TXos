@@ -25,11 +25,11 @@ void Cell::render( LcdWidget *lcd, bool edit) const {
             break;
 
         case INT8_T:
-            lcd->printInt( value.intV, 4);
+            lcd->printInt( value.intV, (value.size == 0) ? 4 : value.size);
             break;
 
         case INT16_T:
-            lcd->printInt( value.intV, 6);
+            lcd->printInt( value.intV, (value.size == 0) ? 6 : value.size);
             break;
 
         case FLOAT16:
@@ -184,6 +184,11 @@ void Cell::edit( Event *event) {
     }
 }
 
+bool Cell::isEditable() {
+
+    return (type != LABEL_T);
+}
+
 void Cell::setBool( uint8_t screenX, bool v) {
 
     screenCol = screenX;
@@ -191,20 +196,22 @@ void Cell::setBool( uint8_t screenX, bool v) {
     value.boolV = v;
 }
 
-void Cell::setInt8( uint8_t screenX, int8_t v, int16_t nmin, int16_t nmax) {
+void Cell::setInt8( uint8_t screenX, int8_t v, uint8_t width, int16_t nmin, int16_t nmax) {
 
     screenCol = screenX;
     type = INT8_T;
     value.intV = v;
+    value.size = width; /* display width */
     numericMin = nmin;
     numericMax = nmax;
 }
 
-void Cell::setInt16( uint8_t screenX, int16_t v, int16_t nmin, int16_t nmax) {
+void Cell::setInt16( uint8_t screenX, int16_t v, uint8_t width, int16_t nmin, int16_t nmax) {
 
     screenCol = screenX;
     type = INT16_T;
     value.intV = v;
+    value.size = width; /* display width */
     numericMin = nmin;
     numericMax = nmax;
 }

@@ -77,9 +77,9 @@ uint8_t ServoLimit::getColCount( uint8_t row) {
 void ServoLimit::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
     if( col == 0) {
-        cell->setInt8( 4, CFG->negLimit_pct[row], PERCENT_MIN_LIMIT, PERCENT_MAX_LIMIT);
+        cell->setInt8( 4, CFG->negLimit_pct[row], 0, PERCENT_MIN_LIMIT, PERCENT_MAX_LIMIT);
     } else {
-        cell->setInt8( 9, CFG->posLimit_pct[row], PERCENT_MIN_LIMIT, PERCENT_MAX_LIMIT);
+        cell->setInt8( 9, CFG->posLimit_pct[row], 0, PERCENT_MIN_LIMIT, PERCENT_MAX_LIMIT);
     }
 }
 
