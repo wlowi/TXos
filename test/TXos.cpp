@@ -117,6 +117,8 @@
 #include "Phases.h"
 #include "Timer.h"
 #include "VccMonitor.h"
+#include "PhasesTrim.h"
+#include "SwitchedChannels.h"
 
 #if defined( ARDUINO )
 #include "InputImpl.h"
@@ -295,6 +297,10 @@ void setup( void) {
     moduleManager.addToModelMenu( new SystemSetup());
     Model *model = new Model();
     moduleManager.addToModelMenu( model);
+    PhasesTrim *phasesTrim = new PhasesTrim();
+    moduleManager.addToModelMenu( phasesTrim);
+    SwitchedChannels *switchedChannels = new SwitchedChannels();
+    moduleManager.addToModelMenu( switchedChannels);
     DualExpo *dualExpo = new DualExpo();
     moduleManager.addToModelMenu( dualExpo);
     Phases *phases = new Phases();
@@ -315,8 +321,10 @@ void setup( void) {
      */
     moduleManager.addToRunList( calibrateSticks);
     moduleManager.addToRunList( calibrateTrim);
+    moduleManager.addToRunList( switchedChannels);
     moduleManager.addToRunList( dualExpo);
     moduleManager.addToRunList( model);
+    moduleManager.addToRunList( phasesTrim);
     moduleManager.addToRunList( engineCut);
     moduleManager.addToRunList( servoReverse);
     moduleManager.addToRunList( servoSubtrim);

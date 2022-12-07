@@ -13,7 +13,7 @@
 
 #include "Text.h"
 
-#define TXOS_VERSION "0.1.10"
+#define TXOS_VERSION "0.1.11"
 
 #if defined( ARDUINO )
     #define LOG( f )

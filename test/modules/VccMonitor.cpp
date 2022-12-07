@@ -47,9 +47,11 @@ void VccMonitor::run( Controls &controls) {
     long v = controls.auxGet( 0);
 
     v = v * (ADC_VOLTAGE + CFG->vccAdjust) / ADC_VCC_RESOLUTION;
-    v = v * (ADC_VOLTAGE_DIVIDER_R1 + ADC_VOLTAGE_DIVIDER_R2) / ADC_VOLTAGE_DIVIDER_R2;
+    float16 newVcc = v * (ADC_VOLTAGE_DIVIDER_R1 + ADC_VOLTAGE_DIVIDER_R2) / ADC_VOLTAGE_DIVIDER_R2;
 
-    vcc = (float16)v;
+    if( newVcc < vcc || newVcc > vcc+10) { /* 0.1V */
+        vcc = newVcc;
+    }
 }
 
 void VccMonitor::setDefaults() {

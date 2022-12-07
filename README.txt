@@ -18,6 +18,8 @@ Cell editing: Switch number and state
 
 Module: Rate & Expo
 
+Module: Channel Range
+
 Module: Phase Trim
 
 Module: Geber Switches
@@ -38,9 +40,9 @@ Module: Timer
 
 Module: Mixer
 
-Module: Servo speed
+Module: Servo remap
 
-Module: Switch channels
+Module: Servo speed
 
 Module processing within PPM generation frame.
 

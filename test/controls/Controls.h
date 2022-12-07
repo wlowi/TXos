@@ -55,6 +55,10 @@ typedef uint16_t timingUsec_t;
 #define CHANNEL_ELEVATOR        ((channel_t)2)
 #define CHANNEL_RUDDER          ((channel_t)3)
 #define CHANNEL_AILERON2        ((channel_t)4)
+#define CHANNEL_FLAP            ((channel_t)5)
+#define CHANNEL_FLAP2           ((channel_t)6)
+#define CHANNEL_8               ((channel_t)7)
+#define CHANNEL_9               ((channel_t)8)
 
 #define TRIMVALUE_MID           ((channelValue_t)   0)
 #define TRIMVALUE_MIN_LIMIT     ((channelValue_t)-250)

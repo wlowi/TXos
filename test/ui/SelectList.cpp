@@ -136,20 +136,24 @@ void SelectList::skipNonEditableCol( uint8_t row) {
 
     for(;;) {
         if( tableCol >= table->getColCount( row)) {
+            LOG("SelectList::skipNonEditableCol(): End edit\n");
             mode = MODE_RENDER;
             tableCol = 0;
             break;
     
         } else if( !table->isColEditable( row, tableCol)) {
             tableCol++;
+            LOGV("SelectList::skipNonEditableCol(): Next col=%d\n", tableCol);
             continue;
 
         } else { /* Get next cell to edit */
             table->getValue( row, tableCol, &editCell);
             if( !editCell.isEditable()) {
                 tableCol++;
+                LOGV("SelectList::skipNonEditableCol(): Next col=%d\n", tableCol);
                 continue;
             }
+            LOGV("SelectList::skipNonEditableCol(): Edit col=%d\n", tableCol);
             break;
         }
     }

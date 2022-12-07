@@ -57,6 +57,8 @@ typedef uint8_t moduleSize_t;
 #define MODULE_SERVO_REVERSE_TYPE       ((moduleType_t)55)
 #define MODULE_SERVO_SUBTRIM_TYPE       ((moduleType_t)56)
 #define MODULE_SERVO_LIMIT_TYPE         ((moduleType_t)57)
+#define MODULE_PHASES_TRIM_TYPE         ((moduleType_t)58)
+#define MODULE_SWITCHED_CHANNELS_TYPE   ((moduleType_t)59)
 
 class Module : public TableEditable {
 

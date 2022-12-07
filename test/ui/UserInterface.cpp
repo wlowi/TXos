@@ -130,6 +130,7 @@ void UserInterface::homeScreen( Event *event) {
     }
 
     if( vccMonitor && (refresh == REFRESH_FULL || vccMonitor->getVcc() != lastVcc)) {
+
         lastVcc = vccMonitor->getVcc();
 
         if( vccMonitor->belowAlert()) {
@@ -142,7 +143,7 @@ void UserInterface::homeScreen( Event *event) {
             lcd->okColors();
         }
         lcd->setCursor(5, 7);
-        lcd->printFloat16( vccMonitor->getVcc(), 5);
+        lcd->printFloat16( lastVcc, 5);
         lcd->print( "V");
     }
 
@@ -173,6 +174,7 @@ void UserInterface::homeScreen( Event *event) {
             post1 = post2 = 0;
             buzzer.off();
         } else {
+            timer->reset();
             buzzer.play( SoundClear);
         }
     }
