@@ -11,9 +11,8 @@
 # include <util/atomic.h>
 #endif
 
-#include "Text.h"
 
-#define TXOS_VERSION "0.1.12"
+#define TXOS_VERSION "0.1.13"
 
 #if defined( ARDUINO )
     #define LOG( f )
@@ -47,6 +46,13 @@ typedef uint8_t phase_t;
 
 #include "TXosConfig.h"
 
+#if UI_LANGUAGE == DE
+  #include "Text_DE.h"
+#elif UI_LANGUAGE == EN
+  #include "Text_EN.h"
+#else
+  #error "Set UI_LANGUAGE in TXosConfig.h to a supported value."
+#endif
 
 #define MODEL_NAME_LEN          ((uint8_t)8)
 #define MODEL_NAME_DEFAULT      CC("--------")

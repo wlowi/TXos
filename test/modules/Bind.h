@@ -33,8 +33,6 @@ class Bind : public Module {
 #define BIND_STEP_NONE     0
 #define BIND_STEP_ACTIVE   1
 
-        char stepName[10];
-
     public:
         Bind();
 

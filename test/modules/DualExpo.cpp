@@ -97,9 +97,9 @@ void DualExpo::setDefaults() {
 
     INIT_PHASED_CONFIGURATION(
 
-        for( channel_t ch = 0; ch < DUAL_EXPO_CHANNELS; ch += 2) {
-            CFG->value[ch] = 100; /* Rate */
-            CFG->value[ch+1] = 0; /* Expo */
+        for( channel_t ch = 0; ch < DUAL_EXPO_CHANNELS; ch++) {
+            CFG->value[2*ch] = 100; /* Rate */
+            CFG->value[2*ch+1] = 0; /* Expo */
         }
     )
 

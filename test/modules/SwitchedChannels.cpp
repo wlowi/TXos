@@ -57,7 +57,7 @@ void SwitchedChannels::setDefaults() {
 
         for( channel_t ch = 0; ch < SWITCHED_CHANNELS; ch++) {
             CFG->sw[ch] = SWITCH_NONE;
-            CFG->ch[ch] = 5+ch;
+            CFG->ch[ch] = ANALOG_CHANNELS - SWITCHED_CHANNELS +ch;
             CFG->value[3*ch] = -100; /* min  */
             CFG->value[3*ch+1] = 0; /* neutral */
             CFG->value[3*ch+2] = 100; /* max */

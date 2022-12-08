@@ -70,7 +70,7 @@ uint8_t RangeTest::getRowCount() {
 
 const char *RangeTest::getRowName( uint8_t row) {
 
-    return "RANGE";
+    return TEXT_TEST;
 }
 
 uint8_t RangeTest::getColCount( uint8_t row) {
@@ -80,17 +80,15 @@ uint8_t RangeTest::getColCount( uint8_t row) {
 
 void RangeTest::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
-    switch( rangeTestStep) {
-    case RANGETEST_STEP_ACTIVE:
-        strcpy( stepName, "ACTIVE");
-        break;
+    const char *l;
 
-    case RANGETEST_STEP_NONE:
-        default:
-        strcpy( stepName, "OFF   ");
+    if( rangeTestStep == RANGETEST_STEP_ACTIVE) {
+        l = TEXT_ACTIVE;
+    } else {
+        l = TEXT_OFF;
     }
 
-    cell->setString( 6, stepName, 6);
+    cell->setLabel( 6, l, 6);
 }
 
 void RangeTest::setValue( uint8_t row, uint8_t col, Cell *cell) {

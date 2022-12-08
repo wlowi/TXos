@@ -78,7 +78,7 @@ uint8_t Bind::getRowCount() {
 
 const char *Bind::getRowName( uint8_t row) {
 
-    return "BIND";
+    return TEXT_BIND;
 }
 
 uint8_t Bind::getColCount( uint8_t row) {
@@ -88,17 +88,15 @@ uint8_t Bind::getColCount( uint8_t row) {
 
 void Bind::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
-    switch( bindStep) {
-    case BIND_STEP_ACTIVE:
-        strcpy( stepName, "ACTIVE");
-        break;
+    const char *l;
 
-    case BIND_STEP_NONE:
-        default:
-        strcpy( stepName, "OFF   ");
+    if( bindStep == BIND_STEP_ACTIVE) {
+        l = TEXT_ACTIVE;
+    } else {
+        l = TEXT_OFF;
     }
 
-    cell->setString( 5, stepName, 6);
+    cell->setLabel( 6, l, 6);
 }
 
 void Bind::setValue( uint8_t row, uint8_t col, Cell *cell) {

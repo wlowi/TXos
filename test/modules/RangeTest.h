@@ -33,8 +33,6 @@ class RangeTest : public Module {
 #define RANGETEST_STEP_NONE     0
 #define RANGETEST_STEP_ACTIVE   1
 
-        char stepName[10];
-
     public:
         RangeTest();
 

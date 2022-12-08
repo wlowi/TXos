@@ -32,7 +32,7 @@
 #define TEXT_MODULE_ENGINE_CUT        CC("Engine Cut")
 #define TEXT_MODULE_MODEL             CC("Model")
 #define TEXT_MODULE_MODEL_SELECT      CC("Model Select")
-#define TEXT_MODULE_MONITOR           CC("Monitor")
+#define TEXT_MODULE_MONITOR           CC("Servo Monitor")
 #define TEXT_MODULE_PHASES            CC("Phases")
 #define TEXT_MODULE_PHASES_TRIM       CC("Phases Trim")
 #define TEXT_MODULE_RANGE_TEST        CC("Range Test")
@@ -70,15 +70,15 @@
 #define TEXT_CONTROL_CH_11          CC("Ch9")
 
 // Output channels (3 letters fixed)
-#define TEXT_OUT_CH_1               CC("SV1")
-#define TEXT_OUT_CH_2               CC("SV2")
-#define TEXT_OUT_CH_3               CC("SV3")
-#define TEXT_OUT_CH_4               CC("SV4")
-#define TEXT_OUT_CH_5               CC("SV5")
-#define TEXT_OUT_CH_6               CC("SV6")
-#define TEXT_OUT_CH_7               CC("SV7")
-#define TEXT_OUT_CH_8               CC("SV8")
-#define TEXT_OUT_CH_9               CC("SV9")
+#define TEXT_OUT_CH_1               CC("S1")
+#define TEXT_OUT_CH_2               CC("S2")
+#define TEXT_OUT_CH_3               CC("S3")
+#define TEXT_OUT_CH_4               CC("S4")
+#define TEXT_OUT_CH_5               CC("S5")
+#define TEXT_OUT_CH_6               CC("S6")
+#define TEXT_OUT_CH_7               CC("S7")
+#define TEXT_OUT_CH_8               CC("S8")
+#define TEXT_OUT_CH_9               CC("S9")
 
 // Switch types (3 letters fixed)
 // Note name length is 4 because the format includes the switch number
@@ -109,7 +109,7 @@
 
 // Misc
 #define TEXT_TXOS                   CC("TXos ")
-#define TEXT_BACK                   CC("< back >")
+#define TEXT_BACK                   CC("<<<<")
 #define TEXT_BOOTING                CC("Booting...")
 #define TEXT_MODEL_SETUP            CC("Model setup")
 #define TEXT_SYSTEM_SETUP           CC("System setup")
@@ -130,6 +130,9 @@
 #define TEXT_POS2                   CC("Pos2")
 #define TEXT_SW                     CC("Sw")
 #define TEXT_CH                     CC("Ch")
+#define TEXT_ACTIVE                 CC("Active")
+#define TEXT_TEST                   CC("Test")
+#define TEXT_BIND                   CC("Bind")
 
 // Wing mix options
 #define TEXT_WINGMIX_length         6
