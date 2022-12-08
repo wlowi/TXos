@@ -25,7 +25,7 @@
 extern UserInterface userInterface;
 extern ModuleManager moduleManager;
 
-extern const char *ChannelNames[CHANNELS];
+extern const char *LogicalChannelNames[LOGICAL_CHANNELS];
 
 PhasesTrim::PhasesTrim() : Module( MODULE_PHASES_TRIM_TYPE, TEXT_MODULE_PHASES_TRIM) {
 
@@ -36,6 +36,19 @@ PhasesTrim::PhasesTrim() : Module( MODULE_PHASES_TRIM_TYPE, TEXT_MODULE_PHASES_T
 
 void PhasesTrim::run( Controls &controls) {
 
+    uint8_t ch;
+
+    for( channel_t pc = 0; pc < PHASED_TRIM_CHANNELS; pc++) {
+        if( pc == 0) {
+            ch = CHANNEL_AILERON;
+        } else if( pc == 1) {
+            ch = CHANNEL_ELEVATOR;
+        } else {
+            ch = CHANNEL_RUDDER;
+        }
+
+        controls.logicalSet( ch, controls.logicalGet( ch) + PCT_TO_CHANNEL( CFG->trim_pct[pc]));
+    }
 }
 
 void PhasesTrim::setDefaults() {
@@ -43,7 +56,7 @@ void PhasesTrim::setDefaults() {
     INIT_PHASED_CONFIGURATION(
 
         for( channel_t ch = 0; ch < PHASED_TRIM_CHANNELS; ch++) {
-            CFG->trim[ch] = 0;
+            CFG->trim_pct[ch] = 0;
         }
     )
 
@@ -91,11 +104,11 @@ const char *PhasesTrim::getRowName( uint8_t row) {
     if( row == 0) {
         return TEXT_PHASE;
     } else if( row < 3) {
-        return ChannelNames[CHANNEL_AILERON];
+        return LogicalChannelNames[CHANNEL_AILERON];
     } else if( row < 5) {
-        return ChannelNames[CHANNEL_ELEVATOR];
+        return LogicalChannelNames[CHANNEL_ELEVATOR];
     } else {
-        return ChannelNames[CHANNEL_RUDDER];
+        return LogicalChannelNames[CHANNEL_RUDDER];
     }
 }
 
@@ -119,7 +132,7 @@ void PhasesTrim::getValue( uint8_t row, uint8_t col, Cell *cell) {
         if( row == 0) {
             cell->setLabel( 6, phaseName, TEXT_PHASE_NAME_length);
         } else {
-            cell->setInt8( 9, CFG->trim[row-1], 0, PERCENT_MIN_LIMIT, PERCENT_MAX_LIMIT);
+            cell->setInt8( 9, CFG->trim_pct[row-1], 0, PERCENT_MIN_LIMIT, PERCENT_MAX_LIMIT);
         }
     }
 }
@@ -128,7 +141,7 @@ void PhasesTrim::setValue( uint8_t row, uint8_t col, Cell *cell) {
 
     if( col == 0) {
         if( row > 0) {
-            CFG->trim[row-1] = cell->getInt8();    
+            CFG->trim_pct[row-1] = cell->getInt8();    
         }
     }
 }

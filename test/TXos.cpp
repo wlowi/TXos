@@ -119,6 +119,8 @@
 #include "VccMonitor.h"
 #include "PhasesTrim.h"
 #include "SwitchedChannels.h"
+#include "AssignInput.h"
+#include "ServoRemap.h"
 
 #if defined( ARDUINO )
 #include "InputImpl.h"
@@ -128,16 +130,41 @@
 #include "DisplayImpl.h"
 #endif
 
-const char *ChannelNames[CHANNELS] = {
-    TEXT_CONTROL_CHANNEL_1,
-    TEXT_CONTROL_CHANNEL_2,
-    TEXT_CONTROL_CHANNEL_3,
-    TEXT_CONTROL_CHANNEL_4,
-    TEXT_CONTROL_CHANNEL_5,
-    TEXT_CONTROL_CHANNEL_6,
-    TEXT_CONTROL_CHANNEL_7,
-    TEXT_CONTROL_CHANNEL_8,
-    TEXT_CONTROL_CHANNEL_9
+const char *InputChannelNames[ANALOG_CHANNELS] = {
+    TEXT_INPUT_CH_1,
+    TEXT_INPUT_CH_2,
+    TEXT_INPUT_CH_3,
+    TEXT_INPUT_CH_4,
+    TEXT_INPUT_CH_5,
+    TEXT_INPUT_CH_6,
+    TEXT_INPUT_CH_7,
+    TEXT_INPUT_CH_8
+};
+
+const char *LogicalChannelNames[LOGICAL_CHANNELS] = {
+    TEXT_CONTROL_CH_1,
+    TEXT_CONTROL_CH_2,
+    TEXT_CONTROL_CH_3,
+    TEXT_CONTROL_CH_4,
+    TEXT_CONTROL_CH_5,
+    TEXT_CONTROL_CH_6,
+    TEXT_CONTROL_CH_7,
+    TEXT_CONTROL_CH_8,
+    TEXT_CONTROL_CH_9,
+    TEXT_CONTROL_CH_10,
+    TEXT_CONTROL_CH_11
+};
+
+const char *OutputChannelNames[PPM_CHANNELS] = {
+    TEXT_OUT_CH_1,
+    TEXT_OUT_CH_2,
+    TEXT_OUT_CH_3,
+    TEXT_OUT_CH_4,
+    TEXT_OUT_CH_5,
+    TEXT_OUT_CH_6,
+    TEXT_OUT_CH_7,
+    TEXT_OUT_CH_8,
+    TEXT_OUT_CH_9,
 };
 
 const buzzerCmd_t SoundWelcome[] = {
@@ -297,6 +324,8 @@ void setup( void) {
     moduleManager.addToModelMenu( new SystemSetup());
     Model *model = new Model();
     moduleManager.addToModelMenu( model);
+    AssignInput *assignInput = new AssignInput();
+    moduleManager.addToModelMenu( assignInput);
     PhasesTrim *phasesTrim = new PhasesTrim();
     moduleManager.addToModelMenu( phasesTrim);
     SwitchedChannels *switchedChannels = new SwitchedChannels();
@@ -309,6 +338,9 @@ void setup( void) {
     moduleManager.addToModelMenu( timer);
     EngineCut *engineCut = new EngineCut();
     moduleManager.addToModelMenu( engineCut);
+
+    ServoRemap *servoRemap = new ServoRemap();
+    moduleManager.addToModelMenu( servoRemap);
     ServoReverse *servoReverse = new ServoReverse();
     moduleManager.addToModelMenu( servoReverse);
     ServoSubtrim *servoSubtrim = new ServoSubtrim();
@@ -322,13 +354,18 @@ void setup( void) {
     moduleManager.addToRunList( calibrateSticks);
     moduleManager.addToRunList( calibrateTrim);
     moduleManager.addToRunList( switchedChannels);
+    moduleManager.addToRunList( assignInput);
+    
     moduleManager.addToRunList( dualExpo);
     moduleManager.addToRunList( model);
     moduleManager.addToRunList( phasesTrim);
     moduleManager.addToRunList( engineCut);
+
+    moduleManager.addToRunList( servoRemap);
     moduleManager.addToRunList( servoReverse);
     moduleManager.addToRunList( servoSubtrim);
     moduleManager.addToRunList( servoLimit);
+
     moduleManager.addToRunList( servoMonitor);
     moduleManager.addToRunList( switchMonitor);
     moduleManager.addToRunList( phases);

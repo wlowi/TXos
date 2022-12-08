@@ -37,7 +37,7 @@ bool Output::acceptChannels() const {
 
 void Output::setChannels( Controls &controls) const {
 
-    for( channel_t ch = 0; ch<CHANNELS; ch++) {
-        outputImpl->SetChannelValue( ch, controls.analogGet(ch));
+    for( channel_t ch = 0; ch<PPM_CHANNELS; ch++) {
+        outputImpl->SetChannelValue( ch, controls.outputGet(ch));
     }
 }

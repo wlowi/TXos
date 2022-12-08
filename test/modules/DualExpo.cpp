@@ -25,7 +25,7 @@
 extern UserInterface userInterface;
 extern ModuleManager moduleManager;
 
-extern const char *ChannelNames[CHANNELS];
+extern const char *LogicalChannelNames[LOGICAL_CHANNELS];
 
 #define EXPO_LOOKUP_TABLE_SIZE   10
 
@@ -66,11 +66,11 @@ void DualExpo::applyRate( Controls &controls, channel_t ch, percent_t pct) {
 
     long v;
     
-    v = controls.analogGet( ch);
+    v = controls.logicalGet( ch);
 
     v = v * pct / PERCENT_MAX_LIMIT;
 
-    controls.analogSet( ch, (channelValue_t)v);
+    controls.logicalSet( ch, (channelValue_t)v);
 }
 
 void DualExpo::applyExpo( Controls &controls, channel_t ch, percent_t pct) {
@@ -78,7 +78,7 @@ void DualExpo::applyExpo( Controls &controls, channel_t ch, percent_t pct) {
     long v, w;
     uint8_t lookupIdx;
 
-    v = controls.analogGet( ch);
+    v = controls.logicalGet( ch);
 
     for( lookupIdx = 0; lookupIdx < (EXPO_LOOKUP_TABLE_SIZE-1); lookupIdx++) {
         if( v < (CHANNELVALUE_MAX_LIMIT / 10) * (lookupIdx +1)) {
@@ -90,7 +90,7 @@ void DualExpo::applyExpo( Controls &controls, channel_t ch, percent_t pct) {
     if( ch == CHANNEL_AILERON)
         // LOGV("in: %ld pct: %d lookup: %d out:%ld\n", v, pct, lookupIdx, w);
 
-    controls.analogSet( ch, (channelValue_t)w);
+    controls.logicalSet( ch, (channelValue_t)w);
 }
 
 void DualExpo::setDefaults() {
@@ -147,11 +147,11 @@ const char *DualExpo::getRowName( uint8_t row) {
     if( row == 0) {
         return TEXT_PHASE;
     } else if( row < 3) {
-        return ChannelNames[CHANNEL_AILERON];
+        return LogicalChannelNames[CHANNEL_AILERON];
     } else if( row < 5) {
-        return ChannelNames[CHANNEL_ELEVATOR];
+        return LogicalChannelNames[CHANNEL_ELEVATOR];
     } else {
-        return ChannelNames[CHANNEL_RUDDER];
+        return LogicalChannelNames[CHANNEL_RUDDER];
     }
 }
 

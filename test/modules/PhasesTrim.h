@@ -27,7 +27,7 @@
 
 typedef struct phasesTrim_t {
 
-    percent_t trim[PHASED_TRIM_CHANNELS];
+    percent_t trim_pct[PHASED_TRIM_CHANNELS];
 
 } phasesTrim_t;
 

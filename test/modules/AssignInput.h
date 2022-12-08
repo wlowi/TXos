@@ -18,24 +18,23 @@
 
 */
 
-#ifndef _ServoLimit_h_
-#define _ServoLimit_h_
+#ifndef _AssignInput_h_
+#define _AssignInput_h_
 
 #include "Module.h"
 
-typedef struct servoLimit_t {
+typedef struct assignInput_t {
 
-    percent_t posLimit_pct[PPM_CHANNELS];
-    percent_t negLimit_pct[PPM_CHANNELS];
+    channel_t source[ANALOG_CHANNELS];
 
-} servoLimit_t;
+} assignInput_t;
 
-class ServoLimit : public Module {
+class AssignInput : public Module {
 
-    NON_PHASED_CONFIG( servoLimit_t)
+    NON_PHASED_CONFIG( assignInput_t)
 
     public:
-        ServoLimit();
+        AssignInput();
 
         /* From Module */
         void run( Controls &controls) final;

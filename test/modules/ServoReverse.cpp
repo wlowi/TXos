@@ -20,6 +20,8 @@
 
 #include "ServoReverse.h"
 
+extern const char *OutputChannelNames[PPM_CHANNELS];
+
 ServoReverse::ServoReverse() : Module( MODULE_SERVO_REVERSE_TYPE, TEXT_MODULE_SERVO_REVERSE) {
 
     setDefaults();
@@ -29,9 +31,9 @@ ServoReverse::ServoReverse() : Module( MODULE_SERVO_REVERSE_TYPE, TEXT_MODULE_SE
 
 void ServoReverse::run( Controls &controls) {
 
-    for( channel_t ch = 0; ch < CHANNELS; ch++) {
+    for( channel_t ch = 0; ch < PPM_CHANNELS; ch++) {
         if( IS_BIT_SET( CFG->revBits, ch)) {
-            controls.analogSet( ch, -controls.analogGet(ch));
+            controls.outputSet( ch, -controls.outputGet(ch));
         }
     }
 }
@@ -49,12 +51,12 @@ void ServoReverse::setDefaults() {
 
 uint8_t ServoReverse::getRowCount() {
 
-    return CHANNELS;
+    return PPM_CHANNELS;
 }
 
 const char *ServoReverse::getRowName( uint8_t row) {
 
-    return ChannelNames[row];
+    return OutputChannelNames[row];
 }
 
 uint8_t ServoReverse::getColCount( uint8_t row) {

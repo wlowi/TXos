@@ -20,6 +20,8 @@
 
 #include "ServoLimit.h"
 
+extern const char *OutputChannelNames[PPM_CHANNELS];
+
 ServoLimit::ServoLimit() : Module( MODULE_SERVO_LIMIT_TYPE, TEXT_MODULE_SERVO_LIMIT) {
 
     setDefaults();
@@ -31,16 +33,16 @@ void ServoLimit::run( Controls &controls) {
 
     channelValue_t v;
 
-    for( channel_t ch = 0; ch < CHANNELS; ch++) {
+    for( channel_t ch = 0; ch < PPM_CHANNELS; ch++) {
 
         v = PCT_TO_CHANNEL( CFG->posLimit_pct[ch]);
-        if( controls.analogGet( ch) > v) {
-            controls.analogSet( ch, v);
+        if( controls.outputGet( ch) > v) {
+            controls.outputSet( ch, v);
         }
 
         v = PCT_TO_CHANNEL( CFG->negLimit_pct[ch]);
-        if( controls.analogGet( ch) < v) {
-            controls.analogSet( ch, v);
+        if( controls.outputGet( ch) < v) {
+            controls.outputSet( ch, v);
         }
     }
 }
@@ -49,7 +51,7 @@ void ServoLimit::setDefaults() {
 
     INIT_NON_PHASED_CONFIGURATION(
 
-        for( channel_t ch = 0; ch < CHANNELS; ch++) {
+        for( channel_t ch = 0; ch < PPM_CHANNELS; ch++) {
             CFG->posLimit_pct[ch] = PERCENT_MAX_LIMIT;
             CFG->negLimit_pct[ch] = PERCENT_MIN_LIMIT;
         }
@@ -61,12 +63,12 @@ void ServoLimit::setDefaults() {
 
 uint8_t ServoLimit::getRowCount() {
 
-    return CHANNELS;
+    return PPM_CHANNELS;
 }
 
 const char *ServoLimit::getRowName( uint8_t row) {
 
-    return ChannelNames[row];
+    return OutputChannelNames[row];
 }
 
 uint8_t ServoLimit::getColCount( uint8_t row) {

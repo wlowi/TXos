@@ -36,22 +36,35 @@ void Controls::init() {
 
 void Controls::GetControlValues() {
 
-    for( channel_t ch = 0; ch < CHANNELS; ch++) {
-        controlSet.analogChannel[ch] = CHANNELVALUE_MID;
+    channel_t ch;
+
+    /* Clean values */
+    for( ch = 0; ch < ANALOG_CHANNELS; ch++) {
+        controlSet.inputChannel[ch] = CHANNELVALUE_MID;
     }
 
-    for( channel_t ch = 0; ch < PORT_ANALOG_INPUT_COUNT; ch++) {
+    for( ch = 0; ch < LOGICAL_CHANNELS; ch++) {
+        controlSet.logicalChannel[ch] = CHANNELVALUE_MID;
+    }
+
+    for( ch = 0; ch < PPM_CHANNELS; ch++) {
+        controlSet.outChannel[ch] = CHANNELVALUE_MID;
+    }
+
+    /* Read analog inputs */
+    for( ch = 0; ch < PORT_ANALOG_INPUT_COUNT; ch++) {
         controlSet.stickChannel[ch] = inputImpl->GetStickValue( ch);
     }
 
-    for( channel_t ch = 0; ch < PORT_TRIM_INPUT_COUNT; ch++) {
+    for( ch = 0; ch < PORT_TRIM_INPUT_COUNT; ch++) {
         controlSet.trimChannel[ch] = inputImpl->GetTrimValue( ch);
     }
 
-    for( channel_t ch = 0; ch < PORT_AUX_INPUT_COUNT; ch++) {
+    for( ch = 0; ch < PORT_AUX_INPUT_COUNT; ch++) {
         controlSet.auxChannel[ch] = inputImpl->GetAuxValue( ch);
     }
 
+    /* Read switch inputs */
     controlSet.switches = 0;
     for( switch_t sw = 0; sw < inputImpl->GetSwitches(); sw++) {
         switchSet( sw, inputImpl->GetSwitchValue( sw));
@@ -73,7 +86,7 @@ channelValue_t Controls::auxGet( channel_t ch) {
     return controlSet.auxChannel[ch];
 }
 
-void Controls::analogSet( channel_t ch, channelValue_t value) {
+void Controls::inputSet( channel_t ch, channelValue_t value) {
 
     if( value > CHANNELVALUE_MAX_LIMIT) {
         value = CHANNELVALUE_MAX_LIMIT;
@@ -83,12 +96,47 @@ void Controls::analogSet( channel_t ch, channelValue_t value) {
         value = CHANNELVALUE_MIN_LIMIT;
     }
 
-    controlSet.analogChannel[ch] = value;
+    controlSet.inputChannel[ch] = value;
 }
 
-channelValue_t Controls::analogGet( channel_t ch) {
+channelValue_t Controls::inputGet( channel_t ch) {
 
-    return controlSet.analogChannel[ch];
+    return controlSet.inputChannel[ch];
+}
+
+void Controls::logicalSet( channel_t ch, channelValue_t value) {
+
+    if( value > CHANNELVALUE_MAX_LIMIT) {
+        value = CHANNELVALUE_MAX_LIMIT;
+    }
+
+    if( value < CHANNELVALUE_MIN_LIMIT) {
+        value = CHANNELVALUE_MIN_LIMIT;
+    }
+
+    controlSet.logicalChannel[ch] = value;
+}
+
+channelValue_t Controls::logicalGet( channel_t ch) {
+
+    return controlSet.logicalChannel[ch];
+}
+void Controls::outputSet( channel_t ch, channelValue_t value) {
+
+    if( value > CHANNELVALUE_MAX_LIMIT) {
+        value = CHANNELVALUE_MAX_LIMIT;
+    }
+
+    if( value < CHANNELVALUE_MIN_LIMIT) {
+        value = CHANNELVALUE_MIN_LIMIT;
+    }
+
+    controlSet.outChannel[ch] = value;
+}
+
+channelValue_t Controls::outputGet( channel_t ch) {
+
+    return controlSet.outChannel[ch];
 }
 
 void Controls::switchSet( switch_t sw, switchState_t value) {

@@ -1,6 +1,8 @@
 
 #include "ServoMonitor.h"
 
+extern const char *OutputChannelNames[PPM_CHANNELS];
+
 ServoMonitor::ServoMonitor( Controls &controls) : Module( MODULE_SERVO_MONITOR_TYPE, TEXT_MODULE_MONITOR) , current( controls) {
 
 }
@@ -21,12 +23,12 @@ void ServoMonitor::setDefaults() {
 
 uint8_t ServoMonitor::getRowCount() {
 
-    return CHANNELS;
+    return PPM_CHANNELS;
 }
 
 const char *ServoMonitor::getRowName( uint8_t row) {
 
-    return ChannelNames[row];
+    return OutputChannelNames[row];
 }
 
 uint8_t ServoMonitor::getColCount( uint8_t row) {
@@ -36,7 +38,7 @@ uint8_t ServoMonitor::getColCount( uint8_t row) {
 
 void ServoMonitor::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
-    cell->setInt16( 4, CHANNEL_TO_PCT ( current.analogGet( row)), 0, 0, PERCENT_MAX_LIMIT);
+    cell->setInt16( 4, CHANNEL_TO_PCT ( current.logicalGet( row)), 0, 0, PERCENT_MAX_LIMIT);
 }
 
 void ServoMonitor::setValue( uint8_t row, uint8_t col, Cell *cell) {

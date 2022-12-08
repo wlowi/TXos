@@ -55,10 +55,12 @@ typedef uint16_t timingUsec_t;
 #define CHANNEL_ELEVATOR        ((channel_t)2)
 #define CHANNEL_RUDDER          ((channel_t)3)
 #define CHANNEL_AILERON2        ((channel_t)4)
-#define CHANNEL_FLAP            ((channel_t)5)
-#define CHANNEL_FLAP2           ((channel_t)6)
-#define CHANNEL_8               ((channel_t)7)
-#define CHANNEL_9               ((channel_t)8)
+#define CHANNEL_ELEVATOR2       ((channel_t)5)
+#define CHANNEL_FLAP            ((channel_t)6)
+#define CHANNEL_FLAP2           ((channel_t)7)
+#define CHANNEL_GEAR            ((channel_t)8)
+#define CHANNEL_8               ((channel_t)9)
+#define CHANNEL_9               ((channel_t)10)
 
 #define TRIMVALUE_MID           ((channelValue_t)   0)
 #define TRIMVALUE_MIN_LIMIT     ((channelValue_t)-250)
@@ -143,8 +145,6 @@ typedef enum {
 
 #define CONTROLS_SWITCH_GET( switches, sw)  (switchState_t)((switches >> (sw << 1)) & 0x03)
 
-extern const char *ChannelNames[CHANNELS];
-
 /* State of all controls.
  * Controls are sticks, switches and logical switches.
  */
@@ -155,8 +155,14 @@ typedef struct controlSet_t {
     channelValue_t trimChannel[ PORT_TRIM_INPUT_COUNT ];
     channelValue_t auxChannel[ PORT_AUX_INPUT_COUNT ];
 
+    /* Calibrated analog input channels */
+    channelValue_t inputChannel[ ANALOG_CHANNELS ];
+
+    /* Mixed channels */
+    channelValue_t logicalChannel[ LOGICAL_CHANNELS ];
+
     /* Calibrated and mixed analog channels */
-    channelValue_t analogChannel[ CHANNELS ];
+    channelValue_t outChannel[ PPM_CHANNELS ];
 
     switchSetState_t switches;
 
@@ -181,8 +187,14 @@ class Controls {
         channelValue_t trimGet( channel_t ch);
         channelValue_t auxGet( channel_t ch);
 
-        void analogSet( channel_t ch, channelValue_t value);
-        channelValue_t analogGet( channel_t ch);
+        void inputSet( channel_t ch, channelValue_t value);
+        channelValue_t inputGet( channel_t ch);
+
+        void logicalSet( channel_t ch, channelValue_t value);
+        channelValue_t logicalGet( channel_t ch);
+
+        void outputSet( channel_t ch, channelValue_t value);
+        channelValue_t outputGet( channel_t ch);
 
         void switchSet( switch_t sw, switchState_t value);
         switchState_t switchGet( switch_t sw);

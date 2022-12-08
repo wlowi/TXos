@@ -5,7 +5,7 @@
 #include "Module.h"
 
 /* First and last valid model ID */
-#define MODEL_ID_MIN        (configBlockID_t)1)
+#define MODEL_ID_MIN        ((configBlockID_t)1)
 #define MODEL_ID_MAX        CONFIG_MODEL_COUNT
 
 typedef uint8_t wingMix_t;
@@ -29,10 +29,19 @@ class Model : public Module {
 
     NON_PHASED_CONFIG( model_t)
 
+    private:
+        void adjustControlSurfaceCount();
+
     public:
         Model();
 
+        uint8_t ailerons;
+        uint8_t flaps;
+
         char *getModelName() { return CFG->modelName; }
+
+        uint8_t getAileronCount() const { return ailerons; }
+        uint8_t getFlapsCount() const { return flaps; }
 
         /* From Module */
         void run( Controls &controls) final;

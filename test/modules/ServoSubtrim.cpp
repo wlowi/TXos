@@ -20,6 +20,8 @@
 
 #include "ServoSubtrim.h"
 
+extern const char *OutputChannelNames[PPM_CHANNELS];
+
 ServoSubtrim::ServoSubtrim() : Module( MODULE_SERVO_SUBTRIM_TYPE, TEXT_MODULE_SERVO_SUBTRIM) {
 
     setDefaults();
@@ -29,8 +31,8 @@ ServoSubtrim::ServoSubtrim() : Module( MODULE_SERVO_SUBTRIM_TYPE, TEXT_MODULE_SE
 
 void ServoSubtrim::run( Controls &controls) {
 
-    for( channel_t ch = 0; ch < CHANNELS; ch++) {
-        controls.analogSet( ch, controls.analogGet( ch) + PCT_TO_CHANNEL( CFG->trim_pct[ch]));
+    for( channel_t ch = 0; ch < PPM_CHANNELS; ch++) {
+        controls.outputSet( ch, controls.outputGet( ch) + PCT_TO_CHANNEL( CFG->trim_pct[ch]));
     }
 }
 
@@ -38,7 +40,7 @@ void ServoSubtrim::setDefaults() {
 
     INIT_NON_PHASED_CONFIGURATION(
 
-        for( channel_t ch = 0; ch < CHANNELS; ch++) {
+        for( channel_t ch = 0; ch < PPM_CHANNELS; ch++) {
             CFG->trim_pct[ch] = 0;
         }
 
@@ -49,12 +51,12 @@ void ServoSubtrim::setDefaults() {
 
 uint8_t ServoSubtrim::getRowCount() {
 
-    return CHANNELS;
+    return PPM_CHANNELS;
 }
 
 const char *ServoSubtrim::getRowName( uint8_t row) {
 
-    return ChannelNames[row];
+    return OutputChannelNames[row];
 }
 
 uint8_t ServoSubtrim::getColCount( uint8_t row) {

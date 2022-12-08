@@ -21,11 +21,21 @@
 #ifndef _TXosConfig_h
 #define _TXosConfig_h
 
+/* Number of analog input channels.
+ * This includes sticks, other analog inputs and
+ * switched channels.
+ */
+#define ANALOG_CHANNELS          ((channel_t)8)
+
+/* Logical channels for mixing.
+ */
+#define LOGICAL_CHANNELS         ((channel_t)11)
+
 /* The number of transmitter channels.
  * This is the number of channels that will be used to
  * generate the PPM signal.
  */
-#define CHANNELS                 ((channel_t)9)
+#define PPM_CHANNELS             ((channel_t)9)
 
 /* Total number of switches.
  * This inclued channel switches and logical switches.

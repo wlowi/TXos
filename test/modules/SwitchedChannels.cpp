@@ -20,7 +20,7 @@
 
 #include "SwitchedChannels.h"
 
-extern const char *ChannelNames[CHANNELS];
+extern const char *InputChannelNames[ANALOG_CHANNELS];
 
 SwitchedChannels::SwitchedChannels() : Module( MODULE_SWITCHED_CHANNELS_TYPE, TEXT_MODULE_SWITCHED_CHANNELS) {
 
@@ -37,14 +37,14 @@ void SwitchedChannels::run( Controls &controls) {
     for( channel_t sc = 0; sc < SWITCHED_CHANNELS; sc++) {
         if( CFG->sw[sc] != SWITCH_NONE) {
             ch = CFG->ch[sc];
-            if( ch < CHANNELS) {
+            if( ch < ANALOG_CHANNELS) {
                 state = controls.switchGet( CFG->sw[sc]);
                 if( state == 0) {
-                    controls.analogSet( ch, PCT_TO_CHANNEL( CFG->value[3*sc]));
+                    controls.inputSet( ch, PCT_TO_CHANNEL( CFG->value[3*sc]));
                 } else if( state == 1) {
-                    controls.analogSet( ch, PCT_TO_CHANNEL( CFG->value[3*sc+1]));
+                    controls.inputSet( ch, PCT_TO_CHANNEL( CFG->value[3*sc+1]));
                 } else {
-                    controls.analogSet( ch, PCT_TO_CHANNEL( CFG->value[3*sc+2]));
+                    controls.inputSet( ch, PCT_TO_CHANNEL( CFG->value[3*sc+2]));
                 }
             }
         }
@@ -116,7 +116,7 @@ void SwitchedChannels::getValue( uint8_t row, uint8_t col, Cell *cell) {
         if( r == 0) {
             cell->setSwitch( 9, CFG->sw[ch]);
         } else if( r == 1) {
-            cell->setList( 9, ChannelNames, CHANNELS, CFG->ch[ch]);
+            cell->setList( 9, InputChannelNames, ANALOG_CHANNELS, CFG->ch[ch]);
         } else if( r == 2) {
             cell->setInt8( 9, CFG->value[3*ch], 4, PERCENT_MIN_LIMIT, PERCENT_MAX_LIMIT);
         } else if( r == 3) {

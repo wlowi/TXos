@@ -57,7 +57,7 @@ void CalibrateSticks::run( Controls &controls) {
                 v = CHANNELVALUE_MID;
             }
 
-            controls.analogSet( ch, (channelValue_t)v);
+            controls.inputSet( ch, (channelValue_t)v);
         }
     }
 }

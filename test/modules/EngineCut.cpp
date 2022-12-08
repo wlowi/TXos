@@ -11,7 +11,7 @@ EngineCut::EngineCut() : Module( MODULE_ENGINE_CUT_TYPE, TEXT_MODULE_ENGINE_CUT)
 void EngineCut::run( Controls &controls) {
 
     if( controls.evalSwitches( CFG->trigger) ) {
-        controls.analogSet( CHANNEL_THROTTLE, PCT_TO_CHANNEL(CFG->cut_pct));
+        controls.logicalSet( CHANNEL_THROTTLE, PCT_TO_CHANNEL(CFG->cut_pct));
     }
 }
 

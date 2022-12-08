@@ -18,24 +18,23 @@
 
 */
 
-#ifndef _ServoLimit_h_
-#define _ServoLimit_h_
+#ifndef _ServoRemap_h_
+#define _ServoRemap_h_
 
 #include "Module.h"
 
-typedef struct servoLimit_t {
+typedef struct servoRemap_t {
 
-    percent_t posLimit_pct[PPM_CHANNELS];
-    percent_t negLimit_pct[PPM_CHANNELS];
+    channel_t source[PPM_CHANNELS];
 
-} servoLimit_t;
+} servoRemap_t;
 
-class ServoLimit : public Module {
+class ServoRemap : public Module {
 
-    NON_PHASED_CONFIG( servoLimit_t)
+    NON_PHASED_CONFIG( servoRemap_t)
 
     public:
-        ServoLimit();
+        ServoRemap();
 
         /* From Module */
         void run( Controls &controls) final;

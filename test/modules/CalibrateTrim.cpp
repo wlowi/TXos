@@ -57,7 +57,7 @@ void CalibrateTrim::run( Controls &controls) {
                 v = TRIMVALUE_MID;
             }
 
-            controls.analogSet( ch, controls.analogGet(ch) + (channelValue_t)v);
+            controls.inputSet( ch, controls.inputGet(ch) + (channelValue_t)v);
         }
     }
 }

@@ -25,7 +25,7 @@
 
 typedef struct servoSubtrim_t {
 
-    percent_t trim_pct[CHANNELS];
+    percent_t trim_pct[PPM_CHANNELS];
 
 } servoSubtrim_t;
 

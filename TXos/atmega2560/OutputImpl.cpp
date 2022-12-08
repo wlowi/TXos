@@ -69,7 +69,7 @@ ISR( TIMER1_COMPA_vect) {
         nextTimerValue_usec = PPM_SPACE_usec;
         
         outputChannel++;
-        if( outputChannel < CHANNELS)  {
+        if( outputChannel < PPM_CHANNELS)  {
             outputState = END_OF_SPACE; // repeat for next channel
         } else {
             outputChannel = 0;
@@ -111,7 +111,7 @@ void OutputImpl::init() {
 
     ATOMIC_BLOCK( ATOMIC_RESTORESTATE) {
 
-        for( channel_t i = 0; i < CHANNELS; i++) {
+        for( channel_t i = 0; i < PPM_CHANNELS; i++) {
             ppmSet[0].channel[i] = PPM_MID_usec;
             ppmSet[1].channel[i] = PPM_MID_usec;
         }
@@ -218,7 +218,7 @@ void OutputImpl::SetChannelValue(int channel, int value) {
      *  
      */
 
-    if( channel < CHANNELS) {
+    if( channel < PPM_CHANNELS) {
 
         t = PPM_MID_usec + (value * 2 / 5);
 
@@ -229,7 +229,7 @@ void OutputImpl::SetChannelValue(int channel, int value) {
 
             outputImpl->ppmSet[ OTHER_PPMSET( outputImpl->currentSet) ].channel[ channel ] = t;
 
-            if( channel == CHANNELS-1) {
+            if( channel == PPM_CHANNELS-1) {
                 outputImpl->channelSetDone = true;
             }
         }

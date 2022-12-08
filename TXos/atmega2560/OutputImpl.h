@@ -44,7 +44,7 @@
 
 typedef struct ppmSet_t {
     
-    timingUsec_t channel[ CHANNELS ];
+    timingUsec_t channel[ PPM_CHANNELS ];
 
 } ppmSet_t;
 
