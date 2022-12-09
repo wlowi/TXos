@@ -122,6 +122,7 @@
 #include "AssignInput.h"
 #include "ServoRemap.h"
 #include "AnalogSwitch.h"
+#include "ChannelRange.h"
 
 #if defined( ARDUINO )
 #include "InputImpl.h"
@@ -329,6 +330,8 @@ void setup( void) {
     moduleManager.addToModelMenu( new SystemSetup());
     Model *model = new Model();
     moduleManager.addToModelMenu( model);
+    ChannelRange *channelRange = new ChannelRange();
+    moduleManager.addToModelMenu( channelRange);
     AnalogSwitch *analogSwitch = new AnalogSwitch();
     moduleManager.addToModelMenu( analogSwitch);
     AssignInput *assignInput = new AssignInput();
@@ -362,7 +365,7 @@ void setup( void) {
     moduleManager.addToRunList( calibrateTrim);
     moduleManager.addToRunList( switchedChannels);
     moduleManager.addToRunList( analogSwitch);
-    // TODO: channelRate
+    moduleManager.addToRunList( channelRange);
 
     /* The following moduels act on logical channels */
     moduleManager.addToRunList( assignInput);

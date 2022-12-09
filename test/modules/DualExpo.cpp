@@ -52,9 +52,9 @@ DualExpo::DualExpo() : Module( MODULE_DUAL_EXPO_TYPE, TEXT_MODULE_DUAL_EXPO) {
 void DualExpo::run( Controls &controls) {
 
     /* Expo */
-    applyExpo( controls, CHANNEL_AILERON, CFG->value[1]);
-    applyExpo( controls, CHANNEL_ELEVATOR, CFG->value[3]);
-    applyExpo( controls, CHANNEL_RUDDER, CFG->value[5]);
+    //applyExpo( controls, CHANNEL_AILERON, CFG->value[1]);
+    //applyExpo( controls, CHANNEL_ELEVATOR, CFG->value[3]);
+    //applyExpo( controls, CHANNEL_RUDDER, CFG->value[5]);
 
     /* Rate */
     applyRate( controls, CHANNEL_AILERON, CFG->value[0]);
@@ -68,7 +68,7 @@ void DualExpo::applyRate( Controls &controls, channel_t ch, percent_t pct) {
     
     v = controls.logicalGet( ch);
 
-    v = v * pct / PERCENT_MAX_LIMIT;
+    v = v * pct / PERCENT_MAX;
 
     controls.logicalSet( ch, (channelValue_t)v);
 }
@@ -98,7 +98,7 @@ void DualExpo::setDefaults() {
     INIT_PHASED_CONFIGURATION(
 
         for( channel_t ch = 0; ch < DUAL_EXPO_CHANNELS; ch++) {
-            CFG->value[2*ch] = 100; /* Rate */
+            CFG->value[2*ch] = PERCENT_MAX; /* 100% Rate */
             CFG->value[2*ch+1] = 0; /* Expo */
         }
     )
@@ -196,7 +196,7 @@ void DualExpo::getValue( uint8_t row, uint8_t col, Cell *cell) {
         }
     } else {
         if( row > 0) {
-            cell->setInt8( 9, CFG->value[row-1], 0, 0, row % 2 ? PERCENT_MAX_LIMIT : 100);
+            cell->setInt8( 9, CFG->value[row-1], 0, 0, PERCENT_MAX);
         }
     }
 }

@@ -21,7 +21,7 @@ Logical Channels:
 11: Thr Ail Elv Rud Ai2 El2 Flp Fl2 Gea Ch8 Ch9
 
 Servo Outputs:
-9: Sv1 - Sv9
+9: S1 - S9
 
 
 Module order of execution
@@ -39,8 +39,8 @@ OK: Switched Channels:
 OK: Analog Switches:
   Switch controlled by analog input In1 - In8
 
-Channel Rate:
-  Adjust range for analog channels Ac1 - Ac6 (Range +/- 125%)
+OK: Channel Range:
+  Adjust range for analog channels In1 - In6 (Range +/- 125%)
 
 OK: Assign Inputs:
   Assign inputs to logical channels
@@ -77,8 +77,6 @@ Mixer:
 Phased Trim:
   Phase controlled mid position of Ail, Elv, Rud
 
-
-
 Engine Cut:
   Set Thr output to fixed value controlled by a switch
 
@@ -93,6 +91,8 @@ OK: Servo Remap:
   Fl2 - Sv7
   Ch8 - Sv8
   Ch9 - Sv9
+
+Servo Speed:
 
 OK: Servo Reverse:
   Revers servo direction for Sv1 - Sv9
@@ -127,14 +127,6 @@ Cell editing: Switch number and state
     1-BI:0
     2-TR:2
     3-CH:1
-
-Module: Channel Range
-
-Module: Geber Switches
-
-Module: Mixer
-
-Module: Servo speed
 
 Module processing within PPM generation frame.
 

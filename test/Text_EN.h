@@ -29,6 +29,7 @@
 #define TEXT_MODULE_BIND              CC("Bind RX")
 #define TEXT_MODULE_CAL_STICKS        CC("Calib. Sticks")
 #define TEXT_MODULE_CAL_TRIM          CC("Calib. Trim")
+#define TEXT_MODULE_CHANNEL_RANGE     CC("Input Limit")
 #define TEXT_MODULE_DUAL_EXPO         CC("Dual & Expo")
 #define TEXT_MODULE_ENGINE_CUT        CC("Engine Cut")
 #define TEXT_MODULE_MODEL             CC("Model")

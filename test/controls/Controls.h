@@ -75,6 +75,9 @@ typedef int8_t percent_t;
 #define PERCENT_MAX_LIMIT       ((percent_t)125)
 #define PERCENT_MIN_LIMIT       ((percent_t)-125)
 
+#define PERCENT_MAX             ((percent_t)100)
+#define PERCENT_MIN             ((percent_t)-100)
+
 #define PCT_TO_CHANNEL( p) ((channelValue_t)p*10)
 
 #define CHANNEL_TO_PCT( c) ((percent_t)(c/10))

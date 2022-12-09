@@ -104,7 +104,7 @@ void UserInterface::homeScreen( Event *event) {
         lcd->normalColors();
         lcd->clear();
 
-        lcd->print( TEXT_TXOS);
+        lcd->printStr( TEXT_TXOS, 5);
         lcd->print( TXOS_VERSION);
 
         lcd->setCursor(1, 0);
