@@ -121,6 +121,7 @@
 #include "SwitchedChannels.h"
 #include "AssignInput.h"
 #include "ServoRemap.h"
+#include "AnalogSwitch.h"
 
 #if defined( ARDUINO )
 #include "InputImpl.h"
@@ -305,6 +306,8 @@ void setup( void) {
      * It defines the order with the menu.
      */
     
+    /* System menu */
+    
     moduleManager.addToSystemMenu( &modelSelect);
     ServoMonitor *servoMonitor = new ServoMonitor( controls);
     moduleManager.addToSystemMenu( servoMonitor);
@@ -321,19 +324,23 @@ void setup( void) {
     VccMonitor *vccMonitor = new VccMonitor();
     moduleManager.addToSystemMenu( vccMonitor);
 
+    /* Model menu */
+
     moduleManager.addToModelMenu( new SystemSetup());
     Model *model = new Model();
     moduleManager.addToModelMenu( model);
+    AnalogSwitch *analogSwitch = new AnalogSwitch();
+    moduleManager.addToModelMenu( analogSwitch);
     AssignInput *assignInput = new AssignInput();
     moduleManager.addToModelMenu( assignInput);
+    Phases *phases = new Phases();
+    moduleManager.addToModelMenu( phases);
     PhasesTrim *phasesTrim = new PhasesTrim();
     moduleManager.addToModelMenu( phasesTrim);
     SwitchedChannels *switchedChannels = new SwitchedChannels();
     moduleManager.addToModelMenu( switchedChannels);
     DualExpo *dualExpo = new DualExpo();
     moduleManager.addToModelMenu( dualExpo);
-    Phases *phases = new Phases();
-    moduleManager.addToModelMenu( phases);
     Timer *timer = new Timer();
     moduleManager.addToModelMenu( timer);
     EngineCut *engineCut = new EngineCut();
@@ -354,21 +361,27 @@ void setup( void) {
     moduleManager.addToRunList( calibrateSticks);
     moduleManager.addToRunList( calibrateTrim);
     moduleManager.addToRunList( switchedChannels);
+    moduleManager.addToRunList( analogSwitch);
+    // TODO: channelRate
+
+    /* The following moduels act on logical channels */
     moduleManager.addToRunList( assignInput);
-    
+    moduleManager.addToRunList( phases);
     moduleManager.addToRunList( dualExpo);
     moduleManager.addToRunList( model);
+    // TODO: Mixer
     moduleManager.addToRunList( phasesTrim);
     moduleManager.addToRunList( engineCut);
 
+    /* The following modules act on output (servo) channels */
     moduleManager.addToRunList( servoRemap);
     moduleManager.addToRunList( servoReverse);
     moduleManager.addToRunList( servoSubtrim);
     moduleManager.addToRunList( servoLimit);
 
+    /* The follow moduels do not impact channel values */
     moduleManager.addToRunList( servoMonitor);
     moduleManager.addToRunList( switchMonitor);
-    moduleManager.addToRunList( phases);
     moduleManager.addToRunList( timer);
     moduleManager.addToRunList( vccMonitor);
 

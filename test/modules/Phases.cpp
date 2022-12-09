@@ -80,6 +80,8 @@ void Phases::setDefaults() {
         }
 
     )
+
+    strcpy( phaseText, TEXT_PHASE_PATTERN);
 }
 
 /* From TableEditable */
@@ -96,7 +98,6 @@ const char *Phases::getRowName( uint8_t row) {
         return TEXT_SWITCH;
     }
 
-    strcpy( phaseText, "Ph-");
     phaseText[3] = '0'+row-1;
     phaseText[4] = '\0';
 

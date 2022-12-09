@@ -24,6 +24,7 @@
 #define CC( t ) ((const char*)t)
 
 // Module Names (13 letters max.)         1234567890123
+#define TEXT_MODULE_ANALOG_SWITCH     CC("CH Switches")
 #define TEXT_MODULE_ASSIGN_INPUT      CC("Assign Input")
 #define TEXT_MODULE_BIND              CC("Bind RX")
 #define TEXT_MODULE_CAL_STICKS        CC("Calib. Sticks")
@@ -87,13 +88,13 @@
 #define TEXT_SW_TYPE_UNUSED         CC("----")
 #define TEXT_SW_TYPE_2_STATE        CC("BI")
 #define TEXT_SW_TYPE_3_STATE        CC("TR")
-#define TEXT_SW_TYPE_CHANNEL        CC("CH")
+#define TEXT_SW_TYPE_CHANNEL        CC("CS")
 
-// Calibration steps (9 letters max)
-#define TEXT_CALIB_length           9
+// Calibration steps (7 letters max)
+#define TEXT_CALIB_length           7
 #define TEXT_CALIB_CENTER           CC("CENTER")
-#define TEXT_CALIB_MINMAX           CC("MINMAX")
-#define TEXT_CALIB_NONE             CC("CALIBRATE")
+#define TEXT_CALIB_MINMAX           CC("MIN/MAX")
+#define TEXT_CALIB_NONE             CC("CALIB.")
 
 // Phases (7 letters max.)
 #define TEXT_PHASE_NAME_length      7
@@ -108,31 +109,34 @@
 #define TEXT_PHASE_ACRO2            CC("Acro 2")
 
 // Misc
-#define TEXT_TXOS                   CC("TXos ")
+#define TEXT_ACTIVE                 CC("Active")
+#define TEXT_ALERT                  CC("Alert")
 #define TEXT_BACK                   CC("<<<<")
+#define TEXT_BIND                   CC("Bind")
 #define TEXT_BOOTING                CC("Booting...")
-#define TEXT_MODEL_SETUP            CC("Model setup")
-#define TEXT_SYSTEM_SETUP           CC("System setup")
+#define TEXT_CH                     CC("Ch")
+#define TEXT_EXPO                   CC("Expo")
 #define TEXT_MODEL                  CC("Model")
 #define TEXT_MODEL_NAME             CC("Name")
-#define TEXT_SWITCH                 CC("Switch")
-#define TEXT_THR                    CC("THR")
-#define TEXT_WINGMIX                CC("Mix")
-#define TEXT_WARN                   CC("Warn")
-#define TEXT_ALERT                  CC("Alert")
-#define TEXT_VCC_ADJUST             CC("+/-")
+#define TEXT_MODEL_SETUP            CC("Model setup")
 #define TEXT_PHASE                  CC("Phase")
-#define TEXT_RATE                   CC("Rate")
-#define TEXT_EXPO                   CC("Expo")
-#define TEXT_TIME                   CC("Time")
+#define TEXT_PHASE_PATTERN          CC("Ph-0")
 #define TEXT_POS0                   CC("Pos0")
 #define TEXT_POS1                   CC("Pos1")
 #define TEXT_POS2                   CC("Pos2")
+#define TEXT_RATE                   CC("Rate")
+#define TEXT_SC_PATTERN             CC("SC*")
+#define TEXT_START                  CC("Start")
 #define TEXT_SW                     CC("Sw")
-#define TEXT_CH                     CC("Ch")
-#define TEXT_ACTIVE                 CC("Active")
+#define TEXT_SWITCH                 CC("Switch")
+#define TEXT_SYSTEM_SETUP           CC("System setup")
 #define TEXT_TEST                   CC("Test")
-#define TEXT_BIND                   CC("Bind")
+#define TEXT_THR                    CC("THR")
+#define TEXT_TIME                   CC("Time")
+#define TEXT_TXOS                   CC("TXos")
+#define TEXT_VCC_ADJUST             CC("+/-")
+#define TEXT_WARN                   CC("Warn")
+#define TEXT_WINGMIX                CC("Mix")
 
 // Wing mix options
 #define TEXT_WINGMIX_length         6

@@ -41,8 +41,6 @@ class CalibrateSticks : public Module {
 #define CALIBRATION_STEP_CENTER   1
 #define CALIBRATION_STEP_MINMAX   2
 
-        char stepName[10];
-
     public:
         CalibrateSticks();
 
@@ -57,7 +55,7 @@ class CalibrateSticks : public Module {
         void getValue( uint8_t row, uint8_t col, Cell *cell) final;
         void setValue( uint8_t row, uint8_t col, Cell *cell) final;
 
-        bool isRowEditable( uint8_t row) { return false; }
+        bool isRowEditable( uint8_t row) final { return false; }
         bool isRowExecutable( uint8_t row) final;
         void rowExecute( uint8_t row ) final;
         bool hasChanged( uint8_t row, uint8_t col) { return true; }

@@ -23,6 +23,8 @@
 
 #include "Module.h"
 
+/* Reverse servo directon */
+
 typedef struct servoReverse_t {
 
     channelBits_t revBits;

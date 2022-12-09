@@ -49,14 +49,17 @@ void VccMonitor::run( Controls &controls) {
     v = v * (ADC_VOLTAGE + CFG->vccAdjust) / ADC_VCC_RESOLUTION;
     float16 newVcc = v * (ADC_VOLTAGE_DIVIDER_R1 + ADC_VOLTAGE_DIVIDER_R2) / ADC_VOLTAGE_DIVIDER_R2;
 
-    if( newVcc < vcc || newVcc > vcc+10) { /* 0.1V */
+    /* This avoids jitter on vcc value when the voltage changes slowly. */
+    if( vccUpdateImmediate || newVcc < vcc || newVcc > vcc+10) { /* 0.1V */
         vcc = newVcc;
+        vccUpdateImmediate = false;
     }
 }
 
 void VccMonitor::setDefaults() {
 
     vcc = 1200;
+    vccUpdateImmediate = true;
 
     INIT_NON_PHASED_CONFIGURATION(
 
@@ -121,7 +124,8 @@ void VccMonitor::setValue( uint8_t row, uint8_t col, Cell *cell) {
         CFG->alertLevel = cell->getFloat16();
     } else {
         if( col == 0) {
-            CFG->vccAdjust = cell->getFloat16();
+            CFG->vccAdjust = cell->getInt8();
+            vccUpdateImmediate = true;
         }
     }
 }

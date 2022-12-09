@@ -1,0 +1,97 @@
+/*
+    TXos. A remote control transmitter OS.
+
+    Copyright (C) 2022 Wolfgang Lohwasser
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+*/
+
+#include "AnalogSwitch.h"
+
+extern Controls controls;
+extern const char *InputChannelNames[ANALOG_CHANNELS];
+
+AnalogSwitch::AnalogSwitch() : Module( MODULE_ANALOG_SWITCH_TYPE, TEXT_MODULE_ANALOG_SWITCH) {
+
+    setDefaults();
+}
+
+/* From Module */
+
+void AnalogSwitch::run( Controls &controls) {
+
+    channelValue_t v;
+    switchState_t state;
+
+    for( switch_t sw = 0; sw < ANALOG_SWITCHES; sw++) {
+        v = controls.inputGet(CFG->source[sw]);
+        state = (v >= PCT_TO_CHANNEL(CFG->trigger[sw])) ? SW_STATE_1 : SW_STATE_0;
+        controls.switchSet( FIRST_ANALOG_SWITCH + sw, state);
+    }
+}
+
+void AnalogSwitch::setDefaults() {
+
+    INIT_NON_PHASED_CONFIGURATION(
+
+        for( switch_t sw = 0; sw < ANALOG_SWITCHES; sw++) {
+            CFG->source[sw] = 0;
+            CFG->trigger[sw] = 0; /* neutral */
+        }
+    )
+}
+
+/* From TableEditable */
+
+uint8_t AnalogSwitch::getRowCount() {
+
+    return 2 * ANALOG_SWITCHES;
+}
+
+const char *AnalogSwitch::getRowName( uint8_t row) {
+
+    controls.copySwitchName( switchName, (switch_t)(row/2) + FIRST_ANALOG_SWITCH);
+
+    return switchName;
+}
+
+uint8_t AnalogSwitch::getColCount( uint8_t row) {
+
+    return 1;
+}
+
+void AnalogSwitch::getValue( uint8_t row, uint8_t col, Cell *cell) {
+
+    uint8_t sw = row / 2;
+    uint8_t r = (row % 2);
+
+    if( r == 0) {
+        cell->setList( 6, InputChannelNames, ANALOG_CHANNELS, CFG->source[sw]);
+    } else if( r == 1) {
+        cell->setInt8( 6, CFG->trigger[sw], 0, PERCENT_MIN_LIMIT, PERCENT_MAX_LIMIT);
+    }
+}
+
+void AnalogSwitch::setValue( uint8_t row, uint8_t col, Cell *cell) {
+
+    uint8_t sw = row / 2;
+    uint8_t r = (row % 2);
+
+    if( r == 0) {
+        CFG->source[sw] = cell->getList();
+    } else if( r == 1) {
+        CFG->trigger[sw] = cell->getInt8();
+    }
+}

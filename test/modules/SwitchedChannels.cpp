@@ -64,7 +64,7 @@ void SwitchedChannels::setDefaults() {
         }
     )
 
-    strcpy( switchName, "SC*");
+    strcpy( switchName, TEXT_SC_PATTERN);
 }
 
 /* From TableEditable */
@@ -124,7 +124,6 @@ void SwitchedChannels::getValue( uint8_t row, uint8_t col, Cell *cell) {
         } else if( r == 4) {
             cell->setInt8( 9, CFG->value[3*ch+2], 4, PERCENT_MIN_LIMIT, PERCENT_MAX_LIMIT);
         }
-
     }
 }
 
@@ -146,6 +145,5 @@ void SwitchedChannels::setValue( uint8_t row, uint8_t col, Cell *cell) {
         } else if( r == 4) {
             CFG->value[3*ch+2] = cell->getInt8();
         }
-
     }
 }

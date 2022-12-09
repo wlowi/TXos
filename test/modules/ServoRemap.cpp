@@ -55,7 +55,7 @@ void ServoRemap::setDefaults() {
             } else if( ch == 5) {
                 CFG->source[ch] = CHANNEL_FLAP;
             } else if( ch == 6) {
-                CFG->source[ch] = CHANNEL_FLAP2;
+                CFG->source[ch] = CHANNEL_GEAR;
             } else if( ch == 7) {
                 CFG->source[ch] = CHANNEL_8;
             } else {

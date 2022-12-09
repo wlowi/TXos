@@ -23,6 +23,8 @@
 
 #include "Module.h"
 
+/* Assign logical channels to servo channels */
+
 typedef struct servoRemap_t {
 
     channel_t source[PPM_CHANNELS];

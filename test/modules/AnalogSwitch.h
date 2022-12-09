@@ -18,25 +18,32 @@
 
 */
 
-#ifndef _AssignInput_h_
-#define _AssignInput_h_
+#ifndef _AnalogSwitch_h_
+#define _AnalogSwitch_h_
 
 #include "Module.h"
 
-/* Assign input channels (analog) to logical channels */
+/* Control logical switch by input channels (analog) */
 
-typedef struct assignInput_t {
+#define ANALOG_SWITCHES (SWITCHES - PORT_SWITCH_INPUT_COUNT)
+#define FIRST_ANALOG_SWITCH (PORT_SWITCH_INPUT_COUNT)
 
-    channel_t source[ANALOG_CHANNELS];
+typedef struct analogSwitch_t {
 
-} assignInput_t;
+    channel_t source[ANALOG_SWITCHES];
+    percent_t trigger[ANALOG_SWITCHES];
 
-class AssignInput : public Module {
+} analogSwitch_t;
 
-    NON_PHASED_CONFIG( assignInput_t)
+class AnalogSwitch : public Module {
+
+    NON_PHASED_CONFIG( analogSwitch_t)
+
+    private:
+        char switchName[TEXT_SW_NAME_length +1];
 
     public:
-        AssignInput();
+        AnalogSwitch();
 
         /* From Module */
         void run( Controls &controls) final;

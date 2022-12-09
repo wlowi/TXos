@@ -50,9 +50,9 @@ void CalibrateSticks::run( Controls &controls) {
         } else {
 
             if( v > CFG->midPos[ch]) {
-                v = ((long)(v - CFG->midPos[ch]) * (CHANNELVALUE_MAX_LIMIT - CHANNELVALUE_MID)) / (CFG->maxPos[ch] - CFG->midPos[ch]);
+                v = ((v - CFG->midPos[ch]) * (CHANNELVALUE_MAX_LIMIT - CHANNELVALUE_MID)) / (CFG->maxPos[ch] - CFG->midPos[ch]);
             } else if( v < CFG->midPos[ch]) {
-                v = ((long)(v - CFG->midPos[ch]) * (CHANNELVALUE_MID - CHANNELVALUE_MIN_LIMIT)) / (CFG->midPos[ch] - CFG->minPos[ch]);
+                v = ((v - CFG->midPos[ch]) * (CHANNELVALUE_MID - CHANNELVALUE_MIN_LIMIT)) / (CFG->midPos[ch] - CFG->minPos[ch]);
             } else {
                 v = CHANNELVALUE_MID;
             }
@@ -109,7 +109,7 @@ uint8_t CalibrateSticks::getRowCount() {
 
 const char *CalibrateSticks::getRowName( uint8_t row) {
 
-    return (row == 0) ? "RUN" : " ";
+    return (row == 0) ? TEXT_START : " ";
 }
 
 uint8_t CalibrateSticks::getColCount( uint8_t row) {
@@ -119,23 +119,25 @@ uint8_t CalibrateSticks::getColCount( uint8_t row) {
 
 void CalibrateSticks::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
+    const char *stepName;
+
     if( row == 0) {
 
         switch( calibrationStep) {
         case CALIBRATION_STEP_CENTER:
-            strcpy( stepName, TEXT_CALIB_CENTER);
+            stepName = TEXT_CALIB_CENTER;
             break;
 
         case CALIBRATION_STEP_MINMAX:
-            strcpy( stepName, TEXT_CALIB_MINMAX);
+            stepName = TEXT_CALIB_MINMAX;
             break;
 
         case CALIBRATION_STEP_NONE:
         default:
-            strcpy( stepName, TEXT_CALIB_NONE);
+            stepName = TEXT_CALIB_NONE;
         }
 
-        cell->setString( 4, stepName, TEXT_CALIB_length);
+        cell->setLabel( 6, stepName, TEXT_CALIB_length);
 
     } else {
 

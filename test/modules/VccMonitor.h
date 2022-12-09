@@ -39,7 +39,8 @@ class VccMonitor : public Module {
 
     private:
         float16 vcc;
-
+        bool vccUpdateImmediate;
+        
     public:
         VccMonitor();
 

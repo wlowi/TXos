@@ -23,6 +23,9 @@
 
 #include "Module.h"
 
+/* Control an input channel (analog channel) by switch.
+ */
+
 #define SWITCHED_CHANNELS 2
 
 typedef struct switchedChannels_t {
@@ -38,7 +41,7 @@ class SwitchedChannels : public Module {
     NON_PHASED_CONFIG( switchedChannels_t)
 
     private:
-        char switchName[4];
+        char switchName[TEXT_SW_NAME_length +1];
 
     public:
         SwitchedChannels();

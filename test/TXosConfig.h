@@ -22,7 +22,7 @@
 #define _TXosConfig_h
 
 /* DE or EN */
-#define UI_LANGUAGE              DE
+#define UI_LANGUAGE              EN
 
 /* Number of analog input channels.
  * This includes sticks, other analog inputs and

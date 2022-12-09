@@ -27,22 +27,22 @@ Servo Outputs:
 Module order of execution
 =========================
 
-Calibrate Sticks:
-  Adjust range of all analog channels to +/- 1000
+OK: Calibrate Sticks:
+  Adjust range of all analog channels to +/- 1250
 
-Calibrate Trim:
+OK: Calibrate Trim:
   Add trim offset to first 4 analog channels ( +/- 250 )
 
-Switched Channels:
-  Set value of switched channels Ac7,Ac8 from switch state (Range +/- 125%)
+OK: Switched Channels:
+  Set value of switched channels In7,In8 from switch state (Range +/- 125%)
 
-Analog Switches:
-  Switch controlled by analog input Ac1 - Ac8
-  
+OK: Analog Switches:
+  Switch controlled by analog input In1 - In8
+
 Channel Rate:
   Adjust range for analog channels Ac1 - Ac6 (Range +/- 125%)
 
-Assign Inputs:
+OK: Assign Inputs:
   Assign inputs to logical channels
   Ac1 - Thr
   Ac2 - Ail
@@ -53,7 +53,7 @@ Assign Inputs:
   Ac7 - Gea
   Ac8 - Ch9
 
-Phases:
+OK: Phases:
   no effect on channels
 
 
@@ -82,7 +82,7 @@ Phased Trim:
 Engine Cut:
   Set Thr output to fixed value controlled by a switch
 
-Servo Remap:
+OK: Servo Remap:
   Map logical channels to servo output
   Thr - Sv1
   Ail - Sv2
@@ -94,28 +94,28 @@ Servo Remap:
   Ch8 - Sv8
   Ch9 - Sv9
 
-Servo Reverse:
+OK: Servo Reverse:
   Revers servo direction for Sv1 - Sv9
   Default: off
 
-Servo Subtrim:
+OK: Servo Subtrim:
   Adjust mid position for Sv1 - Sv9
   Default: 0
 
-Servo Limit:
+OK: Servo Limit:
   Hard lower/upper limit for Sv1 - Sv9
   Default: +/- 125%
 
-Servo Monitor:
+OK: Servo Monitor:
   no effect on channels
 
-Switch Monitor:
+OK: Switch Monitor:
   no effect on channels
 
 Timer:
   no effect on channels
 
-vccMonitor:
+OK: vccMonitor:
   no effect on channels
 
 
@@ -128,31 +128,11 @@ Cell editing: Switch number and state
     2-TR:2
     3-CH:1
 
-Module: Rate & Expo
-
 Module: Channel Range
-
-Module: Phase Trim
 
 Module: Geber Switches
 
-Module: Timer
-
-  1234567890123
- +-------------+
-1|Timer        |
-2|<back>       |
-3|Switch 1-TR:2|
-4|Time   00:00 |
-5|             |
-6|             |
-7|             |
-8|             |
- +-------------+
-
 Module: Mixer
-
-Module: Servo remap
 
 Module: Servo speed
 
