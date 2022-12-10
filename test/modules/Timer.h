@@ -25,7 +25,7 @@
 
 typedef struct flightTimer_t {
 
-    switchSetState_t swSetState;
+    switch_t swState;
     uint16_t time_sec;
 
 } flightTimer_t;

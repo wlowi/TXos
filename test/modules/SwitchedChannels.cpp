@@ -35,7 +35,7 @@ void SwitchedChannels::run( Controls &controls) {
     switchState_t state;
 
     for( channel_t sc = 0; sc < SWITCHED_CHANNELS; sc++) {
-        if( CFG->sw[sc] != SWITCH_NONE) {
+        if( IS_SWITCH_USED( CFG->sw[sc])) {
             ch = CFG->ch[sc];
             if( ch < ANALOG_CHANNELS) {
                 state = controls.switchGet( CFG->sw[sc]);
@@ -56,7 +56,7 @@ void SwitchedChannels::setDefaults() {
     INIT_NON_PHASED_CONFIGURATION(
 
         for( channel_t ch = 0; ch < SWITCHED_CHANNELS; ch++) {
-            CFG->sw[ch] = SWITCH_NONE;
+            INIT_SWITCH( CFG->sw[ch]);
             CFG->ch[ch] = ANALOG_CHANNELS - SWITCHED_CHANNELS +ch;
             CFG->value[3*ch] = -100; /* min  */
             CFG->value[3*ch+1] = 0; /* neutral */
@@ -105,7 +105,7 @@ void SwitchedChannels::getValue( uint8_t row, uint8_t col, Cell *cell) {
             label = TEXT_POS0;
         } else if( r == 3) {
             label = TEXT_POS1;
-        } else if( r == 4) {
+        } else {
             label = TEXT_POS2;
         }
 

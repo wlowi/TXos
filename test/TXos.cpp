@@ -191,6 +191,8 @@ const uint8_t SwitchPins[PORT_SWITCH_INPUT_COUNT] = {
   PORT_SWITCH_INPUT
 };
 
+SWITCH_CONFIGURATION
+
 InputImpl *inputImpl;
 OutputImpl *outputImpl;
 PortsImpl *portsImpl;
@@ -286,7 +288,7 @@ void setup( void) {
 
     inputImpl = new InputImpl( PORT_ANALOG_INPUT_COUNT, PORT_TRIM_INPUT_COUNT, PORT_AUX_INPUT_COUNT,
                                AnalogPins,
-                               PORT_SWITCH_INPUT_COUNT, SWITCH_CONFIGURATION,
+                               PORT_SWITCH_INPUT_COUNT, switchConfiguration,
                                SwitchPins);
 
     outputImpl = new OutputImpl();

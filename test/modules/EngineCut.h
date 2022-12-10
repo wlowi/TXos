@@ -7,7 +7,7 @@
 typedef struct engineCut_t {
 
     percent_t cut_pct;
-    switchSetState_t trigger;
+    switch_t swState;
 
 } engineCut_t;
 

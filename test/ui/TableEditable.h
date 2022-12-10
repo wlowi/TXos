@@ -55,7 +55,7 @@ class Cell {
         void setLabel( uint8_t screenX, const char *v, uint8_t sz);
         void setList( uint8_t screenX, const char **v, uint8_t sz, uint8_t curr);
         void setSwitch( uint8_t screenX, switch_t v);
-        void setSwitchSetState( uint8_t screenX, switchSetState_t v);
+        void setSwitchState( uint8_t screenX, switch_t v);
 
         bool getBool() const;
         int8_t getInt8() const;
@@ -64,9 +64,9 @@ class Cell {
         char *getString() const;
         uint8_t getList() const;
         switch_t getSwitch() const;
-        switchSetState_t getSwitchSetState() const;
+        switch_t getSwitchState() const;
 
-        void render( LcdWidget *lcd, bool edit) const;
+        void render( LcdWidget *lcd, bool edit);
         void edit( Event *event);
         bool isEditable();
 };

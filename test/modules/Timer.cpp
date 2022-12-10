@@ -60,7 +60,7 @@ void Timer::setDefaults() {
 
     INIT_NON_PHASED_CONFIGURATION(
 
-        CFG->swSetState = SW_STATE_ALL_DONTCARE;
+        INIT_SWITCH( CFG->swState);
         CFG->time_sec = 0;
     )
 
@@ -98,7 +98,7 @@ void Timer::getValue( uint8_t row, uint8_t col, Cell *cell) {
     uint8_t sec;
     
     if( row == 0) {
-        cell->setSwitchSetState( 7, CFG->swSetState);
+        cell->setSwitchState( 7, CFG->swState);
     } else {
         if( col == 0) {
             min = CFG->time_sec / 60;
@@ -118,7 +118,7 @@ void Timer::setValue( uint8_t row, uint8_t col, Cell *cell) {
     uint8_t sec;
 
     if( row == 0) {
-        CFG->swSetState = cell->getSwitchSetState();
+        CFG->swState = cell->getSwitchState();
     } else {
         
         min = CFG->time_sec / 60;

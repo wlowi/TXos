@@ -15,8 +15,9 @@ class InputImpl : public wxBoxSizer
 {
     private:
         channel_t channels;
-        switch_t switches;
-        switchSetConf_t switchConf;
+        uint8_t switches;
+        
+        const switchConf_t *switchConf;
 
         channel_t stickCount;
         channel_t trimCount;
@@ -30,19 +31,19 @@ class InputImpl : public wxBoxSizer
     public:
         explicit InputImpl( wxWindow *parent,
                             channel_t stickCnt, channel_t trimCnt, channel_t auxCnt,
-                            switch_t switches, switchSetConf_t conf);
+                            uint8_t switches, const switchConf_t *conf);
 
         ~InputImpl( void) final;
 
         void init();
 
-        switch_t GetSwitches();
+        uint8_t GetSwitches();
 
         channelValue_t GetStickValue( int ch);
         channelValue_t GetTrimValue( int ch);
         channelValue_t GetAuxValue( int ch);
         switchState_t GetSwitchValue( int sw);
-        switchSetConf_t GetSwitchSetConf();
+        switchConf_t GetSwitchConf( int sw);
 
         void OnScroll( wxScrollEvent& event);
         void OnSwitch( wxCommandEvent& event);

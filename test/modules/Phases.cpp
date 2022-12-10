@@ -54,7 +54,7 @@ void Phases::run( Controls &controls) {
 
     switchState_t state;
 
-    if( CFG->sw == SWITCH_NONE) {
+    if( IS_SWITCH_UNUSED( CFG->sw)) {
         return;
     }
 
@@ -71,7 +71,7 @@ void Phases::setDefaults() {
 
     INIT_NON_PHASED_CONFIGURATION(
 
-        CFG->sw = SWITCH_NONE;
+        INIT_SWITCH( CFG->sw);
 
         phase = 0;
 

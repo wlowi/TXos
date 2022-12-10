@@ -65,7 +65,6 @@ void Controls::GetControlValues() {
     }
 
     /* Read switch inputs */
-    controlSet.switches = 0;
     for( switch_t sw = 0; sw < inputImpl->GetSwitches(); sw++) {
         switchSet( sw, inputImpl->GetSwitchValue( sw));
     }
@@ -141,29 +140,42 @@ channelValue_t Controls::outputGet( channel_t ch) {
 
 void Controls::switchSet( switch_t sw, switchState_t value) {
 
-    controlSet.switches |= ((value & 0x03) << (sw << 1));
+    uint8_t swn = GET_SWITCH( sw);
+
+    if( swn < SWITCHES) {
+        SET_SWITCH_STATE( controlSet.switches[swn], value);
+    }
 }
 
 switchState_t Controls::switchGet( switch_t sw) {
 
-    return CONTROLS_SWITCH_GET( controlSet.switches, sw);
+    uint8_t swn = GET_SWITCH( sw);
+
+    if( swn < SWITCHES) {
+        return GET_SWITCH_STATE( controlSet.switches[swn]);
+    } else {
+        return SW_STATE_DONTCARE;
+    }
 }
 
 switchConf_t Controls::switchConfGet( switch_t sw) {
 
-    return CONTROLS_SWITCH_CONF_GET( inputImpl->GetSwitchSetConf(), sw);
+    uint8_t swn = GET_SWITCH( sw);
+
+    return inputImpl->GetSwitchConf( swn);
 }
 
 void Controls::copySwitchName( char *b, switch_t sw) {
 
+    uint8_t swn = GET_SWITCH( sw);
     const char *swType;
-
+    
     /* b must be of length TEXT_SW_NAME_length +1 */
 
-    if( sw == SWITCH_NONE) {
+    if( IS_SWITCH_UNUSED( sw)) {
         strcpy( b, TEXT_SW_TYPE_UNUSED);
     } else {
-        b[0] = '1' + sw;
+        b[0] = '1' + swn;
         b[1] = '-';
         switch (switchConfGet(sw)) {
         case SW_CONF_2STATE:
@@ -187,26 +199,24 @@ void Controls::copySwitchName( char *b, switch_t sw) {
     }
 }
 
-bool Controls::evalSwitches( switchSetState_t trigger) {
+void Controls::copySwitchNameAndState( char *b, switch_t sw) {
 
-    bool state = false;
+    size_t len;
 
-    for( switch_t sw = 0; sw < SWITCHES; sw++) {
-        if( switchConfGet( sw) == SW_CONF_UNUSED) {
-            continue;
-        }
+    /* b must be of length TEXT_SW_NAME_STATE_length +1 */
 
-        if( CONTROLS_SWITCH_GET( trigger, sw) == SW_STATE_DONTCARE) {
-            continue;
-        }
+    copySwitchName( b, sw);
 
-        if( CONTROLS_SWITCH_GET( trigger, sw) != switchGet( sw) ) {
-            state = false;
-            break;
-        } else {
-            state = true;
-        }
+    if( IS_SWITCH_USED( sw)) {
+        len = strlen( b);
+        b[len++] = ':';
+        b[len++] = '0' + GET_SWITCH_STATE( sw);
+        b[len] = '\n';
     }
+}
 
-    return state;
+bool Controls::evalSwitches( switch_t trigger) {
+
+    return IS_SWITCH_USED( trigger) 
+            && GET_SWITCH_STATE( trigger) == GET_SWITCH_STATE( controlSet.switches[ GET_SWITCH(trigger)]);
 }

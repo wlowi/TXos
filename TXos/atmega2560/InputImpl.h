@@ -21,10 +21,11 @@ class InputImpl
         channel_t trimCount;
         channel_t auxCount;
 
+        const switchConf_t *switchConf;
+
         channelValue_t GetAnalogValue( channel_t ch);
 
     public:
-        
         const uint8_t *analogPins;
         const uint8_t *switchPins;
 
@@ -32,12 +33,11 @@ class InputImpl
 
         channel_t adcInputs;  /* Total number of ADC inputs */
         switch_t switches;
-        switchSetConf_t switchConf;
 
         uint8_t mux;
 
         InputImpl( channel_t stickCnt, channel_t trimCnt, channel_t auxCnt, const uint8_t analogPins[],
-                   switch_t switches, switchSetConf_t switchConf, const uint8_t switchPins[]);
+                   switch_t switches, const switchConf_t *conf, const uint8_t switchPins[]);
 
         void init();
 
@@ -50,7 +50,7 @@ class InputImpl
         channelValue_t GetTrimValue( channel_t ch);
         channelValue_t GetAuxValue( channel_t ch);
         switchState_t GetSwitchValue( switch_t sw);
-        switchSetConf_t GetSwitchSetConf();
+        switchConf_t GetSwitchConf( switch_t sw);
 };
 
 #endif

@@ -10,7 +10,7 @@ EngineCut::EngineCut() : Module( MODULE_ENGINE_CUT_TYPE, TEXT_MODULE_ENGINE_CUT)
 
 void EngineCut::run( Controls &controls) {
 
-    if( controls.evalSwitches( CFG->trigger) ) {
+    if( controls.evalSwitches( CFG->swState) ) {
         controls.logicalSet( CHANNEL_THROTTLE, PCT_TO_CHANNEL(CFG->cut_pct));
     }
 }
@@ -20,7 +20,7 @@ void EngineCut::setDefaults() {
     INIT_NON_PHASED_CONFIGURATION(
 
         CFG->cut_pct = -100;
-        CFG->trigger = SW_STATE_ALL_DONTCARE;
+        INIT_SWITCH( CFG->swState);
 
     )
 }
@@ -48,7 +48,7 @@ uint8_t EngineCut::getColCount( uint8_t row) {
 void EngineCut::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
     if( row == 0) {
-        cell->setSwitchSetState( 7, CFG->trigger);
+        cell->setSwitchState( 7, CFG->swState);
     } else {
         cell->setInt8( 7, CFG->cut_pct, 0, PERCENT_MIN_LIMIT, PERCENT_MAX_LIMIT);
     }
@@ -57,7 +57,7 @@ void EngineCut::getValue( uint8_t row, uint8_t col, Cell *cell) {
 void EngineCut::setValue( uint8_t row, uint8_t col, Cell *cell) {
 
     if( row == 0) {
-        CFG->trigger = cell->getSwitchSetState();
+        CFG->swState = cell->getSwitchState();
     } else {
         CFG->cut_pct = cell->getInt8();
     }

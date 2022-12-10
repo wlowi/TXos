@@ -77,7 +77,7 @@ Event *DisplayImpl::getEvent() {
     event.count = count;
 
     key = KEY_NONE;
-    count = 1;
+    count = 0;
 
     return &event;
 }

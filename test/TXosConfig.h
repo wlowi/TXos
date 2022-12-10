@@ -40,10 +40,29 @@
  */
 #define PPM_CHANNELS             ((channel_t)9)
 
-/* Total number of switches.
- * This inclued channel switches and logical switches.
+/* Total number of switches. Max is 16.
+ * This includes channel switches and logical switches.
  */
-#define SWITCHES                 ((switch_t)8)
+#define SWITCHES                 ((uint8_t)8)
+
+/* Switch configuration
+ * In this case we have:
+ *   4 tri state switches
+ *   2 bi state switches
+ *   2 control switches
+ */
+
+#define SWITCH_CONFIGURATION \
+const switchConf_t switchConfiguration[SWITCHES] = { \
+    SW_CONF_2STATE, \
+    SW_CONF_3STATE, \
+    SW_CONF_3STATE, \
+    SW_CONF_2STATE, \
+    SW_CONF_3STATE, \
+    SW_CONF_3STATE, \
+    SW_CONF_CHANNEL, \
+    SW_CONF_CHANNEL \
+};
 
 /* Number of phases.
  * A value > 3 does not make any sense because we only 

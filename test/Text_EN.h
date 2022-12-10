@@ -86,6 +86,8 @@
 // Note name length is 4 because the format includes the switch number
 // n-tt  (1-BI)
 #define TEXT_SW_NAME_length         4
+#define TEXT_SW_NAME_STATE_length   6
+
 #define TEXT_SW_TYPE_UNUSED         CC("----")
 #define TEXT_SW_TYPE_2_STATE        CC("BI")
 #define TEXT_SW_TYPE_3_STATE        CC("TR")

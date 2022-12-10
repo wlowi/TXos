@@ -82,71 +82,32 @@ typedef int8_t percent_t;
 
 #define CHANNEL_TO_PCT( c) ((percent_t)(c/10))
 
-#define SWITCH_NONE     ((switch_t)255)
 
-/* Type representing the state of 8 switches.
- * Two bits per switch allow for 4 states: (switchState_t)
+/************* SWITCHES ***********/
+
+/* State of a single switch
+ * Bit 7     1 == invalid / unused switch
+ * Bit 4-6   switch State
+ * Bit 0-3   switch number 
  */
-typedef uint16_t switchSetState_t;
+typedef uint8_t switch_t;
 
-/*  0 State 0
- *  1 State 1
- *  2 State 2
- *  3 Invalid position or "Dont care" for comparison
- */
-typedef enum {
+#define SWITCH_UNUSED_FLAG              ((switch_t)0x80)
+#define SWITCH_NUMBER_MASK              ((switch_t)0x0f)
+#define SWITCH_STATE_MASK               ((switch_t)0x70)
 
-    SW_STATE_0 = 0,
-    SW_STATE_1 = 1,
-    SW_STATE_2 = 2,
-    SW_STATE_DONTCARE = 3
+#define INIT_SWITCH( sw)                sw = SWITCH_UNUSED_FLAG
+#define SET_SWITCH_UNUSED( sw)          sw |= SWITCH_UNUSED_FLAG    
+#define SET_SWITCH_USED( sw)            sw &= ~SWITCH_UNUSED_FLAG
+#define IS_SWITCH_UNUSED( sw)           (sw & SWITCH_UNUSED_FLAG)
+#define IS_SWITCH_USED( sw)             (!IS_SWITCH_UNUSED( sw))
 
-} switchState_t;
+#define SET_SWITCH( sw, num)            sw = (((sw) & ~SWITCH_NUMBER_MASK) | ((num) & SWITCH_NUMBER_MASK))
+#define GET_SWITCH( sw)                 (sw & SWITCH_NUMBER_MASK)
 
-#define SW_STATE_ALL_DONTCARE  ((switchSetState_t)0xffff)
+#define SET_SWITCH_STATE( sw, state)    sw = (((sw) & ~SWITCH_STATE_MASK) | (((state) << 4) & SWITCH_STATE_MASK))
+#define GET_SWITCH_STATE( sw)           ((switchState_t)(((sw) & SWITCH_STATE_MASK) >> 4))
 
-
-/* Switch configuration
- * Two bits per switch
- */
-typedef uint16_t switchSetConf_t;
-
-/*  0 Switch is unused
- *  1 Switch is 2-state
- *  2 Switch is 3-state
- *  3 Switch is channel switch
- */
-typedef enum {
-
-    SW_CONF_UNUSED = 0,
-    SW_CONF_2STATE = 1,
-    SW_CONF_3STATE = 2,
-    SW_CONF_CHANNEL = 3
-
-} switchConf_t;
-
-
-/* Switch configuration
- * In this case we have:
- *   4 tri state switches
- *   2 bi state switches
- *   2 control switches
- */
-#define SWITCH_CONFIGURATION        \
-    ((switchConf_t)                 \
-    /* 0 */ SW_CONF_2STATE        | \
-    /* 1 */ SW_CONF_3STATE  <<  2 | \
-    /* 2 */ SW_CONF_3STATE  <<  4 | \
-    /* 3 */ SW_CONF_2STATE  <<  6 | \
-    /* 4 */ SW_CONF_3STATE  <<  8 | \
-    /* 5 */ SW_CONF_3STATE  << 10 | \
-    /* 6 */ SW_CONF_CHANNEL << 12 | \
-    /* 7 */ SW_CONF_CHANNEL << 14   \
-     )
-
-#define CONTROLS_SWITCH_CONF_GET( conf, sw)  (switchConf_t)((conf >> (sw << 1)) & 0x03)
-
-#define CONTROLS_SWITCH_GET( switches, sw)  (switchState_t)((switches >> (sw << 1)) & 0x03)
 
 /* State of all controls.
  * Controls are sticks, switches and logical switches.
@@ -167,7 +128,7 @@ typedef struct controlSet_t {
     /* Calibrated and mixed analog channels */
     channelValue_t outChannel[ PPM_CHANNELS ];
 
-    switchSetState_t switches;
+    switch_t switches[SWITCHES];
 
 } controlSet_t;
 
@@ -204,8 +165,9 @@ class Controls {
         switchConf_t switchConfGet( switch_t sw);
 
         void copySwitchName( char *b, switch_t sw);
+        void copySwitchNameAndState( char *b, switch_t sw);
 
-        bool evalSwitches( switchSetState_t trigger);
+        bool evalSwitches( switch_t trigger);
 };
 
 #endif

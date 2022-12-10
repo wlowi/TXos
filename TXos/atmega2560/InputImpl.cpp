@@ -45,7 +45,7 @@ ISR(ADC_vect) {
 
 InputImpl::InputImpl( channel_t stickCnt, channel_t trimCnt, channel_t auxCnt,
                       const uint8_t analogPins[],
-                      switch_t switches, switchSetConf_t conf,
+                      switch_t switches, const switchConf_t *conf,
                       const uint8_t switchPins[])
 {
     this->stickCount = stickCnt;
@@ -193,7 +193,7 @@ switchState_t InputImpl::GetSwitchValue( switch_t sw) {
       return SW_STATE_DONTCARE;
     }
       
-    swConf = CONTROLS_SWITCH_CONF_GET( switchConf, sw);
+    swConf = switchConf[sw];
     
     switch( swConf) {
 
@@ -221,7 +221,7 @@ switchState_t InputImpl::GetSwitchValue( switch_t sw) {
     return state;
 }
 
-switchSetConf_t InputImpl::GetSwitchSetConf() {
+switchConf_t InputImpl::GetSwitchConf( switch_t sw) {
   
-  return switchConf;
+  return switchConf[sw];
 }

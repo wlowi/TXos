@@ -35,14 +35,37 @@ typedef int16_t float16;
  */
 typedef uint8_t channel_t;
 
-/* Numeric switch identifier.
- */
-typedef uint8_t switch_t;
-
 /* Phase number
  */
 typedef uint8_t phase_t;
 
+/*  0 State 0
+ *  1 State 1
+ *  2 State 2
+ *  3 Invalid position or "Dont care" for comparison
+ */
+typedef enum {
+
+    SW_STATE_0 = 0,
+    SW_STATE_1 = 1,
+    SW_STATE_2 = 2,
+    SW_STATE_DONTCARE = 3
+
+} switchState_t;
+
+/*  0 Switch is unused
+ *  1 Switch is 2-state
+ *  2 Switch is 3-state
+ *  3 Switch is channel switch
+ */
+typedef enum {
+
+    SW_CONF_UNUSED = 0,
+    SW_CONF_2STATE = 1,
+    SW_CONF_3STATE = 2,
+    SW_CONF_CHANNEL = 3
+
+} switchConf_t;
 
 #include "TXosConfig.h"
 

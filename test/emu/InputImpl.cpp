@@ -7,7 +7,7 @@
 
 InputImpl::InputImpl( wxWindow *parent,
                       channel_t stickCnt, channel_t trimCnt, channel_t auxCnt,
-                      switch_t switches, switchSetConf_t conf)
+                      uint8_t switches, const switchConf_t *conf)
     : wxBoxSizer(wxVERTICAL)
 {
     this->stickCount = stickCnt;
@@ -84,7 +84,7 @@ InputImpl::InputImpl( wxWindow *parent,
     hbox = new wxStaticBoxSizer(wxHORIZONTAL, parent, "Switches");
     wxString choices[] = {wxT("0"), wxT("1"), wxT("2")};
     for( int sw = 0; sw < switches; sw++) {
-        switchConf_t conf = CONTROLS_SWITCH_CONF_GET( switchConf, sw);
+        switchConf_t conf = switchConf[sw];
 
         wxRadioBox *swtch = nullptr;
         switchIDs[sw] = wxWindow::NewControlId();
@@ -136,7 +136,7 @@ void InputImpl::init() {
      */
 }
 
-switch_t InputImpl::GetSwitches() {
+uint8_t InputImpl::GetSwitches() {
 
     return switches;
 }
@@ -162,9 +162,9 @@ switchState_t InputImpl::GetSwitchValue( int sw) {
     return swValues[sw];
 }
 
-switchSetConf_t InputImpl::GetSwitchSetConf() {
+switchConf_t InputImpl::GetSwitchConf( int sw) {
 
-    return switchConf;
+    return switchConf[sw];
 }
 
 void InputImpl::OnScroll( wxScrollEvent& event) {
@@ -199,7 +199,7 @@ void InputImpl::OnSwitch( wxCommandEvent& event) {
                 default:
                     swValues[i] = SW_STATE_DONTCARE;
             }
-//            printf("HandleSwitch %d %d\n", i, swValues[i]);
+            printf("HandleSwitch %d %d\n", i, swValues[i]);
             break;
         }
     }

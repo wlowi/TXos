@@ -20,6 +20,8 @@ DisplayImpl *displayImpl;
 PortsImpl *portsImpl;
 BuzzerImpl *buzzerImpl;
 
+SWITCH_CONFIGURATION
+
 class TXosTest : public wxApp
 {
     public:
@@ -86,7 +88,7 @@ MyFrame::MyFrame()
     hbox->AddSpacer(10);
     inputImpl =  new InputImpl( panel, 
                                 PORT_ANALOG_INPUT_COUNT, PORT_TRIM_INPUT_COUNT, PORT_AUX_INPUT_COUNT,
-                                PORT_SWITCH_INPUT_COUNT, SWITCH_CONFIGURATION);
+                                PORT_SWITCH_INPUT_COUNT, switchConfiguration);
     hbox->Add( inputImpl);
     hbox->AddSpacer(10);
     displayImpl =  new DisplayImpl( panel);

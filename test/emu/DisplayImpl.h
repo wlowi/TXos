@@ -21,7 +21,7 @@ class Event {
 
     public:
         uint8_t key = KEY_NONE;
-        uint8_t count = 1;
+        uint8_t count = 0;
 
         void markProcessed() { key = KEY_NONE; }
         bool pending() const { return key != KEY_NONE; }
@@ -31,8 +31,8 @@ class DisplayImpl : public wxStaticBoxSizer {
 
     private:
         LcdWidget *lcd;
-        uint8_t key;
-        uint8_t count;
+        uint8_t key = KEY_NONE;
+        uint8_t count = 0;
         Event event;
 
     public:
