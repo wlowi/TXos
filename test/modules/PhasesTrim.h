@@ -23,7 +23,7 @@
 
 #include "Module.h"
 
-#define PHASED_TRIM_CHANNELS 3
+#define PHASED_TRIM_CHANNELS 4
 
 typedef struct phasesTrim_t {
 

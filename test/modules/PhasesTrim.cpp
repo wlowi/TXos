@@ -37,17 +37,31 @@ PhasesTrim::PhasesTrim() : Module( MODULE_PHASES_TRIM_TYPE, TEXT_MODULE_PHASES_T
 void PhasesTrim::run( Controls &controls) {
 
     uint8_t ch;
+    channelValue_t offset;
 
     for( channel_t pc = 0; pc < PHASED_TRIM_CHANNELS; pc++) {
+
         if( pc == 0) {
             ch = CHANNEL_AILERON;
         } else if( pc == 1) {
             ch = CHANNEL_ELEVATOR;
-        } else {
+        } else if( pc == 2) {
             ch = CHANNEL_RUDDER;
+        } else {
+            ch = CHANNEL_FLAP;
         }
 
-        controls.logicalSet( ch, controls.logicalGet( ch) + PCT_TO_CHANNEL( CFG->trim_pct[pc]));
+        offset = PCT_TO_CHANNEL( CFG->trim_pct[pc]);
+
+        controls.logicalSet( ch, controls.logicalGet( ch) + offset);
+
+        if( ch == CHANNEL_AILERON) {
+            controls.logicalSet( CHANNEL_AILERON2, controls.logicalGet( CHANNEL_AILERON2) + offset);
+        } else if( ch == CHANNEL_ELEVATOR) {
+            controls.logicalSet( CHANNEL_ELEVATOR2, controls.logicalGet( CHANNEL_ELEVATOR2) + offset);
+        } else if( ch == CHANNEL_FLAP) {
+            controls.logicalSet( CHANNEL_FLAP2, controls.logicalGet( CHANNEL_FLAP2) + offset);
+        }
     }
 }
 
@@ -103,12 +117,14 @@ const char *PhasesTrim::getRowName( uint8_t row) {
 
     if( row == 0) {
         return TEXT_PHASE;
-    } else if( row < 3) {
+    } else if( row == 1) {
         return LogicalChannelNames[CHANNEL_AILERON];
-    } else if( row < 5) {
+    } else if( row == 2) {
         return LogicalChannelNames[CHANNEL_ELEVATOR];
-    } else {
+    } else if( row == 3) {
         return LogicalChannelNames[CHANNEL_RUDDER];
+    } else {
+        return LogicalChannelNames[CHANNEL_FLAP];
     }
 }
 
