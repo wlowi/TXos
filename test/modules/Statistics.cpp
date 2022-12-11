@@ -74,9 +74,9 @@ uint8_t Statistics::getColCount( uint8_t row) {
 void Statistics::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
     if( row == 0) {
-        cell->setInt8( 9, timeUI_msec, 0, 0, 0);
+        cell->setInt16( 7, timeUI_msec, 0, 0, 0);
     } else {
-        cell->setInt8( 9, timeModules_msec, 0, 0, 0);
+        cell->setInt16( 7, timeModules_msec, 0, 0, 0);
     }
 }
 

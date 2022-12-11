@@ -7,6 +7,7 @@
 #include "TableEditable.h"
 #include "Menu.h"
 #include "VccMonitor.h"
+#include "EngineCut.h"
 #include "Phases.h"
 #include "Timer.h"
 
@@ -24,6 +25,10 @@ class UserInterface {
 
     private:
         LcdWidget *lcd;
+        VccMonitor *vccMonitor;
+        Phases *phases;
+        Timer *timer;
+        EngineCut *engineCut;
 
 #define SCREEN_STACK_SIZE   5
         uint8_t screen[SCREEN_STACK_SIZE];
@@ -40,7 +45,8 @@ class UserInterface {
         phase_t lastPhase;
         float16 lastVcc;
         uint16_t lastTime;
-        
+        bool engineSave;
+
         TableEditable *module;
         SelectList selectList;
 

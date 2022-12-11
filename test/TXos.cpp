@@ -303,7 +303,6 @@ void setup( void) {
 #endif
     ports.init();
     buzzer.init();
-    userInterface.init();
 
     /* The order of modules is important.
      * It defines the order with the menu.
@@ -390,6 +389,8 @@ void setup( void) {
     moduleManager.addToRunList( switchMonitor);
     moduleManager.addToRunList( timer);
     moduleManager.addToRunList( vccMonitor);
+
+    userInterface.init();
 
     systemConfig.load();
 

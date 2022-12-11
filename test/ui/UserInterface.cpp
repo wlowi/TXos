@@ -39,6 +39,11 @@ const char *messageText[] = {
 
 void UserInterface::init() {
 
+    vccMonitor = (VccMonitor*)moduleManager.getSystemMenu()->getModuleByType( MODULE_VCC_MONITOR_TYPE);
+    phases = (Phases*)moduleManager.getModelMenu()->getModuleByType( MODULE_PHASES_TYPE);
+    timer = (Timer*)moduleManager.getModelMenu()->getModuleByType( MODULE_TIMER_TYPE);
+    engineCut = (EngineCut*)moduleManager.getModelMenu()->getModuleByType( MODULE_ENGINE_CUT_TYPE);
+
     module = NULL;
     
     screen[0] = SCREEN_INIT;
@@ -50,6 +55,7 @@ void UserInterface::init() {
     lastPhase = 255;
     lastVcc = 0;
     lastTime = 0;
+    engineSave = false;
 
     lcd = displayImpl->getLCD();
     
@@ -97,10 +103,6 @@ void UserInterface::handle() {
 
 void UserInterface::homeScreen( Event *event) {
 
-    VccMonitor *vccMonitor = (VccMonitor*)moduleManager.getSystemMenu()->getModuleByType( MODULE_VCC_MONITOR_TYPE);
-    Phases *phases = (Phases*)moduleManager.getModelMenu()->getModuleByType( MODULE_PHASES_TYPE);
-    Timer *timer = (Timer*)moduleManager.getModelMenu()->getModuleByType( MODULE_TIMER_TYPE);
-
     if( refresh == REFRESH_FULL) {
         lcd->normalColors();
         lcd->clear();
@@ -113,6 +115,14 @@ void UserInterface::homeScreen( Event *event) {
         lcd->print(": ");
         Model *model = (Model*)moduleManager.getModelMenu()->getModuleByType(MODULE_MODEL_TYPE);
         lcd->printStr( model->getModelName(), MODEL_NAME_LEN);
+    }
+
+    if( engineCut && (refresh == REFRESH_FULL || engineCut->isSave() != engineSave)) {
+        engineSave = engineCut->isSave();
+
+        lcd->okColors();
+        lcd->setCursor(2, 10);
+        lcd->printStr(engineSave ? TEXT_THR : TEXT_MSG_NONE, 3);
     }
 
     if( phases &&  (refresh == REFRESH_FULL || phases->getPhase() != lastPhase)) {

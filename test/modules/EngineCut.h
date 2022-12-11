@@ -15,8 +15,14 @@ class EngineCut : public Module {
 
     NON_PHASED_CONFIG( engineCut_t)
 
+    private:
+        bool save;
+
     public:
         EngineCut();
+        bool isSave();
+
+        /* From module */
         void run( Controls &controls) final;
         void setDefaults() final;
 

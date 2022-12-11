@@ -6,13 +6,21 @@ EngineCut::EngineCut() : Module( MODULE_ENGINE_CUT_TYPE, TEXT_MODULE_ENGINE_CUT)
     setDefaults();
 }
 
+bool EngineCut::isSave() {
+
+    return save;
+}
+
 /* From Module */
 
 void EngineCut::run( Controls &controls) {
 
-    if( controls.evalSwitches( CFG->swState) ) {
+    save = controls.evalSwitches( CFG->swState);
+
+    if( save) {
         controls.logicalSet( CHANNEL_THROTTLE, PCT_TO_CHANNEL(CFG->cut_pct));
     }
+    
 }
 
 void EngineCut::setDefaults() {
@@ -23,6 +31,8 @@ void EngineCut::setDefaults() {
         INIT_SWITCH( CFG->swState);
 
     )
+
+    save = false;
 }
 
 /* From TableEditable */
