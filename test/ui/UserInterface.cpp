@@ -49,6 +49,7 @@ void UserInterface::init() {
 
     lastPhase = 255;
     lastVcc = 0;
+    lastTime = 0;
 
     lcd = displayImpl->getLCD();
     
@@ -122,11 +123,13 @@ void UserInterface::homeScreen( Event *event) {
         lcd->printStr(phases->getPhaseName(), TEXT_PHASE_NAME_length);
     }
 
-    if( timer && (refresh == REFRESH_FULL )) {
+    if( timer && (refresh == REFRESH_FULL || timer->timeSec() != lastTime)) {
+
+        lastTime = timer->timeSec();
 
         lcd->normalColors();
         lcd->setCursor(5, 0);
-        lcd->print("00:00");
+        lcd->printStr( timer->timeStr(), 5);
     }
 
     if( vccMonitor && (refresh == REFRESH_FULL || vccMonitor->getVcc() != lastVcc)) {

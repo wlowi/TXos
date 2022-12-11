@@ -32,12 +32,14 @@ AnalogSwitch::AnalogSwitch() : Module( MODULE_ANALOG_SWITCH_TYPE, TEXT_MODULE_AN
 
 void AnalogSwitch::run( Controls &controls) {
 
-    channelValue_t v;
+    long v;
     switchState_t state;
 
     for( switch_t sw = 0; sw < ANALOG_SWITCHES; sw++) {
-        v = controls.inputGet(CFG->source[sw]);
-        state = (v >= PCT_TO_CHANNEL(CFG->trigger[sw])) ? SW_STATE_1 : SW_STATE_0;
+        /* Convert v from range -125 - 125 tp -100 - 100 before compare */
+        v = (long)controls.inputGet(CFG->source[sw]) * PERCENT_MAX / PERCENT_MAX_LIMIT;
+        
+        state = ((channelValue_t)v >= PCT_TO_CHANNEL(CFG->trigger[sw])) ? SW_STATE_1 : SW_STATE_0;
         controls.switchSet( FIRST_ANALOG_SWITCH + sw, state);
     }
 }

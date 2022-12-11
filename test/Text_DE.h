@@ -42,6 +42,7 @@
 #define TEXT_MODULE_SERVO_REMAP       CC("Servo Zuord.")
 #define TEXT_MODULE_SERVO_REVERSE     CC("Servo Umkehr")
 #define TEXT_MODULE_SERVO_SUBTRIM     CC("Servo Mitte")
+#define TEXT_MODULE_STATISTICS        CC("Statistiken")
 #define TEXT_MODULE_SWITCHED_CHANNELS CC("Schaltkanal")
 #define TEXT_MODULE_SWITCHES          CC("Schalter")
 #define TEXT_MODULE_SYSTEM_SETUP      CC("Systemeinst.")
@@ -153,6 +154,10 @@
 #define TEXT_ON_OFF_length          3
 #define TEXT_ON                     CC("Ein")
 #define TEXT_OFF                    CC("Aus")
+
+// Statistics
+#define TEXT_STATISTIC_UI           CC("UI")
+#define TEXT_STATISTIC_MODULE       CC("MODULE")
 
 /* User interface warnings and messages */
 #define TEXT_MSG_count              5

@@ -123,6 +123,7 @@
 #include "ServoRemap.h"
 #include "AnalogSwitch.h"
 #include "ChannelRange.h"
+#include "Statistics.h"
 
 #if defined( ARDUINO )
 #include "InputImpl.h"
@@ -200,7 +201,6 @@ BuzzerImpl *buzzerImpl;
 DisplayImpl *displayImpl;
 
 #undef ENABLE_MEMDEBUG
-#undef ENABLE_TIMING
 #undef ENABLE_BDEBUG
 
 #ifdef ENABLE_MEMDEBUG
@@ -270,7 +270,7 @@ ConfigBlock configBlock;
 SystemConfig systemConfig;
 ModelSelect modelSelect;
 ModuleManager moduleManager( configBlock);
-
+Statistics statistics;
 
 #ifdef ENABLE_BDEBUG
 uint8_t bdebugi = 0;
@@ -296,7 +296,7 @@ void setup( void) {
     buzzerImpl = new BuzzerImpl();
     displayImpl = new DisplayImpl();
     
-#if defined( ENABLE_MEMDEBUG ) || defined( ENABLE_TIMING ) || defined( ENABLE_BDEBUG )
+#if defined( ENABLE_MEMDEBUG ) || defined( ENABLE_BDEBUG )
     Serial.begin(19200);
 #endif
 
@@ -326,6 +326,7 @@ void setup( void) {
     moduleManager.addToSystemMenu( calibrateTrim);
     VccMonitor *vccMonitor = new VccMonitor();
     moduleManager.addToSystemMenu( vccMonitor);
+    moduleManager.addToSystemMenu( &statistics);
 
     /* Model menu */
 
@@ -411,28 +412,20 @@ void setup( void) {
 }
 
 void loop( void) {
-#ifdef ENABLE_TIMING
     unsigned long tstamp;
-#endif
 
     if( output.acceptChannels() ) {
-#ifdef ENABLE_TIMING
-        tstamp = micros();
-#endif
+
         controls.GetControlValues();
+        tstamp = millis();
         moduleManager.runModules( controls);
+        statistics.updateModulesTime( (uint16_t)(millis() - tstamp));
         output.setChannels( controls);
 
 #ifdef ENABLE_BDEBUG
     Serial.print("d:");
     Serial.println(bdebug);
     BDEBUG_CLEAR();
-#endif
-
-#ifdef ENABLE_TIMING
-        tstamp = micros() - tstamp;
-        Serial.print("M:");
-        Serial.println(tstamp);
 #endif
         
 #if defined( ARDUINO )
@@ -443,13 +436,7 @@ void loop( void) {
 #endif     
     }
     
-#ifdef ENABLE_TIMING
-    tstamp = micros();
-#endif
+    tstamp = millis();
     userInterface.handle();
-#ifdef ENABLE_TIMING
-    tstamp = micros() - tstamp;
-    Serial.print("U:");
-    Serial.println(tstamp);
-#endif
+    statistics.updateUITime( (uint16_t)(millis() - tstamp));
 }

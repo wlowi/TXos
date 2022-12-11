@@ -8,10 +8,24 @@ Menu::Menu( const char *hdr) : header( hdr)
 
 void Menu::setDefaults() {
 
+    LOG("Menu::setDefaults()\n");
+
     Module *current = first;
 
     while( current != nullptr) {
         current->setDefaults();
+        current = current->menuNext;
+    }
+}
+
+void Menu::init() {
+
+    LOG("Menu::init()\n");
+
+    Module *current = first;
+
+    while( current != nullptr) {
+        current->init();
         current = current->menuNext;
     }
 }

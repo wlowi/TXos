@@ -9,6 +9,8 @@
 
 #include "EEPROM.h"
 
+#include "time.h"
+
 EEPROMClass EEPROM(4096);
 
 extern void setup( void);
@@ -21,6 +23,11 @@ PortsImpl *portsImpl;
 BuzzerImpl *buzzerImpl;
 
 SWITCH_CONFIGURATION
+
+long millis() {
+
+    return (long)clock() * 1000 / CLOCKS_PER_SEC;
+}
 
 class TXosTest : public wxApp
 {
@@ -55,7 +62,7 @@ bool TXosTest::OnInit()
     frame->Show(true);
     return true;
 }
- 
+
 MyFrame::MyFrame()
     : wxFrame(NULL, wxID_ANY, "TXosTest")
 {

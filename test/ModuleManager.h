@@ -67,6 +67,7 @@ class ModuleManager {
         uint8_t parseModule( configBlockID_t modelID, Module &moduleRef);
 
         void runModules( Controls &controls);
+
         void switchPhase( phase_t phase);
 
         void loadModel( configBlockID_t modelID);

@@ -22,6 +22,8 @@ typedef uint8_t byte;
 
 #define delay( s)
 
+extern long millis();
+
 /* From AVR atomic.h */
 
 #define ATOMIC_BLOCK( s )

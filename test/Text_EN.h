@@ -42,6 +42,7 @@
 #define TEXT_MODULE_SERVO_REMAP       CC("Servo Remap")
 #define TEXT_MODULE_SERVO_REVERSE     CC("Servo Reverse")
 #define TEXT_MODULE_SERVO_SUBTRIM     CC("Servo Subtrim")
+#define TEXT_MODULE_STATISTICS        CC("Statistics")
 #define TEXT_MODULE_SWITCHED_CHANNELS CC("Switched CH")
 #define TEXT_MODULE_SWITCHES          CC("Switches")
 #define TEXT_MODULE_SYSTEM_SETUP      CC("System Setup")
@@ -153,6 +154,10 @@
 #define TEXT_ON_OFF_length          3
 #define TEXT_ON                     CC("On")
 #define TEXT_OFF                    CC("Off")
+
+// Statistics
+#define TEXT_STATISTIC_UI           CC("UI")
+#define TEXT_STATISTIC_MODULE       CC("MODULE")
 
 /* User interface warnings and messages */
 #define TEXT_MSG_count              5

@@ -57,7 +57,7 @@ uint8_t ServoMonitor::getColCount( uint8_t row) {
 
 void ServoMonitor::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
-    cell->setInt16( 4, CHANNEL_TO_PCT ( current.logicalGet( row)), 0, 0, PERCENT_MAX_LIMIT);
+    cell->setInt16( 4, CHANNEL_TO_PCT ( current.outputGet( row)), 0, 0, PERCENT_MAX_LIMIT);
 }
 
 void ServoMonitor::setValue( uint8_t row, uint8_t col, Cell *cell) {

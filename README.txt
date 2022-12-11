@@ -112,7 +112,7 @@ OK: Servo Monitor:
 OK: Switch Monitor:
   no effect on channels
 
-Timer:
+OK: Timer:
   no effect on channels
 
 OK: vccMonitor:

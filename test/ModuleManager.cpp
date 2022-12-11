@@ -153,6 +153,8 @@ void ModuleManager::loadModel( configBlockID_t modelID) {
         userInterface.postMessage( 1, MSG_MODEL_LOAD_FAILED);
         saveModel( modelID);
     }
+
+    modelMenu->init();
 }
 
 /*

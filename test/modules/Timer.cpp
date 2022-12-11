@@ -19,6 +19,24 @@
 */
 
 #include "Timer.h"
+#include "Buzzer.h"
+
+extern Buzzer buzzer;
+
+const buzzerCmd_t SoundMinute[] = {
+  BUZZER_PLAY( 2),
+  BUZZER_STOP()
+};
+
+const buzzerCmd_t SoundSecond[] = {
+  BUZZER_PLAY( 1),
+  BUZZER_STOP()
+};
+
+const buzzerCmd_t SoundZero[] = {
+  BUZZER_PLAY( 5),
+  BUZZER_STOP()
+};
 
 Timer::Timer() : Module( MODULE_TIMER_TYPE, TEXT_MODULE_TIMER) {
 
@@ -28,8 +46,10 @@ Timer::Timer() : Module( MODULE_TIMER_TYPE, TEXT_MODULE_TIMER) {
 void Timer::reset() {
 
     ATOMIC_BLOCK( ATOMIC_RESTORESTATE) {
-        time_sec = CFG->time_sec;
+        countdown_sec = CFG->time_sec;
+        lastMillis = 0;
     }
+    LOGV("Timer::reset: %d\n", countdown_sec);
 }
 
 uint16_t Timer::timeSec() {
@@ -37,23 +57,80 @@ uint16_t Timer::timeSec() {
     uint16_t t;
 
     ATOMIC_BLOCK( ATOMIC_RESTORESTATE) {
-        t = time_sec;
+        t = countdown_sec;
     }
 
     return t;
+}
+
+char *Timer::timeStr() {
+
+    uint16_t t;
+    uint8_t min;
+    uint8_t sec;
+
+    ATOMIC_BLOCK( ATOMIC_RESTORESTATE) {
+        t = countdown_sec;
+    }
+
+    min = t / 60;
+    sec = t % 60;
+
+    if(min < 10) {
+        timeAsString[0] = ' ';
+    } else {
+        timeAsString[0] = '0' + min / 10;
+    }
+
+    timeAsString[1] = '0' + min % 10;
+    timeAsString[2] = ':';
+    timeAsString[3] = '0' + sec / 10;
+    timeAsString[4] = '0' + sec % 10;
+    timeAsString[5] = '\0';
+    
+    return timeAsString;
 }
 
 /* From Module */
 
 void Timer::run( Controls &controls) {
 
-    uint16_t t;
+    long c;
+    bool update = false;
 
-    ATOMIC_BLOCK( ATOMIC_RESTORESTATE) {
-        t = time_sec;
+    if( controls.evalSwitches( CFG->swState) && countdown_sec > 0) {
+        ATOMIC_BLOCK( ATOMIC_RESTORESTATE) {
+            c = millis();
+            if( c > lastMillis +1500) {
+                lastMillis = c;
+                countdown_sec--;
+                update = true;
+            } else if(c > lastMillis +1000) {
+                lastMillis += 1000;
+                countdown_sec--;
+                update = true;
+            }
+        }
 
-        time_sec = t;
+        if( update) {
+            if( countdown_sec == 0) {
+                LOG("SoundZero\n");
+                buzzer.play( SoundZero);
+            } else if( countdown_sec <= 10) {
+                LOG("SoundSecond\n");
+                buzzer.play( SoundSecond);
+            } else if( (countdown_sec % 60) == 0) {
+                LOG("SoundMinute\n");
+                buzzer.play( SoundMinute);
+            }
+        }
     }
+}
+
+void Timer::init() {
+
+    reset();
+    LOGV("Timer::init: %d\n", countdown_sec);
 }
 
 void Timer::setDefaults() {

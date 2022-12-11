@@ -39,7 +39,8 @@ class UserInterface {
 
         phase_t lastPhase;
         float16 lastVcc;
-
+        uint16_t lastTime;
+        
         TableEditable *module;
         SelectList selectList;
 

@@ -18,46 +18,38 @@
 
 */
 
-#ifndef _Timer_h_
-#define _Timer_h_
+#ifndef _Statistics_h_
+#define _Statistics_h_
 
 #include "Module.h"
 
-typedef struct flightTimer_t {
+class Statistics : public Module {
 
-    switch_t swState;
-    uint16_t time_sec;
-
-} flightTimer_t;
-
-class Timer : public Module {
-
-    NON_PHASED_CONFIG( flightTimer_t)
+    NO_CONFIG()
 
     private:
-        uint16_t countdown_sec;
-        long lastMillis;
-        char timeAsString[6]; // Format mm:ss
+        uint16_t timeUI_msec;
+        uint16_t timeModules_msec;
 
     public:
-        Timer();
+        explicit Statistics();
 
-        uint16_t timeSec();
-        char *timeStr();
+        void updateUITime( uint16_t t);
+        void updateModulesTime( uint16_t t);
 
-        void reset();
-
-        /* From Module */
         void run( Controls &controls) final;
-        void init();
         void setDefaults() final;
 
         /* From TableEditable */
+        bool isRowEditable( uint8_t row) final { return false; }
+
         uint8_t getRowCount() final;
         const char *getRowName( uint8_t row) final;
         uint8_t getColCount( uint8_t row) final;
+        
         void getValue( uint8_t row, uint8_t col, Cell *cell) final;
         void setValue( uint8_t row, uint8_t col, Cell *cell) final;
+        bool hasChanged( uint8_t row, uint8_t col) final;
 };
 
 #endif

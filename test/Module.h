@@ -47,6 +47,7 @@ typedef uint8_t moduleSize_t;
 #define MODULE_BIND_TYPE                ((moduleType_t)7)
 #define MODULE_RANGE_TEST_TYPE          ((moduleType_t)8)
 #define MODULE_VCC_MONITOR_TYPE         ((moduleType_t)9)
+#define MODULE_STATISTICS_TYPE          ((moduleType_t)10)
 
 /* Model specific modules */
 #define MODULE_MODEL_TYPE               ((moduleType_t)50)
@@ -80,6 +81,9 @@ class Module : public TableEditable {
         
         /* */
         virtual void run( Controls &controls) = 0;
+
+        /* Called after model load */
+        virtual void init() { /* noop */ }
 
         /* Called whenever a flight phase changes. */
         virtual void switchPhase(phase_t ph) = 0;
