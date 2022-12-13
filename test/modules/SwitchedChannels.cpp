@@ -76,11 +76,13 @@ uint8_t SwitchedChannels::getRowCount() {
 
 const char *SwitchedChannels::getRowName( uint8_t row) {
 
-    uint8_t ch = (row / 5);
-
-    switchName[2] = '1' +ch;
-
-    return switchName;
+    if( (row % 5) == 0) {
+        uint8_t ch = (row / 5);
+        switchName[2] = '1' +ch;    
+        return switchName;
+    } else {
+        return TEXT_MSG_NONE;
+    }
 }
 
 uint8_t SwitchedChannels::getColCount( uint8_t row) {

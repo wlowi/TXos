@@ -64,9 +64,12 @@ uint8_t AnalogSwitch::getRowCount() {
 
 const char *AnalogSwitch::getRowName( uint8_t row) {
 
-    controls.copySwitchName( switchName, (switch_t)(row/2) + FIRST_ANALOG_SWITCH);
-
-    return switchName;
+    if( row % 2) {
+        return TEXT_MSG_NONE;
+    } else {
+        controls.copySwitchName( switchName, (switch_t)(row/2) + FIRST_ANALOG_SWITCH);
+        return switchName;
+    }
 }
 
 uint8_t AnalogSwitch::getColCount( uint8_t row) {

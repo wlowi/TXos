@@ -72,7 +72,7 @@ Model:
 
 Mixer:
 
-Phased Trim:
+OK: Phased Trim:
   Phase controlled mid position of Ail, Elv, Rud
 
 OK: Engine Cut:

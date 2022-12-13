@@ -46,9 +46,9 @@ void PhasesTrim::run( Controls &controls) {
         } else if( pc == 1) {
             ch = CHANNEL_ELEVATOR;
         } else if( pc == 2) {
-            ch = CHANNEL_RUDDER;
-        } else {
             ch = CHANNEL_FLAP;
+        } else {
+            ch = CHANNEL_SPOILER;
         }
 
         offset = PCT_TO_CHANNEL( CFG->trim_pct[pc]);
@@ -59,6 +59,8 @@ void PhasesTrim::run( Controls &controls) {
             controls.logicalSet( CHANNEL_AILERON2, controls.logicalGet( CHANNEL_AILERON2) + offset);
         } else if( ch == CHANNEL_FLAP) {
             controls.logicalSet( CHANNEL_FLAP2, controls.logicalGet( CHANNEL_FLAP2) + offset);
+        } else if( ch == CHANNEL_SPOILER) {
+            controls.logicalSet( CHANNEL_SPOILER2, controls.logicalGet( CHANNEL_SPOILER2) + offset);
         }
     }
 }
@@ -120,9 +122,9 @@ const char *PhasesTrim::getRowName( uint8_t row) {
     } else if( row == 2) {
         return LogicalChannelNames[CHANNEL_ELEVATOR];
     } else if( row == 3) {
-        return LogicalChannelNames[CHANNEL_RUDDER];
-    } else {
         return LogicalChannelNames[CHANNEL_FLAP];
+    } else {
+        return LogicalChannelNames[CHANNEL_SPOILER];
     }
 }
 
