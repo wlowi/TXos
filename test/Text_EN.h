@@ -65,12 +65,13 @@
 #define TEXT_CONTROL_CH_3           CC("Elv")
 #define TEXT_CONTROL_CH_4           CC("Rud")
 #define TEXT_CONTROL_CH_5           CC("Ai2")
-#define TEXT_CONTROL_CH_6           CC("El2")
-#define TEXT_CONTROL_CH_7           CC("Flp")
-#define TEXT_CONTROL_CH_8           CC("Fl2")
-#define TEXT_CONTROL_CH_9           CC("Gea")
-#define TEXT_CONTROL_CH_10          CC("Ch8")
-#define TEXT_CONTROL_CH_11          CC("Ch9")
+#define TEXT_CONTROL_CH_6           CC("Flp")
+#define TEXT_CONTROL_CH_7           CC("Fl2")
+#define TEXT_CONTROL_CH_8           CC("Spl")
+#define TEXT_CONTROL_CH_9           CC("Sp2")
+#define TEXT_CONTROL_CH_10          CC("Gea")
+#define TEXT_CONTROL_CH_11          CC("Ch8")
+#define TEXT_CONTROL_CH_12          CC("Ch9")
 
 // Output channels (3 letters fixed)
 #define TEXT_OUT_CH_1               CC("S1")
@@ -149,6 +150,17 @@
 #define TEXT_WINGMIX_DELTA          CC("Delta")
 #define TEXT_WINGMIX_VTAIL          CC("V-Mix")
 #define TEXT_WINGMIX_VTAIL2         CC("V-Mix2")
+
+#define TEXT_MIX_AIL_RUD            CC("Ail->Rud")
+#define TEXT_MIX_AIL_FLP            CC("Ail->Flp")
+#define TEXT_MIX_SPL_AIL            CC("Spl->Ail")
+#define TEXT_MIX_SPL_FLP            CC("Spl->Flp")
+#define TEXT_MIX_SPL_ELV            CC("Spl->Elv")
+#define TEXT_MIX_FLP_AIL            CC("Fpl->Ail")
+#define TEXT_MIX_FLP_ELV            CC("Fpl->Elv")
+#define TEXT_MIX_ELV_AIL            CC("Elv->Ail")
+#define TEXT_MIX_ELV_FLP            CC("Elv->Flp")
+#define TEXT_MIX_RUD_ELV            CC("Rud->Elv")
 
 // Binary states
 #define TEXT_ON_OFF_length          3

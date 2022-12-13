@@ -32,7 +32,7 @@
 
 /* Logical channels for mixing.
  */
-#define LOGICAL_CHANNELS         ((channel_t)11)
+#define LOGICAL_CHANNELS         ((channel_t)12)
 
 /* The number of transmitter channels.
  * This is the number of channels that will be used to

@@ -30,16 +30,16 @@ extern const char *LogicalChannelNames[LOGICAL_CHANNELS];
 #define EXPO_LOOKUP_TABLE_SIZE   10
 
 const channelValue_t expoLookup[EXPO_LOOKUP_TABLE_SIZE] = {
-    0,      // 0-10%       0 - 125
-    7,      // 10-10%    126 - 250
-    17,     // 20-30%    251 - 375
-    35,     // 30-40%    376 - 500
-    64,     // 40-50%    501 - 625
-    111,    // 50-60%    626 - 750
-    190,    // 60-70%    751 - 875
-    320,    // 70-80%    876 - 1000
-    534,    // 80-90%   1001 - 1125
-    886     // 90-100%  1126 - 1200
+    7,      //  0-10%      0 - 125
+    17,     // 10-20%    126 - 250
+    35,     // 20-30%    251 - 375
+    64,     // 30-40%    376 - 500
+    111,    // 40-50%    501 - 625
+    190,    // 50-60%    626 - 750
+    320,    // 60-70%    751 - 875
+    534,    // 70-80%    876 - 1000
+    886,    // 80-90%   1001 - 1125
+    1250    // 90-100%  1126 - 1250
 };
 
 DualExpo::DualExpo() : Module( MODULE_DUAL_EXPO_TYPE, TEXT_MODULE_DUAL_EXPO) {
@@ -52,9 +52,9 @@ DualExpo::DualExpo() : Module( MODULE_DUAL_EXPO_TYPE, TEXT_MODULE_DUAL_EXPO) {
 void DualExpo::run( Controls &controls) {
 
     /* Expo */
-    //applyExpo( controls, CHANNEL_AILERON, CFG->value[1]);
-    //applyExpo( controls, CHANNEL_ELEVATOR, CFG->value[3]);
-    //applyExpo( controls, CHANNEL_RUDDER, CFG->value[5]);
+    applyExpo( controls, CHANNEL_AILERON, CFG->value[1]);
+    applyExpo( controls, CHANNEL_ELEVATOR, CFG->value[3]);
+    applyExpo( controls, CHANNEL_RUDDER, CFG->value[5]);
 
     /* Rate */
     applyRate( controls, CHANNEL_AILERON, CFG->value[0]);
@@ -75,22 +75,51 @@ void DualExpo::applyRate( Controls &controls, channel_t ch, percent_t pct) {
 
 void DualExpo::applyExpo( Controls &controls, channel_t ch, percent_t pct) {
 
-    long v, w;
-    uint8_t lookupIdx;
+    channelValue_t v;
+    channelValue_t w;
+    channelValue_t x1;
+    channelValue_t x2;
+    channelValue_t y1;
+    channelValue_t y2;
+    channelValue_t dx = 100; // TODO: This needs to be adjusted according to ChannelRange
 
-    v = controls.logicalGet( ch);
+    uint8_t interval;
+    bool negative = false;
 
-    for( lookupIdx = 0; lookupIdx < (EXPO_LOOKUP_TABLE_SIZE-1); lookupIdx++) {
-        if( v < (CHANNELVALUE_MAX_LIMIT / 10) * (lookupIdx +1)) {
-            break;
-        }
+    v = controls.logicalGet( ch); // range -1250 - 1250
+
+    if( v < 0) {
+        negative = true;
+        v = -v;
     }
 
-    w = (((long)pct * expoLookup[lookupIdx]) + ((100 - pct) * v)) / 100L;
-    if( ch == CHANNEL_AILERON)
-        // LOGV("in: %ld pct: %d lookup: %d out:%ld\n", v, pct, lookupIdx, w);
+    interval = (uint8_t)(v / dx); // interval in range 0 - 10
 
-    controls.logicalSet( ch, (channelValue_t)w);
+    if( interval < EXPO_LOOKUP_TABLE_SIZE) {
+        x1 = interval * dx;
+        x2 = (interval+1) * dx;
+
+        if( interval == 0) {
+            y1 = 0;
+        } else {
+            y1 = ((pct * ((long)expoLookup[interval-1]*dx/125)) + ((long)(100 - pct) * x1)) / 100L;
+        }
+
+        y2 =  ((pct * ((long)expoLookup[interval]*dx/125)) + ((long)(100 - pct) * x2)) / 100L;
+
+        w = (channelValue_t)((long)(v-x1) * (long)(y2-y1) / dx) + y1;
+
+/*
+        if( ch == CHANNEL_AILERON) {
+        LOGV("v=%d w=%d pct=%d, x1=%d x2=%d y1=%d y2=%d\n", v, w, pct, x1, x2, y1, y2);
+        }
+*/
+        controls.logicalSet( ch, (channelValue_t)(negative ? -w : w));
+/*
+    } else {
+        LOGV("v=%d\n", v);
+*/
+    }
 }
 
 void DualExpo::setDefaults() {

@@ -155,7 +155,8 @@ const char *LogicalChannelNames[LOGICAL_CHANNELS] = {
     TEXT_CONTROL_CH_8,
     TEXT_CONTROL_CH_9,
     TEXT_CONTROL_CH_10,
-    TEXT_CONTROL_CH_11
+    TEXT_CONTROL_CH_11,
+    TEXT_CONTROL_CH_12
 };
 
 const char *OutputChannelNames[PPM_CHANNELS] = {
@@ -336,20 +337,20 @@ void setup( void) {
     moduleManager.addToModelMenu( channelRange);
     AnalogSwitch *analogSwitch = new AnalogSwitch();
     moduleManager.addToModelMenu( analogSwitch);
+    SwitchedChannels *switchedChannels = new SwitchedChannels();
+    moduleManager.addToModelMenu( switchedChannels);
     AssignInput *assignInput = new AssignInput();
     moduleManager.addToModelMenu( assignInput);
     Phases *phases = new Phases();
     moduleManager.addToModelMenu( phases);
     PhasesTrim *phasesTrim = new PhasesTrim();
     moduleManager.addToModelMenu( phasesTrim);
-    SwitchedChannels *switchedChannels = new SwitchedChannels();
-    moduleManager.addToModelMenu( switchedChannels);
     DualExpo *dualExpo = new DualExpo();
     moduleManager.addToModelMenu( dualExpo);
-    Timer *timer = new Timer();
-    moduleManager.addToModelMenu( timer);
     EngineCut *engineCut = new EngineCut();
     moduleManager.addToModelMenu( engineCut);
+    Timer *timer = new Timer();
+    moduleManager.addToModelMenu( timer);
 
     ServoRemap *servoRemap = new ServoRemap();
     moduleManager.addToModelMenu( servoRemap);

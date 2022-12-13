@@ -57,8 +57,6 @@ void PhasesTrim::run( Controls &controls) {
 
         if( ch == CHANNEL_AILERON) {
             controls.logicalSet( CHANNEL_AILERON2, controls.logicalGet( CHANNEL_AILERON2) + offset);
-        } else if( ch == CHANNEL_ELEVATOR) {
-            controls.logicalSet( CHANNEL_ELEVATOR2, controls.logicalGet( CHANNEL_ELEVATOR2) + offset);
         } else if( ch == CHANNEL_FLAP) {
             controls.logicalSet( CHANNEL_FLAP2, controls.logicalGet( CHANNEL_FLAP2) + offset);
         }
