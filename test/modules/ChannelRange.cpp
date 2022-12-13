@@ -38,6 +38,7 @@ void ChannelRange::run( Controls &controls) {
         v = controls.inputGet( ch);
         v = v * CFG->range_pct[ch] / PERCENT_MAX_LIMIT;
         controls.inputSet( ch, (channelValue_t)v);
+        controls.rangeSet( ch, CFG->range_pct[ch]);
     }
 }
 

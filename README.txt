@@ -56,9 +56,7 @@ OK: Assign Inputs:
 OK: Phases:
   no effect on channels
 
-
-
-Phased Rate & Expo:
+OK: Phased Rate & Expo:
   Phase controlled rate limit and exponential function for Ail, Elv, Rud
 
 Model:

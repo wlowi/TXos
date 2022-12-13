@@ -117,6 +117,8 @@ typedef struct controlSet_t {
     
     /* Raw analog input channels */
     channelValue_t stickChannel[ PORT_ANALOG_INPUT_COUNT ];
+    percent_t range_pct[PORT_ANALOG_INPUT_COUNT];
+
     channelValue_t trimChannel[ PORT_TRIM_INPUT_COUNT ];
     channelValue_t auxChannel[ PORT_AUX_INPUT_COUNT ];
 
@@ -151,6 +153,9 @@ class Controls {
         channelValue_t stickGet( channel_t ch);
         channelValue_t trimGet( channel_t ch);
         channelValue_t auxGet( channel_t ch);
+
+        void rangeSet( channel_t ch, percent_t value);
+        percent_t rangeGet( channel_t ch);
 
         void inputSet( channel_t ch, channelValue_t value);
         channelValue_t inputGet( channel_t ch);

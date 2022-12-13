@@ -76,17 +76,18 @@ void DualExpo::applyRate( Controls &controls, channel_t ch, percent_t pct) {
 void DualExpo::applyExpo( Controls &controls, channel_t ch, percent_t pct) {
 
     channelValue_t v;
-    channelValue_t w;
+
     channelValue_t x1;
     channelValue_t x2;
     channelValue_t y1;
     channelValue_t y2;
-    channelValue_t dx = 100; // TODO: This needs to be adjusted according to ChannelRange
+
+    channelValue_t dx = PCT_TO_CHANNEL( controls.rangeGet(ch)) / EXPO_LOOKUP_TABLE_SIZE;
 
     uint8_t interval;
     bool negative = false;
 
-    v = controls.logicalGet( ch); // range -1250 - 1250
+    v = controls.logicalGet( ch);
 
     if( v < 0) {
         negative = true;
@@ -99,26 +100,14 @@ void DualExpo::applyExpo( Controls &controls, channel_t ch, percent_t pct) {
         x1 = interval * dx;
         x2 = (interval+1) * dx;
 
-        if( interval == 0) {
-            y1 = 0;
-        } else {
-            y1 = ((pct * ((long)expoLookup[interval-1]*dx/125)) + ((long)(100 - pct) * x1)) / 100L;
-        }
-
+        y1 = (interval == 0) ? 0
+            : ((pct * ((long)expoLookup[interval-1]*dx/125)) + ((long)(100 - pct) * x1)) / 100L;
+ 
         y2 =  ((pct * ((long)expoLookup[interval]*dx/125)) + ((long)(100 - pct) * x2)) / 100L;
 
-        w = (channelValue_t)((long)(v-x1) * (long)(y2-y1) / dx) + y1;
+        v = (channelValue_t)((long)(v-x1) * (long)(y2-y1) / dx) + y1;
 
-/*
-        if( ch == CHANNEL_AILERON) {
-        LOGV("v=%d w=%d pct=%d, x1=%d x2=%d y1=%d y2=%d\n", v, w, pct, x1, x2, y1, y2);
-        }
-*/
-        controls.logicalSet( ch, (channelValue_t)(negative ? -w : w));
-/*
-    } else {
-        LOGV("v=%d\n", v);
-*/
+        controls.logicalSet( ch, (channelValue_t)(negative ? -v : v));
     }
 }
 

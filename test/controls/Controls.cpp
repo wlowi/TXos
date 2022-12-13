@@ -85,6 +85,16 @@ channelValue_t Controls::auxGet( channel_t ch) {
     return controlSet.auxChannel[ch];
 }
 
+void Controls::rangeSet( channel_t ch, percent_t value) {
+
+    controlSet.range_pct[ch] = value;
+}
+
+percent_t Controls::rangeGet( channel_t ch) {
+
+    return controlSet.range_pct[ch];
+}
+
 void Controls::inputSet( channel_t ch, channelValue_t value) {
 
     if( value > CHANNELVALUE_MAX_LIMIT) {
