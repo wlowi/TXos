@@ -12,7 +12,7 @@
 #endif
 
 
-#define TXOS_VERSION "0.1.16"
+#define TXOS_VERSION "0.1.17"
 
 #if defined( ARDUINO )
     #define LOG( f )
@@ -57,13 +57,15 @@ typedef enum {
  *  1 Switch is 2-state
  *  2 Switch is 3-state
  *  3 Switch is channel switch
+ *  4 Switch is always on
  */
 typedef enum {
 
     SW_CONF_UNUSED = 0,
     SW_CONF_2STATE = 1,
     SW_CONF_3STATE = 2,
-    SW_CONF_CHANNEL = 3
+    SW_CONF_CHANNEL = 3,
+    SW_CONF_FIXED_ON = 4
 
 } switchConf_t;
 

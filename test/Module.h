@@ -85,7 +85,10 @@ class Module : public TableEditable {
         /* Called after model load */
         virtual void init() { /* noop */ }
 
-        /* Called whenever a flight phase changes. */
+        /* Called whenever a flight phase changes. 
+         * The overrides are automatically defined in
+         * Phases.h NO_CONFIG, PHASED_CONFIG an NON_PHASED_CONFIG macros.
+         */
         virtual void switchPhase(phase_t ph) = 0;
 
         /* Set default values for all configuration data of a module. */

@@ -28,7 +28,7 @@
  * This includes sticks, other analog inputs and
  * switched channels.
  */
-#define ANALOG_CHANNELS          ((channel_t)8)
+#define ANALOG_CHANNELS          ((channel_t)9)
 
 /* Logical channels for mixing.
  */
@@ -43,13 +43,15 @@
 /* Total number of switches. Max is 16.
  * This includes channel switches and logical switches.
  */
-#define SWITCHES                 ((uint8_t)8)
+#define SWITCHES                 ((uint8_t)9)
+#define CHANNEL_SWITCHES         ((uint8_t)2)
 
 /* Switch configuration
  * In this case we have:
  *   4 tri state switches
  *   2 bi state switches
  *   2 control switches
+ *   1 switch always on
  */
 
 #define SWITCH_CONFIGURATION \
@@ -61,7 +63,8 @@ const switchConf_t switchConfiguration[SWITCHES] = { \
     SW_CONF_3STATE, \
     SW_CONF_3STATE, \
     SW_CONF_CHANNEL, \
-    SW_CONF_CHANNEL \
+    SW_CONF_CHANNEL, \
+    SW_CONF_FIXED_ON \
 };
 
 /* Number of phases.

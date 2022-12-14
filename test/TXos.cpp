@@ -141,7 +141,8 @@ const char *InputChannelNames[ANALOG_CHANNELS] = {
     TEXT_INPUT_CH_5,
     TEXT_INPUT_CH_6,
     TEXT_INPUT_CH_7,
-    TEXT_INPUT_CH_8
+    TEXT_INPUT_CH_8,
+    TEXT_INPUT_CH_9
 };
 
 const char *LogicalChannelNames[LOGICAL_CHANNELS] = {

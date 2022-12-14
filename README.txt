@@ -73,7 +73,7 @@ Model:
 Mixer:
 
 OK: Phased Trim:
-  Phase controlled mid position of Ail, Elv, Rud
+  Phase controlled mid position of Ail, Elv, Flaps and Spoiler
 
 OK: Engine Cut:
   Set Thr output to fixed value controlled by a switch

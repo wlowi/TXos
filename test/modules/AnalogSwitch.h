@@ -25,13 +25,12 @@
 
 /* Control logical switch by input channels (analog) */
 
-#define ANALOG_SWITCHES (SWITCHES - PORT_SWITCH_INPUT_COUNT)
-#define FIRST_ANALOG_SWITCH (PORT_SWITCH_INPUT_COUNT)
+#define FIRST_CHANNEL_SWITCH (PORT_SWITCH_INPUT_COUNT)
 
 typedef struct analogSwitch_t {
 
-    channel_t source[ANALOG_SWITCHES];
-    percent_t trigger[ANALOG_SWITCHES];
+    channel_t source[CHANNEL_SWITCHES];
+    percent_t trigger[CHANNEL_SWITCHES];
 
 } analogSwitch_t;
 

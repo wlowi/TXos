@@ -60,7 +60,9 @@ class SelectList {
     public:
         void set( TableEditable *tab, bool backItem);
         void process( LcdWidget *lcd, Event *event);
-        void cancelEdit();
+        /* Cancel edit for this table */
+        void cancelEdit( TableEditable *toCancel);
+        
         uint8_t current() const;
 };
 

@@ -129,7 +129,7 @@ void DualExpo::switchPhase(phase_t ph) {
 
     LOGV("DualExpo::switchPhase: new phase %d\n", ph);
 
-    userInterface.cancelEdit();
+    userInterface.cancelEdit( this);
 
     SWITCH_PHASE( ph);
     

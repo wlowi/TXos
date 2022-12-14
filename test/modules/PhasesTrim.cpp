@@ -82,7 +82,7 @@ void PhasesTrim::switchPhase(phase_t ph) {
 
     LOGV("PhasesTrim::switchPhase: new phase %d\n", ph);
 
-    userInterface.cancelEdit();
+    userInterface.cancelEdit( this);
 
     SWITCH_PHASE( ph);
     

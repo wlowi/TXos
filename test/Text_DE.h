@@ -58,6 +58,7 @@
 #define TEXT_INPUT_CH_6             CC("In6")
 #define TEXT_INPUT_CH_7             CC("In7")
 #define TEXT_INPUT_CH_8             CC("In8")
+#define TEXT_INPUT_CH_9             CC("In9")
 
 // Control channels (3 letters fixed)
 #define TEXT_CONTROL_CH_1           CC("Mot")
@@ -84,16 +85,17 @@
 #define TEXT_OUT_CH_8               CC("S8")
 #define TEXT_OUT_CH_9               CC("S9")
 
-// Switch types (3 letters fixed)
-// Note name length is 4 because the format includes the switch number
-// n-tt  (1-BI)
-#define TEXT_SW_NAME_length         4
-#define TEXT_SW_NAME_STATE_length   6
+// Switch types (2 letters fixed)
+// Note name length is 3 because the format includes the switch number
+// ntt  (1BI)
+#define TEXT_SW_NAME_length         3
+#define TEXT_SW_NAME_STATE_length   5
 
-#define TEXT_SW_TYPE_UNUSED         CC("----")
+#define TEXT_SW_TYPE_UNUSED         CC("---")
 #define TEXT_SW_TYPE_2_STATE        CC("BI")
 #define TEXT_SW_TYPE_3_STATE        CC("TR")
 #define TEXT_SW_TYPE_CHANNEL        CC("CS")
+#define TEXT_SW_TYPE_FIXED_ON       CC("ON")
 
 // Calibration steps (7 letters max)
 #define TEXT_CALIB_length           7
@@ -151,16 +153,16 @@
 #define TEXT_WINGMIX_VTAIL          CC("VLw")
 #define TEXT_WINGMIX_VTAIL2         CC("2Q-VLw")
 
-#define TEXT_MIX_AIL_RUD            CC("QR->SR")
-#define TEXT_MIX_AIL_FLP            CC("QR->WK")
-#define TEXT_MIX_SPL_AIL            CC("LK->QR")
-#define TEXT_MIX_SPL_FLP            CC("LK->WK")
-#define TEXT_MIX_SPL_ELV            CC("LK->HR")
-#define TEXT_MIX_FLP_AIL            CC("WK->QR")
-#define TEXT_MIX_FLP_ELV            CC("WK->HR")
-#define TEXT_MIX_ELV_AIL            CC("HR->QR")
-#define TEXT_MIX_ELV_FLP            CC("HR->WK")
-#define TEXT_MIX_RUD_ELV            CC("SR->HR")
+#define TEXT_MIX_AIL_RUD            CC("QR>SR")
+#define TEXT_MIX_AIL_FLP            CC("QR>WK")
+#define TEXT_MIX_SPL_AIL            CC("LK>QR")
+#define TEXT_MIX_SPL_FLP            CC("LK>WK")
+#define TEXT_MIX_SPL_ELV            CC("LK>HR")
+#define TEXT_MIX_FLP_AIL            CC("WK>QR")
+#define TEXT_MIX_FLP_ELV            CC("WK>HR")
+#define TEXT_MIX_ELV_AIL            CC("HR>QR")
+#define TEXT_MIX_ELV_FLP            CC("HR>WK")
+#define TEXT_MIX_RUD_ELV            CC("SR>HR")
 
 // Binary states
 #define TEXT_ON_OFF_length          3

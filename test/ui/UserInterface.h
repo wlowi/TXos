@@ -59,7 +59,7 @@ class UserInterface {
         void handle();
 
         void postMessage( uint8_t line, uint8_t msg);
-        void cancelEdit();
+        void cancelEdit( TableEditable *toCancel);
 
         void toScreen( uint8_t scr);
         void switchScreen( uint8_t scr);

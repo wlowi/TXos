@@ -65,8 +65,18 @@ void Controls::GetControlValues() {
     }
 
     /* Read switch inputs */
-    for( switch_t sw = 0; sw < inputImpl->GetSwitches(); sw++) {
-        switchSet( sw, inputImpl->GetSwitchValue( sw));
+    for( switch_t sw = 0; sw < SWITCHES; sw++) {
+        switchState_t state;
+
+        if( sw < inputImpl->GetSwitches()) {
+            state = inputImpl->GetSwitchValue( sw);
+        } else if (switchConfGet(sw) == SW_CONF_FIXED_ON) {
+            state = SW_STATE_1;
+        } else {
+            state = SW_STATE_0;
+        }
+
+        switchSet( sw, state);
     }
 }
 
@@ -186,7 +196,6 @@ void Controls::copySwitchName( char *b, switch_t sw) {
         strcpy( b, TEXT_SW_TYPE_UNUSED);
     } else {
         b[0] = '1' + swn;
-        b[1] = '-';
         switch (switchConfGet(sw)) {
         case SW_CONF_2STATE:
             swType = TEXT_SW_TYPE_2_STATE;
@@ -200,12 +209,16 @@ void Controls::copySwitchName( char *b, switch_t sw) {
             swType = TEXT_SW_TYPE_CHANNEL;
             break;
 
+        case SW_CONF_FIXED_ON:
+            swType = TEXT_SW_TYPE_FIXED_ON;
+            break;
+
         case SW_CONF_UNUSED:
         default:
             swType = TEXT_SW_TYPE_UNUSED;
             break;
         }
-        strcpy( &b[2], swType);
+        strcpy( &b[1], swType);
     }
 }
 

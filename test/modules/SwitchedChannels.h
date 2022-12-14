@@ -26,7 +26,7 @@
 /* Control an input channel (analog channel) by switch.
  */
 
-#define SWITCHED_CHANNELS 2
+#define SWITCHED_CHANNELS 3
 
 typedef struct switchedChannels_t {
 

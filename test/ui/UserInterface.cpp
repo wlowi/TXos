@@ -252,9 +252,9 @@ void UserInterface::configScreen( Event *event) {
     }
 }
 
-void UserInterface::cancelEdit() {
+void UserInterface::cancelEdit( TableEditable *toCancel) {
 
-    selectList.cancelEdit();
+    selectList.cancelEdit( toCancel);
 }
 
 void UserInterface::postMessage( uint8_t line, uint8_t msg) {

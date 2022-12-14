@@ -35,12 +35,12 @@ void AnalogSwitch::run( Controls &controls) {
     long v;
     switchState_t state;
 
-    for( switch_t sw = 0; sw < ANALOG_SWITCHES; sw++) {
+    for( switch_t sw = 0; sw < CHANNEL_SWITCHES; sw++) {
         /* Convert v from range -125 - 125 tp -100 - 100 before compare */
         v = (long)controls.inputGet(CFG->source[sw]) * PERCENT_MAX / PERCENT_MAX_LIMIT;
         
         state = ((channelValue_t)v >= PCT_TO_CHANNEL(CFG->trigger[sw])) ? SW_STATE_1 : SW_STATE_0;
-        controls.switchSet( FIRST_ANALOG_SWITCH + sw, state);
+        controls.switchSet( FIRST_CHANNEL_SWITCH + sw, state);
     }
 }
 
@@ -48,7 +48,7 @@ void AnalogSwitch::setDefaults() {
 
     INIT_NON_PHASED_CONFIGURATION(
 
-        for( switch_t sw = 0; sw < ANALOG_SWITCHES; sw++) {
+        for( switch_t sw = 0; sw < CHANNEL_SWITCHES; sw++) {
             CFG->source[sw] = 0;
             CFG->trigger[sw] = 0; /* neutral */
         }
@@ -59,7 +59,7 @@ void AnalogSwitch::setDefaults() {
 
 uint8_t AnalogSwitch::getRowCount() {
 
-    return 2 * ANALOG_SWITCHES;
+    return 2 * CHANNEL_SWITCHES;
 }
 
 const char *AnalogSwitch::getRowName( uint8_t row) {
@@ -67,7 +67,7 @@ const char *AnalogSwitch::getRowName( uint8_t row) {
     if( row % 2) {
         return TEXT_MSG_NONE;
     } else {
-        controls.copySwitchName( switchName, (switch_t)(row/2) + FIRST_ANALOG_SWITCH);
+        controls.copySwitchName( switchName, (switch_t)(row/2) + FIRST_CHANNEL_SWITCH);
         return switchName;
     }
 }

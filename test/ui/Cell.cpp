@@ -166,20 +166,21 @@ void Cell::edit( Event *event) {
             if( IS_SWITCH_USED( value.intV)) {
                 value.intV -= event->count;
                 if( value.intV < 0) {
+                    SET_SWITCH( value.intV, 0);
                     SET_SWITCH_UNUSED( value.intV);
                 }
             }
             event->markProcessed();
         } else if( event->key == KEY_UP) {
             if( IS_SWITCH_UNUSED( value.intV)) {
-                value.intV = event->count;
-                if( value.intV >= SWITCHES) {
-                    value.intV = SWITCHES -1;
+                value.intV = event->count-1;
+                if( GET_SWITCH( value.intV) >= SWITCHES) {
+                    SET_SWITCH( value.intV, SWITCHES -1);
                 }
             } else {
                 value.intV += event->count;
-                if( value.intV >= SWITCHES) {
-                    value.intV = SWITCHES -1;
+                if( GET_SWITCH( value.intV) >= SWITCHES) {
+                    SET_SWITCH( value.intV, SWITCHES -1);
                 }
             }            
             event->markProcessed();
