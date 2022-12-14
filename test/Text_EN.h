@@ -123,6 +123,7 @@
 #define TEXT_BOOTING                CC("Booting...")
 #define TEXT_CH                     CC("Ch")
 #define TEXT_EXPO                   CC("Expo")
+#define TEXT_MIX_OFFSET             CC("Of=")
 #define TEXT_MODEL                  CC("Model")
 #define TEXT_MODEL_NAME             CC("Name")
 #define TEXT_MODEL_SETUP            CC("Model setup")

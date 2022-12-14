@@ -18,10 +18,29 @@ typedef uint8_t wingMix_t;
 #define WINGMIX_VTAIL       ((wingMix_t)3)
 #define WINGMIX_VTAIL2      ((wingMix_t)4)
 
+typedef uint8_t mix_t;
+
+#define MIX_OPTION_NUM      ((uint8_t)10)
+
+#define MIX_AIL_RUD         ((mix_t)0)
+#define MIX_AIL_FLP         ((mix_t)1)
+#define MIX_SPL_AIL         ((mix_t)2)
+#define MIX_SPL_FLP         ((mix_t)3)
+#define MIX_SPL_ELV         ((mix_t)4)
+#define MIX_FLP_AIL         ((mix_t)5)
+#define MIX_FLP_ELV         ((mix_t)6)
+#define MIX_ELV_AIL         ((mix_t)7)
+#define MIX_ELV_FLP         ((mix_t)8)
+#define MIX_RUD_ELV         ((mix_t)9)
+
 typedef struct model_t {
 
     char modelName[MODEL_NAME_LEN +1];
     wingMix_t wingMix;
+
+    switch_t mixSw[MIX_OPTION_NUM];
+    percent_t mixPct[MIX_OPTION_NUM];
+    percent_t mixOffset[MIX_OPTION_NUM];
 
 } model_t;
 
@@ -29,19 +48,10 @@ class Model : public Module {
 
     NON_PHASED_CONFIG( model_t)
 
-    private:
-        void adjustControlSurfaceCount();
-
     public:
         Model();
 
-        uint8_t ailerons;
-        uint8_t flaps;
-
         char *getModelName() { return CFG->modelName; }
-
-        uint8_t getAileronCount() const { return ailerons; }
-        uint8_t getFlapsCount() const { return flaps; }
 
         /* From Module */
         void run( Controls &controls) final;

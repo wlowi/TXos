@@ -24,7 +24,7 @@
 #define CC( t ) ((const char*)t)
 
 // Module Names (13 letters max.)         1234567890123
-#define TEXT_MODULE_ANALOG_SWITCH     CC("Kanalschalter")
+#define TEXT_MODULE_ANALOG_SWITCH     CC("Geberschalter")
 #define TEXT_MODULE_ASSIGN_INPUT      CC("Kanal Zuord.")
 #define TEXT_MODULE_BIND              CC("Empf. binden")
 #define TEXT_MODULE_CAL_STICKS        CC("Kalibrieren")
@@ -123,6 +123,7 @@
 #define TEXT_BOOTING                CC("Booting...")
 #define TEXT_CH                     CC("Ch")
 #define TEXT_EXPO                   CC("Expo")
+#define TEXT_MIX_OFFSET             CC("Of=")
 #define TEXT_MODEL                  CC("Modell")
 #define TEXT_MODEL_NAME             CC("Name")
 #define TEXT_MODEL_SETUP            CC("Modelleinst.")

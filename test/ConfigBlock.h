@@ -43,7 +43,7 @@
 typedef uint16_t checksum_t;
 
 #define CONFIG_EEPROM_SIZE    ((size_t)4096)
-#define CONFIG_BLOCK_SIZE     ((size_t)194)
+#define CONFIG_BLOCK_SIZE     ((size_t)256)
 #define CONFIG_PAYLOAD_SIZE   (CONFIG_BLOCK_SIZE - sizeof(checksum_t))
 #define CONFIG_BLOCKS         ((configBlockID_t)(CONFIG_EEPROM_SIZE/CONFIG_BLOCK_SIZE))
 

@@ -9,36 +9,22 @@ const char *wingMixNames[WINGMIX_OPTION_NUM] = {
     TEXT_WINGMIX_VTAIL2
 };
 
+const char *mixNames[MIX_OPTION_NUM] = {
+    TEXT_MIX_AIL_RUD,
+    TEXT_MIX_AIL_FLP,
+    TEXT_MIX_SPL_AIL,
+    TEXT_MIX_SPL_FLP,
+    TEXT_MIX_SPL_ELV,
+    TEXT_MIX_FLP_AIL,
+    TEXT_MIX_FLP_ELV,
+    TEXT_MIX_ELV_AIL,
+    TEXT_MIX_ELV_FLP,
+    TEXT_MIX_RUD_ELV
+};
+
 Model::Model() : Module( MODULE_MODEL_TYPE, TEXT_MODULE_MODEL) {
 
     setDefaults();
-}
-
-void Model::adjustControlSurfaceCount() {
-
-    switch( CFG->wingMix) {
-    case WINGMIX_1AIL:
-        ailerons = 1;
-        break;
-
-    case WINGMIX_2AIL:
-        ailerons = 2;
-        break;
-
-    case WINGMIX_DELTA:
-        ailerons = 2;
-        break;
-
-    case WINGMIX_VTAIL:
-        ailerons = 1;
-        break;
-        
-    case WINGMIX_VTAIL2:
-        ailerons = 2;
-        break;
-    }
-
-    flaps = 1;
 }
 
 /* From Module */
@@ -92,38 +78,60 @@ void Model::setDefaults() {
 
         memcpy( CFG->modelName, MODEL_NAME_DEFAULT, MODEL_NAME_LEN +1);
         CFG->wingMix = WINGMIX_1AIL;
-    )
 
-    adjustControlSurfaceCount();
+        for( switch_t sw = 0; sw < MIX_OPTION_NUM; sw++) {
+            INIT_SWITCH( CFG->mixSw[sw]);
+            CFG->mixPct[sw] = 0;
+            CFG->mixOffset[sw] = 0;
+        }
+    )
 }
 
 /* From TableEditable */
 
 uint8_t Model::getRowCount() {
 
-    return 2;
+    return 2 + 2 * MIX_OPTION_NUM;
 }
 
 const char *Model::getRowName( uint8_t row) {
 
     if( row == 0) {
         return TEXT_MODEL_NAME;
-    } else {
+    } else if (row == 1) {
         return TEXT_WINGMIX;
+    } else if ((row % 2) == 0) {
+        return mixNames[ (row / 2) -1];
+    } else {
+        return TEXT_MSG_NONE;
     }
 }
 
 uint8_t Model::getColCount( uint8_t row) {
 
-    return 1;
+    if( row < 2 || (row % 2) == 0) {
+        return 1;
+    } else {
+        return 3;
+    }
 }
 
 void Model::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
     if( row == 0) {
         cell->setString( 5, CFG->modelName, MODEL_NAME_LEN);
-    } else {
+    } else if( row == 1) {
         cell->setList( 5, wingMixNames, WINGMIX_OPTION_NUM, CFG->wingMix);
+    } else if( (row % 2) == 0) {
+        cell->setSwitchState( 8, CFG->mixSw[(row / 2) -1]);
+    } else {
+        if( col == 0) {
+            cell->setInt8( 1, CFG->mixPct[(row/2) -1], 4, PERCENT_MIN, PERCENT_MAX);
+        } else if (col == 1) {
+            cell->setLabel( 6, TEXT_MIX_OFFSET, 3);
+        } else {
+            cell->setInt8( 9, CFG->mixOffset[(row/2) -1], 4, PERCENT_MIN, PERCENT_MAX);
+        }
     }
 }
 
@@ -131,8 +139,15 @@ void Model::setValue( uint8_t row, uint8_t col, Cell *cell) {
 
     if( row == 0) {
         // nothing to do. inplace string edit
-    } else {
+    } else if( row == 1) {
         CFG->wingMix = cell->getList();
-        adjustControlSurfaceCount();
+    } else if( (row % 2) == 0) {
+        CFG->mixSw[(row / 2) -1] = cell->getSwitchState();
+    } else {
+        if( col == 0) {
+            CFG->mixPct[(row/2) -1] = cell->getInt8();
+        } else if (col == 2) {
+            CFG->mixOffset[(row/2) -1] = cell->getInt8();
+        }
     }
 }

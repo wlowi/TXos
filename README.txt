@@ -9,16 +9,17 @@ Adafruit ST7735 library
 
 
 Inputs:
-8: 
+9: 
    6 Analog              In1 - In6
-   2 Switched Channels   In7 - In8
+   3 Switched Channels   In7 - In9
 
-8 Switches:
+9 Switches:
    6 Switches            Sw1 - Sw6
-   2 Analog switches     Sw7 - Sw8
+   2 Analog switches     7CS - 8CS
+   1 Fixed ON            9ON
 
 Logical Channels:
-11: Thr Ail Elv Rud Ai2 El2 Flp Fl2 Gea Ch8 Ch9
+12: Thr Ail Elv Rud Ai2 Flp Fl2 Spl Sp2 Gea Ch8 Ch9
 
 Servo Outputs:
 9: S1 - S9
