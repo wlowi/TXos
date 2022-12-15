@@ -118,6 +118,7 @@
 
 // Misc
 #define TEXT_ACTIVE                 CC("Active")
+#define TEXT_AIL_DIFF               CC("Ail-dif")
 #define TEXT_ALERT                  CC("Alert")
 #define TEXT_BACK                   CC("<<<<")
 #define TEXT_BIND                   CC("Bind")

@@ -116,14 +116,15 @@ typedef uint8_t switch_t;
 typedef struct controlSet_t {
     
     /* Raw analog input channels */
-    channelValue_t stickChannel[ PORT_ANALOG_INPUT_COUNT ];
+    channelValue_t stickADCChannel[ PORT_ANALOG_INPUT_COUNT ];
     percent_t range_pct[PORT_ANALOG_INPUT_COUNT];
 
-    channelValue_t trimChannel[ PORT_TRIM_INPUT_COUNT ];
-    channelValue_t auxChannel[ PORT_AUX_INPUT_COUNT ];
+    channelValue_t trimADCChannel[ PORT_TRIM_INPUT_COUNT ];
+    channelValue_t auxADCChannel[ PORT_AUX_INPUT_COUNT ];
 
     /* Calibrated analog input channels */
     channelValue_t inputChannel[ ANALOG_CHANNELS ];
+    channelValue_t trimChannel[ PORT_TRIM_INPUT_COUNT ];
 
     /* Mixed channels */
     channelValue_t logicalChannel[ LOGICAL_CHANNELS ];
@@ -150,15 +151,18 @@ class Controls {
          */
         void GetControlValues();
 
-        channelValue_t stickGet( channel_t ch);
-        channelValue_t trimGet( channel_t ch);
-        channelValue_t auxGet( channel_t ch);
+        channelValue_t stickADCGet( channel_t ch);
+        channelValue_t trimADCGet( channel_t ch);
+        channelValue_t auxADCGet( channel_t ch);
 
         void rangeSet( channel_t ch, percent_t value);
         percent_t rangeGet( channel_t ch);
 
         void inputSet( channel_t ch, channelValue_t value);
         channelValue_t inputGet( channel_t ch);
+
+        void trimSet( channel_t ch, channelValue_t value);
+        channelValue_t trimGet( channel_t ch);
 
         void logicalSet( channel_t ch, channelValue_t value);
         channelValue_t logicalGet( channel_t ch);

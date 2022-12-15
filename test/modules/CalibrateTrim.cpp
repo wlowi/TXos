@@ -31,9 +31,10 @@ void CalibrateTrim::run( Controls &controls) {
 
     long v;
 
+    /* Usually the first 4 channels */
     for( channel_t ch = 0; ch < PORT_TRIM_INPUT_COUNT; ch++) {
 
-        v = controls.trimGet( ch);
+        v = controls.trimADCGet( ch); // This is the raw ADC output
 
         if( calibrationStep == CALIBRATION_STEP_CENTER) {
 
@@ -57,6 +58,7 @@ void CalibrateTrim::run( Controls &controls) {
                 v = TRIMVALUE_MID;
             }
 
+            controls.trimSet( ch, (channelValue_t)v);
             controls.inputSet( ch, controls.inputGet(ch) + (channelValue_t)v);
         }
     }

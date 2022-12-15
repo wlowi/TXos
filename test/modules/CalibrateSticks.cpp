@@ -33,7 +33,7 @@ void CalibrateSticks::run( Controls &controls) {
 
     for( channel_t ch = 0; ch < PORT_ANALOG_INPUT_COUNT; ch++) {
 
-        v = controls.stickGet( ch);
+        v = controls.stickADCGet( ch);
 
         if( calibrationStep == CALIBRATION_STEP_CENTER) {
 

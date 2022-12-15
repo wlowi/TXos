@@ -31,7 +31,7 @@ ChannelReverse::ChannelReverse() : Module( MODULE_CHANNEL_REVERSE_TYPE, TEXT_MOD
 
 void ChannelReverse::run( Controls &controls) {
 
-    for( channel_t ch = 0; ch < ANALOG_CHANNELS; ch++) {
+    for( channel_t ch = 0; ch < PORT_ANALOG_INPUT_COUNT; ch++) {
         if( IS_BIT_SET( CFG->revBits, ch)) {
             controls.inputSet( ch, -controls.inputGet(ch));
         }
@@ -51,7 +51,7 @@ void ChannelReverse::setDefaults() {
 
 uint8_t ChannelReverse::getRowCount() {
 
-    return ANALOG_CHANNELS;
+    return PORT_ANALOG_INPUT_COUNT;
 }
 
 const char *ChannelReverse::getRowName( uint8_t row) {

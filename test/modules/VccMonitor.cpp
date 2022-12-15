@@ -44,7 +44,7 @@ bool VccMonitor::belowAlert() const {
 
 void VccMonitor::run( Controls &controls) {
 
-    long v = controls.auxGet( 0);
+    long v = controls.auxADCGet( 0);
 
     v = v * (ADC_VOLTAGE + CFG->vccAdjust) / ADC_VCC_RESOLUTION;
     float16 newVcc = v * (ADC_VOLTAGE_DIVIDER_R1 + ADC_VOLTAGE_DIVIDER_R2) / ADC_VOLTAGE_DIVIDER_R2;

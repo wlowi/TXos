@@ -53,15 +53,15 @@ void Controls::GetControlValues() {
 
     /* Read analog inputs */
     for( ch = 0; ch < PORT_ANALOG_INPUT_COUNT; ch++) {
-        controlSet.stickChannel[ch] = inputImpl->GetStickValue( ch);
+        controlSet.stickADCChannel[ch] = inputImpl->GetStickValue( ch);
     }
 
     for( ch = 0; ch < PORT_TRIM_INPUT_COUNT; ch++) {
-        controlSet.trimChannel[ch] = inputImpl->GetTrimValue( ch);
+        controlSet.trimADCChannel[ch] = inputImpl->GetTrimValue( ch);
     }
 
     for( ch = 0; ch < PORT_AUX_INPUT_COUNT; ch++) {
-        controlSet.auxChannel[ch] = inputImpl->GetAuxValue( ch);
+        controlSet.auxADCChannel[ch] = inputImpl->GetAuxValue( ch);
     }
 
     /* Read switch inputs */
@@ -80,19 +80,19 @@ void Controls::GetControlValues() {
     }
 }
 
-channelValue_t Controls::stickGet( channel_t ch) {
+channelValue_t Controls::stickADCGet( channel_t ch) {
 
-    return controlSet.stickChannel[ch];
+    return controlSet.stickADCChannel[ch];
 }
 
-channelValue_t Controls::trimGet( channel_t ch) {
+channelValue_t Controls::trimADCGet( channel_t ch) {
 
-    return controlSet.trimChannel[ch];
+    return controlSet.trimADCChannel[ch];
 }
 
-channelValue_t Controls::auxGet( channel_t ch) {
+channelValue_t Controls::auxADCGet( channel_t ch) {
 
-    return controlSet.auxChannel[ch];
+    return controlSet.auxADCChannel[ch];
 }
 
 void Controls::rangeSet( channel_t ch, percent_t value) {
@@ -121,6 +121,24 @@ void Controls::inputSet( channel_t ch, channelValue_t value) {
 channelValue_t Controls::inputGet( channel_t ch) {
 
     return controlSet.inputChannel[ch];
+}
+
+void Controls::trimSet( channel_t ch, channelValue_t value) {
+
+    if( value > CHANNELVALUE_MAX_LIMIT) {
+        value = CHANNELVALUE_MAX_LIMIT;
+    }
+
+    if( value < CHANNELVALUE_MIN_LIMIT) {
+        value = CHANNELVALUE_MIN_LIMIT;
+    }
+
+    controlSet.trimChannel[ch] = value;
+}
+
+channelValue_t Controls::trimGet( channel_t ch) {
+
+    return controlSet.trimChannel[ch];
 }
 
 void Controls::logicalSet( channel_t ch, channelValue_t value) {

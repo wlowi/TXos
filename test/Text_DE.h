@@ -118,6 +118,7 @@
 
 // Misc
 #define TEXT_ACTIVE                 CC("Aktiv")
+#define TEXT_AIL_DIFF               CC("QR-Diff")
 #define TEXT_ALERT                  CC("Alarm")
 #define TEXT_BACK                   CC("<<<<")
 #define TEXT_BIND                   CC("Bind")

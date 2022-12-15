@@ -63,10 +63,7 @@ OK: Phases:
 OK: Phased Rate & Expo:
   Phase controlled rate limit and exponential function for Ail, Elv, Rud
 
-Model:
-  1 or 2 ailerons
-  1 or 2 elevators
-  1 or 2 flaps
+OK: Model:
   V tail mix
   Delta mix
   QR Diff

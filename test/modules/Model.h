@@ -40,7 +40,11 @@ typedef uint8_t mix_t;
 typedef struct model_t {
 
     char modelName[MODEL_NAME_LEN +1];
+
     wingMix_t wingMix;
+    
+    switch_t qrDiffSw;
+    percent_t qrDiffPct;
 
     switch_t mixSw[MIX_OPTION_NUM];
     percent_t mixPct[MIX_OPTION_NUM];
@@ -51,6 +55,10 @@ typedef struct model_t {
 class Model : public Module {
 
     NON_PHASED_CONFIG( model_t)
+
+    private:
+        channelValue_t mixValue( channelValue_t v, uint8_t mix);
+        void limitChannels( Controls &controls);
 
     public:
         Model();
