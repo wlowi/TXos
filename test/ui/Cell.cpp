@@ -70,7 +70,9 @@ void Cell::render( LcdWidget *lcd, bool edit) {
 
 void Cell::edit( Event *event) {
 
-    if( type == SWITCH_SET_STATE_T) {
+    switch_t sw;
+
+    if( type == SWITCH_SET_STATE_T && IS_SWITCH_USED( value.intV)) {
         SET_SWITCH_STATE( value.intV, controls.switchGet(value.intV));
     }
 
@@ -162,31 +164,42 @@ void Cell::edit( Event *event) {
 
     case SWITCH_T:
     case SWITCH_SET_STATE_T:
+        
+        sw = GET_SWITCH(value.intV);
+
         if( event->key == KEY_DOWN) {
+            
             if( IS_SWITCH_USED( value.intV)) {
-                value.intV -= event->count;
-                if( value.intV < 0) {
-                    SET_SWITCH( value.intV, 0);
+                if( event->count > sw) {
+                    sw = 0;
                     SET_SWITCH_UNUSED( value.intV);
+                } else {
+                    sw -= event->count;
                 }
+                SET_SWITCH( value.intV, sw);
             }
             event->markProcessed();
+
         } else if( event->key == KEY_UP) {
+
             if( IS_SWITCH_UNUSED( value.intV)) {
-                value.intV = event->count-1;
-                if( GET_SWITCH( value.intV) >= SWITCHES) {
-                    SET_SWITCH( value.intV, SWITCHES -1);
-                }
+                sw = event->count-1;
+                SET_SWITCH_USED( value.intV);
             } else {
-                value.intV += event->count;
-                if( GET_SWITCH( value.intV) >= SWITCHES) {
-                    SET_SWITCH( value.intV, SWITCHES -1);
-                }
-            }            
+                sw += event->count;
+            }
+            if( sw >= SWITCHES) {
+                sw = SWITCHES -1;
+            }
+            SET_SWITCH( value.intV, sw);            
             event->markProcessed();
+
         } else if( event->key == KEY_CLEAR) {
+
             SET_SWITCH_UNUSED( value.intV);
+            SET_SWITCH( value.intV, 0);
             event->markProcessed();
+
         }
         break;
         

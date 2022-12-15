@@ -38,9 +38,18 @@ void RangeTest::run( Controls &controls) {
 void RangeTest::setDefaults() {
 
     rangeTestStep = RANGETEST_STEP_NONE;
+    changed = true;
 }
 
 /* From TableEditable */
+
+bool RangeTest::hasChanged( uint8_t row, uint8_t col) {
+
+    bool ret = changed;
+
+    changed = false;
+    return ret;
+}
 
 bool RangeTest::isRowExecutable( uint8_t row) {
 
@@ -53,12 +62,14 @@ void RangeTest::rowExecute( uint8_t row ) {
     case RANGETEST_STEP_NONE:
         ports.bindOn();
         rangeTestStep = RANGETEST_STEP_ACTIVE;
+        changed = true;
         break;
 
     case RANGETEST_STEP_ACTIVE:
     default:
         ports.bindOff();
         rangeTestStep = RANGETEST_STEP_NONE;
+        changed = true;
         break;
     }
 }

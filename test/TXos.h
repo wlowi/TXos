@@ -12,7 +12,7 @@
 #endif
 
 
-#define TXOS_VERSION "0.1.17"
+#define TXOS_VERSION "0.1.18"
 
 #if defined( ARDUINO )
     #define LOG( f )

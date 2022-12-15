@@ -38,9 +38,18 @@ void Bind::run( Controls &controls) {
 void Bind::setDefaults() {
 
     bindStep = BIND_STEP_NONE;
+    changed = true;
 }
 
 /* From TableEditable */
+
+bool Bind::hasChanged( uint8_t row, uint8_t col) {
+
+    bool ret = changed;
+
+    changed = false;
+    return ret;
+}
 
 bool Bind::isRowExecutable( uint8_t row) {
 
@@ -57,6 +66,7 @@ void Bind::rowExecute( uint8_t row ) {
         delay( 100);
         ports.hfOn();
         bindStep = BIND_STEP_ACTIVE;
+        changed = true;
         break;
 
     case BIND_STEP_ACTIVE:
@@ -67,6 +77,7 @@ void Bind::rowExecute( uint8_t row ) {
         delay( 100);
         ports.hfOn();
         bindStep = BIND_STEP_NONE;
+        changed = true;
         break;
     }
 }

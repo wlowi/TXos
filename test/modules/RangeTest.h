@@ -33,6 +33,8 @@ class RangeTest : public Module {
 #define RANGETEST_STEP_NONE     0
 #define RANGETEST_STEP_ACTIVE   1
 
+        bool changed;
+
     public:
         RangeTest();
 
@@ -47,10 +49,10 @@ class RangeTest : public Module {
         void getValue( uint8_t row, uint8_t col, Cell *cell) final;
         void setValue( uint8_t row, uint8_t col, Cell *cell) final;
 
-        bool isRowEditable( uint8_t row) { return false; }
+        bool isRowEditable( uint8_t row) final { return false; }
         bool isRowExecutable( uint8_t row) final;
         void rowExecute( uint8_t row ) final;
-        bool hasChanged( uint8_t row, uint8_t col) { return true; }
+        bool hasChanged( uint8_t row, uint8_t col) final;
 };
 
 #endif

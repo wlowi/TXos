@@ -148,11 +148,9 @@
 
 // Wing mix options
 #define TEXT_WINGMIX_length         6
-#define TEXT_WINGMIX_1AIL           CC("1-QR")
-#define TEXT_WINGMIX_2AIL           CC("2-QR")
+#define TEXT_WINGMIX_NORMAL         CC("Normal")
 #define TEXT_WINGMIX_DELTA          CC("Delta")
-#define TEXT_WINGMIX_VTAIL          CC("VLw")
-#define TEXT_WINGMIX_VTAIL2         CC("2Q-VLw")
+#define TEXT_WINGMIX_VTAIL          CC("V-Lw")
 
 #define TEXT_MIX_AIL_RUD            CC("QR>SR")
 #define TEXT_MIX_AIL_FLP            CC("QR>WK")

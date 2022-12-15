@@ -415,14 +415,14 @@ void setup( void) {
 }
 
 void loop( void) {
-    unsigned long tstamp;
+    unsigned long t1;
 
     if( output.acceptChannels() ) {
 
         controls.GetControlValues();
-        tstamp = millis();
+        t1 = millis();
         moduleManager.runModules( controls);
-        statistics.updateModulesTime( (uint16_t)(millis() - tstamp));
+        statistics.updateModulesTime( (uint16_t)(millis() - t1));
         output.setChannels( controls);
 
 #ifdef ENABLE_BDEBUG
@@ -439,7 +439,9 @@ void loop( void) {
 #endif     
     }
     
-    tstamp = millis();
+    t1 = millis();
     userInterface.handle();
-    statistics.updateUITime( (uint16_t)(millis() - tstamp));
+    t1 = millis() - t1;
+    statistics.updateUITime( (uint16_t)t1);
+    // userInterface.debugTiming( (uint16_t)t1);
 }

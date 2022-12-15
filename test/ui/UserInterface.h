@@ -58,6 +58,8 @@ class UserInterface {
         void init();
         void handle();
 
+        void debugTiming( uint16_t t);
+
         void postMessage( uint8_t line, uint8_t msg);
         void cancelEdit( TableEditable *toCancel);
 

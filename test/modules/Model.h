@@ -10,18 +10,22 @@
 
 typedef uint8_t wingMix_t;
 
-#define WINGMIX_OPTION_NUM  ((uint8_t)5)
+#define WINGMIX_OPTION_NUM  ((uint8_t)3)
 
-#define WINGMIX_1AIL        ((wingMix_t)0)
-#define WINGMIX_2AIL        ((wingMix_t)1)
-#define WINGMIX_DELTA       ((wingMix_t)2)
-#define WINGMIX_VTAIL       ((wingMix_t)3)
-#define WINGMIX_VTAIL2      ((wingMix_t)4)
+/* Make sure the defines are in the same order as the 
+ * entires of wingMixNames in Models.cpp
+ */
+#define WINGMIX_NORMAL      ((wingMix_t)0)
+#define WINGMIX_DELTA       ((wingMix_t)1)
+#define WINGMIX_VTAIL       ((wingMix_t)2)
 
 typedef uint8_t mix_t;
 
 #define MIX_OPTION_NUM      ((uint8_t)10)
 
+/* Make sure the defines are in the same order as the 
+ * entries of mixNames in Models.cpp
+ */
 #define MIX_AIL_RUD         ((mix_t)0)
 #define MIX_AIL_FLP         ((mix_t)1)
 #define MIX_SPL_AIL         ((mix_t)2)
