@@ -43,6 +43,9 @@ OK: Analog Switches:
 OK: Channel Range:
   Adjust range for analog channels In1 - In6 (Range +/- 125%)
 
+OK: Channel Reverse:
+  Reverse channel input
+
 OK: Assign Inputs:
   Assign inputs to logical channels
   Ac1 - Thr
@@ -66,12 +69,13 @@ Model:
   1 or 2 flaps
   V tail mix
   Delta mix
+  QR Diff
   Ail -> Flp mix
   Flp -> Ail mix
   Flp -> Elv mix
   Ail -> Rud mix
 
-Mixer:
+General Mixer:
 
 OK: Phased Trim:
   Phase controlled mid position of Ail, Elv, Flaps and Spoiler

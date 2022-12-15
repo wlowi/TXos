@@ -64,6 +64,7 @@ typedef uint8_t moduleSize_t;
 #define MODULE_SERVO_REMAP_TYPE         ((moduleType_t)61)
 #define MODULE_ANALOG_SWITCH_TYPE       ((moduleType_t)62)
 #define MODULE_CHANNEL_RANGE_TYPE       ((moduleType_t)63)
+#define MODULE_CHANNEL_REVERSE_TYPE     ((moduleType_t)64)
 
 class Module : public TableEditable {
 

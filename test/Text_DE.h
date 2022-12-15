@@ -30,6 +30,7 @@
 #define TEXT_MODULE_CAL_STICKS        CC("Kalibrieren")
 #define TEXT_MODULE_CAL_TRIM          CC("Trimmung Kal.")
 #define TEXT_MODULE_CHANNEL_RANGE     CC("Geber Limit")
+#define TEXT_MODULE_CHANNEL_REVERSE   CC("Geber Umkehr")
 #define TEXT_MODULE_DUAL_EXPO         CC("Dual & Expo")
 #define TEXT_MODULE_ENGINE_CUT        CC("Motor aus")
 #define TEXT_MODULE_MODEL             CC("Modell")

@@ -123,6 +123,7 @@
 #include "ServoRemap.h"
 #include "AnalogSwitch.h"
 #include "ChannelRange.h"
+#include "ChannelReverse.h"
 #include "Statistics.h"
 
 #if defined( ARDUINO )
@@ -336,6 +337,8 @@ void setup( void) {
     moduleManager.addToModelMenu( model);
     ChannelRange *channelRange = new ChannelRange();
     moduleManager.addToModelMenu( channelRange);
+    ChannelReverse *channelReverse = new ChannelReverse();
+    moduleManager.addToModelMenu( channelReverse);
     AnalogSwitch *analogSwitch = new AnalogSwitch();
     moduleManager.addToModelMenu( analogSwitch);
     SwitchedChannels *switchedChannels = new SwitchedChannels();
@@ -370,6 +373,7 @@ void setup( void) {
     moduleManager.addToRunList( switchedChannels);
     moduleManager.addToRunList( analogSwitch);
     moduleManager.addToRunList( channelRange);
+    moduleManager.addToRunList( channelReverse);
 
     /* The following moduels act on logical channels */
     moduleManager.addToRunList( assignInput);

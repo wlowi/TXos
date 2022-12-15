@@ -100,7 +100,7 @@ void Model::run( Controls &controls) {
             case MIX_AIL_FLP:
                 mixedValue = MIX_VALUE( ail );
                 controls.logicalSet( CHANNEL_FLAP, controls.logicalGet( CHANNEL_FLAP) + mixedValue);
-                controls.logicalSet( CHANNEL_FLAP2, controls.logicalGet( CHANNEL_FLAP2) + mixedValue);
+                controls.logicalSet( CHANNEL_FLAP2, controls.logicalGet( CHANNEL_FLAP2) - mixedValue);
                 break;
 
             case MIX_SPL_AIL:
@@ -225,7 +225,7 @@ void Model::getValue( uint8_t row, uint8_t col, Cell *cell) {
         } else if (col == 1) {
             cell->setLabel( 6, TEXT_MIX_OFFSET, 3);
         } else {
-            cell->setInt8( 9, CFG->mixOffset[(row/2) -1], 4, PERCENT_MIN, PERCENT_MAX);
+            cell->setInt8( 9, CFG->mixOffset[(row/2) -1], 4, PERCENT_MIN_LIMIT, PERCENT_MAX_LIMIT);
         }
     }
 }
