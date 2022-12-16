@@ -34,6 +34,11 @@
  */
 #define LOGICAL_CHANNELS         ((channel_t)12)
 
+/* Main channels like AIL, ELV, RUD, FLP
+ * without their mix counterparts like AIL2, FLP2
+ */
+#define MIX_CHANNELS             ((channel_t)9)
+
 /* The number of transmitter channels.
  * This is the number of channels that will be used to
  * generate the PPM signal.
@@ -72,6 +77,10 @@ const switchConf_t switchConfiguration[SWITCHES] = { \
  * have tri-state switches.
  */
 #define PHASES                   ((phase_t)3)
+
+/* Number of general mixer.
+ */
+#define MIXER                    ((uint8_t)3)
 
 /* Port definitions */
 

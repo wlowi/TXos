@@ -72,7 +72,8 @@ OK: Model:
   Flp -> Elv mix
   Ail -> Rud mix
 
-General Mixer:
+OK: General Mixer:
+  3 mixer
 
 OK: Phased Trim:
   Phase controlled mid position of Ail, Elv, Flaps and Spoiler

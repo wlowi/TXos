@@ -33,7 +33,7 @@ Model::Model() : Module( MODULE_MODEL_TYPE, TEXT_MODULE_MODEL) {
 
 channelValue_t Model::mixValue( channelValue_t v, uint8_t mix) {
 
-    return (channelValue_t)( ((long)(v) - (long)CFG->mixOffset[mix]) * (long)CFG->mixPct[mix] / 100L);
+    return (channelValue_t)( ((long)(v) - (long)PCT_TO_CHANNEL( CFG->mixOffset[mix])) * (long)CFG->mixPct[mix] / 100L);
 }
 
 void Model::limitChannels( Controls &controls) {

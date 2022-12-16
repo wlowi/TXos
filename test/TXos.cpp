@@ -124,6 +124,7 @@
 #include "AnalogSwitch.h"
 #include "ChannelRange.h"
 #include "ChannelReverse.h"
+#include "Mixer.h"
 #include "Statistics.h"
 
 #if defined( ARDUINO )
@@ -159,6 +160,30 @@ const char *LogicalChannelNames[LOGICAL_CHANNELS] = {
     TEXT_CONTROL_CH_10,
     TEXT_CONTROL_CH_11,
     TEXT_CONTROL_CH_12
+};
+
+const char *MixChannelNames[MIX_CHANNELS] = {
+    TEXT_CONTROL_CH_1,
+    TEXT_CONTROL_CH_2,
+    TEXT_CONTROL_CH_3,
+    TEXT_CONTROL_CH_4,
+    TEXT_CONTROL_CH_6,
+    TEXT_CONTROL_CH_8,
+    TEXT_CONTROL_CH_10,
+    TEXT_CONTROL_CH_11,
+    TEXT_CONTROL_CH_12
+};
+
+channel_t MixChannelMap[MIX_CHANNELS] = {
+    CHANNEL_THROTTLE, // ((channel_t)0)
+    CHANNEL_AILERON,  // ((channel_t)1)
+    CHANNEL_ELEVATOR, // ((channel_t)2)
+    CHANNEL_RUDDER,   // ((channel_t)3)
+    CHANNEL_FLAP,     // ((channel_t)5)
+    CHANNEL_SPOILER,  // ((channel_t)7)
+    CHANNEL_GEAR,     // ((channel_t)9)
+    CHANNEL_8,        // ((channel_t)10)
+    CHANNEL_9         // ((channel_t)11)
 };
 
 const char *OutputChannelNames[PPM_CHANNELS] = {
@@ -351,6 +376,8 @@ void setup( void) {
     moduleManager.addToModelMenu( phasesTrim);
     DualExpo *dualExpo = new DualExpo();
     moduleManager.addToModelMenu( dualExpo);
+    Mixer *mixer = new Mixer();
+    moduleManager.addToModelMenu( mixer);
     EngineCut *engineCut = new EngineCut();
     moduleManager.addToModelMenu( engineCut);
     Timer *timer = new Timer();
@@ -380,7 +407,7 @@ void setup( void) {
     moduleManager.addToRunList( phases);
     moduleManager.addToRunList( dualExpo);
     moduleManager.addToRunList( model);
-    // TODO: Mixer
+    moduleManager.addToRunList( mixer);
     moduleManager.addToRunList( phasesTrim);
     moduleManager.addToRunList( engineCut);
 
@@ -423,11 +450,13 @@ void loop( void) {
 
     if( output.acceptChannels() ) {
 
-        controls.GetControlValues();
         t1 = millis();
+
+        controls.GetControlValues();
         moduleManager.runModules( controls);
-        statistics.updateModulesTime( (uint16_t)(millis() - t1));
         output.setChannels( controls);
+
+        statistics.updateModulesTime( (uint16_t)(millis() - t1));
 
 #ifdef ENABLE_BDEBUG
     Serial.print("d:");
@@ -447,5 +476,7 @@ void loop( void) {
     userInterface.handle();
     t1 = millis() - t1;
     statistics.updateUITime( (uint16_t)t1);
-    // userInterface.debugTiming( (uint16_t)t1);
+    if( statistics.debugTiming()) {
+        userInterface.printTiming( (uint16_t)t1);
+    }
 }

@@ -67,7 +67,7 @@ void UserInterface::init() {
     lcd->println(TEXT_BOOTING);
 }
 
-void UserInterface::debugTiming( uint16_t t) {
+void UserInterface::printTiming( uint16_t t) {
 
     lcd->setCursor( 0, 7);
     lcd->warnColors();

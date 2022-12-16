@@ -38,6 +38,11 @@ void Statistics::updateModulesTime( uint16_t t) {
     }
 }
 
+bool Statistics::debugTiming() {
+
+    return timing;
+}
+
 /* From Module */
 
 void Statistics::run( Controls &controls) {
@@ -48,18 +53,26 @@ void Statistics::setDefaults() {
 
     timeUI_msec = 0;
     timeModules_msec = 0;
+    timing = false;
 }
 
 /* From TableEditable */
 
+bool Statistics::isRowEditable( uint8_t row) {
+
+    return (row == 0);
+}
+
 uint8_t Statistics::getRowCount() {
 
-    return 2;
+    return 3;
 }
 
 const char *Statistics::getRowName( uint8_t row) {
 
     if( row == 0) {
+        return TEXT_STATISTIC_TIMING;
+    } else if( row == 1) {
         return TEXT_STATISTIC_UI;
     }
 
@@ -74,6 +87,8 @@ uint8_t Statistics::getColCount( uint8_t row) {
 void Statistics::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
     if( row == 0) {
+        cell->setBool( 10, timing);
+    } else if( row == 1) {
         cell->setInt16( 7, timeUI_msec, 0, 0, 0);
     } else {
         cell->setInt16( 7, timeModules_msec, 0, 0, 0);
@@ -82,10 +97,12 @@ void Statistics::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
 void Statistics::setValue( uint8_t row, uint8_t col, Cell *cell) {
 
-    /* no-op */
+    if( row == 0) {
+        timing = cell->getBool();
+    }
 }
 
 bool Statistics::hasChanged( uint8_t row, uint8_t col) {
 
-    return true;
+    return (row != 0);
 }

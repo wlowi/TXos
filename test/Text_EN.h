@@ -33,6 +33,7 @@
 #define TEXT_MODULE_CHANNEL_REVERSE   CC("Input Reverse")
 #define TEXT_MODULE_DUAL_EXPO         CC("Dual & Expo")
 #define TEXT_MODULE_ENGINE_CUT        CC("Engine Cut")
+#define TEXT_MODULE_MIXER             CC("Mixer")
 #define TEXT_MODULE_MODEL             CC("Model")
 #define TEXT_MODULE_MODEL_SELECT      CC("Model Select")
 #define TEXT_MODULE_MONITOR           CC("Servo Monitor")
@@ -125,6 +126,7 @@
 #define TEXT_BOOTING                CC("Booting...")
 #define TEXT_CH                     CC("Ch")
 #define TEXT_EXPO                   CC("Expo")
+#define TEXT_MIX_ARROW              CC("=>")
 #define TEXT_MIX_OFFSET             CC("Of=")
 #define TEXT_MODEL                  CC("Model")
 #define TEXT_MODEL_NAME             CC("Name")
@@ -173,6 +175,7 @@
 // Statistics
 #define TEXT_STATISTIC_UI           CC("UI")
 #define TEXT_STATISTIC_MODULE       CC("MODULE")
+#define TEXT_STATISTIC_TIMING       CC("Timing")
 
 /* User interface warnings and messages */
 #define TEXT_MSG_count              5

@@ -30,18 +30,20 @@ class Statistics : public Module {
     private:
         uint16_t timeUI_msec;
         uint16_t timeModules_msec;
+        bool timing;
 
     public:
         explicit Statistics();
 
         void updateUITime( uint16_t t);
         void updateModulesTime( uint16_t t);
+        bool debugTiming();
 
         void run( Controls &controls) final;
         void setDefaults() final;
 
         /* From TableEditable */
-        bool isRowEditable( uint8_t row) final { return false; }
+        bool isRowEditable( uint8_t row) final;
 
         uint8_t getRowCount() final;
         const char *getRowName( uint8_t row) final;
