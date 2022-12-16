@@ -12,7 +12,7 @@
 #endif
 
 
-#define TXOS_VERSION "0.1.21"
+#define TXOS_VERSION "0.2.0"
 
 #if defined( ARDUINO )
     #define LOG( f )
@@ -29,7 +29,8 @@
  * Note that you can add and subtract float16 values
  * but you cannot simply multiply or devide float16 values.
  */
-typedef int16_t float16;
+typedef int16_t float2;
+typedef int16_t float1;
 
 /* This identifies a channel number.
  */

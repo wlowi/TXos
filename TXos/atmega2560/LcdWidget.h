@@ -55,7 +55,8 @@ class LcdWidget
         void printStr( const char str[], uint8_t width);
         void printStr( const char str[], uint8_t width, int8_t editIdx);
 
-        void printFloat16( float16 val, uint8_t width);
+        void printFloat1( float1 val, uint8_t width);
+        void printFloat2( float2 val, uint8_t width);
         
         void normalColors();
         void selectedColors();

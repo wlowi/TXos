@@ -163,7 +163,7 @@ void UserInterface::homeScreen( Event *event) {
             lcd->okColors();
         }
         lcd->setCursor(5, 7);
-        lcd->printFloat16( lastVcc, 5);
+        lcd->printFloat2( lastVcc, 5);
         lcd->print( "V");
     }
 

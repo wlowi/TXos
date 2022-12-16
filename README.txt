@@ -57,6 +57,9 @@ OK: Assign Inputs:
   Ac7 - Gea
   Ac8 - Ch9
 
+OK: Channel Speed:
+  For channels Flp, Spl, K8, K9
+
 OK: Phases:
   no effect on channels
 
@@ -92,8 +95,6 @@ OK: Servo Remap:
   Fl2 - Sv7
   Ch8 - Sv8
   Ch9 - Sv9
-
-Servo Speed:
 
 OK: Servo Reverse:
   Revers servo direction for Sv1 - Sv9

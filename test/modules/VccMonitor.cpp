@@ -25,7 +25,7 @@ VccMonitor::VccMonitor() : Module( MODULE_VCC_MONITOR_TYPE, TEXT_MODULE_VCC_MONI
     setDefaults();
 }
 
-float16 VccMonitor::getVcc() const {
+float2 VccMonitor::getVcc() const {
 
     return vcc;
 }
@@ -47,7 +47,7 @@ void VccMonitor::run( Controls &controls) {
     long v = controls.auxADCGet( 0);
 
     v = v * (ADC_VOLTAGE + CFG->vccAdjust) / ADC_VCC_RESOLUTION;
-    float16 newVcc = v * (ADC_VOLTAGE_DIVIDER_R1 + ADC_VOLTAGE_DIVIDER_R2) / ADC_VOLTAGE_DIVIDER_R2;
+    float2 newVcc = v * (ADC_VOLTAGE_DIVIDER_R1 + ADC_VOLTAGE_DIVIDER_R2) / ADC_VOLTAGE_DIVIDER_R2;
 
     /* This avoids jitter on vcc value when the voltage changes slowly. */
     if( vccUpdateImmediate || newVcc < vcc || newVcc > vcc+10) { /* 0.1V */
@@ -104,14 +104,14 @@ uint8_t VccMonitor::getColCount( uint8_t row) {
 void VccMonitor::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
     if( row == 0) {
-        cell->setFloat16( 8, CFG->warnLevel, 5, 0, 1200);
+        cell->setFloat2( 8, CFG->warnLevel, 5, 0, 1200);
     } else if( row == 1) {
-        cell->setFloat16( 8, CFG->alertLevel, 5, 0, 1200);
+        cell->setFloat2( 8, CFG->alertLevel, 5, 0, 1200);
     } else {
         if( col == 0) {
             cell->setInt8( 3, CFG->vccAdjust, 0, -100, 100);
         } else {
-            cell->setFloat16( 8, vcc, 5, 0, 2500);
+            cell->setFloat2( 8, vcc, 5, 0, 2500);
         }
     }
 }
@@ -119,9 +119,9 @@ void VccMonitor::getValue( uint8_t row, uint8_t col, Cell *cell) {
 void VccMonitor::setValue( uint8_t row, uint8_t col, Cell *cell) {
 
     if( row == 0) {
-        CFG->warnLevel = cell->getFloat16();
+        CFG->warnLevel = cell->getFloat2();
     } else if( row == 1) {
-        CFG->alertLevel = cell->getFloat16();
+        CFG->alertLevel = cell->getFloat2();
     } else {
         if( col == 0) {
             CFG->vccAdjust = cell->getInt8();

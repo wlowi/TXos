@@ -21,7 +21,7 @@ MODULE_OBJ = modules/ModelSelect.o modules/Model.o modules/EngineCut.o modules/S
   modules/SwitchMonitor.o modules/ServoMonitor.o modules/SystemSetup.o modules/CalibrateSticks.o modules/CalibrateTrim.o \
   modules/Bind.o modules/RangeTest.o modules/DualExpo.o modules/Phases.o modules/Timer.o modules/VccMonitor.o modules/PhasesTrim.o \
   modules/SwitchedChannels.o modules/AssignInput.o modules/ServoRemap.o modules/AnalogSwitch.o modules/ChannelRange.o \
-  modules/ChannelReverse.o modules/Mixer.o modules/Statistics.o 
+  modules/ChannelReverse.o modules/ChannelDelay.o modules/Mixer.o modules/Statistics.o 
 
 CXXFLAGS += -g -O -Wall -Wpedantic -Wextra -Wno-unused-parameter
 

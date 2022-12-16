@@ -205,7 +205,12 @@ void LcdWidget::printStr( const char str[], uint8_t width, int8_t editIdx) {
     }
 }
 
-void LcdWidget::printFloat16( float16 val, uint8_t width) {
+void LcdWidget::printFloat1( float1 val, uint8_t width) {
+
+    printIntGeneric( val, 0, width, 1, ' ');
+}
+
+void LcdWidget::printFloat2( float2 val, uint8_t width) {
 
     printIntGeneric( val, 0, width, 2, ' ');
 }

@@ -66,7 +66,7 @@ typedef uint16_t timingUsec_t;
 /* Mix channel are a subset of all channels
  * To get the real channel number they need to be mapped.
  */
-#define MIX_TO_CHANNEL( m)  MixChannelMap[ m ]
+#define MIX_TO_CHANNEL( m)  MixChannelMap[ m % MIX_CHANNELS ]
 
 #define TRIMVALUE_MID           ((channelValue_t)   0)
 #define TRIMVALUE_MIN_LIMIT     ((channelValue_t)-250)

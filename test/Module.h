@@ -66,6 +66,7 @@ typedef uint8_t moduleSize_t;
 #define MODULE_CHANNEL_RANGE_TYPE       ((moduleType_t)63)
 #define MODULE_CHANNEL_REVERSE_TYPE     ((moduleType_t)64)
 #define MODULE_MIXER_TYPE               ((moduleType_t)65)
+#define MODULE_CHANNEL_DELAY_TYPE       ((moduleType_t)66)
 
 class Module : public TableEditable {
 

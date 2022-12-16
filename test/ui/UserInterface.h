@@ -43,7 +43,7 @@ class UserInterface {
         uint8_t post2;
 
         phase_t lastPhase;
-        float16 lastVcc;
+        float2 lastVcc;
         uint16_t lastTime;
         bool engineSave;
 

@@ -17,6 +17,8 @@ class OutputImpl : public wxStaticBoxSizer
         wxGauge **gauges = NULL;
         wxStaticText **values = NULL;
 
+        long lastFrameMs = 0;
+        
     public:
         OutputImpl( wxWindow *parent, int channels);
         ~OutputImpl( void);

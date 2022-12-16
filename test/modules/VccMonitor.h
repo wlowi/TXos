@@ -25,8 +25,8 @@
 
 typedef struct vccMonitor_t {
 
-    float16 warnLevel;
-    float16 alertLevel;
+    float2 warnLevel;
+    float2 alertLevel;
     
     /* Fine tune Vcc (battery) voltage read from ADC */
     int8_t vccAdjust;
@@ -38,13 +38,13 @@ class VccMonitor : public Module {
     NON_PHASED_CONFIG( vccMonitor_t)
 
     private:
-        float16 vcc;
+        float2 vcc;
         bool vccUpdateImmediate;
         
     public:
         VccMonitor();
 
-        float16 getVcc() const;
+        float2 getVcc() const;
         bool belowWarn() const;
         bool belowAlert() const;
 

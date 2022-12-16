@@ -31,7 +31,14 @@ OutputImpl::OutputImpl( wxWindow *parent, int channels)
 
 bool OutputImpl::acceptChannels() {
 
-    return true;
+    long now = millis();
+
+    if( now >= lastFrameMs + 22) {
+        lastFrameMs = now;
+        return true;
+    } 
+
+    return false;
 }
 
 void OutputImpl::SetChannelValue(int channel, int value) {

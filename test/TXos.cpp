@@ -126,6 +126,7 @@
 #include "ChannelReverse.h"
 #include "Mixer.h"
 #include "Statistics.h"
+#include "ChannelDelay.h"
 
 #if defined( ARDUINO )
 #include "InputImpl.h"
@@ -370,6 +371,8 @@ void setup( void) {
     moduleManager.addToModelMenu( switchedChannels);
     AssignInput *assignInput = new AssignInput();
     moduleManager.addToModelMenu( assignInput);
+    ChannelDelay *channelDelay = new ChannelDelay();
+    moduleManager.addToModelMenu( channelDelay);
     Phases *phases = new Phases();
     moduleManager.addToModelMenu( phases);
     PhasesTrim *phasesTrim = new PhasesTrim();
@@ -404,6 +407,7 @@ void setup( void) {
 
     /* The following moduels act on logical channels */
     moduleManager.addToRunList( assignInput);
+    moduleManager.addToRunList( channelDelay);
     moduleManager.addToRunList( phases);
     moduleManager.addToRunList( dualExpo);
     moduleManager.addToRunList( model);

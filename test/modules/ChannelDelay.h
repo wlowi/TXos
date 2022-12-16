@@ -18,29 +18,27 @@
 
 */
 
-#ifndef _AssignInput_h_
-#define _AssignInput_h_
+#ifndef _ChannelDelay_h_
+#define _ChannelDelay_h_
 
 #include "Module.h"
 
-/* Assign input channels (analog) to logical channels */
+/* delay channel movement */
 
-typedef struct assignInput_t {
+typedef struct channelDelay_t {
 
-    /* source is a mix channel. 
-     * To get the real channel number they need to be 
-     * mapped via real_channel = mixChannelMap[ source ]
-     */
-    channel_t source[ANALOG_CHANNELS];
+    float1 delaySec[MIX_CHANNELS];
 
-} assignInput_t;
+} channelDelay_t;
 
-class AssignInput : public Module {
+class ChannelDelay : public Module {
 
-    NON_PHASED_CONFIG( assignInput_t)
+    NON_PHASED_CONFIG( channelDelay_t)
+
+    int16_t lastChannelValue10[MIX_CHANNELS];
 
     public:
-        AssignInput();
+        ChannelDelay();
 
         /* From Module */
         void run( Controls &controls) final;
