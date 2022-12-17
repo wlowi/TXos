@@ -66,15 +66,21 @@ const char *AssignInput::getRowName( uint8_t row) {
 
 uint8_t AssignInput::getColCount( uint8_t row) {
 
-    return 1;
+    return 2;
 }
 
 void AssignInput::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
-    cell->setList( 4, MixChannelNames, MIX_CHANNELS, CFG->source[row]);
+    if( col == 0) {
+        cell->setLabel( TEXT_INPUT_length +1, TEXT_ARROW_RIGHT, 1);
+    } else if( col == 1) {
+        cell->setList( TEXT_INPUT_length +3, MixChannelNames, MIX_CHANNELS, CFG->source[row]);
+    }
 }
 
 void AssignInput::setValue( uint8_t row, uint8_t col, Cell *cell) {
 
-    CFG->source[row] = cell->getList();
+    if( col == 1) {
+        CFG->source[row] = cell->getList();
+    }
 }

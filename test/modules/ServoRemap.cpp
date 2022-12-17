@@ -79,15 +79,21 @@ const char *ServoRemap::getRowName( uint8_t row) {
 
 uint8_t ServoRemap::getColCount( uint8_t row) {
 
-    return 1;
+    return 2;
 }
 
 void ServoRemap::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
-    cell->setList( 4, LogicalChannelNames, LOGICAL_CHANNELS, CFG->source[row]);
+    if( col == 0) {
+        cell->setLabel( TEXT_OUT_length +1, TEXT_ARROW_LEFT, 1);
+    } else if( col == 1) {
+        cell->setList( TEXT_OUT_length +3, LogicalChannelNames, LOGICAL_CHANNELS, CFG->source[row]);
+    }
 }
 
 void ServoRemap::setValue( uint8_t row, uint8_t col, Cell *cell) {
 
-    CFG->source[row] = cell->getList();
+    if( col == 1) {
+        CFG->source[row] = cell->getList();
+    }
 }

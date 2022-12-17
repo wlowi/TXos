@@ -27,7 +27,8 @@
 
 typedef struct channelDelay_t {
 
-    float1 delaySec[MIX_CHANNELS];
+    float1 posDelaySec[MIX_CHANNELS];
+    float1 negDelaySec[MIX_CHANNELS];
 
 } channelDelay_t;
 

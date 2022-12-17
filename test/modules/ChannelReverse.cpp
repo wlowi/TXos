@@ -66,7 +66,7 @@ uint8_t ChannelReverse::getColCount( uint8_t row) {
 
 void ChannelReverse::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
-    cell->setBool( 4, IS_BIT_SET( CFG->revBits, row));
+    cell->setBool( TEXT_INPUT_length +1, IS_BIT_SET( CFG->revBits, row));
 }
 
 void ChannelReverse::setValue( uint8_t row, uint8_t col, Cell *cell) {

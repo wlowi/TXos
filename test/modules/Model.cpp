@@ -119,6 +119,9 @@ void Model::run( Controls &controls) {
             case MIX_AIL_RUD:
                 mixedValue = mixValue( ail, mix);
                 controls.logicalSet( CHANNEL_RUDDER, controls.logicalGet( CHANNEL_RUDDER) + mixedValue);
+                if( CFG->wingMix == WINGMIX_VTAIL) {
+                    controls.logicalSet( CHANNEL_ELEVATOR, controls.logicalGet(  CHANNEL_ELEVATOR) - mixedValue);
+                }
                 break;
 
             case MIX_AIL_FLP:
@@ -132,6 +135,9 @@ void Model::run( Controls &controls) {
                 mixedValue = mixValue( spl, mix);
                 controls.logicalSet( CHANNEL_AILERON, controls.logicalGet( CHANNEL_AILERON) + mixedValue);
                 controls.logicalSet( CHANNEL_AILERON2, controls.logicalGet( CHANNEL_AILERON2) + mixedValue);
+                if( CFG->wingMix == WINGMIX_DELTA) {
+                    controls.logicalSet( CHANNEL_ELEVATOR, controls.logicalGet(  CHANNEL_ELEVATOR) + mixedValue);
+                }
                 break;
 
             case MIX_SPL_FLP:
@@ -143,23 +149,41 @@ void Model::run( Controls &controls) {
             case MIX_SPL_ELV:
                 mixedValue = mixValue( spl, mix);
                 controls.logicalSet( CHANNEL_ELEVATOR, controls.logicalGet( CHANNEL_ELEVATOR) + mixedValue);
+                if( CFG->wingMix == WINGMIX_VTAIL) {
+                    controls.logicalSet( CHANNEL_RUDDER, controls.logicalGet(  CHANNEL_RUDDER) - mixedValue);
+                }
+                if( CFG->wingMix == WINGMIX_DELTA) {
+                    controls.logicalSet( CHANNEL_AILERON, controls.logicalGet(  CHANNEL_AILERON) + mixedValue);
+                }
                 break;
 
             case MIX_FLP_AIL:
                 mixedValue = mixValue( flp, mix);
                 controls.logicalSet( CHANNEL_AILERON, controls.logicalGet( CHANNEL_AILERON) + mixedValue);
                 controls.logicalSet( CHANNEL_AILERON2, controls.logicalGet( CHANNEL_AILERON2) + mixedValue);
+                if( CFG->wingMix == WINGMIX_DELTA) {
+                    controls.logicalSet( CHANNEL_ELEVATOR, controls.logicalGet(  CHANNEL_ELEVATOR) + mixedValue);
+                }
                 break;
 
             case MIX_FLP_ELV:
                 mixedValue = mixValue( flp, mix);
                 controls.logicalSet( CHANNEL_ELEVATOR, controls.logicalGet( CHANNEL_ELEVATOR) + mixedValue);
+                if( CFG->wingMix == WINGMIX_VTAIL) {
+                    controls.logicalSet( CHANNEL_RUDDER, controls.logicalGet(  CHANNEL_RUDDER) - mixedValue);
+                }
+                if( CFG->wingMix == WINGMIX_DELTA) {
+                    controls.logicalSet( CHANNEL_AILERON, controls.logicalGet(  CHANNEL_AILERON) + mixedValue);
+                }
                 break;
 
             case MIX_ELV_AIL:
                 mixedValue = mixValue( elv, mix);
                 controls.logicalSet( CHANNEL_AILERON, controls.logicalGet( CHANNEL_AILERON) + mixedValue);
                 controls.logicalSet( CHANNEL_AILERON2, controls.logicalGet( CHANNEL_AILERON2) + mixedValue);
+                if( CFG->wingMix == WINGMIX_DELTA) {
+                    controls.logicalSet( CHANNEL_ELEVATOR, controls.logicalGet(  CHANNEL_ELEVATOR) + mixedValue);
+                }
                 break;
 
             case MIX_ELV_FLP:
@@ -171,6 +195,12 @@ void Model::run( Controls &controls) {
             case MIX_RUD_ELV:
                 mixedValue = mixValue( abs(rud), mix);
                 controls.logicalSet( CHANNEL_ELEVATOR, controls.logicalGet( CHANNEL_ELEVATOR) + mixedValue);
+                if( CFG->wingMix == WINGMIX_VTAIL) {
+                    controls.logicalSet( CHANNEL_RUDDER, controls.logicalGet(  CHANNEL_RUDDER) - mixedValue);
+                }
+                if( CFG->wingMix == WINGMIX_DELTA) {
+                    controls.logicalSet( CHANNEL_AILERON, controls.logicalGet(  CHANNEL_AILERON) + mixedValue);
+                }
                 break;
 
             default:

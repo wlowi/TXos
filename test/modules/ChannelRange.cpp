@@ -73,7 +73,7 @@ uint8_t ChannelRange::getColCount( uint8_t row) {
 void ChannelRange::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
     if( col == 0) {
-        cell->setInt8( 4, CFG->range_pct[row], 0, 0, PERCENT_MAX_LIMIT);
+        cell->setInt8( TEXT_INPUT_length +1, CFG->range_pct[row], 3, 0, PERCENT_MAX_LIMIT);
     }
 }
 

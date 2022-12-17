@@ -71,7 +71,10 @@ void SelectList::process( LcdWidget *lcd, Event *event) {
 
                 for( uint8_t col = 0; col < table->getColCount(row); col++) {
                     if( table->hasChanged( row, col)) {
+                        refresh = REFRESH_CELL;
                         refreshLine( lcd, tRow);
+                        refresh = REFRESH_OK;
+                        break;
                     }        
                 }
             }

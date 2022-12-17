@@ -66,7 +66,7 @@ uint8_t ServoSubtrim::getColCount( uint8_t row) {
 
 void ServoSubtrim::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
-    cell->setInt8( 4, CFG->trim_pct[row], 0, PERCENT_MIN_LIMIT, PERCENT_MAX_LIMIT);
+    cell->setInt8( TEXT_OUT_length +1, CFG->trim_pct[row], 0, PERCENT_MIN_LIMIT, PERCENT_MAX_LIMIT);
 }
 
 void ServoSubtrim::setValue( uint8_t row, uint8_t col, Cell *cell) {

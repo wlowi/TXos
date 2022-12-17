@@ -38,17 +38,19 @@ void ChannelDelay::run( Controls &controls) {
     uint16_t delayMs;
 
     for( uint8_t mix = 0; mix < MIX_CHANNELS; mix++) {
-        if( CFG->delaySec[mix] > 0) {
+        if( CFG->posDelaySec[mix] > 0 || CFG->negDelaySec[mix] > 0) {
             ch = MIX_TO_CHANNEL( mix);
             target10 = controls.logicalGet( ch) * 10;
-            delayMs = CFG->delaySec[mix] * 100;
-            limit10 = (CHANNELVALUE_MAX * 10) / (delayMs / 22);
             if( lastChannelValue10[ch] < target10) {
+                delayMs = CFG->posDelaySec[mix] * 100;
+                limit10 = ((CHANNELVALUE_MAX - CHANNELVALUE_MIN) * 10) / (delayMs / 22);
                 lastChannelValue10[ch] += limit10;
                 if( lastChannelValue10[ch] > target10) {
                     lastChannelValue10[ch] = target10;
                 }
             } else if( lastChannelValue10[ch] > target10) {
+                delayMs = CFG->negDelaySec[mix] * 100;
+                limit10 = ((CHANNELVALUE_MAX - CHANNELVALUE_MIN) * 10) / (delayMs / 22);
                 lastChannelValue10[ch] -= limit10;
                 if( lastChannelValue10[ch] < target10) {
                     lastChannelValue10[ch] = target10;
@@ -64,7 +66,8 @@ void ChannelDelay::setDefaults() {
     INIT_NON_PHASED_CONFIGURATION(
 
         for( channel_t ch = 0; ch < MIX_CHANNELS; ch++) {
-            CFG->delaySec[ch] = 0;
+            CFG->posDelaySec[ch] = 0;
+            CFG->negDelaySec[ch] = 0;
         }
 
     )
@@ -94,15 +97,18 @@ uint8_t ChannelDelay::getColCount( uint8_t row) {
 void ChannelDelay::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
     if( col == 0) {
-        cell->setFloat1( 4, CFG->delaySec[row], 5, 0, 100);
+        cell->setFloat1( 4, CFG->posDelaySec[row], 4, 0, 100 /* 10.0 sec */);
     } else {
-        cell->setLabel(10, TEXT_SEC, 3);
+        cell->setFloat1( 9, CFG->negDelaySec[row], 4, 0, 100 /* 10.0 sec */);
+        //cell->setLabel(10, TEXT_SEC, 3);
     }
 }
 
 void ChannelDelay::setValue( uint8_t row, uint8_t col, Cell *cell) {
 
     if( col == 0) {
-        CFG->delaySec[row] = cell->getFloat1();
+        CFG->posDelaySec[row] = cell->getFloat1();
+    } else {
+        CFG->negDelaySec[row] = cell->getFloat1();
     }
 }

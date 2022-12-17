@@ -67,6 +67,7 @@ void ModuleManager::addToRunList( Module *modulePtr) {
     do {                                        \
         blockService->memcpy( p, payload, s);   \
         payload += s;                           \
+        totalSize += s;                         \
     } while( 0 )
 
 /*
@@ -83,6 +84,7 @@ uint8_t ModuleManager::parseModule( configBlockID_t modelID, Module &moduleRef) 
     const uint8_t *payload;
     moduleType_t type;
     moduleSize_t size;
+    uint16_t totalSize = 0;
 
     rc = blockService->readBlock( modelID);
     if( rc != CONFIGBLOCK_RC_OK) {
@@ -105,6 +107,7 @@ uint8_t ModuleManager::parseModule( configBlockID_t modelID, Module &moduleRef) 
             break;
         } else {
             payload += size;
+            totalSize += size;
         }
 
         GET( (uint8_t*)&type, sizeof(moduleType_t));
@@ -208,6 +211,7 @@ void ModuleManager::parseBlock( Menu *menu) {
     moduleType_t type;
     moduleSize_t size;
     Module *current;
+    uint16_t totalSize = 0;
 
     payload = blockService->getPayload();
 
@@ -220,22 +224,27 @@ void ModuleManager::parseBlock( Menu *menu) {
         LOGV("ModuleManager::parseBlock(): GET type=%d size=%d\n", type, size);
 
         current = menu->getModuleByType( type);
+
         if( current == nullptr) {
             LOGV("** ModuleManager::parseBlock(): No module of type=%d\n", type);
-            break;
-        }
+            payload += size;
+            totalSize += size;
 
-        if( current->getConfigSize() != size) {
+        } else if( current->getConfigSize() != size) {
             LOGV("** ModuleManager::parseBlock(): Config size mismatch of module type=%d %d != %d\n",
                 type, current->getConfigSize(), size);
             userInterface.postMessage( 1, MSG_CONFIG_SIZE);
-            break;
+            payload += size;
+            totalSize += size;
+            
+        } else {
+            GET( current->getConfig(), size);
         }
-
-        GET( current->getConfig(), size);
 
         GET( (uint8_t*)&type, sizeof(moduleType_t));
     }
+
+    LOGV("ModuleManager::parseBlock(): Total bytes read=%d\n", totalSize);
 }
 
 /*
@@ -282,7 +291,7 @@ void ModuleManager::generateBlock( configBlockID_t modelID, Menu *menu) {
     uint8_t *payload;
     moduleType_t type;
     moduleSize_t size;
-    moduleSize_t totalSize = 0;
+    uint16_t totalSize = 0;
     Module *current = menu->getFirstModule();
 
     blockService->formatBlock( modelID);

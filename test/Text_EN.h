@@ -53,6 +53,7 @@
 #define TEXT_MODULE_VCC_MONITOR       CC("Bat. Warning")
 
 // Analog input channels
+#define TEXT_INPUT_length           3
 #define TEXT_INPUT_CH_1             CC("In1")
 #define TEXT_INPUT_CH_2             CC("In2")
 #define TEXT_INPUT_CH_3             CC("In3")
@@ -63,7 +64,8 @@
 #define TEXT_INPUT_CH_8             CC("In8")
 #define TEXT_INPUT_CH_9             CC("In9")
 
-// Control channels (3 letters fixed)
+// Control channels
+#define TEXT_CONTROL_length         3
 #define TEXT_CONTROL_CH_1           CC("Thr")
 #define TEXT_CONTROL_CH_2           CC("Ail")
 #define TEXT_CONTROL_CH_3           CC("Elv")
@@ -77,7 +79,8 @@
 #define TEXT_CONTROL_CH_11          CC("Ch8")
 #define TEXT_CONTROL_CH_12          CC("Ch9")
 
-// Output channels (3 letters fixed)
+// Output channels
+#define TEXT_OUT_length             2
 #define TEXT_OUT_CH_1               CC("S1")
 #define TEXT_OUT_CH_2               CC("S2")
 #define TEXT_OUT_CH_3               CC("S3")
@@ -122,6 +125,8 @@
 #define TEXT_ACTIVE                 CC("Active")
 #define TEXT_AIL_DIFF               CC("Ail-dif")
 #define TEXT_ALERT                  CC("Alert")
+#define TEXT_ARROW_LEFT             CC("<")
+#define TEXT_ARROW_RIGHT            CC(">")
 #define TEXT_BACK                   CC("<<<<")
 #define TEXT_BIND                   CC("Bind")
 #define TEXT_BOOTING                CC("Booting...")
