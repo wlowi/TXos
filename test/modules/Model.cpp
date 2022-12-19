@@ -42,9 +42,7 @@ void Model::limitChannels( Controls &controls) {
         channelValue_t v = controls.logicalGet( ch);
         if( v > CHANNELVALUE_MAX_LIMIT) {
             controls.logicalSet( ch, CHANNELVALUE_MAX_LIMIT);
-            continue;
-        }
-        if( v < CHANNELVALUE_MIN_LIMIT ) {
+        } else if( v < CHANNELVALUE_MIN_LIMIT ) {
             controls.logicalSet( ch, CHANNELVALUE_MIN_LIMIT);
         }
     }
@@ -125,10 +123,9 @@ void Model::run( Controls &controls) {
                 break;
 
             case MIX_AIL_FLP:
-                mixedValue = mixValue( controls.logicalGet( CHANNEL_AILERON), mix);
+                mixedValue = mixValue( ail, mix);
                 controls.logicalSet( CHANNEL_FLAP, controls.logicalGet( CHANNEL_FLAP) + mixedValue);
-                mixedValue = mixValue( controls.logicalGet( CHANNEL_AILERON2), mix);
-                controls.logicalSet( CHANNEL_FLAP2, controls.logicalGet( CHANNEL_FLAP2) + mixedValue);
+                controls.logicalSet( CHANNEL_FLAP2, controls.logicalGet( CHANNEL_FLAP2) - mixedValue);
                 break;
 
             case MIX_SPL_AIL:

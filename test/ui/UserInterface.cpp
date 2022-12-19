@@ -193,7 +193,7 @@ void UserInterface::homeScreen( Event *event) {
             /* Clear messages and switch off alarm */
             post1 = post2 = 0;
             buzzer.off();
-        } else {
+        } else if( timer) {
             timer->reset();
             buzzer.play( SoundClear);
         }
@@ -232,7 +232,7 @@ void UserInterface::configScreen( Event *event) {
 
     uint8_t idx;
 
-    if( module == NULL) {
+    if( module == nullptr) {
         LOG("** UserInterface::configScreen(): No module\n");
         popScreen();
         return;

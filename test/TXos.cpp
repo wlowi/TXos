@@ -231,6 +231,9 @@ DisplayImpl *displayImpl;
 
 #undef ENABLE_MEMDEBUG
 #undef ENABLE_BDEBUG
+#define ENABLE_STATISTICS_MODULE
+#define ENABLE_SERIAL
+
 
 #ifdef ENABLE_MEMDEBUG
 
@@ -288,6 +291,10 @@ size_t memdebug[4];
 
 #endif
 
+#else
+
+#define ENABLE_STATISTICS_MODULE
+
 #endif
 
 Controls controls;
@@ -299,7 +306,10 @@ ConfigBlock configBlock;
 SystemConfig systemConfig;
 ModelSelect modelSelect;
 ModuleManager moduleManager( configBlock);
+
+#ifdef ENABLE_STATISTICS_MODULE
 Statistics statistics;
+#endif
 
 #ifdef ENABLE_BDEBUG
 uint8_t bdebugi = 0;
@@ -325,11 +335,12 @@ void setup( void) {
     buzzerImpl = new BuzzerImpl();
     displayImpl = new DisplayImpl();
     
-#if defined( ENABLE_MEMDEBUG ) || defined( ENABLE_BDEBUG )
+#if defined( ENABLE_MEMDEBUG ) || defined( ENABLE_BDEBUG) || defined( ENABLE_SERIAL)
     Serial.begin(19200);
 #endif
-
+   
 #endif
+
     ports.init();
     buzzer.init();
 
@@ -354,7 +365,9 @@ void setup( void) {
     moduleManager.addToSystemMenu( calibrateTrim);
     VccMonitor *vccMonitor = new VccMonitor();
     moduleManager.addToSystemMenu( vccMonitor);
+#ifdef ENABLE_STATISTICS_MODULE
     moduleManager.addToSystemMenu( &statistics);
+#endif
 
     /* Model menu */
 
@@ -450,17 +463,24 @@ void setup( void) {
 }
 
 void loop( void) {
+
+#ifdef ENABLE_STATISTICS_MODULE
     unsigned long t1;
+#endif
 
     if( output.acceptChannels() ) {
 
+#ifdef ENABLE_STATISTICS_MODULE
         t1 = millis();
+#endif
 
         controls.GetControlValues();
         moduleManager.runModules( controls);
         output.setChannels( controls);
 
+#ifdef ENABLE_STATISTICS_MODULE
         statistics.updateModulesTime( (uint16_t)(millis() - t1));
+#endif
 
 #ifdef ENABLE_BDEBUG
     Serial.print("d:");
@@ -475,12 +495,18 @@ void loop( void) {
 #endif
 #endif     
     }
-    
+
+#ifdef ENABLE_STATISTICS_MODULE
     t1 = millis();
+#endif
+
     userInterface.handle();
+
+#ifdef ENABLE_STATISTICS_MODULE
     t1 = millis() - t1;
     statistics.updateUITime( (uint16_t)t1);
     if( statistics.debugTiming()) {
         userInterface.printTiming( (uint16_t)t1);
     }
+#endif
 }

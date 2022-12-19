@@ -36,7 +36,8 @@ class ChannelDelay : public Module {
 
     NON_PHASED_CONFIG( channelDelay_t)
 
-    int16_t lastChannelValue10[MIX_CHANNELS];
+    private:
+        int16_t lastChannelValue10[MIX_CHANNELS];
 
     public:
         ChannelDelay();

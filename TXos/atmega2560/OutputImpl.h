@@ -32,7 +32,8 @@
 #define PPM_SPACE_usec      ((timingUsec_t)  300)
 #define PPM_MID_usec        ((timingUsec_t) 1200)
 #define PPM_RANGE100_usec   ((timingUsec_t)  400)
-#define PPM_RANGEMAX_usec   ((timingUsec_t)  500)
+/* 150 % */
+#define PPM_RANGEMAX_usec   ((timingUsec_t)  600)
 
 #define PPM_MIN_usec        (PPM_MID_usec - PPM_RANGEMAX_usec)
 #define PPM_MAX_usec        (PPM_MID_usec + PPM_RANGEMAX_usec)

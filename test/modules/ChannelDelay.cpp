@@ -35,29 +35,46 @@ void ChannelDelay::run( Controls &controls) {
     channel_t ch;
     int16_t target10; // multiplied by 10 for increased precision
     int16_t limit10;  // same here
-    uint16_t delayMs;
+    int16_t delayMs;
 
     for( uint8_t mix = 0; mix < MIX_CHANNELS; mix++) {
-        if( CFG->posDelaySec[mix] > 0 || CFG->negDelaySec[mix] > 0) {
-            ch = MIX_TO_CHANNEL( mix);
-            target10 = controls.logicalGet( ch) * 10;
-            if( lastChannelValue10[ch] < target10) {
+
+        ch = MIX_TO_CHANNEL( mix);
+        target10 = controls.logicalGet( ch) * 10;
+
+        if( CFG->posDelaySec[mix] == 0 && CFG->negDelaySec[mix] == 0) {
+            lastChannelValue10[mix] = target10;
+            continue;
+        }
+
+        if( lastChannelValue10[mix] < target10) {
+            if( CFG->posDelaySec[mix] > 0) {
                 delayMs = CFG->posDelaySec[mix] * 100;
                 limit10 = ((CHANNELVALUE_MAX - CHANNELVALUE_MIN) * 10) / (delayMs / 22);
-                lastChannelValue10[ch] += limit10;
-                if( lastChannelValue10[ch] > target10) {
-                    lastChannelValue10[ch] = target10;
+                lastChannelValue10[mix] += limit10;
+                if( lastChannelValue10[mix] > target10) {
+                    lastChannelValue10[mix] = target10;
                 }
-            } else if( lastChannelValue10[ch] > target10) {
+            } else {
+               lastChannelValue10[mix] = target10;
+            }
+
+        } else if( lastChannelValue10[mix] > target10) {
+            if( CFG->negDelaySec[mix] > 0) {
                 delayMs = CFG->negDelaySec[mix] * 100;
                 limit10 = ((CHANNELVALUE_MAX - CHANNELVALUE_MIN) * 10) / (delayMs / 22);
-                lastChannelValue10[ch] -= limit10;
-                if( lastChannelValue10[ch] < target10) {
-                    lastChannelValue10[ch] = target10;
+                lastChannelValue10[mix] -= limit10;
+                if( lastChannelValue10[mix] < target10) {
+                    lastChannelValue10[mix] = target10;
                 }
+            } else {
+                lastChannelValue10[mix] = target10;
             }
-            controls.logicalSet( ch, (channelValue_t)(lastChannelValue10[ch] / 10));
+
         }
+
+        controls.logicalSet( ch, (channelValue_t)(lastChannelValue10[mix] / 10));
+        
     }
 }
 

@@ -24,9 +24,11 @@
 
 #include "ModelSelect.h"
 #include "UserInterface.h"
+#include "SystemConfig.h"
 
 extern ModuleManager moduleManager;
 extern UserInterface userInterface;
+extern SystemConfig systemConfig;
 
 ModelSelect::ModelSelect() : Module( MODULE_MODEL_SELECT_TYPE, TEXT_MODULE_MODEL_SELECT) {
 
@@ -66,6 +68,7 @@ void ModelSelect::rowExecute( uint8_t row) {
 
     CFG->modelID = row +1;
     moduleManager.loadModel( CFG->modelID);
+    systemConfig.save();
     userInterface.toScreen( SCREEN_HOME);
 }
 
