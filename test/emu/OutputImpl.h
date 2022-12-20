@@ -8,7 +8,7 @@
     #include <wx/wx.h>
 #endif
 
-#include "Arduino.h"
+#include "Controls.h"
 
 class OutputImpl : public wxStaticBoxSizer
 {
@@ -25,6 +25,8 @@ class OutputImpl : public wxStaticBoxSizer
 
         bool acceptChannels();
         void SetChannelValue( int channel, int value);
+        uint16_t getOverrunCounter();
+        timingUsec_t getMaxFrameTime();
 };
 
 #endif

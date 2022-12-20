@@ -14,6 +14,7 @@ static volatile uint8_t outputState;
 
 /* inFrameTime is used to compute the remaining time until frame end */
 static volatile timingUsec_t inFrameTime_usec;
+static volatile timingUsec_t maxFrameTime_usec;
 
 static volatile channel_t outputChannel;
 
@@ -44,7 +45,7 @@ ISR( TIMER1_COMPA_vect) {
     TCNT1L = (byte)0;
     
     inFrameTime_usec += CONVERT_TIMER_TO_USEC( l, h);
-    
+
     switch( outputState) {
     case BEGIN_OF_FIRST_SPACE:
         PIN_LOW();
@@ -52,6 +53,10 @@ ISR( TIMER1_COMPA_vect) {
 
         outputImpl->switchSet();
         inputImpl->start();
+
+        if( inFrameTime_usec > maxFrameTime_usec) {
+          maxFrameTime_usec = inFrameTime_usec;
+        }
 
         inFrameTime_usec = 0;
         outputState = END_OF_SPACE;
@@ -116,6 +121,8 @@ void OutputImpl::init() {
             ppmSet[1].channel[i] = PPM_MID_usec;
         }
 
+        inFrameTime_usec = 0;
+        maxFrameTime_usec = 0;
         outputChannel = 0;
         outputState = BEGIN_OF_FIRST_SPACE;
         ppmOverrun = 0;
@@ -155,12 +162,24 @@ timingUsec_t OutputImpl::getInFrameTime() {
     return t + CONVERT_TIMER_TO_USEC( l, h);
 }
 
+timingUsec_t OutputImpl::getMaxFrameTime() {
+    
+    timingUsec_t t;
+
+    ATOMIC_BLOCK( ATOMIC_RESTORESTATE) {
+        t = maxFrameTime_usec;
+    }
+    
+    return t;
+}
+
+
 /* An overrun occurs if not all channels in the modifiable set
  * were set and a switch occurs.
  */
 uint16_t OutputImpl::getOverrunCounter() {
 
-    return outputImpl->ppmOverrun;
+    return ppmOverrun;
 }
 
 /* Switch active and modifiable set.
@@ -171,20 +190,19 @@ void OutputImpl::switchSet() {
     
     ATOMIC_BLOCK( ATOMIC_RESTORESTATE) {
 
-        if( outputImpl->channelSetDone) {
-            outputImpl->channelSetDone = false;
-            
-            outputImpl->currentSet = OTHER_PPMSET( outputImpl->currentSet);
+        if( channelSetDone) {
+            channelSetDone = false; 
+            currentSet = OTHER_PPMSET( currentSet);
 
         } else {
-            outputImpl->ppmOverrun++;
+            ppmOverrun++;
         }
     }
 }
 
 bool OutputImpl::acceptChannels() {
 
-    return ! outputImpl->channelSetDone;
+    return !channelSetDone;
 }
 
 /* Set timing for a channel.
@@ -227,10 +245,10 @@ void OutputImpl::SetChannelValue(int channel, int value) {
         
         ATOMIC_BLOCK( ATOMIC_RESTORESTATE) {
 
-            outputImpl->ppmSet[ OTHER_PPMSET( outputImpl->currentSet) ].channel[ channel ] = t;
+            ppmSet[ OTHER_PPMSET( currentSet) ].channel[ channel ] = t;
 
             if( channel == PPM_CHANNELS-1) {
-                outputImpl->channelSetDone = true;
+                channelSetDone = true;
             }
         }
     }

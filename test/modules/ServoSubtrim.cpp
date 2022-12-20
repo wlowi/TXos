@@ -20,7 +20,7 @@
 
 #include "ServoSubtrim.h"
 
-extern const char *OutputChannelNames[PPM_CHANNELS];
+extern const char* const OutputChannelNames[PPM_CHANNELS];
 
 ServoSubtrim::ServoSubtrim() : Module( MODULE_SERVO_SUBTRIM_TYPE, TEXT_MODULE_SERVO_SUBTRIM) {
 

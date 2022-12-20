@@ -25,7 +25,7 @@
 extern UserInterface userInterface;
 extern ModuleManager moduleManager;
 
-extern const char *LogicalChannelNames[LOGICAL_CHANNELS];
+extern const char* const LogicalChannelNames[LOGICAL_CHANNELS];
 
 #define EXPO_LOOKUP_TABLE_SIZE   10
 

@@ -20,6 +20,16 @@
 
 #include "Statistics.h"
 
+#define STATISTIC_COUNT 5
+
+const char* const statisticNames[STATISTIC_COUNT] {
+    TEXT_STATISTIC_TIMING,
+    TEXT_STATISTIC_UI,
+    TEXT_STATISTIC_MODULE,
+    TEXT_STATISTIC_PPMOVER,
+    TEXT_STATISTIC_FRAMETIME
+};
+
 Statistics::Statistics() : Module( MODULE_STATISTICS_TYPE, TEXT_MODULE_STATISTICS) {
 
 }
@@ -38,6 +48,21 @@ void Statistics::updateModulesTime( uint16_t t) {
     }
 }
 
+void Statistics::updatePPMOverrun( uint16_t c) {
+
+    if( c > ppmOverrun) {
+        ppmOverrun = c;
+    }
+}
+
+void Statistics::updateFrameTime( timingUsec_t t) {
+
+    if( t > maxFrameTime) {
+        maxFrameTime = t;
+    }
+}
+
+
 bool Statistics::debugTiming() {
 
     return timing;
@@ -53,6 +78,8 @@ void Statistics::setDefaults() {
 
     timeUI_msec = 0;
     timeModules_msec = 0;
+    ppmOverrun = 0;
+    maxFrameTime = 0;
     timing = false;
 }
 
@@ -65,18 +92,12 @@ bool Statistics::isRowEditable( uint8_t row) {
 
 uint8_t Statistics::getRowCount() {
 
-    return 3;
+    return STATISTIC_COUNT;
 }
 
 const char *Statistics::getRowName( uint8_t row) {
 
-    if( row == 0) {
-        return TEXT_STATISTIC_TIMING;
-    } else if( row == 1) {
-        return TEXT_STATISTIC_UI;
-    }
-
-    return TEXT_STATISTIC_MODULE;
+    return statisticNames[row];
 }
 
 uint8_t Statistics::getColCount( uint8_t row) {
@@ -90,8 +111,12 @@ void Statistics::getValue( uint8_t row, uint8_t col, Cell *cell) {
         cell->setBool( 10, timing);
     } else if( row == 1) {
         cell->setInt16( 7, timeUI_msec, 0, 0, 0);
-    } else {
+    } else if( row == 2) {
         cell->setInt16( 7, timeModules_msec, 0, 0, 0);
+    } else if( row == 3) {
+        cell->setInt16( 7, ppmOverrun, 0, 0, 0);
+    } else if( row == 4) {
+        cell->setInt16( 7, maxFrameTime, 0, 0, 0);
     }
 }
 

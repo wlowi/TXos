@@ -41,3 +41,14 @@ void Output::setChannels( Controls &controls) const {
         outputImpl->SetChannelValue( ch, controls.outputGet(ch));
     }
 }
+
+uint16_t Output::getOverrunCounter() {
+
+    return outputImpl->getOverrunCounter();
+}
+
+timingUsec_t Output::getMaxFrameTime() {
+
+    return outputImpl->getMaxFrameTime();
+}
+

@@ -20,8 +20,8 @@
 
 #include "ServoRemap.h"
 
-extern const char *LogicalChannelNames[LOGICAL_CHANNELS];
-extern const char *OutputChannelNames[PPM_CHANNELS];
+extern const char* const LogicalChannelNames[LOGICAL_CHANNELS];
+extern const char* const OutputChannelNames[PPM_CHANNELS];
 
 ServoRemap::ServoRemap() : Module( MODULE_SERVO_REMAP_TYPE, TEXT_MODULE_SERVO_REMAP) {
 

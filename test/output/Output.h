@@ -36,6 +36,9 @@ class Output {
         /* Returns true if the PPM generator is ready to accept the next channel set */
         bool acceptChannels() const;
         void setChannels( Controls &controls) const;
+
+        uint16_t getOverrunCounter();
+        timingUsec_t getMaxFrameTime();
 };
 
 #endif

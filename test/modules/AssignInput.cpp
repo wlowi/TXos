@@ -20,8 +20,8 @@
 
 #include "AssignInput.h"
 
-extern const char *InputChannelNames[ANALOG_CHANNELS];
-extern const char *MixChannelNames[MIX_CHANNELS];
+extern const char* const InputChannelNames[ANALOG_CHANNELS];
+extern const char* const MixChannelNames[MIX_CHANNELS];
 extern const channel_t MixChannelMap[MIX_CHANNELS];
 
 AssignInput::AssignInput() : Module( MODULE_ASSIGN_INPUT_TYPE, TEXT_MODULE_ASSIGN_INPUT) {

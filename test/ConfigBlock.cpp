@@ -58,7 +58,7 @@ configBlock_rc ConfigBlock::formatBlock( configBlockID_t id) {
     if( id > CONFIG_BLOCKID_INVALID && id < CONFIG_BLOCKS) {
 
         blockID = id;
-        for( uint8_t i = 0; i < CONFIG_PAYLOAD_SIZE; i++) {
+        for( uint16_t i = 0; i < CONFIG_PAYLOAD_SIZE; i++) {
             block.payload[i] = 0xff;
         }
         

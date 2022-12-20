@@ -20,7 +20,7 @@
 
 #include "ChannelDelay.h"
 
-extern const char *MixChannelNames[MIX_CHANNELS];
+extern const char* const MixChannelNames[MIX_CHANNELS];
 extern const channel_t MixChannelMap[MIX_CHANNELS];
 
 ChannelDelay::ChannelDelay() : Module( MODULE_CHANNEL_DELAY_TYPE, TEXT_MODULE_CHANNEL_DELAY) {

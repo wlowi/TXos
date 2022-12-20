@@ -20,7 +20,7 @@
 
 #include "ServoReverse.h"
 
-extern const char *OutputChannelNames[PPM_CHANNELS];
+extern const char* const OutputChannelNames[PPM_CHANNELS];
 
 ServoReverse::ServoReverse() : Module( MODULE_SERVO_REVERSE_TYPE, TEXT_MODULE_SERVO_REVERSE) {
 

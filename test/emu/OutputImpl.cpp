@@ -49,6 +49,16 @@ void OutputImpl::SetChannelValue(int channel, int value) {
     gauges[channel]->SetValue( value+1500);
 }
 
+uint16_t OutputImpl::getOverrunCounter() {
+
+    return 0;
+}
+
+timingUsec_t OutputImpl::getMaxFrameTime() {
+
+    return 0;
+}
+
 OutputImpl::~OutputImpl( void) {
 
     if( channelIDs != NULL) {

@@ -124,8 +124,22 @@ void Model::run( Controls &controls) {
 
             case MIX_AIL_FLP:
                 mixedValue = mixValue( ail, mix);
-                controls.logicalSet( CHANNEL_FLAP, controls.logicalGet( CHANNEL_FLAP) + mixedValue);
-                controls.logicalSet( CHANNEL_FLAP2, controls.logicalGet( CHANNEL_FLAP2) - mixedValue);
+                if( CFG->qrDiffPct != 0 && controls.evalSwitches( CFG->qrDiffSw)) {
+                    channelValue_t t = controls.trimGet( CHANNEL_AILERON);
+                    long d = mixedValue - t;
+                    channelValue_t r = (channelValue_t)(d * (100L - abs(CFG->qrDiffPct)) / 100L);
+
+                    if( (CFG->qrDiffPct > 0) == (d > 0) ) {
+                        controls.logicalSet( CHANNEL_FLAP, controls.logicalGet( CHANNEL_FLAP) + mixedValue /* t +d */);
+                        controls.logicalSet( CHANNEL_FLAP2, controls.logicalGet( CHANNEL_FLAP2) -t - r);
+                    } else {
+                        controls.logicalSet( CHANNEL_FLAP, controls.logicalGet( CHANNEL_FLAP) + t + r);
+                        controls.logicalSet( CHANNEL_FLAP2, controls.logicalGet( CHANNEL_FLAP2) -mixedValue /* -t -d */);
+                    }
+                } else {
+                    controls.logicalSet( CHANNEL_FLAP, controls.logicalGet( CHANNEL_FLAP) + mixedValue);
+                    controls.logicalSet( CHANNEL_FLAP2, controls.logicalGet( CHANNEL_FLAP2) - mixedValue);
+                }
                 break;
 
             case MIX_SPL_AIL:

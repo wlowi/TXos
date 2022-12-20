@@ -20,7 +20,7 @@
 
 #include "SwitchedChannels.h"
 
-extern const char *InputChannelNames[ANALOG_CHANNELS];
+extern const char* const InputChannelNames[ANALOG_CHANNELS];
 
 SwitchedChannels::SwitchedChannels() : Module( MODULE_SWITCHED_CHANNELS_TYPE, TEXT_MODULE_SWITCHED_CHANNELS) {
 

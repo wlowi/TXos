@@ -29,11 +29,11 @@ typedef struct CellType_t {
     int16_t intV;
     
     uint8_t size;        /* String length */
-    char *string;
-    const char *label;
+    char* string;
+    const char* label;
 
     uint8_t count;       /* List size */
-    const char **list;
+    const char* const* list;
 
 } CellType_t;
 
@@ -54,8 +54,8 @@ class Cell {
         void setFloat1( uint8_t screenX, float1 v, uint8_t width, float1 nmin, float1 nmax);
         void setFloat2( uint8_t screenX, float2 v, uint8_t width, float2 nmin, float2 nmax);
         void setString( uint8_t screenX, char *v, uint8_t sz);
-        void setLabel( uint8_t screenX, const char *v, uint8_t sz);
-        void setList( uint8_t screenX, const char **v, uint8_t sz, uint8_t curr);
+        void setLabel( uint8_t screenX, const char* v, uint8_t sz);
+        void setList( uint8_t screenX, const char* const* v, uint8_t sz, uint8_t curr);
         void setSwitch( uint8_t screenX, switch_t v);
         void setSwitchState( uint8_t screenX, switch_t v);
 

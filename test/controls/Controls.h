@@ -78,11 +78,11 @@ typedef uint16_t timingUsec_t;
 /* This represents a percentage from -125% to 125%
  */
 typedef int8_t percent_t;
-#define PERCENT_MAX_LIMIT       ((percent_t)125)
-#define PERCENT_MIN_LIMIT       ((percent_t)-125)
-
-#define PERCENT_MAX             ((percent_t)100)
 #define PERCENT_MIN             ((percent_t)-100)
+#define PERCENT_MAX             ((percent_t)100)
+
+#define PERCENT_MIN_LIMIT       ((percent_t)-125)
+#define PERCENT_MAX_LIMIT       ((percent_t)125)
 
 #define PCT_TO_CHANNEL( p) ((channelValue_t)p*10)
 

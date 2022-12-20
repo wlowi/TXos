@@ -25,7 +25,7 @@
 extern UserInterface userInterface;
 extern ModuleManager moduleManager;
 
-extern const char *LogicalChannelNames[LOGICAL_CHANNELS];
+extern const char* const LogicalChannelNames[LOGICAL_CHANNELS];
 
 PhasesTrim::PhasesTrim() : Module( MODULE_PHASES_TRIM_TYPE, TEXT_MODULE_PHASES_TRIM) {
 

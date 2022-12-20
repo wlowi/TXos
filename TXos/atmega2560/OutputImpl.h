@@ -55,12 +55,12 @@ class OutputImpl
         ppmSet_t ppmSet[2];
         uint8_t currentSet;
 
+    private:
     	  /* Count how may times the user mode code was unable to compute 
      	   * and set all channels within one PPM frame.
      	   * This should always be 0.
      	   */
     	  uint16_t ppmOverrun;
-    	
     	  bool channelSetDone;
     	
     public:
@@ -72,6 +72,7 @@ class OutputImpl
         void SetChannelValue( int channel, int value);
         
         timingUsec_t getInFrameTime();
+        timingUsec_t getMaxFrameTime();
         uint16_t getOverrunCounter();
         
     private:

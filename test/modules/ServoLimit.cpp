@@ -20,7 +20,7 @@
 
 #include "ServoLimit.h"
 
-extern const char *OutputChannelNames[PPM_CHANNELS];
+extern const char* const OutputChannelNames[PPM_CHANNELS];
 
 ServoLimit::ServoLimit() : Module( MODULE_SERVO_LIMIT_TYPE, TEXT_MODULE_SERVO_LIMIT) {
 

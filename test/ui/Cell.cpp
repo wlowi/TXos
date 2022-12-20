@@ -283,7 +283,7 @@ void Cell::setLabel( uint8_t screenX, const char *v, uint8_t sz) {
     value.size = sz;
 }
 
-void Cell::setList( uint8_t screenX, const char **v, uint8_t count, uint8_t curr) {
+void Cell::setList( uint8_t screenX, const char* const* v, uint8_t count, uint8_t curr) {
 
     uint8_t i;
     uint8_t sz;

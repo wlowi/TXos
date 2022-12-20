@@ -20,7 +20,7 @@
 
 #include "ServoMonitor.h"
 
-extern const char *OutputChannelNames[PPM_CHANNELS];
+extern const char* const OutputChannelNames[PPM_CHANNELS];
 
 ServoMonitor::ServoMonitor( Controls &controls) : Module( MODULE_SERVO_MONITOR_TYPE, TEXT_MODULE_MONITOR) , current( controls) {
 

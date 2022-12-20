@@ -1,7 +1,7 @@
 
 #include "Mixer.h"
 
-extern const char *MixChannelNames[MIX_CHANNELS];
+extern const char* const MixChannelNames[MIX_CHANNELS];
 extern const channel_t MixChannelMap[MIX_CHANNELS];
 
 Mixer::Mixer() : Module( MODULE_MIXER_TYPE, TEXT_MODULE_MIXER) {

@@ -136,7 +136,7 @@
 #include "DisplayImpl.h"
 #endif
 
-const char *InputChannelNames[ANALOG_CHANNELS] = {
+const char* InputChannelNames[ANALOG_CHANNELS] = {
     TEXT_INPUT_CH_1,
     TEXT_INPUT_CH_2,
     TEXT_INPUT_CH_3,
@@ -148,7 +148,7 @@ const char *InputChannelNames[ANALOG_CHANNELS] = {
     TEXT_INPUT_CH_9
 };
 
-const char *LogicalChannelNames[LOGICAL_CHANNELS] = {
+const char* LogicalChannelNames[LOGICAL_CHANNELS] = {
     TEXT_CONTROL_CH_1,
     TEXT_CONTROL_CH_2,
     TEXT_CONTROL_CH_3,
@@ -163,7 +163,7 @@ const char *LogicalChannelNames[LOGICAL_CHANNELS] = {
     TEXT_CONTROL_CH_12
 };
 
-const char *MixChannelNames[MIX_CHANNELS] = {
+const char* MixChannelNames[MIX_CHANNELS] = {
     TEXT_CONTROL_CH_1,
     TEXT_CONTROL_CH_2,
     TEXT_CONTROL_CH_3,
@@ -187,7 +187,7 @@ channel_t MixChannelMap[MIX_CHANNELS] = {
     CHANNEL_9         // ((channel_t)11)
 };
 
-const char *OutputChannelNames[PPM_CHANNELS] = {
+const char* OutputChannelNames[PPM_CHANNELS] = {
     TEXT_OUT_CH_1,
     TEXT_OUT_CH_2,
     TEXT_OUT_CH_3,
@@ -196,7 +196,7 @@ const char *OutputChannelNames[PPM_CHANNELS] = {
     TEXT_OUT_CH_6,
     TEXT_OUT_CH_7,
     TEXT_OUT_CH_8,
-    TEXT_OUT_CH_9,
+    TEXT_OUT_CH_9
 };
 
 const buzzerCmd_t SoundWelcome[] = {
@@ -232,7 +232,7 @@ DisplayImpl *displayImpl;
 #undef ENABLE_MEMDEBUG
 #undef ENABLE_BDEBUG
 #define ENABLE_STATISTICS_MODULE
-#define ENABLE_SERIAL
+#undef ENABLE_SERIAL
 
 
 #ifdef ENABLE_MEMDEBUG
@@ -505,6 +505,8 @@ void loop( void) {
 #ifdef ENABLE_STATISTICS_MODULE
     t1 = millis() - t1;
     statistics.updateUITime( (uint16_t)t1);
+    statistics.updatePPMOverrun( output.getOverrunCounter());
+    statistics.updateFrameTime( output.getMaxFrameTime());
     if( statistics.debugTiming()) {
         userInterface.printTiming( (uint16_t)t1);
     }

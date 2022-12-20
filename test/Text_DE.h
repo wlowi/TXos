@@ -181,7 +181,9 @@
 
 // Statistics
 #define TEXT_STATISTIC_UI           CC("UI")
-#define TEXT_STATISTIC_MODULE       CC("MODULE")
+#define TEXT_STATISTIC_MODULE       CC("Module")
+#define TEXT_STATISTIC_PPMOVER      CC("PPM-Ov")
+#define TEXT_STATISTIC_FRAMETIME    CC("Framet")
 #define TEXT_STATISTIC_TIMING       CC("Timing")
 
 /* User interface warnings and messages */
