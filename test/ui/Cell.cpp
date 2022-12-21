@@ -72,16 +72,22 @@ void Cell::render( LcdWidget *lcd, bool edit) {
     }
 }
 
-void Cell::edit( Event *event) {
+bool Cell::edit( Event *event) {
 
     switch_t sw;
+    switchState_t swState;
+    bool changed = false;
 
     if( type == SWITCH_SET_STATE_T && IS_SWITCH_USED( value.intV)) {
-        SET_SWITCH_STATE( value.intV, controls.switchGet(value.intV));
+        swState = controls.switchGet(value.intV);
+        if( swState != value.intV) {
+            SET_SWITCH_STATE( value.intV, swState);
+            changed = true;
+        }
     }
 
     if( !event->pending()) {
-        return;
+        return changed;
     }
 
     switch( type) {
@@ -89,6 +95,7 @@ void Cell::edit( Event *event) {
         if( event->key == KEY_DOWN || event->key == KEY_UP) {
             value.boolV = ! value.boolV;
             event->markProcessed();
+            changed = true;
         }
         break;
 
@@ -99,12 +106,15 @@ void Cell::edit( Event *event) {
         if( event->key == KEY_DOWN) {
             value.intV -= event->count;
             event->markProcessed();
+            changed = true;
         } else if( event->key == KEY_UP) {
             value.intV += event->count;
             event->markProcessed();
+            changed = true;
         } else if( event->key == KEY_CLEAR) {
             value.intV = 0;
             event->markProcessed();
+            changed = true;
         }
 
         if( value.intV > numericMax) {
@@ -128,18 +138,22 @@ void Cell::edit( Event *event) {
                 value.intV++;
                 event->markProcessed();
             }
+            changed = true;
         } else if( event->key == KEY_DOWN) {
             /* Previous letter in alphabet. */
             value.string[value.intV] -= event->count;
             event->markProcessed();
+            changed = true;
         } else if( event->key == KEY_UP) {
             /* Next letter in alphabet. */
             value.string[value.intV] += event->count;
             event->markProcessed();
+            changed = true;
         } else if( event->key == KEY_CLEAR) {
             /* Space character. */
             value.string[value.intV] = ' ';
             event->markProcessed();
+            changed = true;
         }
 
         if( value.string[value.intV] < ' ') {
@@ -158,12 +172,14 @@ void Cell::edit( Event *event) {
                 value.intV = 0;
             }
             event->markProcessed();
+            changed = true;
         } else if( event->key == KEY_UP) {
             value.intV += event->count;
             if( value.intV >= value.count) {
                 value.intV = value.count-1;
             }
             event->markProcessed();
+            changed = true;
         }
         break;
 
@@ -184,6 +200,7 @@ void Cell::edit( Event *event) {
                 SET_SWITCH( value.intV, sw);
             }
             event->markProcessed();
+            changed = true;
 
         } else if( event->key == KEY_UP) {
 
@@ -198,13 +215,14 @@ void Cell::edit( Event *event) {
             }
             SET_SWITCH( value.intV, sw);            
             event->markProcessed();
+            changed = true;
 
         } else if( event->key == KEY_CLEAR) {
 
             SET_SWITCH_UNUSED( value.intV);
             SET_SWITCH( value.intV, 0);
             event->markProcessed();
-
+            changed = true;
         }
         break;
         
@@ -212,6 +230,8 @@ void Cell::edit( Event *event) {
         // ignore
         break;
     }
+
+    return changed;
 }
 
 bool Cell::isEditable() {

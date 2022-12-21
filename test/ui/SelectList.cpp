@@ -22,6 +22,23 @@ void SelectList::set( TableEditable *tab, bool backItem) {
     useBackItem = backItem;
 }
 
+void SelectList::set( TableEditable *tab, uint8_t currentSelected, bool backItem) {
+
+    set( tab, backItem);
+
+    if( currentSelected == GO_BACK) {
+        tableRow = 0;
+
+    } else {
+
+        if( currentSelected >= table->getRowCount()) {
+            currentSelected = table->getRowCount()-1;
+        }
+
+        tableRow = backItem ? currentSelected+1 : currentSelected;
+    }
+}
+
 void SelectList::process( LcdWidget *lcd, Event *event) {
 
     uint8_t row; // real table row number, excluding back item
@@ -86,9 +103,12 @@ void SelectList::process( LcdWidget *lcd, Event *event) {
 
         row = useBackItem ? tableRow-1 : tableRow;
 
-        editCell.edit( event);
-        table->setValue( row, tableCol, &editCell);
-        refresh = REFRESH_CELL;
+        if( editCell.edit( event)) {
+            table->setValue( row, tableCol, &editCell);
+            refresh = REFRESH_CELL;
+        } else {
+            refresh = REFRESH_OK;
+        }
 
         if( event->pending()) {
             switch( event->key) {

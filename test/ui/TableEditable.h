@@ -70,7 +70,8 @@ class Cell {
         switch_t getSwitchState() const;
 
         void render( LcdWidget *lcd, bool edit);
-        void edit( Event *event);
+        /* returns true if cell has been changed. */
+        bool edit( Event *event);
         bool isEditable();
 };
 

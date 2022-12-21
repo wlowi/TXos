@@ -38,7 +38,7 @@ class SelectList {
                                    * including back item
                                    */
 
-        uint8_t tableRow;         /* current table row */
+        uint8_t tableRow;         /* current table row, including back item*/
         uint8_t tableOldRow;
         uint8_t tableCol;         /* current table col */
 
@@ -59,6 +59,8 @@ class SelectList {
 
     public:
         void set( TableEditable *tab, bool backItem);
+        void set( TableEditable *tab, uint8_t currentSelected, bool backItem);
+
         void process( LcdWidget *lcd, Event *event);
         /* Cancel edit for this table */
         void cancelEdit( TableEditable *toCancel);

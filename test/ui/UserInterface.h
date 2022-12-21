@@ -49,6 +49,7 @@ class UserInterface {
 
         TableEditable *module;
         SelectList selectList;
+        uint8_t currentSelected;
 
         void homeScreen(Event *event);
         void menuScreen(Event *event, Menu *menu);

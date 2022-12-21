@@ -232,7 +232,7 @@ DisplayImpl *displayImpl;
 #undef ENABLE_MEMDEBUG
 #undef ENABLE_BDEBUG
 #define ENABLE_STATISTICS_MODULE
-#undef ENABLE_SERIAL
+#define ENABLE_SERIAL
 
 
 #ifdef ENABLE_MEMDEBUG

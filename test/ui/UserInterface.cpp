@@ -48,6 +48,7 @@ void UserInterface::init() {
     
     screen[0] = SCREEN_INIT;
     screenPtr = 0;
+    currentSelected = GO_BACK;
 
     message1 = message2 = 0;
     post1 = post2 = 0;
@@ -205,7 +206,8 @@ void UserInterface::menuScreen( Event *event, Menu *menu) {
     uint8_t idx;
 
     if( refresh == REFRESH_FULL) {
-        selectList.set( menu, true);
+        selectList.set( menu, currentSelected, true);
+        currentSelected = GO_BACK;
         refresh = REFRESH_OK;
     }
 
@@ -214,13 +216,18 @@ void UserInterface::menuScreen( Event *event, Menu *menu) {
     if( event->pending()) {
         LOGV("UserInterface::menuScreen(): event pending %d\n", event->key);
         switch( event->key) {
+        case KEY_CLEAR: /* leave menu on clear button */
+            popScreen();
+            break;
+
         case KEY_ENTER:
             idx = selectList.current();
             if( idx == GO_BACK) {
                 popScreen();
             } else {
+                currentSelected = idx;
                 module = menu->getModule(idx);
-                LOGV("UserInterface::menuScreen(): Module %s\n", module ? module->getName() : "NULL");
+                LOGV("UserInterface::menuScreen(): Module %d: %s\n", currentSelected, module ? module->getName() : "NULL");
                 pushScreen( SCREEN_CONFIG);
             }
             break;
