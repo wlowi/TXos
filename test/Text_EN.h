@@ -180,11 +180,14 @@
 #define TEXT_OFF                    CC("Off")
 
 // Statistics
-#define TEXT_STATISTIC_UI           CC("UI")
-#define TEXT_STATISTIC_MODULE       CC("Module")
-#define TEXT_STATISTIC_PPMOVER      CC("PPM-Ov")
-#define TEXT_STATISTIC_FRAMETIME    CC("Framet")
 #define TEXT_STATISTIC_TIMING       CC("Timing")
+#define TEXT_STATISTIC_OVERRUN      CC("PPM-Ovr")
+
+#define TEXT_STATISTIC_UI           CC("UI")
+#define TEXT_STATISTIC_MODULE       CC("Modules")
+#define TEXT_STATISTIC_PPMOVER      CC("PPM-Ovr")
+#define TEXT_STATISTIC_FRAMETIME    CC("Frame")
+#define TEXT_STATISTIC_WDT          CC("WDT")
 
 /* User interface warnings and messages */
 #define TEXT_MSG_count              5

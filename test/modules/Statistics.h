@@ -31,9 +31,11 @@ class Statistics : public Module {
         uint16_t timeUI_msec;
         uint16_t timeModules_msec;
         uint16_t ppmOverrun;
+        uint16_t wdTimeout;
         timingUsec_t maxFrameTime;
 
-        bool timing;
+        bool dumpTiming;
+        bool dumpOverrun;
 
     public:
         explicit Statistics();
@@ -42,7 +44,9 @@ class Statistics : public Module {
         void updateModulesTime( uint16_t t);
         void updatePPMOverrun( uint16_t c);
         void updateFrameTime( timingUsec_t t);
-        bool debugTiming();
+        void updateWdTimeout( uint16_t t);
+        bool debugTiming() const;
+        bool debugOverrun() const;
 
         void run( Controls &controls) final;
         void setDefaults() final;

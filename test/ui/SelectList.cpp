@@ -6,7 +6,6 @@ void SelectList::clear() {
     table = nullptr;
     useBackItem = false;
     screenTableRows = 0;
-    screenRow = 0;
     tableTopRow = 0;
     tableVisibleRows = 0;
     tableRow = 0;
@@ -20,6 +19,9 @@ void SelectList::set( TableEditable *tab, bool backItem) {
     clear();
     table = tab;
     useBackItem = backItem;
+
+    tableRows = table->getRowCount() + (useBackItem ? 1 : 0);
+    screenHeaderOffs = table->getName() ? 1 : 0;
 }
 
 void SelectList::set( TableEditable *tab, uint8_t currentSelected, bool backItem) {
@@ -43,9 +45,10 @@ void SelectList::process( LcdWidget *lcd, Event *event) {
 
     uint8_t row; // real table row number, excluding back item
 
+    // LOG("SelectList::process():\n");
+
     if( refresh == REFRESH_FULL) {
         paint( lcd);
-        refresh = REFRESH_OK;
     } else if ( table->needsRefresh()) {
         updateTable( lcd);
     }
@@ -62,19 +65,19 @@ void SelectList::process( LcdWidget *lcd, Event *event) {
                 if( table->isRowExecutable( row)) {
                     LOGV("SelectList::process(): Is Row Executable (row=%d) => Y\n", row);
                     table->rowExecute( row);
-                    refresh = REFRESH_UPDATE;
+                    refresh = REFRESH_ROW;
                 }
             }
             break;
 
         case KEY_UP:
             next( event->count);
-            refresh = REFRESH_UPDATE;
+            refresh = REFRESH_ROW;
             break;
 
         case KEY_DOWN:
             prev( event->count);
-            refresh = REFRESH_UPDATE;
+            refresh = REFRESH_ROW;
             break;
 
         default:
@@ -130,7 +133,7 @@ void SelectList::process( LcdWidget *lcd, Event *event) {
         break;
     }
 
-    if( refresh == REFRESH_UPDATE || refresh == REFRESH_CELL) {
+    if( refresh == REFRESH_ROW || refresh == REFRESH_CELL) {
         updateRow( lcd);
         event->markProcessed();
         refresh = REFRESH_OK;
@@ -182,7 +185,7 @@ void SelectList::skipNonEditableCol( uint8_t row) {
             break;
         }
     }
-    refresh = REFRESH_UPDATE;  
+    refresh = REFRESH_ROW;  
 }
 
 void SelectList::prev( uint8_t count) {
@@ -196,10 +199,8 @@ void SelectList::prev( uint8_t count) {
 
 void SelectList::next( uint8_t count) {
 
-    uint8_t rows = table->getRowCount() + (useBackItem ? 1 : 0);
-
-    if( (tableRow + count) >= (rows - 1) ) {
-        tableRow = rows-1;
+    if( (tableRow + count) >= (tableRows - 1) ) {
+        tableRow = tableRows-1;
     } else {
         tableRow += count;
     }
@@ -218,15 +219,16 @@ uint8_t SelectList::current() const {
 
 void SelectList::paint( LcdWidget *lcd) {
 
-    const char *header = table->getName();
+    // LOG("SelectList::paint():\n");
 
-    lcd->setBg(0,0,0);
-    lcd->clear();
+    const char *header = table->getName();
 
     if( header) {
         lcd->headerColors();
         lcd->setCursor( 0, 0);
         lcd->print(header);
+        lcd->normalColors();
+        lcd->clearEOL();
     }
 
     updateTable( lcd);
@@ -234,14 +236,17 @@ void SelectList::paint( LcdWidget *lcd) {
 
 void SelectList::updateTable( LcdWidget *lcd) {
 
-    adjustTopRow( lcd);
-    refresh = REFRESH_UPDATE;
+    // LOG("SelectList::updateTable():\n");
 
-    for( uint8_t row = tableTopRow; row < tableTopRow + tableVisibleRows; row++) {        
+    adjustTopRow( lcd);
+    refresh = REFRESH_ROW;
+
+    for( uint8_t row = tableTopRow; row < tableTopRow + screenTableRows; row++) {        
         refreshLine( lcd, row);
     }
 
     tableOldRow = tableRow;
+    refresh = REFRESH_OK;
 }
 
 void SelectList::updateRow( LcdWidget *lcd) {
@@ -258,18 +263,13 @@ void SelectList::updateRow( LcdWidget *lcd) {
 
 /* Recomputes
  *  screenTableRows
- *  screenHeaderOffs
  *  tableTopRow
  *  tableVisibleRows
  */
 bool SelectList::adjustTopRow( LcdWidget *lcd) {
 
-    screenHeaderOffs = table->getName() ? 1 : 0;
     screenTableRows = lcd->getLines() - screenHeaderOffs;
-
-    uint8_t rows = table->getRowCount() + (useBackItem ? 1 : 0);
-
-    tableVisibleRows = (rows < screenTableRows) ? rows : screenTableRows;
+    tableVisibleRows = (tableRows < screenTableRows) ? tableRows : screenTableRows;
 
     if( tableRow < tableTopRow) {
         tableTopRow = tableRow;
@@ -287,8 +287,16 @@ bool SelectList::adjustTopRow( LcdWidget *lcd) {
  */
 void SelectList::refreshLine( LcdWidget *lcd, uint8_t row) {
 
+    // LOGV("SelectList::refreshLine(): row=%d tableRows=%d refr=%d\n", row, tableRows, refresh);
+
     lcd->setCursor( row - tableTopRow + screenHeaderOffs, 0);
-    printLine( lcd, row);
+
+    if( row >= tableRows) {
+        lcd->normalColors();
+        lcd->clearEOL();
+    } else {
+        printLine( lcd, row);
+    }
 }
 
 /* Print a single line on screen.
@@ -303,9 +311,11 @@ void SelectList::printLine( LcdWidget *lcd, uint8_t row) {
 
     if( useBackItem) {
         if( row == 0) {
-            lcd->print(TEXT_BACK);
-            lcd->normalColors();
-            lcd->clearEOL();
+            if( refresh != REFRESH_CELL) {
+                lcd->print(TEXT_BACK);
+                lcd->normalColors();
+                lcd->clearEOL();
+            }
             return;
         } else {
             row--;

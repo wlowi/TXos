@@ -8,7 +8,7 @@
 
 #define REFRESH_OK      0
 #define REFRESH_FULL    1
-#define REFRESH_UPDATE  2
+#define REFRESH_ROW     2
 #define REFRESH_CELL    3
 
 #define MODE_RENDER     0
@@ -23,19 +23,20 @@ class SelectList {
         bool useBackItem = false;
         Cell editCell;
         
-        uint8_t screenTableRows;  /* screen height available for table data
-                                   * including back item, excluding header
+        uint8_t screenTableRows;  /* Screen height available for table data
+                                   * including back item, excluding header.
                                    */
-        uint8_t screenHeaderOffs; /* screen lines taken by row header
+        uint8_t screenHeaderOffs; /* Screen lines taken by row header.
+                                   * Usually 0 or 1.
                                    */
-        uint8_t screenRow;        /* current screen row 
-                                   * including back item, excluding header
+        uint8_t tableRows;        /* Total number of table rows 
+                                   * including back item.
                                    */
-        uint8_t tableTopRow;      /* table index of first displayed row 
-                                   * including back item
+        uint8_t tableTopRow;      /* Table index of first displayed row 
+                                   * including back item.
                                    */
-        uint8_t tableVisibleRows; /* number of displayed table rows 
-                                   * including back item
+        uint8_t tableVisibleRows; /* Number of visible table rows 
+                                   * including back item.
                                    */
 
         uint8_t tableRow;         /* current table row, including back item*/

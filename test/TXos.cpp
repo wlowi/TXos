@@ -129,11 +129,16 @@
 #include "ChannelDelay.h"
 
 #if defined( ARDUINO )
+
+#include "avr/sleep.h"
+#include "avr/wdt.h"
+
 #include "InputImpl.h"
 #include "OutputImpl.h"
 #include "PortsImpl.h"
 #include "BuzzerImpl.h"
 #include "DisplayImpl.h"
+
 #endif
 
 const char* InputChannelNames[ANALOG_CHANNELS] = {
@@ -309,6 +314,8 @@ ModuleManager moduleManager( configBlock);
 
 #ifdef ENABLE_STATISTICS_MODULE
 Statistics statistics;
+uint16_t lastOverrun = UINT16_MAX;
+uint16_t wdLastReset;
 #endif
 
 #ifdef ENABLE_BDEBUG
@@ -452,6 +459,9 @@ void setup( void) {
 #ifdef ENABLE_MEMDEBUG
     MEMDEBUG_INIT();
 #endif
+
+    wdt_enable( WDTO_1S );
+    wdLastReset = millis();
 #endif
 
     buzzer.play( SoundWelcome);
@@ -465,13 +475,30 @@ void setup( void) {
 void loop( void) {
 
 #ifdef ENABLE_STATISTICS_MODULE
-    unsigned long t1;
+    unsigned long now;
+    uint16_t overrun;
+#endif
+
+#if defined( ARDUINO )
+    set_sleep_mode( SLEEP_MODE_IDLE);
+    cli();
+    sleep_enable();
+    sei();
+    sleep_cpu();
+    sleep_disable();
+
+    wdt_reset();
+#ifdef ENABLE_STATISTICS_MODULE
+    now = millis();
+    statistics.updateWdTimeout( now - wdLastReset);
+    wdLastReset = now;
+#endif
 #endif
 
     if( output.acceptChannels() ) {
 
 #ifdef ENABLE_STATISTICS_MODULE
-        t1 = millis();
+        now = millis();
 #endif
 
         controls.GetControlValues();
@@ -479,7 +506,7 @@ void loop( void) {
         output.setChannels( controls);
 
 #ifdef ENABLE_STATISTICS_MODULE
-        statistics.updateModulesTime( (uint16_t)(millis() - t1));
+        statistics.updateModulesTime( (uint16_t)(millis() - now));
 #endif
 
 #ifdef ENABLE_BDEBUG
@@ -497,18 +524,24 @@ void loop( void) {
     }
 
 #ifdef ENABLE_STATISTICS_MODULE
-    t1 = millis();
+    now = millis();
 #endif
 
     userInterface.handle();
 
 #ifdef ENABLE_STATISTICS_MODULE
-    t1 = millis() - t1;
-    statistics.updateUITime( (uint16_t)t1);
-    statistics.updatePPMOverrun( output.getOverrunCounter());
+    now = millis() - now;
+    statistics.updateUITime( (uint16_t)now);
+    overrun = output.getOverrunCounter();
+    statistics.updatePPMOverrun( overrun);
     statistics.updateFrameTime( output.getMaxFrameTime());
-    if( statistics.debugTiming()) {
-        userInterface.printTiming( (uint16_t)t1);
+    
+    if( overrun != lastOverrun && statistics.debugOverrun()) {
+        lastOverrun = overrun;
+        userInterface.printDebug( overrun);
+    } else if( statistics.debugTiming()) {
+        userInterface.printDebug( (uint16_t)now);
     }
+    
 #endif
 }

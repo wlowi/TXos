@@ -20,14 +20,16 @@
 
 #include "Statistics.h"
 
-#define STATISTIC_COUNT 5
+#define STATISTIC_COUNT 7
 
 const char* const statisticNames[STATISTIC_COUNT] {
     TEXT_STATISTIC_TIMING,
+    TEXT_STATISTIC_OVERRUN,
     TEXT_STATISTIC_UI,
     TEXT_STATISTIC_MODULE,
     TEXT_STATISTIC_PPMOVER,
-    TEXT_STATISTIC_FRAMETIME
+    TEXT_STATISTIC_FRAMETIME,
+    TEXT_STATISTIC_WDT
 };
 
 Statistics::Statistics() : Module( MODULE_STATISTICS_TYPE, TEXT_MODULE_STATISTICS) {
@@ -62,10 +64,21 @@ void Statistics::updateFrameTime( timingUsec_t t) {
     }
 }
 
+void Statistics::updateWdTimeout( uint16_t t) {
 
-bool Statistics::debugTiming() {
+    if( t > wdTimeout) {
+        wdTimeout = t;
+    }
+}
 
-    return timing;
+bool Statistics::debugTiming() const {
+
+    return dumpTiming;
+}
+
+bool Statistics::debugOverrun() const {
+
+    return dumpOverrun;
 }
 
 /* From Module */
@@ -78,16 +91,18 @@ void Statistics::setDefaults() {
 
     timeUI_msec = 0;
     timeModules_msec = 0;
+    wdTimeout = 0;
     ppmOverrun = 0;
     maxFrameTime = 0;
-    timing = false;
+    dumpTiming = false;
+    dumpOverrun = false;
 }
 
 /* From TableEditable */
 
 bool Statistics::isRowEditable( uint8_t row) {
 
-    return (row == 0);
+    return (row < 2);
 }
 
 uint8_t Statistics::getRowCount() {
@@ -108,26 +123,32 @@ uint8_t Statistics::getColCount( uint8_t row) {
 void Statistics::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
     if( row == 0) {
-        cell->setBool( 10, timing);
+        cell->setBool( 10, dumpTiming);
     } else if( row == 1) {
-        cell->setInt16( 7, timeUI_msec, 0, 0, 0);
+        cell->setBool( 10, dumpOverrun);
     } else if( row == 2) {
-        cell->setInt16( 7, timeModules_msec, 0, 0, 0);
+        cell->setInt16( 7, timeUI_msec, 0, 0, 0);
     } else if( row == 3) {
-        cell->setInt16( 7, ppmOverrun, 0, 0, 0);
+        cell->setInt16( 7, timeModules_msec, 0, 0, 0);
     } else if( row == 4) {
+        cell->setInt16( 7, ppmOverrun, 0, 0, 0);
+    } else if( row == 5) {
         cell->setInt16( 7, maxFrameTime, 0, 0, 0);
+    } else if( row == 6) {
+        cell->setInt16( 7, wdTimeout, 0, 0, 0);
     }
 }
 
 void Statistics::setValue( uint8_t row, uint8_t col, Cell *cell) {
 
     if( row == 0) {
-        timing = cell->getBool();
+        dumpTiming = cell->getBool();
+    } else if( row == 1) {
+        dumpOverrun = cell->getBool();
     }
 }
 
 bool Statistics::hasChanged( uint8_t row, uint8_t col) {
 
-    return (row != 0);
+    return (row > 1);
 }
