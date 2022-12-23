@@ -179,6 +179,12 @@ class Controls {
         switchState_t switchGet( switch_t sw);
         switchConf_t switchConfGet( switch_t sw);
 
+        /* Return the switch number of a switch with a particular type.
+         * There may be more than one switch per type.
+         * Use idx to identiy the one you need.
+         */
+        switch_t getSwitchByType( switchConf_t type, uint8_t idx);
+
         void copySwitchName( char *b, switch_t sw);
         void copySwitchNameAndState( char *b, switch_t sw);
 

@@ -18,29 +18,30 @@
 
 */
 
-#ifndef _AnalogSwitch_h_
-#define _AnalogSwitch_h_
+#ifndef _LogicSwitch_h_
+#define _LogicSwitch_h_
 
 #include "Module.h"
 
-/* Control logical switch by input channels (analog) */
+typedef struct logicSwitch_t {
 
-typedef struct analogSwitch_t {
+    uint8_t  type[LOGIC_SWITCHES];
+    
+    switch_t swStateA[LOGIC_SWITCHES];
+    switch_t swStateB[LOGIC_SWITCHES];
+    switch_t swStateC[LOGIC_SWITCHES];
 
-    channel_t source[CHANNEL_SWITCHES];
-    percent_t trigger[CHANNEL_SWITCHES];
+} logicSwitch_t;
 
-} analogSwitch_t;
+class LogicSwitch : public Module {
 
-class AnalogSwitch : public Module {
-
-    NON_PHASED_CONFIG( analogSwitch_t)
+    NON_PHASED_CONFIG( logicSwitch_t)
 
     private:
         char switchName[TEXT_SW_NAME_length +1];
 
     public:
-        AnalogSwitch();
+        LogicSwitch();
 
         /* From Module */
         void run( Controls &controls) final;

@@ -40,7 +40,7 @@ void AnalogSwitch::run( Controls &controls) {
         v = (long)controls.inputGet(CFG->source[sw]) * PERCENT_MAX / PERCENT_MAX_LIMIT;
         
         state = ((channelValue_t)v >= PCT_TO_CHANNEL(CFG->trigger[sw])) ? SW_STATE_1 : SW_STATE_0;
-        controls.switchSet( FIRST_CHANNEL_SWITCH + sw, state);
+        controls.switchSet( CHANNEL_SWITCHES_FIRST_IDX + sw, state);
     }
 }
 
@@ -67,7 +67,7 @@ const char *AnalogSwitch::getRowName( uint8_t row) {
     if( row % 2) {
         return TEXT_MSG_NONE;
     } else {
-        controls.copySwitchName( switchName, (switch_t)(row/2) + FIRST_CHANNEL_SWITCH);
+        controls.copySwitchName( switchName, (switch_t)(row/2) + CHANNEL_SWITCHES_FIRST_IDX);
         return switchName;
     }
 }

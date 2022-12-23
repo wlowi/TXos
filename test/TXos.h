@@ -12,7 +12,7 @@
 #endif
 
 
-#define TXOS_VERSION "0.2.5"
+#define TXOS_VERSION "0.2.6"
 
 #if defined( ARDUINO )
     #define LOG( f )
@@ -55,10 +55,16 @@ typedef enum {
 } switchState_t;
 
 /*  0 Switch is unused
- *  1 Switch is 2-state
- *  2 Switch is 3-state
- *  3 Switch is channel switch
+ *  1 Switch is mechanical 2-state
+ *  2 Switch is mechanical 3-state
+ *  3 Switch is channel switch (2-state)
  *  4 Switch is always on
+ *  5 Switch is a logic switch (2-state, boolean combination of switches)
+ *  6 Switch reflects all flight phases (3-state)
+ *  7 Switch refrects a particular flight phase (2-state)
+ * 
+ * NOTE: If you add a switch type, please modify
+ *       Controls::copySwitchName()
  */
 typedef enum {
 
@@ -66,7 +72,10 @@ typedef enum {
     SW_CONF_2STATE = 1,
     SW_CONF_3STATE = 2,
     SW_CONF_CHANNEL = 3,
-    SW_CONF_FIXED_ON = 4
+    SW_CONF_FIXED_ON = 4,
+    SW_CONF_LOGIC = 5,
+    SW_CONF_PHASES = 6,
+    SW_CONF_PHASE_N = 7
 
 } switchConf_t;
 

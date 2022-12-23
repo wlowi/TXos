@@ -34,6 +34,7 @@
 #define TEXT_MODULE_CHANNEL_REVERSE   CC("Geber Umkehr")
 #define TEXT_MODULE_DUAL_EXPO         CC("Dual & Expo")
 #define TEXT_MODULE_ENGINE_CUT        CC("Motor aus")
+#define TEXT_MODULE_LOGIC_SWITCH      CC("Logikschalter")
 #define TEXT_MODULE_MIXER             CC("Mischer")
 #define TEXT_MODULE_MODEL             CC("Modell")
 #define TEXT_MODULE_MODEL_SELECT      CC("Modellauswahl")
@@ -101,7 +102,25 @@
 #define TEXT_SW_TYPE_2_STATE        CC("BI")
 #define TEXT_SW_TYPE_3_STATE        CC("TR")
 #define TEXT_SW_TYPE_CHANNEL        CC("CS")
-#define TEXT_SW_TYPE_FIXED_ON       CC("ON")
+#define TEXT_SW_TYPE_FIXED_ON       CC(" ON")
+#define TEXT_SW_TYPE_LOGIC          CC("LS")
+#define TEXT_SW_TYPE_PHASE          CC("PHA")
+#define TEXT_SW_TYPE_PHASE_N        CC("PH")
+
+// Logic Switches
+#define TEXT_LOGIC_SW_TYPE_count    6
+#define TEXT_LOGIC_SW_TYPE_length   7
+
+#define TEXT_LOGIC_SW_TYPE1         CC("A&B")
+#define TEXT_LOGIC_SW_TYPE2         CC("A|B")
+#define TEXT_LOGIC_SW_TYPE3         CC("A&B&C")
+#define TEXT_LOGIC_SW_TYPE4         CC("A|B|C")
+#define TEXT_LOGIC_SW_TYPE5         CC("(A&B)|C")
+#define TEXT_LOGIC_SW_TYPE6         CC("(A|B)&C")
+
+#define TEXT_LOGIC_SW_A             CC("A")
+#define TEXT_LOGIC_SW_B             CC("B")
+#define TEXT_LOGIC_SW_C             CC("C")
 
 // Calibration steps (7 letters max)
 #define TEXT_CALIB_length           7
@@ -138,7 +157,7 @@
 #define TEXT_MODEL_NAME             CC("Name")
 #define TEXT_MODEL_SETUP            CC("Modelleinst.")
 #define TEXT_PHASE                  CC("Phase")
-#define TEXT_PHASE_PATTERN          CC("Ph-0")
+#define TEXT_PHASE_PATTERN          CC("Ph-*")
 #define TEXT_POS0                   CC("Pos0")
 #define TEXT_POS1                   CC("Pos1")
 #define TEXT_POS2                   CC("Pos2")

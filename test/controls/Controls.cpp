@@ -180,6 +180,8 @@ void Controls::switchSet( switch_t sw, switchState_t value) {
 
     uint8_t swn = GET_SWITCH( sw);
 
+    // LOGV("Controls::switchSet(): sw=%d state=%d\n", swn, value);
+
     if( swn < SWITCHES) {
         SET_SWITCH_STATE( controlSet.switches[swn], value);
     }
@@ -188,12 +190,17 @@ void Controls::switchSet( switch_t sw, switchState_t value) {
 switchState_t Controls::switchGet( switch_t sw) {
 
     uint8_t swn = GET_SWITCH( sw);
+    switchState_t state;
 
     if( swn < SWITCHES) {
-        return GET_SWITCH_STATE( controlSet.switches[swn]);
+        state = GET_SWITCH_STATE( controlSet.switches[swn]);
     } else {
-        return SW_STATE_DONTCARE;
+        state = SW_STATE_DONTCARE;
     }
+
+    // LOGV("Controls::switchGet(): sw=%d state=%d\n", swn, state);
+
+    return state;
 }
 
 switchConf_t Controls::switchConfGet( switch_t sw) {
@@ -203,9 +210,31 @@ switchConf_t Controls::switchConfGet( switch_t sw) {
     return inputImpl->GetSwitchConf( swn);
 }
 
+switch_t Controls::getSwitchByType( switchConf_t type, uint8_t idx) {
+
+    switch_t sw;
+    
+    // Set switch to unused
+    INIT_SWITCH( sw);
+    
+    for( switch_t i = 0; i < SWITCHES; i++) {
+        if(  switchConfGet(i) == type) {
+            if(idx == 0) {
+                sw = i;
+                break;
+            } else {
+                idx--;
+            }
+        }
+    }
+
+    return sw;
+}
+
 void Controls::copySwitchName( char *b, switch_t sw) {
 
     uint8_t swn = GET_SWITCH( sw);
+    size_t idx = 0;
     const char *swType;
     
     /* b must be of length TEXT_SW_NAME_length +1 */
@@ -213,13 +242,15 @@ void Controls::copySwitchName( char *b, switch_t sw) {
     if( IS_SWITCH_UNUSED( sw)) {
         strcpy( b, TEXT_SW_TYPE_UNUSED);
     } else {
-        b[0] = '1' + swn;
+
         switch (switchConfGet(sw)) {
         case SW_CONF_2STATE:
+            b[idx++] = '1' + swn - MECHANICAL_SWITCHES_FIRST_IDX;
             swType = TEXT_SW_TYPE_2_STATE;
             break;
 
         case SW_CONF_3STATE:
+            b[idx++] = '1' + swn - MECHANICAL_SWITCHES_FIRST_IDX;
             swType = TEXT_SW_TYPE_3_STATE;
             break;
 
@@ -231,12 +262,44 @@ void Controls::copySwitchName( char *b, switch_t sw) {
             swType = TEXT_SW_TYPE_FIXED_ON;
             break;
 
+        case SW_CONF_LOGIC:
+            swType = TEXT_SW_TYPE_LOGIC;
+            break;
+
+        case SW_CONF_PHASES:
+            swType = TEXT_SW_TYPE_PHASE;
+            break;
+
+        case SW_CONF_PHASE_N:
+            swType = TEXT_SW_TYPE_PHASE_N;
+            break;
+
         case SW_CONF_UNUSED:
         default:
             swType = TEXT_SW_TYPE_UNUSED;
             break;
         }
-        strcpy( &b[1], swType);
+        strcpy( &b[idx], swType);
+        idx = strlen( b);
+
+        switch (switchConfGet(sw)) {
+        case SW_CONF_CHANNEL:
+            b[idx++] = '1' + swn - CHANNEL_SWITCHES_FIRST_IDX;
+            break;
+
+        case SW_CONF_LOGIC:
+            b[idx++] = '1' + swn - LOGIC_SWITCHES_FIRST_IDX;
+            break;
+
+        case SW_CONF_PHASE_N:
+            b[idx++] = '1' + swn - PHASE_SWITCHES_FIRST_IDX;
+            break;
+
+        default:
+            break;
+        }
+
+        b[idx] = '\0';
     }
 }
 
@@ -252,7 +315,7 @@ void Controls::copySwitchNameAndState( char *b, switch_t sw) {
         len = strlen( b);
         b[len++] = ':';
         b[len++] = '0' + GET_SWITCH_STATE( sw);
-        b[len] = '\n';
+        b[len] = '\0';
     }
 }
 

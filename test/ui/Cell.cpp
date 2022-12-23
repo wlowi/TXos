@@ -80,7 +80,8 @@ bool Cell::edit( Event *event) {
 
     if( type == SWITCH_SET_STATE_T && IS_SWITCH_USED( value.intV)) {
         swState = controls.switchGet(value.intV);
-        if( swState != value.intV) {
+
+        if( swState != GET_SWITCH_STATE( value.intV)) {
             SET_SWITCH_STATE( value.intV, swState);
             changed = true;
         }

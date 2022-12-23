@@ -53,15 +53,27 @@ const char *Phases::getPhaseName() {
 void Phases::run( Controls &controls) {
 
     switchState_t state;
+    switch_t sw;
 
     if( IS_SWITCH_UNUSED( CFG->sw)) {
         return;
     }
 
     state = controls.switchGet( CFG->sw);
+        
+    sw = controls.getSwitchByType( SW_CONF_PHASES, 0);
+    if( IS_SWITCH_USED(sw)) {
+        controls.switchSet( sw, state);
+    }
+
+    sw = controls.getSwitchByType( SW_CONF_PHASE_N, state);
+    if( IS_SWITCH_USED(sw)) {
+        controls.switchSet( sw, SW_STATE_1);
+    }
 
     if( state < PHASES && state != phase) {
         phase = state;
+
         LOGV("Phases::run: switch to phase %d\n", phase);
         moduleManager.switchPhase( phase);
     }
@@ -98,7 +110,7 @@ const char *Phases::getRowName( uint8_t row) {
         return TEXT_SWITCH;
     }
 
-    phaseText[3] = '0'+row-1;
+    phaseText[3] = '0'+row;
     phaseText[4] = '\0';
 
     return phaseText;

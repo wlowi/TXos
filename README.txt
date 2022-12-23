@@ -63,6 +63,9 @@ OK: Channel Speed:
 OK: Phases:
   no effect on channels
 
+OK: Logic Switches
+  Combine multiple switches with boolean operators.
+
 OK: Phased Rate & Expo:
   Phase controlled rate limit and exponential function for Ail, Elv, Rud
 

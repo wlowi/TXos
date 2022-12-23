@@ -127,6 +127,7 @@
 #include "Mixer.h"
 #include "Statistics.h"
 #include "ChannelDelay.h"
+#include "LogicSwitch.h"
 
 #if defined( ARDUINO )
 
@@ -397,6 +398,8 @@ void setup( void) {
     moduleManager.addToModelMenu( phases);
     PhasesTrim *phasesTrim = new PhasesTrim();
     moduleManager.addToModelMenu( phasesTrim);
+    LogicSwitch *logicSwitch = new LogicSwitch();
+    moduleManager.addToModelMenu( logicSwitch);
     DualExpo *dualExpo = new DualExpo();
     moduleManager.addToModelMenu( dualExpo);
     Mixer *mixer = new Mixer();
@@ -429,6 +432,7 @@ void setup( void) {
     moduleManager.addToRunList( assignInput);
     moduleManager.addToRunList( channelDelay);
     moduleManager.addToRunList( phases);
+    moduleManager.addToRunList( logicSwitch);
     moduleManager.addToRunList( dualExpo);
     moduleManager.addToRunList( model);
     moduleManager.addToRunList( mixer);
