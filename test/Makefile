@@ -1,6 +1,7 @@
 
 CXX = $(shell wx-config --cxx)
 PROGRAM = TXosTest
+UNITTEST = TXosUnitTest
 
 # wx-config --libs
 WX_LIBS = $(shell wx-config --libs)
@@ -25,21 +26,42 @@ MODULE_OBJ = modules/ModelSelect.o modules/Model.o modules/EngineCut.o modules/S
 
 CXXFLAGS += -g -O -Wall -Wpedantic -Wextra -Wno-unused-parameter
 
-CXXINC += -I. -Iemu -Icontrols -Iui -Ioutput -Imodules
+CXXINC += -I. -Icontrols -Iui -Ioutput -Imodules -Iemu
 
-OBJECTS = $(PROGRAM).o TXos.o Module.o ModuleManager.o ConfigBlock.o SystemConfig.o $(EMU_OBJ) $(CONTROLS_OBJ) $(UI_OBJ) $(OUTPUT_OBJ) $(MODULE_OBJ)
+OBJECTS = TXos.o Module.o ModuleManager.o ConfigBlock.o SystemConfig.o $(CONTROLS_OBJ) $(UI_OBJ) $(OUTPUT_OBJ) $(MODULE_OBJ)
+
+# Unittest
+UTOBJECTS = unittest/UtModules.o
+UTEMU_OBJ = unittest/emu/EEPROM.o unittest/emu/InputImpl.o unittest/emu/OutputImpl.o unittest/emu/PortsImpl.o \
+  unittest/emu/BuzzerImpl.o unittest/emu/LcdWidget.o unittest/emu/DisplayImpl.o
+UTCXXINC += -I. -Icontrols -Iui -Ioutput -Imodules -Iunittest -Iunittest/emu
+
 
 # implementation
 
 .SUFFIXES:      .o .cpp
 
+ifeq ($(MAKECMDGOALS),unittest)
+.cpp.o:
+	$(CXX) $(CXXFLAGS) $(UTCXXINC) -c  -o $@ $<
+else
 .cpp.o:
 	$(CXX) $(CXXFLAGS) $(CXXINC) $(WX_CXXFLAGS) -c  -o $@ $<
+endif
 
 all: $(PROGRAM)
 
-$(PROGRAM):$(OBJECTS)
-	$(CXX) -g $(CXXINC) -o $(PROGRAM) $(OBJECTS) $(WX_LIBS) 
+unittest: $(UNITTEST) 
+
+$(PROGRAM):$(OBJECTS) $(EMU_OBJ) $(PROGRAM).o
+	$(CXX) -g $(CXXINC) -o $(PROGRAM) $(PROGRAM).o $(OBJECTS) $(EMU_OBJ) $(WX_LIBS) 
+
+$(UNITTEST):$(OBJECTS) $(UTOBJECTS) $(UTEMU_OBJ) $(UNITTEST).o 
+	$(CXX) -g $(CXXINC) -o $(UNITTEST) $(UNITTEST).o $(OBJECTS) $(UTEMU_OBJ) $(UTOBJECTS)
 
 clean:
-	rm -f $(PROGRAM) $(OBJECTS)
+	rm -f $(PROGRAM) $(PROGRAM).o $(UNITTEST) $(UNITTEST).o $(OBJECTS) $(EMU_OBJ) $(UTOBJECTS) $(UTEMU_OBJ)
+
+$(UNITTEST).o: unittest/*.h
+
+unittest/UtModules.o: unittest/*.h

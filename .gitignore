@@ -5,6 +5,7 @@ srv/.vscode
 src/default
 test/EEPROM.DAT*
 test/TXosTest
+test/TXosUnitTest
 txboardmega/*-bak
 txboardmega/*.bck
 doc/expo.ods
