@@ -73,13 +73,28 @@ void Model::run( Controls &controls) {
     switch( CFG->wingMix) {
 
     case WINGMIX_DELTA:
-        controls.logicalSet( CHANNEL_AILERON, elv + ail);
-        controls.logicalSet( CHANNEL_ELEVATOR, elv - ail);
+        if( CFG->qrDiffPct != 0 && controls.evalSwitches( CFG->qrDiffSw)) {
+            channelValue_t t = controls.trimGet( CHANNEL_AILERON);
+            long d = ail - t;
+            channelValue_t r = (channelValue_t)(d * (100L - abs(CFG->qrDiffPct)) / 100L);
+
+            if( (CFG->qrDiffPct > 0) == (d > 0) ) {
+                controls.logicalSet( CHANNEL_AILERON, elv + ail /* t +d */);
+                controls.logicalSet( CHANNEL_ELEVATOR, elv - t - r);
+            } else {
+                controls.logicalSet( CHANNEL_AILERON, elv + t + r);
+                controls.logicalSet( CHANNEL_ELEVATOR, elv - ail /* -t -d */);
+            } 
+
+        } else {
+            controls.logicalSet( CHANNEL_AILERON, elv + ail);
+            controls.logicalSet( CHANNEL_ELEVATOR, elv - ail);
+        }
         break;
 
     case WINGMIX_VTAIL:
-        controls.logicalSet( CHANNEL_RUDDER, rud + elv);
-        controls.logicalSet( CHANNEL_ELEVATOR, rud - elv);
+        controls.logicalSet( CHANNEL_RUDDER, elv + rud);
+        controls.logicalSet( CHANNEL_ELEVATOR, elv - rud);
 
         [[fallthrough]];
 
@@ -161,7 +176,7 @@ void Model::run( Controls &controls) {
                 mixedValue = mixValue( spl, mix);
                 controls.logicalSet( CHANNEL_ELEVATOR, controls.logicalGet( CHANNEL_ELEVATOR) + mixedValue);
                 if( CFG->wingMix == WINGMIX_VTAIL) {
-                    controls.logicalSet( CHANNEL_RUDDER, controls.logicalGet(  CHANNEL_RUDDER) - mixedValue);
+                    controls.logicalSet( CHANNEL_RUDDER, controls.logicalGet(  CHANNEL_RUDDER) + mixedValue);
                 }
                 if( CFG->wingMix == WINGMIX_DELTA) {
                     controls.logicalSet( CHANNEL_AILERON, controls.logicalGet(  CHANNEL_AILERON) + mixedValue);
@@ -181,7 +196,7 @@ void Model::run( Controls &controls) {
                 mixedValue = mixValue( flp, mix);
                 controls.logicalSet( CHANNEL_ELEVATOR, controls.logicalGet( CHANNEL_ELEVATOR) + mixedValue);
                 if( CFG->wingMix == WINGMIX_VTAIL) {
-                    controls.logicalSet( CHANNEL_RUDDER, controls.logicalGet(  CHANNEL_RUDDER) - mixedValue);
+                    controls.logicalSet( CHANNEL_RUDDER, controls.logicalGet(  CHANNEL_RUDDER) + mixedValue);
                 }
                 if( CFG->wingMix == WINGMIX_DELTA) {
                     controls.logicalSet( CHANNEL_AILERON, controls.logicalGet(  CHANNEL_AILERON) + mixedValue);
@@ -207,7 +222,7 @@ void Model::run( Controls &controls) {
                 mixedValue = mixValue( abs(rud), mix);
                 controls.logicalSet( CHANNEL_ELEVATOR, controls.logicalGet( CHANNEL_ELEVATOR) + mixedValue);
                 if( CFG->wingMix == WINGMIX_VTAIL) {
-                    controls.logicalSet( CHANNEL_RUDDER, controls.logicalGet(  CHANNEL_RUDDER) - mixedValue);
+                    controls.logicalSet( CHANNEL_RUDDER, controls.logicalGet(  CHANNEL_RUDDER) + mixedValue);
                 }
                 if( CFG->wingMix == WINGMIX_DELTA) {
                     controls.logicalSet( CHANNEL_AILERON, controls.logicalGet(  CHANNEL_AILERON) + mixedValue);

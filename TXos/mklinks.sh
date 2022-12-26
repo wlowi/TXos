@@ -23,7 +23,7 @@ for SOURCEDIR in $SOURCE ; do
     done
 done
 
-rm Arduino.h TXosTest.cpp
+rm Arduino.h TXosTest.cpp TXosUnitTest.cpp
 
 mv TXos.cpp TXos.ino
 
