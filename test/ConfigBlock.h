@@ -72,8 +72,14 @@ class ConfigBlock {
 
     private:
         configBlockID_t blockID = CONFIG_BLOCKID_INVALID;
+        size_t configBlockSize = 0;
+        size_t configPayloadSize = 0;
+
         configBlock_t block;
 
+        /* Store block ID and compute block and payload size. */
+        bool setBlockID( configBlockID_t blkID);
+        size_t getBlockStart() const;
         checksum_t computeChecksum();
         checksum_t rotate( checksum_t v) const;
 
@@ -85,6 +91,7 @@ class ConfigBlock {
         configBlock_rc writeBlock();
 
         uint8_t *getPayload();
+        size_t getPayloadSize() const;
 
         bool isBlockValid();
         void memcpy( uint8_t *dest, const uint8_t *src, size_t sz) const;

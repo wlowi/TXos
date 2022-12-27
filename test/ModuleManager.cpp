@@ -292,11 +292,13 @@ void ModuleManager::generateBlock( configBlockID_t modelID, Menu *menu) {
     moduleType_t type;
     moduleSize_t size;
     uint16_t totalSize = 0;
+    size_t payloadSize;
     Module *current = menu->getFirstModule();
 
     blockService->formatBlock( modelID);
 
     payload = blockService->getPayload();
+    payloadSize = blockService->getPayloadSize();
 
     while( current != nullptr) {
         
@@ -307,7 +309,7 @@ void ModuleManager::generateBlock( configBlockID_t modelID, Menu *menu) {
             type = current->getConfigType();
 
             // +1 is for terminating invalid module type
-            if( totalSize + sizeof(moduleType_t) + sizeof(moduleSize_t) + size +1 <= CONFIG_PAYLOAD_SIZE) {
+            if( totalSize + sizeof(moduleType_t) + sizeof(moduleSize_t) + size +1 <= payloadSize) {
                 LOGV("ModuleManager::generateBlock(): Put type=%d size=%d\n", type, size);
 
                 PUT( (uint8_t*)&type, sizeof(moduleType_t));
@@ -317,7 +319,7 @@ void ModuleManager::generateBlock( configBlockID_t modelID, Menu *menu) {
             } else {
                 LOGV("** ModuleManager::generateBlock(): Payload to large. %ld > %ld\n",
                     totalSize + sizeof(moduleType_t) + sizeof(moduleSize_t) + size,
-                    CONFIG_PAYLOAD_SIZE);
+                    payloadSize);
             }
         }
 

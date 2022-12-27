@@ -33,8 +33,12 @@ AssignInput::AssignInput() : Module( MODULE_ASSIGN_INPUT_TYPE, TEXT_MODULE_ASSIG
 
 void AssignInput::run( Controls &controls) {
 
-    for( channel_t ch = 0; ch < ANALOG_CHANNELS; ch++) {
-        controls.logicalSet( MIX_TO_CHANNEL( CFG->source[ch]), controls.inputGet( ch));
+    /* Mix channel numbers are an index to MixChannelMap. 
+     * To get the real channel number they need to be 
+     * mapped via real_channel = mixChannelMap[ source ]
+     */
+    for( channel_t ch = 0; ch < MIX_CHANNELS; ch++) {
+        controls.logicalSet( MIX_TO_CHANNEL(ch), controls.inputGet( CFG->source[ch]));
     }
 }
 
@@ -42,11 +46,11 @@ void AssignInput::setDefaults() {
 
     INIT_NON_PHASED_CONFIGURATION(
 
-        for( channel_t ch = 0; ch < ANALOG_CHANNELS; ch++) {
-            if( ch < MIX_CHANNELS) {
+        for( channel_t ch = 0; ch < MIX_CHANNELS; ch++) {
+            if( ch < ANALOG_CHANNELS) {
                 CFG->source[ch] = ch;
             } else {
-                CFG->source[ch] = MIX_CHANNELS-1;
+                CFG->source[ch] = ANALOG_CHANNELS-1;
             }
         }
     )
@@ -56,12 +60,12 @@ void AssignInput::setDefaults() {
 
 uint8_t AssignInput::getRowCount() {
 
-    return ANALOG_CHANNELS;
+    return MIX_CHANNELS;
 }
 
 const char *AssignInput::getRowName( uint8_t row) {
 
-    return InputChannelNames[row];
+    return MixChannelNames[row];
 }
 
 uint8_t AssignInput::getColCount( uint8_t row) {
@@ -72,9 +76,9 @@ uint8_t AssignInput::getColCount( uint8_t row) {
 void AssignInput::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
     if( col == 0) {
-        cell->setLabel( TEXT_INPUT_length +1, TEXT_ARROW_RIGHT, 1);
+        cell->setLabel( TEXT_CONTROL_length +1, TEXT_ARROW_LEFT, 1);
     } else if( col == 1) {
-        cell->setList( TEXT_INPUT_length +3, MixChannelNames, MIX_CHANNELS, CFG->source[row]);
+        cell->setList( TEXT_CONTROL_length +3, InputChannelNames, ANALOG_CHANNELS, CFG->source[row]);
     }
 }
 

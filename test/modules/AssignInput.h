@@ -27,11 +27,8 @@
 
 typedef struct assignInput_t {
 
-    /* source is a mix channel. 
-     * To get the real channel number they need to be 
-     * mapped via real_channel = mixChannelMap[ source ]
-     */
-    channel_t source[ANALOG_CHANNELS];
+    /* source is an analog channel */
+    channel_t source[MIX_CHANNELS];
 
 } assignInput_t;
 
