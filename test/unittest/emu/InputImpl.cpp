@@ -70,3 +70,21 @@ switchConf_t InputImpl::GetSwitchConf( int sw) {
 
     return switchConf[sw];
 }
+
+void InputImpl::unittestSetStickValue( channel_t ch, channelValue_t v) {
+
+    chValues[ch] = v;
+}
+
+void InputImpl::unittestSetTrimValue( channel_t ch, channelValue_t v) {
+
+    chValues[ch + stickCount] = v;
+}
+
+void InputImpl::unittestSetSwitchValues( switchState_t a, switchState_t b, switchState_t c, switchState_t d) {
+
+    swValues[0] = a;
+    swValues[1] = a;
+    swValues[2] = a;
+    swValues[3] = a;
+}

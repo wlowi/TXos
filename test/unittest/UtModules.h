@@ -10,6 +10,9 @@ class UtModules : public UnitTest {
 
     public:
         void run();
+
+        void verify( channel_t start, uint8_t count, channelValue_t in, channelValue_t expected);
+        void dumpControls( Controls &controls);
 };
 
 #endif

@@ -35,6 +35,10 @@ class InputImpl
         channelValue_t GetAuxValue( int ch);
         switchState_t GetSwitchValue( int sw);
         switchConf_t GetSwitchConf( int sw);
+
+        void unittestSetStickValue( channel_t ch, channelValue_t v);
+        void unittestSetTrimValue( channel_t ch, channelValue_t v);
+        void unittestSetSwitchValues( switchState_t a, switchState_t b, switchState_t c, switchState_t d);
 };
 
 #endif

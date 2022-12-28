@@ -49,19 +49,19 @@
 /* Total number of switches. Max is 16.
  * This includes channel switches and logical switches.
  */
-#define SWITCHES                      ((uint8_t)15)
+#define SWITCHES                      ((uint8_t)13)
 
-#define MECHANICAL_SWITCHES           ((uint8_t)6)
+#define MECHANICAL_SWITCHES           ((uint8_t)4)
 #define MECHANICAL_SWITCHES_FIRST_IDX ((uint8_t)0)
 
 #define CHANNEL_SWITCHES              ((uint8_t)2)
-#define CHANNEL_SWITCHES_FIRST_IDX    ((uint8_t)6)
+#define CHANNEL_SWITCHES_FIRST_IDX    ((uint8_t)4)
 
 #define LOGIC_SWITCHES                ((uint8_t)2)
-#define LOGIC_SWITCHES_FIRST_IDX      ((uint8_t)9)
+#define LOGIC_SWITCHES_FIRST_IDX      ((uint8_t)7)
 
 #define PHASE_SWITCHES                ((uint8_t)3)
-#define PHASE_SWITCHES_FIRST_IDX      ((uint8_t)12)
+#define PHASE_SWITCHES_FIRST_IDX      ((uint8_t)10)
 
 /* Switch configuration
  * In this case we have:
@@ -77,22 +77,20 @@
 #define SWITCH_CONFIGURATION \
 const switchConf_t switchConfiguration[SWITCHES] = { \
     SW_CONF_2STATE, \
-    SW_CONF_3STATE, \
-    SW_CONF_3STATE, \
     SW_CONF_2STATE, \
-    \
     SW_CONF_3STATE, \
     SW_CONF_3STATE, \
-    SW_CONF_CHANNEL, \
-    SW_CONF_CHANNEL, \
     \
+    SW_CONF_CHANNEL, \
+    SW_CONF_CHANNEL, \
     SW_CONF_FIXED_ON, \
     SW_CONF_LOGIC, \
+    \
     SW_CONF_LOGIC, \
     SW_CONF_PHASES, \
+    SW_CONF_PHASE_N, \
+    SW_CONF_PHASE_N, \
     \
-    SW_CONF_PHASE_N, \
-    SW_CONF_PHASE_N, \
     SW_CONF_PHASE_N \
 };
 

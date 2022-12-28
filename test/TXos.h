@@ -79,7 +79,11 @@ typedef enum {
 
 } switchConf_t;
 
-#include "TXosConfig.h"
+#ifdef UNITTEST
+  #include "TXosUnittestConfig.h"
+#else
+  #include "TXosConfig.h"
+#endif
 
 #if UI_LANGUAGE == DE
   #include "Text_DE.h"
