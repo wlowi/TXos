@@ -4,14 +4,20 @@
 
 #include <iostream>
 
+#define DECLARE_ASSERT_COUNTER \
+uint16_t okCount = 0; \
+uint16_t failCount = 0;
+
 #define ASSERT_UINT8_T( r, e, m) \
 do { \
 uint8_t res = (r); \
 uint8_t exp = (e); \
 if( res == exp ) { \
     std::cout << "OK " << m << std::endl; \
+    okCount++; \
 } else { \
     std::cout << "FAIL " << m << " result:" << (int)res << " expected:" << (int)exp << std::endl; \
+    failCount++; \
 } \
 } while( false )
 
@@ -21,8 +27,10 @@ int8_t res = (r); \
 int8_t exp = (e); \
 if( res == exp ) { \
     std::cout << "OK " << m << std::endl; \
+    okCount++; \
 } else { \
     std::cout << "FAIL " << m << " result:" << (int)res << " expected:" << (int)exp << std::endl; \
+    failCount++; \
 } \
 } while( false )
 
@@ -32,8 +40,10 @@ uint16_t res = (r); \
 uint16_t exp = (e); \
 if( res == exp ) { \
     std::cout << "OK " << m << std::endl; \
+    okCount++; \
 } else { \
     std::cout << "FAIL " << m << " result:" << (int)res << " expected:" << (int)exp << std::endl; \
+    failCount++; \
 } \
 } while( false )
 
@@ -43,8 +53,10 @@ int16_t res = (r); \
 int16_t exp = (e); \
 if( res == exp ) { \
     std::cout << "OK " << m << std::endl; \
+    okCount++; \
 } else { \
     std::cout << "FAIL " << m << " result:" << (int)res << " expected:" << (int)exp << std::endl; \
+    failCount++; \
 } \
 } while( false )
 
@@ -54,8 +66,10 @@ const char* res = (r); \
 const char* exp = (e); \
 if( strcmp( res, exp) == 0 ) { \
     std::cout << "OK " << m << std::endl; \
+    okCount++; \
 } else { \
     std::cout << "FAIL " << m << " result:" << res << " expected:" << exp << std::endl; \
+    failCount++; \
 } \
 } while( false )
 

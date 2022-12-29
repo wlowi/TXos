@@ -28,7 +28,7 @@
 typedef struct analogSwitch_t {
 
     channel_t source[CHANNEL_SWITCHES];
-    percent_t trigger[CHANNEL_SWITCHES];
+    percent_t triggerPct[CHANNEL_SWITCHES];
 
 } analogSwitch_t;
 

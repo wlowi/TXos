@@ -43,7 +43,7 @@ UTCXXINC += -I. -Icontrols -Iui -Ioutput -Imodules -Iunittest -Iunittest/emu
 
 ifeq ($(MAKECMDGOALS),unittest)
 .cpp.o:
-	$(CXX) $(CXXFLAGS) $(UTCXXINC) -c  -o $@ $<
+	$(CXX) -DUNITTEST $(CXXFLAGS) $(UTCXXINC) -c  -o $@ $<
 else
 .cpp.o:
 	$(CXX) $(CXXFLAGS) $(CXXINC) $(WX_CXXFLAGS) -c  -o $@ $<

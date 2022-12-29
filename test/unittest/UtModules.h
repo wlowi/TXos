@@ -11,6 +11,11 @@ class UtModules : public UnitTest {
     public:
         void run();
 
+        void UtCalibrateSticks();
+        void UtCalibrateTrim();
+        void UtSwitchedChannels();
+        void UtAnalogSwitch();
+
         void verify( channel_t start, uint8_t count, channelValue_t in, channelValue_t expected);
         void dumpControls( Controls &controls);
 };

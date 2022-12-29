@@ -39,7 +39,7 @@ void AnalogSwitch::run( Controls &controls) {
         /* Convert v from range -125 - 125 tp -100 - 100 before compare */
         v = (long)controls.inputGet(CFG->source[sw]) * PERCENT_MAX / PERCENT_MAX_LIMIT;
         
-        state = ((channelValue_t)v >= PCT_TO_CHANNEL(CFG->trigger[sw])) ? SW_STATE_1 : SW_STATE_0;
+        state = ((channelValue_t)v >= PCT_TO_CHANNEL(CFG->triggerPct[sw])) ? SW_STATE_1 : SW_STATE_0;
         controls.switchSet( CHANNEL_SWITCHES_FIRST_IDX + sw, state);
     }
 }
@@ -50,7 +50,7 @@ void AnalogSwitch::setDefaults() {
 
         for( switch_t sw = 0; sw < CHANNEL_SWITCHES; sw++) {
             CFG->source[sw] = 0;
-            CFG->trigger[sw] = 0; /* neutral */
+            CFG->triggerPct[sw] = 0; /* neutral */
         }
     )
 }
@@ -85,7 +85,7 @@ void AnalogSwitch::getValue( uint8_t row, uint8_t col, Cell *cell) {
     if( r == 0) {
         cell->setList( 6, InputChannelNames, ANALOG_CHANNELS, CFG->source[sw]);
     } else if( r == 1) {
-        cell->setInt8( 6, CFG->trigger[sw], 0, PERCENT_MIN_LIMIT, PERCENT_MAX_LIMIT);
+        cell->setInt8( 6, CFG->triggerPct[sw], 0, PERCENT_MIN_LIMIT, PERCENT_MAX_LIMIT);
     }
 }
 
@@ -97,6 +97,6 @@ void AnalogSwitch::setValue( uint8_t row, uint8_t col, Cell *cell) {
     if( r == 0) {
         CFG->source[sw] = cell->getList();
     } else if( r == 1) {
-        CFG->trigger[sw] = cell->getInt8();
+        CFG->triggerPct[sw] = cell->getInt8();
     }
 }

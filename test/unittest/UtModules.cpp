@@ -7,8 +7,8 @@
 #include "CalibrateSticks.h"
 #include "CalibrateTrim.h"
 #include "SwitchedChannels.h"
-
 #include "AnalogSwitch.h"
+
 #include "ChannelRange.h"
 #include "ChannelReverse.h"
 #include "AssignInput.h"
@@ -22,6 +22,9 @@ extern ModuleManager moduleManager;
 CalibrateSticks calibrateSticks;
 CalibrateTrim calibrateTrim;
 SwitchedChannels switchedChannels;
+AnalogSwitch analogSwitch;
+
+DECLARE_ASSERT_COUNTER
 
 void UtModules::run() {
 
@@ -29,7 +32,21 @@ void UtModules::run() {
 
     controls.init();
 
-    std::cout << "*** Module: CalibrateSticks" << std::endl;
+    UtCalibrateSticks();
+    UtCalibrateTrim();
+    UtSwitchedChannels();
+    UtAnalogSwitch();
+
+    // dumpControls( controls);
+
+    std::cout << std::endl << "*** UnitTest: END UtModules" << std::endl;
+    std::cout << "OK     = " << okCount << std::endl;
+    std::cout << "FAILED = " << failCount << std::endl;
+}
+
+void UtModules::UtCalibrateSticks() {
+
+    std::cout << std::endl << "*** Module: CalibrateSticks" << std::endl;
 
     calibrateSticks.setDefaults();
 
@@ -52,9 +69,11 @@ void UtModules::run() {
     verify( 0, PORT_ANALOG_INPUT_COUNT, 300, -1250);
     verify( 0, PORT_ANALOG_INPUT_COUNT, 500, 0);
     verify( 0, PORT_ANALOG_INPUT_COUNT, 700, 1250);
-    
+}
 
-    std::cout << "*** Module: CalibrateTrim" << std::endl;
+void UtModules::UtCalibrateTrim() {
+
+    std::cout << std::endl << "*** Module: CalibrateTrim" << std::endl;
 
     calibrateTrim.setDefaults();
 
@@ -109,8 +128,11 @@ void UtModules::run() {
     for( channel_t ch=0; ch<PORT_TRIM_INPUT_COUNT; ch++) {
         inputImpl->unittestSetTrimValue( ch, 500);
     }
+}
 
-    std::cout << "*** Module: SwitchedChannels" << std::endl;
+void UtModules::UtSwitchedChannels() {
+
+    std::cout << std::endl << "*** Module: SwitchedChannels" << std::endl;
 
     switchedChannels.setDefaults();
 
@@ -119,11 +141,50 @@ void UtModules::run() {
     ASSERT_UINT8_T( switchedChannels.getRowCount(), 5 * SWITCHED_CHANNELS, "switchedChannels.getRowCount()");
 
     switchedChannels_t *switchedChannelsCFG = (switchedChannels_t*)switchedChannels.getConfig();
+    moduleManager.addToRunList( &switchedChannels);
 
-    std::cout << "*** Module: AnalogSwitch" << std::endl;
+    switchedChannelsCFG->sw[0] = 1; // 2 state 
+    switchedChannelsCFG->sw[1] = 2; // 3 state
+    switchedChannelsCFG->sw[2] = 3; // 3 state 
+    
+    switchedChannelsCFG->ch[0] = 6;
+    switchedChannelsCFG->ch[1] = 7;
+    switchedChannelsCFG->ch[2] = 8;
+    
+    for( uint8_t i=0; i<SWITCHED_CHANNELS; i++) {
+        switchedChannelsCFG->state0pct[i] = -80;
+        switchedChannelsCFG->state1pct[i] = 0;
+        switchedChannelsCFG->state2pct[i] = 80;
+    }
 
-    AnalogSwitch analogSwitch;
-    AssignInput assignInput;
+    inputImpl->unittestSetSwitchValues( SW_STATE_0, SW_STATE_0, SW_STATE_0, SW_STATE_0);
+    controls.GetControlValues();
+    moduleManager.runModules( controls);
+
+    ASSERT_INT16_T( controls.inputGet( 6), -800, "Sw state 0");
+    ASSERT_INT16_T( controls.inputGet( 7), -800, "Sw state 0");
+    ASSERT_INT16_T( controls.inputGet( 8), -800, "Sw state 0");
+
+    inputImpl->unittestSetSwitchValues( SW_STATE_0, SW_STATE_1, SW_STATE_1, SW_STATE_1);
+    controls.GetControlValues();
+    moduleManager.runModules( controls);
+
+    ASSERT_INT16_T( controls.inputGet( 6), 0, "Sw state 1");
+    ASSERT_INT16_T( controls.inputGet( 7), 0, "Sw state 1");
+    ASSERT_INT16_T( controls.inputGet( 8), 0, "Sw state 1");
+
+    inputImpl->unittestSetSwitchValues( SW_STATE_0, SW_STATE_1, SW_STATE_2, SW_STATE_2);
+    controls.GetControlValues();
+    moduleManager.runModules( controls);
+
+    ASSERT_INT16_T( controls.inputGet( 6), 0, "Sw state 0");
+    ASSERT_INT16_T( controls.inputGet( 7), 800, "Sw state 0");
+    ASSERT_INT16_T( controls.inputGet( 8), 800, "Sw state 0");
+}
+
+void UtModules::UtAnalogSwitch() {
+
+    std::cout << std::endl << "*** Module: AnalogSwitch" << std::endl;
 
     analogSwitch.setDefaults();
 
@@ -131,15 +192,46 @@ void UtModules::run() {
     ASSERT_UINT8_T( analogSwitch.getConfigType(), MODULE_ANALOG_SWITCH_TYPE , "analogSwitch.getConfigType()");
     ASSERT_UINT8_T( analogSwitch.getRowCount(), 2 * CHANNEL_SWITCHES, "analogSwitch.getRowCount()");
 
-    analogSwitch_t *cfg = (analogSwitch_t*)analogSwitch.getConfig();
-    cfg->source[0] = CHANNEL_THROTTLE;
-    cfg->trigger[0] = -80;
+    analogSwitch_t *analogSwitchCFG = (analogSwitch_t*)analogSwitch.getConfig();
+    moduleManager.addToRunList( &analogSwitch);
 
+    analogSwitchCFG->source[0] = 0;
+    analogSwitchCFG->triggerPct[0] = -80;
+
+    analogSwitchCFG->source[1] = 0;
+    analogSwitchCFG->triggerPct[1] = 0;
+
+    // -81%
+    inputImpl->unittestSetStickValue( 0, 500 - (200 * 81 / 100)); // ! this is range 300 - 700 for -125% to 125% 
     controls.GetControlValues();
-    assignInput.run( controls);
+    moduleManager.runModules( controls);
+    
+    ASSERT_INT8_T( controls.switchGet( CHANNEL_SWITCHES_FIRST_IDX), SW_STATE_0, "Switch state");
+    ASSERT_INT8_T( controls.switchGet( CHANNEL_SWITCHES_FIRST_IDX +1), SW_STATE_0, "Switch state");
 
-    analogSwitch.run( controls);
+    // -79%
+    inputImpl->unittestSetStickValue( 0, 500 - (200 * 79 / 100)); // ! this is range 300 - 700 for -125% to 125% 
+    controls.GetControlValues();
+    moduleManager.runModules( controls);
+    
+    ASSERT_INT8_T( controls.switchGet( CHANNEL_SWITCHES_FIRST_IDX), SW_STATE_1, "Switch state");
+    ASSERT_INT8_T( controls.switchGet( CHANNEL_SWITCHES_FIRST_IDX +1), SW_STATE_0, "Switch state");
 
+    // -1%
+    inputImpl->unittestSetStickValue( 0, 500 - (200 * 1 / 100)); // ! this is range 300 - 700 for -125% to 125% 
+    controls.GetControlValues();
+    moduleManager.runModules( controls);
+    
+    ASSERT_INT8_T( controls.switchGet( CHANNEL_SWITCHES_FIRST_IDX), SW_STATE_1, "Switch state");
+    ASSERT_INT8_T( controls.switchGet( CHANNEL_SWITCHES_FIRST_IDX +1), SW_STATE_0, "Switch state");
+
+    // +1%
+    inputImpl->unittestSetStickValue( 0, 500 + (200 * 1 / 100)); // ! this is range 300 - 700 for -125% to 125% 
+    controls.GetControlValues();
+    moduleManager.runModules( controls);
+    
+    ASSERT_INT8_T( controls.switchGet( CHANNEL_SWITCHES_FIRST_IDX), SW_STATE_1, "Switch state");
+    ASSERT_INT8_T( controls.switchGet( CHANNEL_SWITCHES_FIRST_IDX +1), SW_STATE_1, "Switch state");
 }
 
 void UtModules::verify( channel_t start, uint8_t count, channelValue_t in, channelValue_t expected) {

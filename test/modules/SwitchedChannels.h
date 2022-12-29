@@ -31,8 +31,12 @@
 typedef struct switchedChannels_t {
 
     switch_t sw[SWITCHED_CHANNELS];
+    
     channel_t ch[SWITCHED_CHANNELS];
-    percent_t value[3*SWITCHED_CHANNELS];
+
+    percent_t state0pct[SWITCHED_CHANNELS];
+    percent_t state1pct[SWITCHED_CHANNELS];
+    percent_t state2pct[SWITCHED_CHANNELS];
 
 } switchedChannels_t;
 
