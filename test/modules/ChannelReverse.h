@@ -25,15 +25,15 @@
 
 /* Reverse channel directon */
 
-typedef struct ChannelReverse_t {
+typedef struct channelReverse_t {
 
     channelBits_t revBits;
 
-} ChannelReverse_t;
+} channelReverse_t;
 
 class ChannelReverse : public Module {
 
-    NON_PHASED_CONFIG( ChannelReverse_t)
+    NON_PHASED_CONFIG( channelReverse_t)
 
     public:
         ChannelReverse();

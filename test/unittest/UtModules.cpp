@@ -8,9 +8,9 @@
 #include "CalibrateTrim.h"
 #include "SwitchedChannels.h"
 #include "AnalogSwitch.h"
-
 #include "ChannelRange.h"
 #include "ChannelReverse.h"
+
 #include "AssignInput.h"
 
 #include "UtModules.h"
@@ -23,6 +23,8 @@ CalibrateSticks calibrateSticks;
 CalibrateTrim calibrateTrim;
 SwitchedChannels switchedChannels;
 AnalogSwitch analogSwitch;
+ChannelRange channelRange;
+ChannelReverse channelReverse;
 
 DECLARE_ASSERT_COUNTER
 
@@ -36,6 +38,8 @@ void UtModules::run() {
     UtCalibrateTrim();
     UtSwitchedChannels();
     UtAnalogSwitch();
+    UtChannelRange();
+    UtChannelReverse();
 
     // dumpControls( controls);
 
@@ -232,6 +236,66 @@ void UtModules::UtAnalogSwitch() {
     
     ASSERT_INT8_T( controls.switchGet( CHANNEL_SWITCHES_FIRST_IDX), SW_STATE_1, "Switch state");
     ASSERT_INT8_T( controls.switchGet( CHANNEL_SWITCHES_FIRST_IDX +1), SW_STATE_1, "Switch state");
+}
+
+void UtModules::UtChannelRange() {
+
+    std::cout << std::endl << "*** Module: ChannelRange" << std::endl;
+
+    channelRange.setDefaults();
+
+    ASSERT_TEXT_T( channelRange.getName(), TEXT_MODULE_CHANNEL_RANGE, "channelRange.getName()");
+    ASSERT_UINT8_T( channelRange.getConfigType(), MODULE_CHANNEL_RANGE_TYPE , "channelRange.getConfigType()");
+    ASSERT_UINT8_T( channelRange.getRowCount(), PORT_ANALOG_INPUT_COUNT, "channelRange.getRowCount()");
+
+    channelRange_t *channelRangeCFG = (channelRange_t*)channelRange.getConfig();
+    moduleManager.addToRunList( &channelRange);
+
+    /* After setDefaults() all channels scaled to +/- 100%*/
+    verify( 0, PORT_ANALOG_INPUT_COUNT, 300, -1000);
+    verify( 0, PORT_ANALOG_INPUT_COUNT, 700, 1000);
+
+    /* Unlimit to 125% */
+    channelRangeCFG->range_pct[0] = 125;
+    verify( 0, 1, 300, -1250);
+    verify( 0, 1, 700, 1250);
+
+    /* Limit to 50% */
+    channelRangeCFG->range_pct[0] = 50;
+    verify( 0, 1, 300, -500);
+    verify( 0, 1, 700, 500);
+
+    /* Reset to +/- 100% */
+    std::cout << "Reset channel range to +/- 100%" << std::endl;
+    channelRangeCFG->range_pct[0] = 100;
+}
+
+void UtModules::UtChannelReverse() {
+
+    std::cout << std::endl << "*** Module: ChannelReverse" << std::endl;
+
+    channelReverse.setDefaults();
+
+    ASSERT_TEXT_T( channelReverse.getName(), TEXT_MODULE_CHANNEL_REVERSE, "channelReverse.getName()");
+    ASSERT_UINT8_T( channelReverse.getConfigType(), MODULE_CHANNEL_REVERSE_TYPE , "channelReverse.getConfigType()");
+    ASSERT_UINT8_T( channelReverse.getRowCount(), PORT_ANALOG_INPUT_COUNT, "channelReverse.getRowCount()");
+
+    channelReverse_t *channelReverseCFG = (channelReverse_t*)channelReverse.getConfig();
+    moduleManager.addToRunList( &channelReverse);
+
+    /* Default unreversed */
+    verify( 0, 1, 300, -1000);
+    verify( 0, 1, 700, 1000);
+
+    /* Reverse all */
+    channelReverseCFG->revBits = 0xffff;
+    verify( 0, 1, 300, 1000);
+    verify( 0, 1, 700, -1000);
+
+    /* Back to normal */
+    channelReverseCFG->revBits = 0;
+    verify( 0, 1, 300, -1000);
+    verify( 0, 1, 700, 1000);
 }
 
 void UtModules::verify( channel_t start, uint8_t count, channelValue_t in, channelValue_t expected) {
