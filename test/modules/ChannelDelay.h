@@ -23,12 +23,12 @@
 
 #include "Module.h"
 
-/* delay channel movement */
+/* Delay channel movement for all mixable channels. */
 
 typedef struct channelDelay_t {
 
-    float1 posDelaySec[MIX_CHANNELS];
-    float1 negDelaySec[MIX_CHANNELS];
+    float1 posDelay_sec[MIX_CHANNELS];
+    float1 negDelay_sec[MIX_CHANNELS];
 
 } channelDelay_t;
 

@@ -23,7 +23,7 @@
 
 #include "Module.h"
 
-/* Reverse channel directon */
+/* Reverse directon of analog inputs. */
 
 typedef struct channelReverse_t {
 

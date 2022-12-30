@@ -23,10 +23,7 @@
 
 #include "Module.h"
 
-/* Control an input channel (analog channel) by switch.
- */
-
-#define SWITCHED_CHANNELS 3
+/* Control an input channel (analog channel) by switch. */
 
 typedef struct switchedChannels_t {
 
@@ -34,9 +31,9 @@ typedef struct switchedChannels_t {
     
     channel_t ch[SWITCHED_CHANNELS];
 
-    percent_t state0pct[SWITCHED_CHANNELS];
-    percent_t state1pct[SWITCHED_CHANNELS];
-    percent_t state2pct[SWITCHED_CHANNELS];
+    percent_t state0_pct[SWITCHED_CHANNELS];
+    percent_t state1_pct[SWITCHED_CHANNELS];
+    percent_t state2_pct[SWITCHED_CHANNELS];
 
 } switchedChannels_t;
 

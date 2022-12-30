@@ -29,22 +29,25 @@
  * This includes sticks, other analog inputs and
  * switched channels.
  */
-#define ANALOG_CHANNELS          ((channel_t)9)
+#define ANALOG_CHANNELS               ((channel_t)9)
+/* How many of ANALOG_CHANNELS are controlled by switches */
+#define SWITCHED_CHANNELS             ((channel_t)3)
 
 /* Logical channels for mixing.
  */
-#define LOGICAL_CHANNELS         ((channel_t)12)
+#define LOGICAL_CHANNELS              ((channel_t)12)
 
 /* Main channels like AIL, ELV, RUD, FLP
  * without their mix counterparts like AIL2, FLP2
  */
-#define MIX_CHANNELS             ((channel_t)9)
+#define MIX_CHANNELS                  ((channel_t)9)
 
 /* The number of transmitter channels.
  * This is the number of channels that will be used to
  * generate the PPM signal.
  */
-#define PPM_CHANNELS             ((channel_t)9)
+#define PPM_CHANNELS                  ((channel_t)9)
+#define PPM_FRAME_TIME_MSEC           (22)
 
 /* Total number of switches. Max is 16.
  * This includes channel switches and logical switches.

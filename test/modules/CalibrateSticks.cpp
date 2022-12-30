@@ -68,10 +68,9 @@ void CalibrateSticks::setDefaults() {
 
         for( channel_t ch = 0; ch < PORT_ANALOG_INPUT_COUNT; ch++) {        
             CFG->minPos[ch] = 0;
-            CFG->midPos[ch] = 511;
             CFG->maxPos[ch] = 1023;
+            CFG->midPos[ch] = CFG->maxPos[ch] / 2;
         }
-
     )
 
     calibrationStep = CALIBRATION_STEP_NONE;
@@ -96,6 +95,8 @@ void CalibrateSticks::rowExecute( uint8_t row ) {
         break;
         
     case CALIBRATION_STEP_MINMAX:
+        [[fallthrough]];
+
     default:
         calibrationStep = CALIBRATION_STEP_NONE;
         break;
@@ -109,7 +110,7 @@ uint8_t CalibrateSticks::getRowCount() {
 
 const char *CalibrateSticks::getRowName( uint8_t row) {
 
-    return (row == 0) ? TEXT_START : " ";
+    return (row == 0) ? TEXT_START : TEXT_MSG_NONE;
 }
 
 uint8_t CalibrateSticks::getColCount( uint8_t row) {
@@ -133,6 +134,8 @@ void CalibrateSticks::getValue( uint8_t row, uint8_t col, Cell *cell) {
             break;
 
         case CALIBRATION_STEP_NONE:
+            [[fallthrough]];
+
         default:
             stepName = TEXT_CALIB_NONE;
         }
@@ -143,7 +146,7 @@ void CalibrateSticks::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
         if( col == 0) {
             cell->setInt16( 1, CFG->minPos[row-1], 0, CHANNELVALUE_MIN_LIMIT, CHANNELVALUE_MAX_LIMIT);
-        } else {
+        } else if( col == 1) {
             cell->setInt16( 7, CFG->maxPos[row-1], 0, CHANNELVALUE_MIN_LIMIT, CHANNELVALUE_MAX_LIMIT);
         }
 

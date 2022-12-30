@@ -23,6 +23,10 @@
 
 #include "Module.h"
 
+/* Scale range of analog inputs.
+ * By default the range is limitted to +/-100% but can be increased to +/-125%.
+ */
+
 typedef struct channelRange_t {
 
     percent_t range_pct[PORT_ANALOG_INPUT_COUNT];

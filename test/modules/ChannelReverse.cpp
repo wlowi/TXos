@@ -43,7 +43,6 @@ void ChannelReverse::setDefaults() {
     INIT_NON_PHASED_CONFIGURATION(
 
         CFG->revBits = 0;
-
     )
 }
 

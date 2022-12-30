@@ -40,11 +40,11 @@ void SwitchedChannels::run( Controls &controls) {
             if( ch < ANALOG_CHANNELS) {
                 state = controls.switchGet( CFG->sw[sc]);
                 if( state == 0) {
-                    controls.inputSet( ch, PCT_TO_CHANNEL( CFG->state0pct[sc]));
+                    controls.inputSet( ch, PCT_TO_CHANNEL( CFG->state0_pct[sc]));
                 } else if( state == 1) {
-                    controls.inputSet( ch, PCT_TO_CHANNEL( CFG->state1pct[sc]));
+                    controls.inputSet( ch, PCT_TO_CHANNEL( CFG->state1_pct[sc]));
                 } else {
-                    controls.inputSet( ch, PCT_TO_CHANNEL( CFG->state2pct[sc]));
+                    controls.inputSet( ch, PCT_TO_CHANNEL( CFG->state2_pct[sc]));
                 }
             }
         }
@@ -58,9 +58,9 @@ void SwitchedChannels::setDefaults() {
         for( channel_t ch = 0; ch < SWITCHED_CHANNELS; ch++) {
             INIT_SWITCH( CFG->sw[ch]);
             CFG->ch[ch] = ANALOG_CHANNELS - SWITCHED_CHANNELS +ch;
-            CFG->state0pct[ch] = -100; /* min  */
-            CFG->state1pct[ch] = 0;    /* neutral */
-            CFG->state2pct[ch] = 100;  /* max */
+            CFG->state0_pct[ch] = -100; /* min  */
+            CFG->state1_pct[ch] = 0;    /* neutral */
+            CFG->state2_pct[ch] = 100;  /* max */
         }
     )
 
@@ -120,11 +120,11 @@ void SwitchedChannels::getValue( uint8_t row, uint8_t col, Cell *cell) {
         } else if( r == 1) {
             cell->setList( 9, InputChannelNames, ANALOG_CHANNELS, CFG->ch[ch]);
         } else if( r == 2) {
-            cell->setInt8( 9, CFG->state0pct[ch], 4, PERCENT_MIN_LIMIT, PERCENT_MAX_LIMIT);
+            cell->setInt8( 9, CFG->state0_pct[ch], 4, PERCENT_MIN_LIMIT, PERCENT_MAX_LIMIT);
         } else if( r == 3) {
-            cell->setInt8( 9, CFG->state1pct[ch], 4, PERCENT_MIN_LIMIT, PERCENT_MAX_LIMIT);
+            cell->setInt8( 9, CFG->state1_pct[ch], 4, PERCENT_MIN_LIMIT, PERCENT_MAX_LIMIT);
         } else if( r == 4) {
-            cell->setInt8( 9, CFG->state2pct[ch], 4, PERCENT_MIN_LIMIT, PERCENT_MAX_LIMIT);
+            cell->setInt8( 9, CFG->state2_pct[ch], 4, PERCENT_MIN_LIMIT, PERCENT_MAX_LIMIT);
         }
     }
 }
@@ -141,11 +141,11 @@ void SwitchedChannels::setValue( uint8_t row, uint8_t col, Cell *cell) {
         } else if( r == 1) {
             CFG->ch[ch] = cell->getList();
         } else if( r == 2) {
-            CFG->state0pct[ch] = cell->getInt8();
+            CFG->state0_pct[ch] = cell->getInt8();
         } else if( r == 3) {
-            CFG->state1pct[ch] = cell->getInt8();
+            CFG->state1_pct[ch] = cell->getInt8();
         } else if( r == 4) {
-            CFG->state2pct[ch] = cell->getInt8();
+            CFG->state2_pct[ch] = cell->getInt8();
         }
     }
 }

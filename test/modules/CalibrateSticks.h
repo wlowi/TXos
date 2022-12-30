@@ -23,6 +23,9 @@
 
 #include "Module.h"
 
+/* Calibrate analog inputs.
+ */
+
 typedef struct calibrateSticks_t {
 
     channelValue_t minPos[PORT_ANALOG_INPUT_COUNT];
@@ -58,6 +61,8 @@ class CalibrateSticks : public Module {
         bool isRowEditable( uint8_t row) final { return false; }
         bool isRowExecutable( uint8_t row) final;
         void rowExecute( uint8_t row ) final;
+
+        /* Force UI update during calibration. */
         bool hasChanged( uint8_t row, uint8_t col) { return true; }
 };
 

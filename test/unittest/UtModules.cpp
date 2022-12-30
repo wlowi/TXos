@@ -12,8 +12,11 @@
 #include "ChannelReverse.h"
 
 #include "AssignInput.h"
+#include "ChannelDelay.h"
 
 #include "UtModules.h"
+
+extern const channel_t MixChannelMap[MIX_CHANNELS];
 
 extern InputImpl *inputImpl;
 extern Controls controls;
@@ -25,6 +28,9 @@ SwitchedChannels switchedChannels;
 AnalogSwitch analogSwitch;
 ChannelRange channelRange;
 ChannelReverse channelReverse;
+
+AssignInput assignInput;
+ChannelDelay channelDelay;
 
 DECLARE_ASSERT_COUNTER
 
@@ -40,6 +46,21 @@ void UtModules::run() {
     UtAnalogSwitch();
     UtChannelRange();
     UtChannelReverse();
+
+    UtAssignInput();
+    UtChannelDelay();
+    // UtPhases
+    // UtLogicSwitch
+    // UtDualExpo
+    // UtModel
+    // UtMixer
+    // UtPhasesTrim
+    // UtEngineCut
+
+    // UtServoRemap
+    // UtServoReverse
+    // UtServoSubtrim
+    // UtServoLimit
 
     // dumpControls( controls);
 
@@ -156,9 +177,9 @@ void UtModules::UtSwitchedChannels() {
     switchedChannelsCFG->ch[2] = 8;
     
     for( uint8_t i=0; i<SWITCHED_CHANNELS; i++) {
-        switchedChannelsCFG->state0pct[i] = -80;
-        switchedChannelsCFG->state1pct[i] = 0;
-        switchedChannelsCFG->state2pct[i] = 80;
+        switchedChannelsCFG->state0_pct[i] = -80;
+        switchedChannelsCFG->state1_pct[i] = 0;
+        switchedChannelsCFG->state2_pct[i] = 80;
     }
 
     inputImpl->unittestSetSwitchValues( SW_STATE_0, SW_STATE_0, SW_STATE_0, SW_STATE_0);
@@ -200,10 +221,10 @@ void UtModules::UtAnalogSwitch() {
     moduleManager.addToRunList( &analogSwitch);
 
     analogSwitchCFG->source[0] = 0;
-    analogSwitchCFG->triggerPct[0] = -80;
+    analogSwitchCFG->trigger_pct[0] = -80;
 
     analogSwitchCFG->source[1] = 0;
-    analogSwitchCFG->triggerPct[1] = 0;
+    analogSwitchCFG->trigger_pct[1] = 0;
 
     // -81%
     inputImpl->unittestSetStickValue( 0, 500 - (200 * 81 / 100)); // ! this is range 300 - 700 for -125% to 125% 
@@ -296,6 +317,72 @@ void UtModules::UtChannelReverse() {
     channelReverseCFG->revBits = 0;
     verify( 0, 1, 300, -1000);
     verify( 0, 1, 700, 1000);
+}
+
+void UtModules::UtAssignInput() {
+
+    std::cout << std::endl << "*** Module: AssignInput" << std::endl;
+
+    assignInput.setDefaults();
+
+    ASSERT_TEXT_T( assignInput.getName(), TEXT_MODULE_ASSIGN_INPUT, "assignInput.getName()");
+    ASSERT_UINT8_T( assignInput.getConfigType(), MODULE_ASSIGN_INPUT_TYPE , "assignInput.getConfigType()");
+    ASSERT_UINT8_T( assignInput.getRowCount(), MIX_CHANNELS, "assignInput.getRowCount()");
+
+    assignInput_t *assignInputCFG = (assignInput_t*)assignInput.getConfig();
+    moduleManager.addToRunList( &assignInput);
+
+
+    for( channel_t ch=0; ch<MIX_CHANNELS; ch++) {
+        assignInputCFG->source[ch] = ch % 6; // use only the first 6 analog channels
+    }
+
+    /* Set analog channels 0 - 5 */
+    inputImpl->unittestSetStickValue( 0, 500 + (200 * 10 / 100)); // ! this is range 300 - 700 for -125% to 125% 
+    inputImpl->unittestSetStickValue( 1, 500 + (200 * 20 / 100)); // set to 10% ... 60%
+    inputImpl->unittestSetStickValue( 2, 500 + (200 * 30 / 100));
+    inputImpl->unittestSetStickValue( 3, 500 + (200 * 40 / 100));
+    inputImpl->unittestSetStickValue( 4, 500 + (200 * 50 / 100));
+    inputImpl->unittestSetStickValue( 5, 500 + (200 * 60 / 100));
+
+    controls.GetControlValues();
+    moduleManager.runModules( controls);
+
+    for( channel_t ch=0; ch<MIX_CHANNELS; ch++) {
+        //                                                       100,200,300,400,500,600,100,200,...
+        ASSERT_INT16_T( controls.logicalGet( MixChannelMap[ch]), 100 + (ch % 6) * 100, "verify assignment");
+    }
+
+
+    /* Now change assignment by shifting input channels by 1 */
+    for( channel_t ch=0; ch<MIX_CHANNELS; ch++) {
+        assignInputCFG->source[ch] = (ch + 1) % 6; // use only the first 6 analog channels
+    }
+
+    controls.GetControlValues();
+    moduleManager.runModules( controls);
+
+    for( channel_t ch=0; ch<MIX_CHANNELS; ch++) {
+        //                                                       100,200,300,400,500,600,100,200,...
+        ASSERT_INT16_T( controls.logicalGet( MixChannelMap[ch]), 100 + ((ch + 1) % 6) * 100, "verify shifted assignment");
+    }
+
+    /* set back to default */
+    assignInput.setDefaults();
+}
+
+void UtModules::UtChannelDelay() {
+
+    std::cout << std::endl << "*** Module: ChannelDelay" << std::endl;
+
+    channelDelay.setDefaults();
+
+    ASSERT_TEXT_T( channelDelay.getName(), TEXT_MODULE_CHANNEL_DELAY, "channelDelay.getName()");
+    ASSERT_UINT8_T( channelDelay.getConfigType(), MODULE_CHANNEL_DELAY_TYPE , "channelDelay.getConfigType()");
+    ASSERT_UINT8_T( channelDelay.getRowCount(), MIX_CHANNELS, "channelDelay.getRowCount()");
+
+    // channelDelay_t *channelDelayCFG = (channelDelay_t*)channelDelay.getConfig();
+    moduleManager.addToRunList( &channelDelay);
 }
 
 void UtModules::verify( channel_t start, uint8_t count, channelValue_t in, channelValue_t expected) {

@@ -23,6 +23,8 @@
 
 #include "Module.h"
 
+/* Calibrate analog trim inputs */
+
 typedef struct calibrateTrim_t {
 
     channelValue_t minPos[PORT_TRIM_INPUT_COUNT];
@@ -58,6 +60,8 @@ class CalibrateTrim : public Module {
         bool isRowEditable( uint8_t row) final { return false; }
         bool isRowExecutable( uint8_t row) final;
         void rowExecute( uint8_t row ) final;
+
+        /* Force UI update during calibration. */
         bool hasChanged( uint8_t row, uint8_t col) { return true; }
 };
 
