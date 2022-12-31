@@ -1,30 +1,8 @@
 
 #include "Model.h"
 
-/* Make sure the entries are in the same order as the 
- * defines in Models.h
- */
-const char *wingMixNames[WINGMIX_OPTION_NUM] = {
-    TEXT_WINGMIX_NORMAL,
-    TEXT_WINGMIX_DELTA,
-    TEXT_WINGMIX_VTAIL
-};
-
-/* Make sure the entries are in the same order as the 
- * defines in Models.h
- */
-const char *mixNames[MIX_OPTION_NUM] = {
-    TEXT_MIX_AIL_RUD,
-    TEXT_MIX_AIL_FLP,
-    TEXT_MIX_SPL_AIL,
-    TEXT_MIX_SPL_FLP,
-    TEXT_MIX_SPL_ELV,
-    TEXT_MIX_FLP_AIL,
-    TEXT_MIX_FLP_ELV,
-    TEXT_MIX_ELV_AIL,
-    TEXT_MIX_ELV_FLP,
-    TEXT_MIX_RUD_ELV
-};
+extern const char* const WingMixNames[TEXT_WINGMIX_count];
+extern const char* const MixNames[TEXT_MIX_count];
 
 Model::Model() : Module( MODULE_MODEL_TYPE, TEXT_MODULE_MODEL) {
 
@@ -60,6 +38,9 @@ void Model::run( Controls &controls) {
 
     channelValue_t mixedValue;
 
+    channelValue_t trim;
+    channelValue_t reduction;
+
    /* get original unmixed values */
     ail = controls.logicalGet( CHANNEL_AILERON);
     elv = controls.logicalGet( CHANNEL_ELEVATOR);
@@ -74,16 +55,16 @@ void Model::run( Controls &controls) {
 
     case WINGMIX_DELTA:
         if( CFG->qrDiffPct != 0 && controls.evalSwitches( CFG->qrDiffSw)) {
-            channelValue_t t = controls.trimGet( CHANNEL_AILERON);
-            long d = ail - t;
-            channelValue_t r = (channelValue_t)(d * (100L - abs(CFG->qrDiffPct)) / 100L);
+            trim = controls.trimGet( CHANNEL_AILERON);
+            long d = ail - trim;
+            reduction = (channelValue_t)(d * (100L - abs(CFG->qrDiffPct)) / 100L);
 
             if( (CFG->qrDiffPct > 0) == (d > 0) ) {
-                controls.logicalSet( CHANNEL_AILERON, elv + ail /* t +d */);
-                controls.logicalSet( CHANNEL_ELEVATOR, elv - t - r);
+                controls.logicalSet( CHANNEL_AILERON, elv + ail);
+                controls.logicalSet( CHANNEL_ELEVATOR, elv - trim - reduction);
             } else {
-                controls.logicalSet( CHANNEL_AILERON, elv + t + r);
-                controls.logicalSet( CHANNEL_ELEVATOR, elv - ail /* -t -d */);
+                controls.logicalSet( CHANNEL_AILERON, elv + trim + reduction);
+                controls.logicalSet( CHANNEL_ELEVATOR, elv - ail);
             } 
 
         } else {
@@ -100,16 +81,16 @@ void Model::run( Controls &controls) {
 
     case WINGMIX_NORMAL:
         if( CFG->qrDiffPct != 0 && controls.evalSwitches( CFG->qrDiffSw)) {
-            channelValue_t t = controls.trimGet( CHANNEL_AILERON);
-            long d = ail - t;
-            channelValue_t r = (channelValue_t)(d * (100L - abs(CFG->qrDiffPct)) / 100L);
+            trim = controls.trimGet( CHANNEL_AILERON);
+            long d = ail - trim;
+            reduction = (channelValue_t)(d * (100L - abs(CFG->qrDiffPct)) / 100L);
 
             if( (CFG->qrDiffPct > 0) == (d > 0) ) {
-                controls.logicalSet( CHANNEL_AILERON, ail /* t +d */);
-                controls.logicalSet( CHANNEL_AILERON2, -t - r);
+                controls.logicalSet( CHANNEL_AILERON, ail);
+                controls.logicalSet( CHANNEL_AILERON2, -trim - reduction);
             } else {
-                controls.logicalSet( CHANNEL_AILERON, t + r);
-                controls.logicalSet( CHANNEL_AILERON2, -ail /* -t -d */);
+                controls.logicalSet( CHANNEL_AILERON, trim + reduction);
+                controls.logicalSet( CHANNEL_AILERON2, -ail);
             } 
 
         } else {
@@ -124,7 +105,7 @@ void Model::run( Controls &controls) {
 
     limitChannels( controls);
 
-    for( uint8_t mix = 0; mix < MIX_OPTION_NUM; mix++) {
+    for( uint8_t mix = 0; mix < TEXT_MIX_count; mix++) {
 
         if( controls.evalSwitches( CFG->mixSw[mix])) {
 
@@ -140,16 +121,16 @@ void Model::run( Controls &controls) {
             case MIX_AIL_FLP:
                 mixedValue = mixValue( ail, mix);
                 if( CFG->qrDiffPct != 0 && controls.evalSwitches( CFG->qrDiffSw)) {
-                    channelValue_t t = controls.trimGet( CHANNEL_AILERON);
-                    long d = mixedValue - t;
-                    channelValue_t r = (channelValue_t)(d * (100L - abs(CFG->qrDiffPct)) / 100L);
+                    trim = controls.trimGet( CHANNEL_AILERON);
+                    long d = mixedValue - trim;
+                    reduction = (channelValue_t)(d * (100L - abs(CFG->qrDiffPct)) / 100L);
 
                     if( (CFG->qrDiffPct > 0) == (d > 0) ) {
-                        controls.logicalSet( CHANNEL_FLAP, controls.logicalGet( CHANNEL_FLAP) + mixedValue /* t +d */);
-                        controls.logicalSet( CHANNEL_FLAP2, controls.logicalGet( CHANNEL_FLAP2) -t - r);
+                        controls.logicalSet( CHANNEL_FLAP, controls.logicalGet( CHANNEL_FLAP) + mixedValue);
+                        controls.logicalSet( CHANNEL_FLAP2, controls.logicalGet( CHANNEL_FLAP2) - trim - reduction);
                     } else {
-                        controls.logicalSet( CHANNEL_FLAP, controls.logicalGet( CHANNEL_FLAP) + t + r);
-                        controls.logicalSet( CHANNEL_FLAP2, controls.logicalGet( CHANNEL_FLAP2) -mixedValue /* -t -d */);
+                        controls.logicalSet( CHANNEL_FLAP, controls.logicalGet( CHANNEL_FLAP) + trim + reduction);
+                        controls.logicalSet( CHANNEL_FLAP2, controls.logicalGet( CHANNEL_FLAP2) -mixedValue);
                     }
                 } else {
                     controls.logicalSet( CHANNEL_FLAP, controls.logicalGet( CHANNEL_FLAP) + mixedValue);
@@ -177,8 +158,7 @@ void Model::run( Controls &controls) {
                 controls.logicalSet( CHANNEL_ELEVATOR, controls.logicalGet( CHANNEL_ELEVATOR) + mixedValue);
                 if( CFG->wingMix == WINGMIX_VTAIL) {
                     controls.logicalSet( CHANNEL_RUDDER, controls.logicalGet(  CHANNEL_RUDDER) + mixedValue);
-                }
-                if( CFG->wingMix == WINGMIX_DELTA) {
+                } else if( CFG->wingMix == WINGMIX_DELTA) {
                     controls.logicalSet( CHANNEL_AILERON, controls.logicalGet(  CHANNEL_AILERON) + mixedValue);
                 }
                 break;
@@ -197,8 +177,7 @@ void Model::run( Controls &controls) {
                 controls.logicalSet( CHANNEL_ELEVATOR, controls.logicalGet( CHANNEL_ELEVATOR) + mixedValue);
                 if( CFG->wingMix == WINGMIX_VTAIL) {
                     controls.logicalSet( CHANNEL_RUDDER, controls.logicalGet(  CHANNEL_RUDDER) + mixedValue);
-                }
-                if( CFG->wingMix == WINGMIX_DELTA) {
+                } else if( CFG->wingMix == WINGMIX_DELTA) {
                     controls.logicalSet( CHANNEL_AILERON, controls.logicalGet(  CHANNEL_AILERON) + mixedValue);
                 }
                 break;
@@ -223,8 +202,7 @@ void Model::run( Controls &controls) {
                 controls.logicalSet( CHANNEL_ELEVATOR, controls.logicalGet( CHANNEL_ELEVATOR) + mixedValue);
                 if( CFG->wingMix == WINGMIX_VTAIL) {
                     controls.logicalSet( CHANNEL_RUDDER, controls.logicalGet(  CHANNEL_RUDDER) + mixedValue);
-                }
-                if( CFG->wingMix == WINGMIX_DELTA) {
+                } else if( CFG->wingMix == WINGMIX_DELTA) {
                     controls.logicalSet( CHANNEL_AILERON, controls.logicalGet(  CHANNEL_AILERON) + mixedValue);
                 }
                 break;
@@ -248,7 +226,7 @@ void Model::setDefaults() {
         CFG->qrDiffPct = 0;
         INIT_SWITCH( CFG->qrDiffSw);
 
-        for( uint8_t mix = 0; mix < MIX_OPTION_NUM; mix++) {
+        for( uint8_t mix = 0; mix < TEXT_MIX_count; mix++) {
             INIT_SWITCH( CFG->mixSw[mix]);
             CFG->mixPct[mix] = 0;
             CFG->mixOffset[mix] = 0;
@@ -261,7 +239,7 @@ void Model::setDefaults() {
 uint8_t Model::getRowCount() {
 
     /* name, wingmix, 2 * qr-diff + (pct + offs) * mix */
-    return 4 + 2 * MIX_OPTION_NUM;
+    return 4 + 2 * TEXT_MIX_count;
 }
 
 const char *Model::getRowName( uint8_t row) {
@@ -273,7 +251,7 @@ const char *Model::getRowName( uint8_t row) {
     } else if (row == 2) {
         return TEXT_AIL_DIFF;
     } else if ((row % 2) == 0) { // 4..6..8
-        return mixNames[ (row / 2) -2];
+        return MixNames[ (row / 2) -2];
     } else { // 3..5..7
         return TEXT_MSG_NONE;
     }
@@ -294,7 +272,7 @@ void Model::getValue( uint8_t row, uint8_t col, Cell *cell) {
     if( row == 0) {
         cell->setString( 5, CFG->modelName, MODEL_NAME_LEN);
     } else if( row == 1) {
-        cell->setList( 5, wingMixNames, WINGMIX_OPTION_NUM, CFG->wingMix);
+        cell->setList( 5, WingMixNames, TEXT_WINGMIX_count, CFG->wingMix);
     } else if( row == 2) {
         cell->setSwitchState( 8, CFG->qrDiffSw);
     } else if( row == 3) {

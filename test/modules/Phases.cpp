@@ -23,15 +23,7 @@
 
 extern ModuleManager moduleManager;
 
-const char *phaseNames[TEXT_PHASES_count] = {
-    TEXT_PHASE_NORMAL,
-    TEXT_PHASE_THERMAL,
-    TEXT_PHASE_SPEED,
-    TEXT_PHASE_START,
-    TEXT_PHASE_LAND,
-    TEXT_PHASE_ACRO,
-    TEXT_PHASE_ACRO2
-};
+extern const char* const PhaseNames[TEXT_PHASES_count];
 
 Phases::Phases() : Module( MODULE_PHASES_TYPE, TEXT_MODULE_PHASES) {
 
@@ -45,7 +37,7 @@ phase_t Phases::getPhase() {
 
 const char *Phases::getPhaseName() {
 
-    return phaseNames[CFG->phaseName[phase]];
+    return PhaseNames[CFG->phaseName[phase]];
 }
 
 /* From Module */
@@ -126,7 +118,7 @@ void Phases::getValue( uint8_t row, uint8_t col, Cell *cell) {
     if( row == 0) {
         cell->setSwitch( 7, CFG->sw);
     } else {
-        cell->setList( 6, phaseNames, TEXT_PHASES_count, CFG->phaseName[row-1]);
+        cell->setList( 6, PhaseNames, TEXT_PHASES_count, CFG->phaseName[row-1]);
     }
 }
 

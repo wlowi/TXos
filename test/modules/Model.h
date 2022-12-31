@@ -10,10 +10,8 @@
 
 typedef uint8_t wingMix_t;
 
-#define WINGMIX_OPTION_NUM  ((uint8_t)3)
-
 /* Make sure the defines are in the same order as the 
- * entires of wingMixNames in Models.cpp
+ * entires of wingMixNames in TXos.cpp
  */
 #define WINGMIX_NORMAL      ((wingMix_t)0)
 #define WINGMIX_DELTA       ((wingMix_t)1)
@@ -21,10 +19,8 @@ typedef uint8_t wingMix_t;
 
 typedef uint8_t mix_t;
 
-#define MIX_OPTION_NUM      ((uint8_t)10)
-
 /* Make sure the defines are in the same order as the 
- * entries of mixNames in Models.cpp
+ * entries of mixNames in TXos.cpp
  */
 #define MIX_AIL_RUD         ((mix_t)0)
 #define MIX_AIL_FLP         ((mix_t)1)
@@ -46,9 +42,9 @@ typedef struct model_t {
     switch_t qrDiffSw;
     percent_t qrDiffPct;
 
-    switch_t mixSw[MIX_OPTION_NUM];
-    percent_t mixPct[MIX_OPTION_NUM];
-    percent_t mixOffset[MIX_OPTION_NUM];
+    switch_t mixSw[TEXT_MIX_count];
+    percent_t mixPct[TEXT_MIX_count];
+    percent_t mixOffset[TEXT_MIX_count];
 
 } model_t;
 

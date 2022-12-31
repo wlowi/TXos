@@ -643,7 +643,7 @@ void LcdWidget::charLine( wxDC &dc, char l)
 void LcdWidget::printIntGeneric( unsigned int val, int8_t neg, uint8_t width, uint8_t dot, char filler) {
 
     uint8_t bufflen = (width == 0) ? 6 : width;
-    char buff[ bufflen+1 ];
+    char buff[ 20 ];
     uint8_t p = bufflen;
 
     buff[p--] = '\0';

@@ -22,14 +22,7 @@
 
 extern Controls controls;
 
-const char *logicTypes[TEXT_LOGIC_SW_TYPE_count] = {
-    TEXT_LOGIC_SW_TYPE1,
-    TEXT_LOGIC_SW_TYPE2,
-    TEXT_LOGIC_SW_TYPE3,
-    TEXT_LOGIC_SW_TYPE4,
-    TEXT_LOGIC_SW_TYPE5,
-    TEXT_LOGIC_SW_TYPE6
-};
+extern const char* const LogicTypes[TEXT_LOGIC_SW_TYPE_count];
 
 LogicSwitch::LogicSwitch() : Module( MODULE_LOGIC_SWITCH_TYPE, TEXT_MODULE_LOGIC_SWITCH) {
 
@@ -129,7 +122,7 @@ void LogicSwitch::getValue( uint8_t row, uint8_t col, Cell *cell) {
     uint8_t r = (row % 4);
 
     if( r == 0) {
-        cell->setList( 4, logicTypes, TEXT_LOGIC_SW_TYPE_count, CFG->type[sw]);
+        cell->setList( 4, LogicTypes, TEXT_LOGIC_SW_TYPE_count, CFG->type[sw]);
     } else if( r == 1) {
         if( col == 0) {
             cell->setLabel(2, TEXT_LOGIC_SW_A, 1);

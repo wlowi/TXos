@@ -54,7 +54,7 @@
 #define TEXT_MODULE_VCC_MONITOR       CC("Bat. Warning")
 
 // Analog input channels
-#define TEXT_INPUT_length           3
+#define TEXT_INPUT_length           ((uint8_t)3)
 #define TEXT_INPUT_CH_1             CC("In1")
 #define TEXT_INPUT_CH_2             CC("In2")
 #define TEXT_INPUT_CH_3             CC("In3")
@@ -66,7 +66,7 @@
 #define TEXT_INPUT_CH_9             CC("In9")
 
 // Control channels
-#define TEXT_CONTROL_length         3
+#define TEXT_CONTROL_length         ((uint8_t)3)
 #define TEXT_CONTROL_CH_1           CC("Thr")
 #define TEXT_CONTROL_CH_2           CC("Ail")
 #define TEXT_CONTROL_CH_3           CC("Elv")
@@ -81,7 +81,7 @@
 #define TEXT_CONTROL_CH_12          CC("Ch9")
 
 // Output channels
-#define TEXT_OUT_length             2
+#define TEXT_OUT_length             ((uint8_t)2)
 #define TEXT_OUT_CH_1               CC("S1")
 #define TEXT_OUT_CH_2               CC("S2")
 #define TEXT_OUT_CH_3               CC("S3")
@@ -95,8 +95,8 @@
 // Switch types (2 letters fixed)
 // Note name length is 3 because the format includes the switch number
 // ntt  (1BI)
-#define TEXT_SW_NAME_length         3
-#define TEXT_SW_NAME_STATE_length   5
+#define TEXT_SW_NAME_length         ((uint8_t)3)
+#define TEXT_SW_NAME_STATE_length   ((uint8_t)5)
 
 #define TEXT_SW_TYPE_UNUSED         CC("---")
 #define TEXT_SW_TYPE_2_STATE        CC("BI")
@@ -108,8 +108,8 @@
 #define TEXT_SW_TYPE_PHASE_N        CC("PH")
 
 // Logic Switches
-#define TEXT_LOGIC_SW_TYPE_count    6
-#define TEXT_LOGIC_SW_TYPE_length   7
+#define TEXT_LOGIC_SW_TYPE_count    ((uint8_t)6)
+#define TEXT_LOGIC_SW_TYPE_length   ((uint8_t)7)
 
 #define TEXT_LOGIC_SW_TYPE1         CC("A&B")
 #define TEXT_LOGIC_SW_TYPE2         CC("A|B")
@@ -123,22 +123,24 @@
 #define TEXT_LOGIC_SW_C             CC("C")
 
 // Calibration steps (7 letters max)
-#define TEXT_CALIB_length           7
+#define TEXT_CALIB_length           ((uint8_t)7)
 #define TEXT_CALIB_CENTER           CC("CENTER")
 #define TEXT_CALIB_MINMAX           CC("MIN/MAX")
 #define TEXT_CALIB_NONE             CC("CALIB.")
 
 // Phases (7 letters max.)
-#define TEXT_PHASE_NAME_length      7
+#define TEXT_PHASE_NAME_length      ((uint8_t)7)
 #define TEXT_NOPHASE                CC("NOPHASE")
-#define TEXT_PHASES_count           7
+#define TEXT_PHASES_count           ((uint8_t)9)
 #define TEXT_PHASE_NORMAL           CC("Normal")
 #define TEXT_PHASE_THERMAL          CC("Thermal")
 #define TEXT_PHASE_SPEED            CC("Speed")
-#define TEXT_PHASE_START            CC("Start")
+#define TEXT_PHASE_TAKEOFF          CC("Takeoff")
 #define TEXT_PHASE_LAND             CC("Landing")
 #define TEXT_PHASE_ACRO             CC("Acro")
 #define TEXT_PHASE_ACRO2            CC("Acro 2")
+#define TEXT_PHASE_DIST             CC("Distnce")
+#define TEXT_PHASE_TOW              CC("Air-Tow")
 
 // Misc
 #define TEXT_ACTIVE                 CC("Active")
@@ -177,11 +179,13 @@
 #define TEXT_WINGMIX                CC("Mix")
 
 // Wing mix options
-#define TEXT_WINGMIX_length         6
+#define TEXT_WINGMIX_length         ((uint8_t)6)
+#define TEXT_WINGMIX_count          ((uint8_t)3)
 #define TEXT_WINGMIX_NORMAL         CC("Normal")
 #define TEXT_WINGMIX_DELTA          CC("Delta")
 #define TEXT_WINGMIX_VTAIL          CC("V-Tail")
 
+#define TEXT_MIX_count              ((uint8_t)10)
 #define TEXT_MIX_AIL_RUD            CC("Ail>Rud")
 #define TEXT_MIX_AIL_FLP            CC("Ail>Flp")
 #define TEXT_MIX_SPL_AIL            CC("Spl>Ail")
@@ -194,7 +198,7 @@
 #define TEXT_MIX_RUD_ELV            CC("Rud>Elv")
 
 // Binary states
-#define TEXT_ON_OFF_length          3
+#define TEXT_ON_OFF_length          ((uint8_t)3)
 #define TEXT_ON                     CC("On")
 #define TEXT_OFF                    CC("Off")
 
@@ -209,21 +213,21 @@
 #define TEXT_STATISTIC_WDT          CC("WDT")
 
 /* User interface warnings and messages */
-#define TEXT_MSG_count              5
+#define TEXT_MSG_count              ((uint8_t)5)
 
-#define MSG_NONE                    0 //1234567890123
+#define MSG_NONE                    ((uint8_t)0) //1234567890123
 #define TEXT_MSG_NONE               CC(" ")
 
-#define MSG_BAD_SYSCONFIG           1 //1234567890123
+#define MSG_BAD_SYSCONFIG           ((uint8_t)1) //1234567890123
 #define TEXT_MSG_BAD_SYSCONFIG      CC("Bad Sysconfig")
 
-#define MSG_LOW_BATT                2 //1234567890123
+#define MSG_LOW_BATT                ((uint8_t)2) //1234567890123
 #define TEXT_MSG_LOW_BATT           CC("Low Battery")
 
-#define MSG_MODEL_LOAD_FAILED       3 //1234567890123
+#define MSG_MODEL_LOAD_FAILED       ((uint8_t)3) //1234567890123
 #define TEXT_MSG_MODEL_LOAD_FAILED  CC("Mod. load err")
 
-#define MSG_CONFIG_SIZE             4 //1234567890123
+#define MSG_CONFIG_SIZE             ((uint8_t)4) //1234567890123
 #define TEXT_MSG_CONFIG_SIZE        CC("Mod. cfg size")
 
 #endif

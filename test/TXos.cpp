@@ -205,6 +205,52 @@ const char* OutputChannelNames[PPM_CHANNELS] = {
     TEXT_OUT_CH_9
 };
 
+const char *PhaseNames[TEXT_PHASES_count] = {
+    TEXT_PHASE_NORMAL,
+    TEXT_PHASE_THERMAL,
+    TEXT_PHASE_SPEED,
+    TEXT_PHASE_TAKEOFF,
+    TEXT_PHASE_LAND,
+    TEXT_PHASE_ACRO,
+    TEXT_PHASE_ACRO2,
+    TEXT_PHASE_DIST,
+    TEXT_PHASE_TOW
+};
+
+const char *LogicTypes[TEXT_LOGIC_SW_TYPE_count] = {
+    TEXT_LOGIC_SW_TYPE1,
+    TEXT_LOGIC_SW_TYPE2,
+    TEXT_LOGIC_SW_TYPE3,
+    TEXT_LOGIC_SW_TYPE4,
+    TEXT_LOGIC_SW_TYPE5,
+    TEXT_LOGIC_SW_TYPE6
+};
+
+/* Make sure the entries are in the same order as the 
+ * defines in Models.h
+ */
+const char *WingMixNames[TEXT_WINGMIX_count] = {
+    TEXT_WINGMIX_NORMAL,
+    TEXT_WINGMIX_DELTA,
+    TEXT_WINGMIX_VTAIL
+};
+
+/* Make sure the entries are in the same order as the 
+ * defines in Models.h
+ */
+const char *MixNames[TEXT_MIX_count] = {
+    TEXT_MIX_AIL_RUD,
+    TEXT_MIX_AIL_FLP,
+    TEXT_MIX_SPL_AIL,
+    TEXT_MIX_SPL_FLP,
+    TEXT_MIX_SPL_ELV,
+    TEXT_MIX_FLP_AIL,
+    TEXT_MIX_FLP_ELV,
+    TEXT_MIX_ELV_AIL,
+    TEXT_MIX_ELV_FLP,
+    TEXT_MIX_RUD_ELV
+};
+
 const buzzerCmd_t SoundWelcome[] = {
   BUZZER_PLAY( 1),
   BUZZER_PAUSE( 1),
