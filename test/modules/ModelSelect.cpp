@@ -74,7 +74,7 @@ void ModelSelect::rowExecute( uint8_t row) {
 
 uint8_t ModelSelect::getRowCount() {
 
-    return CONFIG_MODEL_COUNT;
+    return moduleManager.getModelCount();
 }
 
 const char *ModelSelect::getRowName( uint8_t row) {

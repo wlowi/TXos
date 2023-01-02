@@ -87,8 +87,6 @@
 
 #include "TXos.h"
 
-#include "EEPROM.h"
-
 #include "Controls.h"
 #include "Output.h"
 #include "Ports.h"

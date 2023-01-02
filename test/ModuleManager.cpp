@@ -137,6 +137,10 @@ void ModuleManager::switchPhase( phase_t phase) {
     modelMenu->switchPhase( phase);
 }
 
+uint8_t ModuleManager::getModelCount() const {
+
+    return blockService->getModelBlockCount();
+}
 /*
  * Read configuration block from EEPROM and distribute
  * configuration data to each module.

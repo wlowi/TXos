@@ -70,6 +70,7 @@ class ModuleManager {
 
         void switchPhase( phase_t phase);
 
+        uint8_t getModelCount() const;
         void loadModel( configBlockID_t modelID);
         void saveModel( configBlockID_t modelID);
 

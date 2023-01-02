@@ -37,8 +37,6 @@
 #include "ConfigBlock.h"
 #include "ModuleManager.h"
 
-#define SYSTEMCONFIG_BLOCKID    ((configBlockID_t)0)
-
 class SystemConfig {
 
     public:

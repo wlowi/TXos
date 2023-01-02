@@ -20,7 +20,13 @@
 
 #include "ConfigBlock.h"
 
-ConfigBlock::ConfigBlock() = default;
+ConfigBlock::ConfigBlock() {
+
+    storageSize = EEPROM.length();
+    modelBlockCount = (storageSize - SYSTEMCONFIG_BLOCK_SIZE) / MODELCONFIG_BLOCK_SIZE;
+
+    LOGV("ConfigBlock::ConfigBlock(): Storage size is %ld. Model configurations: %d\n", storageSize, modelBlockCount);
+}
 
 /*
  * Verify config block id and read a block from EEPROM.
@@ -34,17 +40,21 @@ configBlock_rc ConfigBlock::readBlock( configBlockID_t id) {
     if( setBlockID( id)) {
 
         configStart = getBlockStart();
-        EEPROM.get( configStart, block);
+
+        LOGV("ConfigBlock::readBlock(): reading %ld bytes from addr %ld\n", configBlockSize, configStart);
+        for( uint16_t i=0; i < configBlockSize; i++) {
+            block.payload[i] = EEPROM.read( configStart + i);
+        }
 
         if( !isBlockValid()) {
-            LOGV("** ConfigBlock::readBlock(): invalid csum for ID=%d\n", id);
+            LOGV("** ConfigBlock::readBlock(): invalid csum for block ID=%d\n", id);
             return CONFIGBLOCK_RC_CSUM;
         }
 
         return CONFIGBLOCK_RC_OK;
     }
 
-    LOGV("** ConfigBlock::readBlock(): invalid ID=%d\n", id);
+    LOGV("** ConfigBlock::readBlock(): invalid block ID=%d\n", id);
     return CONFIGBLOCK_RC_INVID;
 }
 
@@ -81,9 +91,13 @@ configBlock_rc ConfigBlock::writeBlock() {
     if( setBlockID( blockID)) {
 
         configStart = getBlockStart();
-        block.checksum = computeChecksum();
-        EEPROM.put( configStart, block);
-        
+        *block.checksum = computeChecksum();
+
+        LOGV("ConfigBlock::writeBlock(): writing %ld bytes to addr %ld\n", configBlockSize, configStart);
+        for( uint16_t i=0; i < configBlockSize; i++) {
+            EEPROM.update( configStart + i, block.payload[i]);
+        }
+
         return CONFIGBLOCK_RC_OK;
     }
 
@@ -99,18 +113,13 @@ uint8_t *ConfigBlock::getPayload() {
     return block.payload;
 }
 
-size_t ConfigBlock::getPayloadSize() const {
-
-    return configPayloadSize;
-}
-
 /*
  * Recompute block checksum and compare against stored block checksum.
  * Returns false if the computed checksum differs.
  */
 bool ConfigBlock::isBlockValid()
 {
-    return block.checksum == computeChecksum();
+    return *block.checksum == computeChecksum();
 }
 
 void ConfigBlock::memcpy( uint8_t *dest, const uint8_t *src, size_t sz) const {
@@ -126,11 +135,19 @@ void ConfigBlock::memcpy( uint8_t *dest, const uint8_t *src, size_t sz) const {
 
 bool ConfigBlock::setBlockID( configBlockID_t blkID) {
 
-    if( blkID > CONFIG_BLOCKID_INVALID && blkID < CONFIG_BLOCKS) {
+    if( blkID > CONFIG_BLOCKID_INVALID && blkID <= modelBlockCount) {
 
         blockID = blkID;
-        configBlockSize = CONFIG_BLOCK_SIZE;
-        configPayloadSize = CONFIG_PAYLOAD_SIZE;
+
+        if( blockID == SYSTEMCONFIG_BLOCKID) {
+            configBlockSize = SYSTEMCONFIG_BLOCK_SIZE;
+        } else {
+            configBlockSize = MODELCONFIG_BLOCK_SIZE;
+        }
+
+        configPayloadSize = configBlockSize - sizeof(checksum_t);
+
+        block.checksum = (checksum_t*)(&(block.payload[0]) + configPayloadSize);
 
         return true;
     }
@@ -140,7 +157,9 @@ bool ConfigBlock::setBlockID( configBlockID_t blkID) {
 
 size_t ConfigBlock::getBlockStart() const {
 
-    return (blockID * configBlockSize);
+    return (blockID == SYSTEMCONFIG_BLOCKID) 
+            ? 0 
+            : SYSTEMCONFIG_BLOCK_SIZE + (blockID-1) * configBlockSize;
 }
 
 /*

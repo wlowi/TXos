@@ -41,39 +41,46 @@
 #include "EEPROM.h"
 
 typedef uint16_t checksum_t;
-
-#define CONFIG_EEPROM_SIZE    ((size_t)4096)
-#define CONFIG_BLOCK_SIZE     ((size_t)256)
-#define CONFIG_PAYLOAD_SIZE   (CONFIG_BLOCK_SIZE - sizeof(checksum_t))
-#define CONFIG_BLOCKS         ((configBlockID_t)(CONFIG_EEPROM_SIZE/CONFIG_BLOCK_SIZE))
-
-#define CONFIG_MODEL_COUNT    (CONFIG_BLOCKS -1)
-
 typedef int8_t configBlockID_t;
 
-#define CONFIG_BLOCKID_INVALID ((configBlockID_t)-1)
+#define SYSTEMCONFIG_BLOCK_SIZE ((size_t)128)
+#define MODELCONFIG_BLOCK_SIZE  ((size_t)264)
+
+/* The maximum of
+ * SYSTEMCONFIG_BLOCK_SIZE and MODELCONFIG_BLOCK_SIZE.
+
+ * This is used to allocate a config block in memory.
+ */
+#define MEM_BLOCK_SIZE          ((size_t)264)
+
+#define CONFIG_BLOCKID_INVALID  ((configBlockID_t)-1)
+#define SYSTEMCONFIG_BLOCKID    ((configBlockID_t)0)
 
 /* Return codes */
 typedef uint8_t configBlock_rc;
 
-#define CONFIGBLOCK_RC_OK     ((configBlock_rc)0)
-#define CONFIGBLOCK_RC_INVID  ((configBlock_rc)1)
-#define CONFIGBLOCK_RC_CSUM   ((configBlock_rc)2)
+#define CONFIGBLOCK_RC_OK       ((configBlock_rc)0)
+#define CONFIGBLOCK_RC_INVID    ((configBlock_rc)1)
+#define CONFIGBLOCK_RC_CSUM     ((configBlock_rc)2)
 
 
 typedef struct configBlock_t {
 
-    uint8_t     payload[CONFIG_PAYLOAD_SIZE];
-    checksum_t  checksum;
+    uint8_t     payload[MEM_BLOCK_SIZE];
+    /* A pointer to the checksum in payload. */
+    checksum_t  *checksum;
 
 } configBlock_t;
 
 class ConfigBlock {
 
     private:
+        size_t storageSize;
+        configBlockID_t modelBlockCount;
+
         configBlockID_t blockID = CONFIG_BLOCKID_INVALID;
-        size_t configBlockSize = 0;
-        size_t configPayloadSize = 0;
+        size_t configBlockSize = 0;   // Total block size
+        size_t configPayloadSize = 0; // Block size without checksum
 
         configBlock_t block;
 
@@ -86,12 +93,15 @@ class ConfigBlock {
     public:
         ConfigBlock();
 
+        size_t getStorageSize() const { return storageSize; }
+        configBlockID_t getModelBlockCount() const { return modelBlockCount; }
+
         configBlock_rc readBlock( configBlockID_t id);
         configBlock_rc formatBlock( configBlockID_t id);
         configBlock_rc writeBlock();
 
         uint8_t *getPayload();
-        size_t getPayloadSize() const;
+        size_t getPayloadSize() const { return configPayloadSize; }
 
         bool isBlockValid();
         void memcpy( uint8_t *dest, const uint8_t *src, size_t sz) const;

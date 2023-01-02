@@ -22,6 +22,8 @@ class EEPROMClass {
         void write( int idx, uint8_t val )   { storage[idx] = val; }
         void update( int idx, uint8_t val )  { storage[idx] = val; }
 
+        uint16_t length() { return len; }
+        
         template< typename T > T &get( int idx, T &t ){
             uint8_t *ptr = (uint8_t*) &t;
             for( int count = sizeof(T) ; count ; --count, ++idx )  *ptr++ = storage[idx];
