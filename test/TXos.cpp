@@ -126,6 +126,7 @@
 #include "Statistics.h"
 #include "ChannelDelay.h"
 #include "LogicSwitch.h"
+#include "ModeAssign.h"
 
 #if defined( ARDUINO )
 
@@ -165,30 +166,6 @@ const char* LogicalChannelNames[LOGICAL_CHANNELS] = {
     TEXT_CONTROL_CH_10,
     TEXT_CONTROL_CH_11,
     TEXT_CONTROL_CH_12
-};
-
-const char* MixChannelNames[MIX_CHANNELS] = {
-    TEXT_CONTROL_CH_1,
-    TEXT_CONTROL_CH_2,
-    TEXT_CONTROL_CH_3,
-    TEXT_CONTROL_CH_4,
-    TEXT_CONTROL_CH_6,
-    TEXT_CONTROL_CH_8,
-    TEXT_CONTROL_CH_10,
-    TEXT_CONTROL_CH_11,
-    TEXT_CONTROL_CH_12
-};
-
-channel_t MixChannelMap[MIX_CHANNELS] = {
-    CHANNEL_THROTTLE, // ((channel_t)0)
-    CHANNEL_AILERON,  // ((channel_t)1)
-    CHANNEL_ELEVATOR, // ((channel_t)2)
-    CHANNEL_RUDDER,   // ((channel_t)3)
-    CHANNEL_FLAP,     // ((channel_t)5)
-    CHANNEL_SPOILER,  // ((channel_t)7)
-    CHANNEL_GEAR,     // ((channel_t)9)
-    CHANNEL_8,        // ((channel_t)10)
-    CHANNEL_9         // ((channel_t)11)
 };
 
 const char* OutputChannelNames[PPM_CHANNELS] = {
@@ -411,6 +388,8 @@ void setup( void) {
     moduleManager.addToSystemMenu( bind);
     RangeTest *rangeTest = new RangeTest();
     moduleManager.addToSystemMenu( rangeTest);
+    ModeAssign *modeAssign = new ModeAssign();
+    moduleManager.addToSystemMenu( modeAssign);
     CalibrateSticks *calibrateSticks = new CalibrateSticks();
     moduleManager.addToSystemMenu( calibrateSticks);
     CalibrateTrim *calibrateTrim = new CalibrateTrim();

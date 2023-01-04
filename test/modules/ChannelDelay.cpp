@@ -20,8 +20,7 @@
 
 #include "ChannelDelay.h"
 
-extern const char* const MixChannelNames[MIX_CHANNELS];
-extern const channel_t MixChannelMap[MIX_CHANNELS];
+extern const char* const LogicalChannelNames[LOGICAL_CHANNELS];
 
 ChannelDelay::ChannelDelay() : Module( MODULE_CHANNEL_DELAY_TYPE, TEXT_MODULE_CHANNEL_DELAY) {
 
@@ -32,8 +31,6 @@ ChannelDelay::ChannelDelay() : Module( MODULE_CHANNEL_DELAY_TYPE, TEXT_MODULE_CH
 
 void ChannelDelay::run( Controls &controls) {
 
-    channel_t ch;
-
 #define SCALING_F (10)
 
     int16_t target10;   // scaled by 10 for increased precision
@@ -42,8 +39,7 @@ void ChannelDelay::run( Controls &controls) {
 
     for( uint8_t mix = 0; mix < MIX_CHANNELS; mix++) {
 
-        ch = MIX_TO_CHANNEL( mix);
-        target10 = controls.logicalGet( ch) * SCALING_F;
+        target10 = controls.logicalGet( mix) * SCALING_F;
 
         if( CFG->posDelay_sec[mix] == 0 && CFG->negDelay_sec[mix] == 0) {
             lastChannelValue10[mix] = target10;
@@ -77,7 +73,7 @@ void ChannelDelay::run( Controls &controls) {
 
         }
 
-        controls.logicalSet( ch, (channelValue_t)(lastChannelValue10[mix] / SCALING_F));
+        controls.logicalSet( mix, (channelValue_t)(lastChannelValue10[mix] / SCALING_F));
     }
 }
 
@@ -105,7 +101,7 @@ uint8_t ChannelDelay::getRowCount() {
 
 const char *ChannelDelay::getRowName( uint8_t row) {
 
-    return MixChannelNames[row];
+    return LogicalChannelNames[row];
 }
 
 uint8_t ChannelDelay::getColCount( uint8_t row) {

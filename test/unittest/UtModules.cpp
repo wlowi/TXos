@@ -16,8 +16,6 @@
 
 #include "UtModules.h"
 
-extern const channel_t MixChannelMap[MIX_CHANNELS];
-
 extern InputImpl *inputImpl;
 extern Controls controls;
 extern ModuleManager moduleManager;
@@ -350,7 +348,7 @@ void UtModules::UtAssignInput() {
 
     for( channel_t ch=0; ch<MIX_CHANNELS; ch++) {
         //                                                       100,200,300,400,500,600,100,200,...
-        ASSERT_INT16_T( controls.logicalGet( MixChannelMap[ch]), 100 + (ch % 6) * 100, "verify assignment");
+        ASSERT_INT16_T( controls.logicalGet( ch), 100 + (ch % 6) * 100, "verify assignment");
     }
 
 
@@ -364,7 +362,7 @@ void UtModules::UtAssignInput() {
 
     for( channel_t ch=0; ch<MIX_CHANNELS; ch++) {
         //                                                       100,200,300,400,500,600,100,200,...
-        ASSERT_INT16_T( controls.logicalGet( MixChannelMap[ch]), 100 + ((ch + 1) % 6) * 100, "verify shifted assignment");
+        ASSERT_INT16_T( controls.logicalGet( ch), 100 + ((ch + 1) % 6) * 100, "verify shifted assignment");
     }
 
     /* set back to default */

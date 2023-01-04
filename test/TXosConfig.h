@@ -42,6 +42,9 @@
  */
 #define MIX_CHANNELS                  ((channel_t)9)
 
+/* First 4 channels. Stick channels */
+#define MODE_CHANNELS                 ((channel_t)4)
+
 /* The number of transmitter channels.
  * This is the number of channels that will be used to
  * generate the PPM signal.

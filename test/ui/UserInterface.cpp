@@ -44,7 +44,7 @@ void UserInterface::init() {
     timer = (Timer*)moduleManager.getModelMenu()->getModuleByType( MODULE_TIMER_TYPE);
     engineCut = (EngineCut*)moduleManager.getModelMenu()->getModuleByType( MODULE_ENGINE_CUT_TYPE);
 
-    module = NULL;
+    module = nullptr;
     
     screen[0] = SCREEN_INIT;
     screenPtr = 0;

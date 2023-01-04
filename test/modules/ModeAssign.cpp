@@ -18,72 +18,65 @@
 
 */
 
-#include "ModuleManager.h"
-#include "AssignInput.h"
 #include "ModeAssign.h"
-
-extern ModuleManager moduleManager;
 
 extern const char* const InputChannelNames[ANALOG_CHANNELS];
 extern const char* const LogicalChannelNames[LOGICAL_CHANNELS];
 
-AssignInput::AssignInput() : Module( MODULE_ASSIGN_INPUT_TYPE, TEXT_MODULE_ASSIGN_INPUT) {
+ModeAssign::ModeAssign() : Module( MODULE_MODE_ASSIGN_TYPE, TEXT_MODULE_MODE_ASSIGN) {
 
     setDefaults();
 }
 
-/* From Module */
+channel_t ModeAssign::getModeChannel( channel_t ch) const {
 
-void AssignInput::run( Controls &controls) {
-
-    for( channel_t ch = 0; ch < MIX_CHANNELS; ch++) {
-        controls.logicalSet( ch, controls.inputGet( CFG->source[ch]));
-    }
+    return CFG->source[ch];
 }
 
-void AssignInput::setDefaults() {
+/* From Module */
 
-    const ModeAssign *modeAssign = (ModeAssign*)moduleManager.getSystemMenu()->getModuleByType( MODULE_MODE_ASSIGN_TYPE);
+void ModeAssign::run( Controls &controls) {
+
+    /* noop */
+}
+
+void ModeAssign::setDefaults() {
 
     INIT_NON_PHASED_CONFIGURATION(
 
-        for( channel_t ch = 0; ch < MIX_CHANNELS; ch++) {
-            if( ch < MODE_CHANNELS) {
-                CFG->source[ch] = modeAssign->getModeChannel( ch);
-            } else {
-                CFG->source[ch] = ch % ANALOG_CHANNELS;
-            }
+        for( channel_t ch = 0; ch < MODE_CHANNELS; ch++) {
+            CFG->source[ch] = ch;
         }
     )
 }
 
 /* From TableEditable */
 
-uint8_t AssignInput::getRowCount() {
+uint8_t ModeAssign::getRowCount() {
 
-    return MIX_CHANNELS;
+    return MODE_CHANNELS;
 }
 
-const char *AssignInput::getRowName( uint8_t row) {
+const char *ModeAssign::getRowName( uint8_t row) {
 
     return LogicalChannelNames[row];
 }
 
-uint8_t AssignInput::getColCount( uint8_t row) {
+uint8_t ModeAssign::getColCount( uint8_t row) {
 
     return 2;
 }
 
-void AssignInput::getValue( uint8_t row, uint8_t col, Cell *cell) {
+void ModeAssign::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
     if( col == 0) {
         cell->setLabel( TEXT_CONTROL_length +1, TEXT_ARROW_LEFT, 1);
     } else if( col == 1) {
-        cell->setList( TEXT_CONTROL_length +3, InputChannelNames, ANALOG_CHANNELS, CFG->source[row]);
+        cell->setList( TEXT_CONTROL_length +3, InputChannelNames, MODE_CHANNELS, CFG->source[row]);
     }
 }
 
-void AssignInput::setValue( uint8_t row, uint8_t col, Cell *cell) {
+void ModeAssign::setValue( uint8_t row, uint8_t col, Cell *cell) {
 
     if( col == 1) {
         CFG->source[row] = cell->getList();

@@ -1,8 +1,7 @@
 
 #include "Mixer.h"
 
-extern const char* const MixChannelNames[MIX_CHANNELS];
-extern const channel_t MixChannelMap[MIX_CHANNELS];
+extern const char* const LogicalChannelNames[LOGICAL_CHANNELS];
 
 Mixer::Mixer() : Module( MODULE_MIXER_TYPE, TEXT_MODULE_MIXER) {
 
@@ -38,8 +37,8 @@ void Mixer::run( Controls &controls) {
     channel_t targetChannel;
 
     for( uint8_t mix = 0; mix < MIXER; mix++) {
-        sourceChannel = MIX_TO_CHANNEL( CFG->source[mix] );
-        targetChannel = MIX_TO_CHANNEL( CFG->target[mix] );
+        sourceChannel = CFG->source[mix];
+        targetChannel = CFG->target[mix];
 
         if( controls.evalSwitches( CFG->mixSw[mix])) {
             sourceValue = controls.logicalGet( sourceChannel );
@@ -121,11 +120,11 @@ void Mixer::getValue( uint8_t row, uint8_t col, Cell *cell) {
         cell->setSwitchState( 8, CFG->mixSw[(mix)]);
     } else if( r == 1) {
         if( col == 0) {
-            cell->setList( 3, MixChannelNames, MIX_CHANNELS, CFG->source[mix]);
+            cell->setList( 3, LogicalChannelNames, MIX_CHANNELS, CFG->source[mix]);
         } else if (col == 1) {
             cell->setLabel( 7, TEXT_MIX_ARROW, 2);
         } else {
-            cell->setList( 10, MixChannelNames, MIX_CHANNELS, CFG->target[mix]);
+            cell->setList( 10, LogicalChannelNames, MIX_CHANNELS, CFG->target[mix]);
         }
     } else {
         if( col == 0) {

@@ -50,27 +50,29 @@ typedef uint16_t timingUsec_t;
 #define CHANNELVALUE_MIN_LIMIT  ((channelValue_t)-1250)
 #define CHANNELVALUE_MAX_LIMIT  ((channelValue_t) 1250)
 
+#define TRIMVALUE_MID           ((channelValue_t)   0)
+#define TRIMVALUE_MIN_LIMIT     ((channelValue_t)-250)
+#define TRIMVALUE_MAX_LIMIT     ((channelValue_t) 250)
+
+/* Logical channels
+ * first 4 are trimable channels
+ * first 9 are mixable channels
+ * 12 channels in total
+*/
 #define CHANNEL_THROTTLE        ((channel_t)0)
 #define CHANNEL_AILERON         ((channel_t)1)
 #define CHANNEL_ELEVATOR        ((channel_t)2)
 #define CHANNEL_RUDDER          ((channel_t)3)
-#define CHANNEL_AILERON2        ((channel_t)4)
-#define CHANNEL_FLAP            ((channel_t)5)
-#define CHANNEL_FLAP2           ((channel_t)6)
-#define CHANNEL_SPOILER         ((channel_t)7)
-#define CHANNEL_SPOILER2        ((channel_t)8)
-#define CHANNEL_GEAR            ((channel_t)9)
-#define CHANNEL_8               ((channel_t)10)
-#define CHANNEL_9               ((channel_t)11)
 
-/* Mix channel are a subset of all channels
- * To get the real channel number they need to be mapped.
- */
-#define MIX_TO_CHANNEL( m)  MixChannelMap[ m % MIX_CHANNELS ]
+#define CHANNEL_FLAP            ((channel_t)4)
+#define CHANNEL_SPOILER         ((channel_t)5)
+#define CHANNEL_GEAR            ((channel_t)6)
+#define CHANNEL_8               ((channel_t)7)
+#define CHANNEL_9               ((channel_t)8)
 
-#define TRIMVALUE_MID           ((channelValue_t)   0)
-#define TRIMVALUE_MIN_LIMIT     ((channelValue_t)-250)
-#define TRIMVALUE_MAX_LIMIT     ((channelValue_t) 250)
+#define CHANNEL_AILERON2        ((channel_t)9)
+#define CHANNEL_FLAP2           ((channel_t)10)
+#define CHANNEL_SPOILER2        ((channel_t)11)
 
 #define H( v ) ((uint8_t)(v >> 8))
 #define L( v ) ((uint8_t)(v & 0xff))
