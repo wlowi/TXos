@@ -28,6 +28,28 @@ Bind::Bind() : Module( MODULE_BIND_TYPE, TEXT_MODULE_BIND) {
     setDefaults();
 }
 
+void Bind::bindOn() {
+
+    ports.hfOff();
+    delay( 500);
+    ports.bindOn();
+    delay( 100);
+    ports.hfOn();
+    bindStep = BIND_STEP_ACTIVE;
+    changed = true;
+}
+
+void Bind::bindOff() {
+
+    ports.hfOff();
+    delay( 500);
+    ports.bindOff();
+    delay( 100);
+    ports.hfOn();
+    bindStep = BIND_STEP_NONE;
+    changed = true;
+}
+
 /* From Module */
 
 void Bind::run( Controls &controls) {
@@ -39,6 +61,13 @@ void Bind::setDefaults() {
 
     bindStep = BIND_STEP_NONE;
     changed = true;
+}
+
+void Bind::moduleExit() {
+
+    if( bindStep == BIND_STEP_ACTIVE) {
+        bindOff();
+    }
 }
 
 /* From TableEditable */
@@ -58,27 +87,10 @@ bool Bind::isRowExecutable( uint8_t row) {
 
 void Bind::rowExecute( uint8_t row ) {
 
-    switch( bindStep) {
-    case BIND_STEP_NONE:
-        ports.hfOff();
-        delay( 500);
-        ports.bindOn();
-        delay( 100);
-        ports.hfOn();
-        bindStep = BIND_STEP_ACTIVE;
-        changed = true;
-        break;
-
-    case BIND_STEP_ACTIVE:
-    default:
-        ports.hfOff();
-        delay( 500);
-        ports.bindOff();
-        delay( 100);
-        ports.hfOn();
-        bindStep = BIND_STEP_NONE;
-        changed = true;
-        break;
+    if( bindStep == BIND_STEP_NONE) {
+        bindOn();
+    } else {
+        bindOff();
     }
 }
 

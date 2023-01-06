@@ -28,6 +28,20 @@ RangeTest::RangeTest() : Module( MODULE_RANGE_TEST_TYPE, TEXT_MODULE_RANGE_TEST)
     setDefaults();
 }
 
+void RangeTest::rangeTestOn() {
+
+    ports.bindOn();
+    rangeTestStep = RANGETEST_STEP_ACTIVE;
+    changed = true;
+}
+
+void RangeTest::rangeTestOff() {
+
+    ports.bindOff();
+    rangeTestStep = RANGETEST_STEP_NONE;
+    changed = true;
+}
+
 /* From Module */
 
 void RangeTest::run( Controls &controls) {
@@ -39,6 +53,13 @@ void RangeTest::setDefaults() {
 
     rangeTestStep = RANGETEST_STEP_NONE;
     changed = true;
+}
+
+void RangeTest::moduleExit() {
+
+    if( rangeTestStep == RANGETEST_STEP_ACTIVE) {
+        rangeTestOff();
+    }
 }
 
 /* From TableEditable */
@@ -58,19 +79,10 @@ bool RangeTest::isRowExecutable( uint8_t row) {
 
 void RangeTest::rowExecute( uint8_t row ) {
 
-    switch( rangeTestStep) {
-    case RANGETEST_STEP_NONE:
-        ports.bindOn();
-        rangeTestStep = RANGETEST_STEP_ACTIVE;
-        changed = true;
-        break;
-
-    case RANGETEST_STEP_ACTIVE:
-    default:
-        ports.bindOff();
-        rangeTestStep = RANGETEST_STEP_NONE;
-        changed = true;
-        break;
+    if( rangeTestStep == RANGETEST_STEP_NONE) {
+        rangeTestOn();
+    } else {
+        rangeTestOff();
     }
 }
 

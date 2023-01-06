@@ -59,7 +59,6 @@ void CalibrateTrim::run( Controls &controls) {
             }
 
             controls.trimSet( ch, (channelValue_t)v);
-            controls.inputSet( ch, controls.inputGet(ch) + (channelValue_t)v);
         }
     }
 }

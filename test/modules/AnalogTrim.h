@@ -18,32 +18,41 @@
 
 */
 
-#ifndef _RangeTest_h_
-#define _RangeTest_h_
+#ifndef _AnalogTrim_h_
+#define _AnalogTrim_h_
 
 #include "Module.h"
 
-class RangeTest : public Module {
+/* Adjust servo subtrim to current trim values */
 
-    NO_CONFIG()
+typedef struct analogTrim_t {
+
+    percent_t storedTrim_pct[PORT_TRIM_INPUT_COUNT];
+
+} analogTrim_t;
+
+class AnalogTrim : public Module {
+
+    NON_PHASED_CONFIG( analogTrim_t)
 
     private:
+        Controls *current;
 
-        uint8_t rangeTestStep;
-#define RANGETEST_STEP_NONE     0
-#define RANGETEST_STEP_ACTIVE   1
+        percent_t trim_pct[PORT_TRIM_INPUT_COUNT];
 
-        bool changed;
-
-        void rangeTestOn();
-        void rangeTestOff();
+        uint8_t execStep;
+#define ANALOGTRIM_STEP_NONE     0
+#define ANALOGTRIM_STEP_SAVE     1
+#define ANALOGTRIM_STEP_ADJUST   2
 
     public:
-        RangeTest();
+        AnalogTrim();
 
         /* From Module */
         void run( Controls &controls) final;
         void setDefaults() final;
+
+        void moduleEnter() final;
         void moduleExit() final;
 
         /* From TableEditable */
@@ -53,10 +62,10 @@ class RangeTest : public Module {
         void getValue( uint8_t row, uint8_t col, Cell *cell) final;
         void setValue( uint8_t row, uint8_t col, Cell *cell) final;
 
-        bool isRowEditable( uint8_t row) final { return false; }
-        bool isRowExecutable( uint8_t row) final;
-        void rowExecute( uint8_t row ) final;
-        bool hasChanged( uint8_t row, uint8_t col) final;
+        bool isColEditable( uint8_t row, uint8_t col) final;
+
+        /* Force UI update during calibration. */
+        bool hasChanged( uint8_t row, uint8_t col) final { return true; }
 };
 
 #endif

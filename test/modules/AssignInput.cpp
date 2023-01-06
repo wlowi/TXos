@@ -49,7 +49,7 @@ void AssignInput::setDefaults() {
 
         for( channel_t ch = 0; ch < MIX_CHANNELS; ch++) {
             if( ch < MODE_CHANNELS) {
-                CFG->source[ch] = modeAssign->getModeChannel( ch);
+                CFG->source[ch] = modeAssign ? modeAssign->getModeChannel( ch) : ch % ANALOG_CHANNELS;
             } else {
                 CFG->source[ch] = ch % ANALOG_CHANNELS;
             }

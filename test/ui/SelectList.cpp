@@ -150,7 +150,7 @@ void SelectList::cancelEdit( TableEditable *toCancel) {
 void SelectList::firstEditableCol( uint8_t row) {
 
     if( table->isRowEditable( row)) {
-        LOGV("SelectList::process(): Is Row Editable (row=%d) => Y\n", row);
+        LOGV("SelectList::firstEditableCol(): Is Row Editable (row=%d) => Y\n", row);
 
         if( table->getColCount( row) > 0) {
             mode = MODE_EDIT;

@@ -35,12 +35,16 @@ class Bind : public Module {
 
         bool changed;
 
+        void bindOn();
+        void bindOff();
+
     public:
         Bind();
 
         /* From Module */
         void run( Controls &controls) final;
         void setDefaults() final;
+        void moduleExit() final;
 
         /* From TableEditable */
         uint8_t getRowCount() final;

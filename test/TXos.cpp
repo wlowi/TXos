@@ -127,6 +127,7 @@
 #include "ChannelDelay.h"
 #include "LogicSwitch.h"
 #include "ModeAssign.h"
+#include "AnalogTrim.h"
 
 #if defined( ARDUINO )
 
@@ -405,6 +406,8 @@ void setup( void) {
     moduleManager.addToModelMenu( new SystemSetup());
     Model *model = new Model();
     moduleManager.addToModelMenu( model);
+    AnalogTrim *analogTrim = new AnalogTrim();
+    moduleManager.addToModelMenu( analogTrim);
     ChannelRange *channelRange = new ChannelRange();
     moduleManager.addToModelMenu( channelRange);
     ChannelReverse *channelReverse = new ChannelReverse();
@@ -446,6 +449,7 @@ void setup( void) {
      */
     moduleManager.addToRunList( calibrateSticks);
     moduleManager.addToRunList( calibrateTrim);
+    moduleManager.addToRunList( analogTrim);
     moduleManager.addToRunList( switchedChannels);
     moduleManager.addToRunList( analogSwitch);
     moduleManager.addToRunList( channelRange);

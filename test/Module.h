@@ -69,6 +69,7 @@ typedef uint8_t moduleSize_t;
 #define MODULE_MIXER_TYPE               ((moduleType_t)65)
 #define MODULE_CHANNEL_DELAY_TYPE       ((moduleType_t)66)
 #define MODULE_LOGIC_SWITCH_TYPE        ((moduleType_t)67)
+#define MODULE_ANALOG_TRIM_TYPE         ((moduleType_t)68)
 
 class Module : public TableEditable {
 
@@ -89,6 +90,12 @@ class Module : public TableEditable {
 
         /* Called after model load */
         virtual void init() { /* noop */ }
+
+        /* Called when module is entered from menu */
+        virtual void moduleEnter() { /* noop */ }
+        
+        /* Called before leaving module */
+        virtual void moduleExit() { /* noop */ }
 
         /* Called whenever a flight phase changes. 
          * The overrides are automatically defined in

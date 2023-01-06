@@ -25,6 +25,7 @@
 
 // Module Names (13 letters max.)         1234567890123
 #define TEXT_MODULE_ANALOG_SWITCH     CC("Ch. Switches")
+#define TEXT_MODULE_ANALOG_TRIM       CC("Store Trim")
 #define TEXT_MODULE_ASSIGN_INPUT      CC("Assign Ch.")
 #define TEXT_MODULE_BIND              CC("Bind RX")
 #define TEXT_MODULE_CAL_STICKS        CC("Calib. Sticks")

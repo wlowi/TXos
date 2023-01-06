@@ -247,6 +247,7 @@ void UserInterface::configScreen( Event *event) {
 
     if( refresh == REFRESH_FULL) {
         selectList.set( module, true);
+        module->moduleEnter();
         refresh = REFRESH_OK;
     }
 
@@ -257,6 +258,7 @@ void UserInterface::configScreen( Event *event) {
         case KEY_ENTER:
             idx = selectList.current();
             if( idx == GO_BACK) {
+                module->moduleExit();
                 moduleManager.saveModel( modelSelect.getModelID());
                 systemConfig.save();
                 popScreen();

@@ -25,6 +25,7 @@
 
 // Module Names (13 letters max.)         1234567890123
 #define TEXT_MODULE_ANALOG_SWITCH     CC("Geberschalter")
+#define TEXT_MODULE_ANALOG_TRIM       CC("Trimmspeicher")
 #define TEXT_MODULE_ASSIGN_INPUT      CC("Kanal Zuord.")
 #define TEXT_MODULE_BIND              CC("Empf. binden")
 #define TEXT_MODULE_CAL_STICKS        CC("Kalibrieren")
@@ -41,7 +42,7 @@
 #define TEXT_MODULE_MODEL_SELECT      CC("Modellauswahl")
 #define TEXT_MODULE_MONITOR           CC("Servo Monitor")
 #define TEXT_MODULE_PHASES            CC("Phasen")
-#define TEXT_MODULE_PHASES_TRIM       CC("Phasentrim")
+#define TEXT_MODULE_PHASES_TRIM       CC("Phasentrimm")
 #define TEXT_MODULE_RANGE_TEST        CC("Reichw. Test")
 #define TEXT_MODULE_SERVO_LIMIT       CC("Servo Limit")
 #define TEXT_MODULE_SERVO_REMAP       CC("Servo Zuord.")

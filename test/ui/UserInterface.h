@@ -47,7 +47,7 @@ class UserInterface {
         uint16_t lastTime;
         bool engineSave;
 
-        TableEditable *module;
+        Module *module;
         SelectList selectList;
         uint8_t currentSelected;
 
