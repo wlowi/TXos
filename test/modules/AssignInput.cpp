@@ -24,7 +24,7 @@
 
 extern ModuleManager moduleManager;
 
-extern const char* const InputChannelNames[ANALOG_CHANNELS];
+extern const char* const InputChannelNames[INPUT_CHANNELS];
 extern const char* const LogicalChannelNames[LOGICAL_CHANNELS];
 
 AssignInput::AssignInput() : Module( MODULE_ASSIGN_INPUT_TYPE, TEXT_MODULE_ASSIGN_INPUT) {
@@ -49,9 +49,12 @@ void AssignInput::setDefaults() {
 
         for( channel_t ch = 0; ch < MIX_CHANNELS; ch++) {
             if( ch < MODE_CHANNELS) {
-                CFG->source[ch] = modeAssign ? modeAssign->getModeChannel( ch) : ch % ANALOG_CHANNELS;
+                CFG->source[ch] = modeAssign ? modeAssign->getModeChannel( ch) : ch;
+            } else if( ch < ANALOG_CHANNELS){
+                CFG->source[ch] = ch;
             } else {
-                CFG->source[ch] = ch % ANALOG_CHANNELS;
+                /* Assign to NO CHANNEL. */
+                CFG->source[ch] = INPUT_CHANNELS -1;
             }
         }
     )
@@ -79,7 +82,7 @@ void AssignInput::getValue( uint8_t row, uint8_t col, Cell *cell) {
     if( col == 0) {
         cell->setLabel( TEXT_CONTROL_length +1, TEXT_ARROW_LEFT, 1);
     } else if( col == 1) {
-        cell->setList( TEXT_CONTROL_length +3, InputChannelNames, ANALOG_CHANNELS, CFG->source[row]);
+        cell->setList( TEXT_CONTROL_length +3, InputChannelNames, INPUT_CHANNELS, CFG->source[row]);
     }
 }
 

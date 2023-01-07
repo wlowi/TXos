@@ -20,7 +20,7 @@
 
 #include "ChannelReverse.h"
 
-extern const char* const InputChannelNames[ANALOG_CHANNELS];
+extern const char* const InputChannelNames[INPUT_CHANNELS];
 
 ChannelReverse::ChannelReverse() : Module( MODULE_CHANNEL_REVERSE_TYPE, TEXT_MODULE_CHANNEL_REVERSE) {
 

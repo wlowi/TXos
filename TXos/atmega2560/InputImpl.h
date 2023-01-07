@@ -11,8 +11,8 @@
 /* Invert raw channel values */
 #define INVERT_CH1
 #define INVERT_CH2
-#define INVERT_CH3
-#undef  INVERT_CH4
+#undef  INVERT_CH3
+#define INVERT_CH4
 
 class InputImpl
 {

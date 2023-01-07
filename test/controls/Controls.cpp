@@ -39,7 +39,7 @@ void Controls::GetControlValues() {
     channel_t ch;
 
     /* Clean values */
-    for( ch = 0; ch < ANALOG_CHANNELS; ch++) {
+    for( ch = 0; ch < INPUT_CHANNELS; ch++) {
         controlSet.inputChannel[ch] = CHANNELVALUE_MID;
     }
 

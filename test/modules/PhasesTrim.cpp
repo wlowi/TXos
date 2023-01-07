@@ -148,7 +148,7 @@ void PhasesTrim::getValue( uint8_t row, uint8_t col, Cell *cell) {
         if( row == 0) {
             cell->setLabel( 6, phaseName, TEXT_PHASE_NAME_length);
         } else {
-            cell->setInt8( 9, CFG->trim_pct[row-1], 0, PERCENT_MIN_LIMIT, PERCENT_MAX_LIMIT);
+            cell->setInt8( TEXT_CONTROL_length +1, CFG->trim_pct[row-1], 0, PERCENT_MIN_LIMIT, PERCENT_MAX_LIMIT);
         }
     }
 }

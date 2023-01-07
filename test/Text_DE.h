@@ -66,6 +66,7 @@
 #define TEXT_INPUT_CH_7             CC("In7")
 #define TEXT_INPUT_CH_8             CC("In8")
 #define TEXT_INPUT_CH_9             CC("In9")
+#define TEXT_INPUT_NONE             CC("---")
 
 // Control channels
 #define TEXT_CONTROL_length         ((uint8_t)3)
@@ -167,7 +168,6 @@
 #define TEXT_POS1                   CC("Pos1")
 #define TEXT_POS2                   CC("Pos2")
 #define TEXT_RATE                   CC("Rate")
-#define TEXT_SC_PATTERN             CC("SC*")
 #define TEXT_SEC                    CC("sek")
 #define TEXT_START                  CC("Start")
 #define TEXT_SW                     CC("Sw")

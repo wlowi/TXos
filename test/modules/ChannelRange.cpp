@@ -20,7 +20,7 @@
 
 #include "ChannelRange.h"
 
-extern const char* const InputChannelNames[ANALOG_CHANNELS];
+extern const char* const InputChannelNames[INPUT_CHANNELS];
 
 ChannelRange::ChannelRange() : Module( MODULE_CHANNEL_RANGE_TYPE, TEXT_MODULE_CHANNEL_RANGE) {
 

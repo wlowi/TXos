@@ -130,7 +130,7 @@ typedef struct controlSet_t {
     channelValue_t auxADCChannel[ PORT_AUX_INPUT_COUNT ];
 
     /* Calibrated analog input channels */
-    channelValue_t inputChannel[ ANALOG_CHANNELS ];
+    channelValue_t inputChannel[ INPUT_CHANNELS ];
     channelValue_t trimChannel[ PORT_TRIM_INPUT_COUNT ];
 
     /* Mixed channels */

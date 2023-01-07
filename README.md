@@ -26,7 +26,8 @@
 ## Features
 
 - 6 Analoge Eingänge 
-- 4 Eingänge für analogen Trim
+- 4 Eingänge für analogen Trimm
+- Trimmspeicher
 - 6 Schalteingänge für 2 oder 3 Stufenschalter
 - 12 Interne Kanäle  
     MOT, QR, QR2, HR, SR, WK, WK2, LK, LK2, Fwk, K8, K9  
@@ -65,7 +66,7 @@
 - 2 Geberschalter
 - 3 Schaltkanäle
 - 15 Modellspeicher
-- 3 Flugphasen (aus Normal, Thermik, Speed, Start, Landung, Akro, Akro2)
+- 3 Flugphasen (aus Normal, Thermik, Speed, Start, Landung, Akro, Akro2, Strecke, Schlepp)
 - Phasentrim für QR,WK,LK,HR
 - Dual Rate und Exponential Funktion über Phasen für QR, SR und HR
 - 2 Logische Schalter. (Boolsche Verknüpfung von bis zu 3 Schaltern)
@@ -81,6 +82,21 @@
 
 
 ## Installation
+
+### Grundsätzliche Konfiguration:
+
+In TXos/atmega2560/InputImp.h
+
+Falls ein Potentiometer falsch angeschlossen ist kann hier die Wirkrichtung
+umgekehrt werden.
+
+/* Invert raw channel values */
+#define INVERT_CH1
+#define INVERT_CH2
+#undef  INVERT_CH3
+#define INVERT_CH4
+
+In test/TXosConfig.h
 
 
 

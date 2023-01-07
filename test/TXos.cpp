@@ -142,7 +142,7 @@
 
 #endif
 
-const char* InputChannelNames[ANALOG_CHANNELS] = {
+const char* InputChannelNames[INPUT_CHANNELS] = {
     TEXT_INPUT_CH_1,
     TEXT_INPUT_CH_2,
     TEXT_INPUT_CH_3,
@@ -151,7 +151,8 @@ const char* InputChannelNames[ANALOG_CHANNELS] = {
     TEXT_INPUT_CH_6,
     TEXT_INPUT_CH_7,
     TEXT_INPUT_CH_8,
-    TEXT_INPUT_CH_9
+    TEXT_INPUT_CH_9,
+    TEXT_INPUT_NONE
 };
 
 const char* LogicalChannelNames[LOGICAL_CHANNELS] = {

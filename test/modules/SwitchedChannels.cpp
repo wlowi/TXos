@@ -20,7 +20,7 @@
 
 #include "SwitchedChannels.h"
 
-extern const char* const InputChannelNames[ANALOG_CHANNELS];
+extern const char* const InputChannelNames[INPUT_CHANNELS];
 
 SwitchedChannels::SwitchedChannels() : Module( MODULE_SWITCHED_CHANNELS_TYPE, TEXT_MODULE_SWITCHED_CHANNELS) {
 
@@ -36,16 +36,14 @@ void SwitchedChannels::run( Controls &controls) {
 
     for( channel_t sc = 0; sc < SWITCHED_CHANNELS; sc++) {
         if( IS_SWITCH_USED( CFG->sw[sc])) {
-            ch = CFG->ch[sc];
-            if( ch < ANALOG_CHANNELS) {
-                state = controls.switchGet( CFG->sw[sc]);
-                if( state == 0) {
-                    controls.inputSet( ch, PCT_TO_CHANNEL( CFG->state0_pct[sc]));
-                } else if( state == 1) {
-                    controls.inputSet( ch, PCT_TO_CHANNEL( CFG->state1_pct[sc]));
-                } else {
-                    controls.inputSet( ch, PCT_TO_CHANNEL( CFG->state2_pct[sc]));
-                }
+            ch = ANALOG_CHANNELS - SWITCHED_CHANNELS +sc;
+            state = controls.switchGet( CFG->sw[sc]);
+            if( state == 0) {
+                controls.inputSet( ch, PCT_TO_CHANNEL( CFG->state0_pct[sc]));
+            } else if( state == 1) {
+                controls.inputSet( ch, PCT_TO_CHANNEL( CFG->state1_pct[sc]));
+            } else {
+                controls.inputSet( ch, PCT_TO_CHANNEL( CFG->state2_pct[sc]));
             }
         }
     }
@@ -55,31 +53,27 @@ void SwitchedChannels::setDefaults() {
 
     INIT_NON_PHASED_CONFIGURATION(
 
-        for( channel_t ch = 0; ch < SWITCHED_CHANNELS; ch++) {
-            INIT_SWITCH( CFG->sw[ch]);
-            CFG->ch[ch] = ANALOG_CHANNELS - SWITCHED_CHANNELS +ch;
-            CFG->state0_pct[ch] = -100; /* min  */
-            CFG->state1_pct[ch] = 0;    /* neutral */
-            CFG->state2_pct[ch] = 100;  /* max */
+        for( channel_t sc = 0; sc < SWITCHED_CHANNELS; sc++) {
+            INIT_SWITCH( CFG->sw[sc]);
+            CFG->state0_pct[sc] = -100; /* min  */
+            CFG->state1_pct[sc] = 0;    /* neutral */
+            CFG->state2_pct[sc] = 100;  /* max */
         }
     )
-
-    strcpy( switchName, TEXT_SC_PATTERN);
 }
 
 /* From TableEditable */
 
 uint8_t SwitchedChannels::getRowCount() {
 
-    return 5 * SWITCHED_CHANNELS;
+    return 4 * SWITCHED_CHANNELS;
 }
 
 const char *SwitchedChannels::getRowName( uint8_t row) {
 
-    if( (row % 5) == 0) {
-        uint8_t ch = (row / 5);
-        switchName[2] = '1' +ch;    
-        return switchName;
+    if( (row % 4) == 0) {
+        uint8_t ch = (row / 4);
+        return InputChannelNames[ANALOG_CHANNELS - SWITCHED_CHANNELS +ch];
     } else {
         return TEXT_MSG_NONE;
     }
@@ -92,8 +86,8 @@ uint8_t SwitchedChannels::getColCount( uint8_t row) {
 
 void SwitchedChannels::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
-    uint8_t r = row % 5;
-    uint8_t ch = (row / 5);
+    uint8_t r = row % 4;
+    uint8_t ch = (row / 4);
 
     const char *label;
 
@@ -102,10 +96,8 @@ void SwitchedChannels::getValue( uint8_t row, uint8_t col, Cell *cell) {
         if( r == 0) {
             label = TEXT_SW;
         } else if( r == 1) {
-            label = TEXT_CH;
-        } else if( r == 2) {
             label = TEXT_POS0;
-        } else if( r == 3) {
+        } else if( r == 2) {
             label = TEXT_POS1;
         } else {
             label = TEXT_POS2;
@@ -118,12 +110,10 @@ void SwitchedChannels::getValue( uint8_t row, uint8_t col, Cell *cell) {
         if( r == 0) {
             cell->setSwitch( 9, CFG->sw[ch]);
         } else if( r == 1) {
-            cell->setList( 9, InputChannelNames, ANALOG_CHANNELS, CFG->ch[ch]);
-        } else if( r == 2) {
             cell->setInt8( 9, CFG->state0_pct[ch], 4, PERCENT_MIN_LIMIT, PERCENT_MAX_LIMIT);
-        } else if( r == 3) {
+        } else if( r == 2) {
             cell->setInt8( 9, CFG->state1_pct[ch], 4, PERCENT_MIN_LIMIT, PERCENT_MAX_LIMIT);
-        } else if( r == 4) {
+        } else if( r == 3) {
             cell->setInt8( 9, CFG->state2_pct[ch], 4, PERCENT_MIN_LIMIT, PERCENT_MAX_LIMIT);
         }
     }
@@ -131,20 +121,18 @@ void SwitchedChannels::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
 void SwitchedChannels::setValue( uint8_t row, uint8_t col, Cell *cell) {
 
-    uint8_t r = row % 5;
-    uint8_t ch = (row / 5);
+    uint8_t r = row % 4;
+    uint8_t ch = (row / 4);
 
     if( col == 1) {
 
         if( r == 0) {
             CFG->sw[ch] = cell->getSwitch();
         } else if( r == 1) {
-            CFG->ch[ch] = cell->getList();
-        } else if( r == 2) {
             CFG->state0_pct[ch] = cell->getInt8();
-        } else if( r == 3) {
+        } else if( r == 2) {
             CFG->state1_pct[ch] = cell->getInt8();
-        } else if( r == 4) {
+        } else if( r == 3) {
             CFG->state2_pct[ch] = cell->getInt8();
         }
     }

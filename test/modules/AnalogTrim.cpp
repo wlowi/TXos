@@ -20,7 +20,7 @@
 
 #include "AnalogTrim.h"
 
-extern const char* const InputChannelNames[ANALOG_CHANNELS];
+extern const char* const InputChannelNames[INPUT_CHANNELS];
 
 AnalogTrim::AnalogTrim() : Module( MODULE_ANALOG_TRIM_TYPE, TEXT_MODULE_ANALOG_TRIM) {
 

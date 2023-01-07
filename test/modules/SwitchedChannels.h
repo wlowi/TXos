@@ -29,8 +29,6 @@ typedef struct switchedChannels_t {
 
     switch_t sw[SWITCHED_CHANNELS];
     
-    channel_t ch[SWITCHED_CHANNELS];
-
     percent_t state0_pct[SWITCHED_CHANNELS];
     percent_t state1_pct[SWITCHED_CHANNELS];
     percent_t state2_pct[SWITCHED_CHANNELS];
@@ -40,9 +38,6 @@ typedef struct switchedChannels_t {
 class SwitchedChannels : public Module {
 
     NON_PHASED_CONFIG( switchedChannels_t)
-
-    private:
-        char switchName[TEXT_SW_NAME_length +1];
 
     public:
         SwitchedChannels();

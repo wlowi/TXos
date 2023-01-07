@@ -20,7 +20,7 @@
 
 #include "ModeAssign.h"
 
-extern const char* const InputChannelNames[ANALOG_CHANNELS];
+extern const char* const InputChannelNames[INPUT_CHANNELS];
 extern const char* const LogicalChannelNames[LOGICAL_CHANNELS];
 
 ModeAssign::ModeAssign() : Module( MODULE_MODE_ASSIGN_TYPE, TEXT_MODULE_MODE_ASSIGN) {

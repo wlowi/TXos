@@ -21,7 +21,7 @@
 #include "AnalogSwitch.h"
 
 extern Controls controls;
-extern const char* const InputChannelNames[ANALOG_CHANNELS];
+extern const char* const InputChannelNames[INPUT_CHANNELS];
 
 AnalogSwitch::AnalogSwitch() : Module( MODULE_ANALOG_SWITCH_TYPE, TEXT_MODULE_ANALOG_SWITCH) {
 

@@ -30,6 +30,11 @@
  * switched channels.
  */
 #define ANALOG_CHANNELS               ((channel_t)9)
+/* Input Channels:
+ * ANALOG_CHANNELS plus one that decouples the channel from input.
+ */
+#define INPUT_CHANNELS                (ANALOG_CHANNELS +1)
+
 /* How many of ANALOG_CHANNELS are controlled by switches */
 #define SWITCHED_CHANNELS             ((channel_t)3)
 
