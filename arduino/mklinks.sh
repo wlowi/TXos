@@ -1,9 +1,9 @@
 #!/bin/bash
 # 
-# Create links for all cpp and header files from ../test hierarchy
+# Create links for all cpp and header files from ../src hierarchy
 #
 
-SOURCE="../test ../test/controls ../test/modules ../test/output ../test/ui atmega2560"
+SOURCE="../src ../src/controls ../src/modules ../src/output ../src/ui atmega2560"
 
 sh rmlinks.sh
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 # 
-# Remove links for all cpp and header files from ../test hierarchy
+# Remove links for all cpp and header files from ../src hierarchy
 #
 
 find . -lname "*.cpp" -exec rm -f \{\} \;

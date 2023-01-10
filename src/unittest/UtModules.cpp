@@ -6,6 +6,7 @@
 
 #include "CalibrateSticks.h"
 #include "CalibrateTrim.h"
+#include "AnalogTrim.h"
 #include "SwitchedChannels.h"
 #include "AnalogSwitch.h"
 #include "ChannelRange.h"
@@ -22,6 +23,7 @@ extern ModuleManager moduleManager;
 
 CalibrateSticks calibrateSticks;
 CalibrateTrim calibrateTrim;
+AnalogTrim analogTrim;
 SwitchedChannels switchedChannels;
 AnalogSwitch analogSwitch;
 ChannelRange channelRange;
@@ -40,6 +42,7 @@ void UtModules::run() {
 
     UtCalibrateSticks();
     UtCalibrateTrim();
+    UtAnalogTrim();
     UtSwitchedChannels();
     UtAnalogSwitch();
     UtChannelRange();
@@ -115,6 +118,21 @@ void UtModules::UtCalibrateTrim() {
     }
 
     moduleManager.addToRunList( &calibrateTrim);
+}
+
+void UtModules::UtAnalogTrim() {
+
+    std::cout << std::endl << "*** Module: AnalogTrim" << std::endl;
+
+    analogTrim.setDefaults();
+
+    ASSERT_TEXT_T( analogTrim.getName(), TEXT_MODULE_ANALOG_TRIM, "analogTrim.getName()");
+    ASSERT_UINT8_T( analogTrim.getConfigType(), MODULE_ANALOG_TRIM_TYPE , "analogTrim.getConfigType()");
+    ASSERT_UINT8_T( analogTrim.getRowCount(), PORT_TRIM_INPUT_COUNT, "analogTrim.getRowCount()");
+
+    // analogTrim_t *analogTrimCFG = (analogTrim_t*)analogTrim.getConfig();
+
+    moduleManager.addToRunList( &analogTrim);
 
     std::cout << "Trim value 500" << std::endl;
 
@@ -161,7 +179,7 @@ void UtModules::UtSwitchedChannels() {
 
     ASSERT_TEXT_T( switchedChannels.getName(), TEXT_MODULE_SWITCHED_CHANNELS, "switchedChannels.getName()");
     ASSERT_UINT8_T( switchedChannels.getConfigType(), MODULE_SWITCHED_CHANNELS_TYPE , "switchedChannels.getConfigType()");
-    ASSERT_UINT8_T( switchedChannels.getRowCount(), 5 * SWITCHED_CHANNELS, "switchedChannels.getRowCount()");
+    ASSERT_UINT8_T( switchedChannels.getRowCount(), 4 * SWITCHED_CHANNELS, "switchedChannels.getRowCount()");
 
     switchedChannels_t *switchedChannelsCFG = (switchedChannels_t*)switchedChannels.getConfig();
     moduleManager.addToRunList( &switchedChannels);
@@ -169,11 +187,7 @@ void UtModules::UtSwitchedChannels() {
     switchedChannelsCFG->sw[0] = 1; // 2 state 
     switchedChannelsCFG->sw[1] = 2; // 3 state
     switchedChannelsCFG->sw[2] = 3; // 3 state 
-    
-    switchedChannelsCFG->ch[0] = 6;
-    switchedChannelsCFG->ch[1] = 7;
-    switchedChannelsCFG->ch[2] = 8;
-    
+        
     for( uint8_t i=0; i<SWITCHED_CHANNELS; i++) {
         switchedChannelsCFG->state0_pct[i] = -80;
         switchedChannelsCFG->state1_pct[i] = 0;

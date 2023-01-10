@@ -13,6 +13,7 @@ class UtModules : public UnitTest {
 
         void UtCalibrateSticks();
         void UtCalibrateTrim();
+        void UtAnalogTrim();
         void UtSwitchedChannels();
         void UtAnalogSwitch();
         void UtChannelRange();

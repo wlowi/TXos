@@ -22,7 +22,7 @@
 
 - Z.Bsp. Spektrum Modul für Graupner MC-24 / MC-22
 
-
+---
 ## Features
 
 - 6 Analoge Eingänge 
@@ -80,47 +80,119 @@
 - Servo Monitor
 - Schalter Monitor
 
-
+---
 ## Installation
 
 ### Grundsätzliche Konfiguration:
 
 In TXos/atmega2560/InputImp.h
 
+
 Falls ein Potentiometer falsch angeschlossen ist kann hier die Wirkrichtung
 umgekehrt werden.
 
-/* Invert raw channel values */
-#define INVERT_CH1
-#define INVERT_CH2
-#undef  INVERT_CH3
-#define INVERT_CH4
+`/* Invert raw channel values */`  
+`#define INVERT_CH1`  
+`#define INVERT_CH2`  
+`#undef  INVERT_CH3`  
+`#define INVERT_CH4`  
+
 
 In test/TXosConfig.h
 
 
+Hier werden eingestellt:
 
+Anzahl der Analog Channels. Dazu zählen Analog Eingänge und Schaltkanäle.
+
+ANALOG_CHANNELS
+
+Anzahl der Schaltkanäle
+
+SWITCHED_CHANNELS
+
+Anzahl der Servo Kanäle
+
+PPM_CHANNELS
+
+
+
+### Schalter Konfiguration
+
+SWITCHES  
+
+MECHANICAL_SWITCHES  
+MECHANICAL_SWITCHES_FIRST_IDX  
+
+CHANNEL_SWITCHES  
+CHANNEL_SWITCHES_FIRST_IDX  
+
+LOGIC_SWITCHES  
+LOGIC_SWITCHES_FIRST_IDX  
+
+PHASE_SWITCHES  
+PHASE_SWITCHES_FIRST_IDX  
+
+SWITCH_CONFIGURATION  
+
+
+### Ports und Analog Eingänge
+
+Die folgenden defines legen die Arduino Port Nummern fest:
+
+PORT_ANALOG_INPUT_COUNT  
+PORT_ANALOG_INPUT  
+
+PORT_TRIM_INPUT_COUNT  
+PORT_TRIM_INPUT  
+
+PORT_AUX_INPUT_COUNT  
+PORT_AUX_INPUT  
+
+PORT_SWITCH_INPUT_COUNT  
+PORT_SWITCH_INPUT  
+
+PORT_HF_RELAIS  
+PORT_BIND_RELAIS  
+PORT_BUZZER  
+
+---
 ## Verzeichnisstruktur
 
 
 
+
+---
 ## Übersetzen mit der Arduino IDE 
 
-`cd TXos`  
+`cd arduino`  
 `./mklinks`  
 
+Dieses Kommando verlinkt die Dateien im `src` Verzeichnis nach `arduino`.
 
+Mit der Arduino IDE kann dann in diesem Verzeichnis TXos compiliert werden.
+
+---
 ## TXos Simulator
 
-![TXos Simulator](img/TXos_026.png "TXos Simulator")
+Der Simulator verwendet die `wxWidgets` library. Zum installieren:
 
-`cd test`  
-`make clean all`  
+`apt install gcc make libwxgtk3.0-gtk3-dev`
+
+`cd src`  
+`make clean`  
+`make`  
 `./TXosTest`  
 
 
+![TXos Simulator](img/TXos_026.png "TXos Simulator")
+
+---
 ## Unit test
 
 `cd test`  
-`make clean unittest`  
+`make clean`  
+`make unittest`  
 `./TXosUnitTest`  
+
+Achtung: `make clean unittest` funktioniert nicht!
