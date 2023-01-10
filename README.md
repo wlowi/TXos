@@ -165,10 +165,10 @@ PORT_BUZZER
 ---
 ## Übersetzen mit der Arduino IDE 
 
-`cd arduino`  
+`cd TXos`  
 `./mklinks`  
 
-Dieses Kommando verlinkt die Dateien im `src` Verzeichnis nach `arduino`.
+Dieses Kommando verlinkt die Dateien im `src` Verzeichnis nach `TXos`.
 
 Mit der Arduino IDE kann dann in diesem Verzeichnis TXos compiliert werden.
 

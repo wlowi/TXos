@@ -8,7 +8,7 @@
 #define PPM_PORT            5
 
 /*
- *      0  300     1000  1500  2000             22500
+ *      0  400     1000  1500  2000             22000
  *  ____     _______             _________ ... ____
  *      |   |       |     |     |
  *      |___|       |     |     |
@@ -23,14 +23,14 @@
  *  125%  ==   1.0  -  2.0 mSec
  *  150%  ==   0.9  -  2.1 mSec
  *
- *  9 ch * 2.1 mSec = 18.9 mSec    22.5 - 18.9 = 3.6 mSec
+ *  9 ch * 2.1 mSec = 18.9 mSec    22.0 - 18.9 = 3.1 mSec
  *
  */
 
 
-#define PPM_FRAME_usec      ((timingUsec_t)22500)
-#define PPM_SPACE_usec      ((timingUsec_t)  300)
-#define PPM_MID_usec        ((timingUsec_t) 1200)
+#define PPM_FRAME_usec      ((timingUsec_t)22000)
+#define PPM_SPACE_usec      ((timingUsec_t)  400)
+#define PPM_MID_usec        ((timingUsec_t) 1100)
 #define PPM_RANGE100_usec   ((timingUsec_t)  400)
 /* 150 % */
 #define PPM_RANGEMAX_usec   ((timingUsec_t)  600)
