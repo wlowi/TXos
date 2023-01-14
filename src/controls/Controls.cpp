@@ -245,12 +245,10 @@ void Controls::copySwitchName( char *b, switch_t sw) {
 
         switch (switchConfGet(sw)) {
         case SW_CONF_2STATE:
-            b[idx++] = '1' + swn - MECHANICAL_SWITCHES_FIRST_IDX;
             swType = TEXT_SW_TYPE_2_STATE;
             break;
 
         case SW_CONF_3STATE:
-            b[idx++] = '1' + swn - MECHANICAL_SWITCHES_FIRST_IDX;
             swType = TEXT_SW_TYPE_3_STATE;
             break;
 
@@ -283,6 +281,14 @@ void Controls::copySwitchName( char *b, switch_t sw) {
         idx = strlen( b);
 
         switch (switchConfGet(sw)) {
+        case SW_CONF_2STATE:
+            b[idx++] = '1' + swn - MECHANICAL_SWITCHES_FIRST_IDX;
+            break;
+
+        case SW_CONF_3STATE:
+            b[idx++] = '1' + swn - MECHANICAL_SWITCHES_FIRST_IDX;
+            break;
+
         case SW_CONF_CHANNEL:
             b[idx++] = '1' + swn - CHANNEL_SWITCHES_FIRST_IDX;
             break;

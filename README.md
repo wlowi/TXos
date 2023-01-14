@@ -1,5 +1,7 @@
 # TXos
 
+[Bedienungsanleitung](MANUAL.md)
+
 ## Unterstützte Hardware
 
 

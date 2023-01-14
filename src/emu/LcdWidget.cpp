@@ -495,42 +495,42 @@ void LcdWidget::println() {
 
 void LcdWidget::printInt( int val) {
 
-  printInt( val, 0, ' ');
+    printInt( val, 0, ' ');
 }
 
 void LcdWidget::printInt( int val, uint8_t width) {
 
-  printInt( val, width, ' ');
+    printInt( val, width, ' ');
 }
 
 void LcdWidget::printInt( int val, uint8_t width, char filler) {
 
-  int8_t neg = 0;
-  unsigned int uval;
+    int8_t neg = 0;
+    unsigned int uval;
 
-  if( val < 0) {
-    uval = -val;
-    neg = 1;
-  } else {
-    uval = val;
-  }
+    if( val < 0) {
+        uval = -val;
+        neg = 1;
+    } else {
+        uval = val;
+    }
   
-  printIntGeneric( uval, neg, width, 0, filler);
+    printIntGeneric( uval, neg, width, 0, filler);
 }
 
 void LcdWidget::printUInt( unsigned int val) {
 
-  printIntGeneric( val, 0, 0, 0, ' ');
+    printIntGeneric( val, 0, 0, 0, ' ');
 }
 
 void LcdWidget::printUInt( unsigned int val, uint8_t width) {
   
-  printIntGeneric( val, 0, width, 0, ' ');
+    printIntGeneric( val, 0, width, 0, ' ');
 }
 
 void LcdWidget::printUInt( unsigned int val, uint8_t width, char filler) {
   
-  printIntGeneric( val, 0, width, 0, filler);
+    printIntGeneric( val, 0, width, 0, filler);
 }
 
 void LcdWidget::printStr( const char str[], uint8_t width) {
@@ -540,29 +540,29 @@ void LcdWidget::printStr( const char str[], uint8_t width) {
 
 void LcdWidget::printStr( const char str[], uint8_t width, int8_t editIdx) {
 
-  int8_t p = 0;
+    int8_t p = 0;
 
-  if( !str) { return; }
+    if( !str) { return; }
   
-  wxClientDC dc(this);
-  dc.SetLogicalScale( pixSz, pixSz);
+    wxClientDC dc(this);
+    dc.SetLogicalScale( pixSz, pixSz);
 
-  while( str[p] && p < width) {
-    if( p == editIdx) {
-        saveColors();
-        selectedColors();
+    while( str[p] && p < width) {
+        if( p == editIdx) {
+            saveColors();
+            selectedColors();
+        }
+        printChar(dc,str[p]);
+        if( p == editIdx) {
+            restoreColors();
+        }
+        p++;
     }
-    printChar(dc,str[p]);
-    if( p == editIdx) {
-        restoreColors();
-    }
-    p++;
-  }
 
-  while( p < width) {
-    printChar(dc,' ');
-    p++;
-  }
+    while( p < width) {
+        printChar(dc,' ');
+        p++;
+    }
 }
 
 void LcdWidget::printFloat1( float1 val, uint8_t width) {
@@ -632,12 +632,12 @@ void LcdWidget::charLine( wxDC &dc, char l)
     unsigned int sz;
 
     for( y = 0; y < 8; y++)	{
-           if( l & 1) {
-               dc.SetPen(wxPen(fgCol));
-               dc.SetBrush(wxBrush(fgCol));
+        if( l & 1) {
+            dc.SetPen(wxPen(fgCol));
+            dc.SetBrush(wxBrush(fgCol));
         } else {
-               dc.SetPen(wxPen(bgCol));
-               dc.SetBrush(wxBrush(bgCol));
+            dc.SetPen(wxPen(bgCol));
+            dc.SetBrush(wxBrush(bgCol));
         }
 
         for( sz = 0; sz < fontSz; sz++) {
@@ -667,23 +667,23 @@ void LcdWidget::printIntGeneric( unsigned int val, int8_t neg, uint8_t width, ui
 
     buff[p--] = '\0';
 
-      // p >= 0 here
-      if( val == 0) {
+    // p >= 0 here
+    if( val == 0) {
         buff[p] = '0';
-      } else {
+    } else {
         for(;;) {
-              buff[p] = (val % 10) + '0';
-              val /= 10;
-              if( val == 0 && dot == 0) { // done
+            buff[p] = (val % 10) + '0';
+            val /= 10;
+            if( val == 0 && dot == 0) { // done
                 break;
-              } else if( p == 0) {
+            } else if( p == 0) {
                 neg = -1; // indicates overflow
                 break;
-              }
+            }
         
-              p--;
+            p--;
 
-              if( dot > 0) {
+            if( dot > 0) {
                 dot--;
                 if( dot == 0) {
                     buff[p] = '.';
@@ -692,34 +692,34 @@ void LcdWidget::printIntGeneric( unsigned int val, int8_t neg, uint8_t width, ui
                     }
                     p--;
                 }                
-              }
+            }
         }
-      }
+    }
 
-      if( neg == 1) { // indicates negative sign
+    if( neg == 1) { // indicates negative sign
         if( p == 0) {
-              neg = -1; // indicates overflow
+            neg = -1; // indicates overflow
         } else {
-              p--;
-          buff[p] = '-';
+            p--;
+            buff[p] = '-';
         }
-      }
+    }
     
-      if( neg < 0) { // indicates overflow
+    if( neg < 0) { // indicates overflow
         for( p = 0; p < bufflen; p++) {
               buff[p] = '*'; 
         }
         p = 0;
-      } else {
+    } else {
         if( width > 0) {
             while( p > 0) {
                 p--;
                 buff[p] = filler;
-              }
+            }
         }
-      }
+    }
     
-      print( &buff[p] );
+    print( &buff[p] );
 }
 
 void LcdWidget::normalColors() {

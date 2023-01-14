@@ -43,7 +43,7 @@ MODULE_OBJ = modules/ModelSelect.o modules/Model.o modules/EngineCut.o modules/S
   modules/ChannelReverse.o modules/ChannelDelay.o modules/Mixer.o modules/Statistics.o modules/LogicSwitch.o modules/ModeAssign.o \
   modules/AnalogTrim.o
 
-CXXFLAGS += -g -O -Wall -Wpedantic -Wextra -Wno-unused-parameter
+CXXFLAGS += -g -O0 -Wall -Wpedantic -Wextra -Wno-unused-parameter
 
 CXXINC += -I. -Icontrols -Iui -Ioutput -Imodules -Iemu
 
