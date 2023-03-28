@@ -1,21 +1,27 @@
 /*
-    TXos. A remote control transmitter OS.
+  TXos. A remote control transmitter OS.
 
-    Copyright (C) 2022 Wolfgang Lohwasser
+  MIT License
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+  Copyright (c) 2023 wlowi
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
 
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
 */
 
 #include <util/atomic.h>
@@ -40,7 +46,7 @@ static volatile uint8_t sndIdx;
  */
 #define TICKS_PER_100msec   1600
 
-ISR( TIMER3_COMPA_vect) {
+ISR( TIMER1_COMPA_vect) {
 
     buzzerImpl->processNext();
 }
@@ -59,17 +65,17 @@ void BuzzerImpl::init( Ports &p) {
         off();
     
         /* Don't use output compare pins */
-        TCCR3A = (byte)0;
+        TCCR1A = (byte)0;
         
         /* Prescaler /1024 = 16khz = 62.5 usec */
-        TCCR3B = _BV(CS32) | _BV(CS30);
+        TCCR1B = _BV(CS12) | _BV(CS10);
         
         /* */
-        TCCR3C = (byte)0;
+        TCCR1C = (byte)0;
         
         /* Set initial timer counter value */
-        TCNT3H = (byte)0;
-        TCNT3L = (byte)0;
+        TCNT1H = (byte)0;
+        TCNT1L = (byte)0;
     }
 }
 
@@ -91,9 +97,9 @@ void BuzzerImpl::stopSound() {
 
     ATOMIC_BLOCK( ATOMIC_RESTORESTATE) {
       
-        /* Disable all timer 3 compare A interrupt */
-        TIMSK3 &= ~(_BV(OCIE3A));
-        TIFR3 = _BV(OCF3A);
+        /* Disable all timer 1 compare A interrupt */
+        TIMSK1 &= ~(_BV(OCIE1A));
+        TIFR1 = _BV(OCF1A);
 
         sndIdx = 0;
     }
@@ -210,18 +216,18 @@ void BuzzerImpl::scheduleInterrupt( uint8_t t) {
      * an atomic block.
      */
       
-    /* Disable timer 3 interrupt */
-    TIMSK3 &= ~(_BV(OCIE3A));
-    TIFR3 = _BV(OCF3A);
+    /* Disable timer 1 interrupt */
+    TIMSK1 &= ~(_BV(OCIE1A));
+    TIFR1 = _BV(OCF1A);
     
     /* Set initial timer counter value */
-    TCNT3H = (byte)0;
-    TCNT3L = (byte)0;
+    TCNT1H = (byte)0;
+    TCNT1L = (byte)0;
     
     /* Set output compare register. HIGH BYTE FIRST ! */
-    OCR3AH = H( ticks);
-    OCR3AL = L( ticks);
+    OCR1AH = H( ticks);
+    OCR1AL = L( ticks);
     
     /* Enable output compare match A interrupt */
-    TIMSK3 |= _BV(OCIE3A);
+    TIMSK1 |= _BV(OCIE1A);
 }

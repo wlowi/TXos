@@ -1,6 +1,6 @@
 #!/bin/bash
 
-LICSTR="Copyright (C) 20"
+LICSTR="Copyright (c) 20"
 
 tot=`find . -name "*.h" -o -name "*.cpp" -o -name "*.ino" | wc -l`
 

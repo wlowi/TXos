@@ -1,21 +1,27 @@
 /*
-    TXos. A remote control transmitter OS.
+  TXos. A remote control transmitter OS.
 
-    Copyright (C) 2022 Wolfgang Lohwasser
+  MIT License
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+  Copyright (c) 2023 wlowi
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
 
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
 */
 
 #include <util/atomic.h>
@@ -26,98 +32,41 @@
 extern OutputImpl *outputImpl;
 extern InputImpl *inputImpl;
 
-/* PPM generation state machine state.
- * Used in the interrupt routine.
- */
-static volatile uint8_t outputState;
+static channel_t outputChannel;
 
 /* inFrameTime is used to compute the remaining time until frame end */
-static volatile timingUsec_t inFrameTime_usec;
+static volatile timingUsec_t inFrameTime;
 static volatile timingUsec_t maxFrameTime_usec;
 
-static volatile channel_t outputChannel;
+ISR(TIMER3_OVF_vect) {
 
-/* Convert timer low, high values to microseconds.
- * Division by 2 is because the timer runs in 0.5 usec resolution.
- */
-#define CONVERT_TIMER_TO_USEC( l, h)  ((((timingUsec_t)h << 8) + l) >> 1)
-
-/* PPM generation state machine states */
-#define BEGIN_OF_FIRST_SPACE    0
-#define END_OF_SPACE            1
-#define END_OF_MARK             2
-#define END_OF_LAST_SPACE       4
-
-#define PIN_LOW()   digitalWrite( PPM_PORT, LOW)
-#define PIN_HIGH()  digitalWrite( PPM_PORT, HIGH)
-
-ISR( TIMER1_COMPA_vect) {
+  timingUsec_t nextTimerValue;
+  
+  if( outputChannel >= PPM_CHANNELS) {
     
-    timingUsec_t nextTimerValue_usec;
-    uint8_t h, l;
+    nextTimerValue = (PPM_FRAME_usec << 1) - inFrameTime;
+
+    outputImpl->switchSet();
+    inputImpl->start();
+
+    inFrameTime = 0;
+    outputChannel = 0;
     
-    l = TCNT1L;
-    h = TCNT1H;
-
-    /* Resetting the counter is the first thing to do to guarantee correct timing. */
-    TCNT1H = (byte)0;
-    TCNT1L = (byte)0;
+  } else {
     
-    inFrameTime_usec += CONVERT_TIMER_TO_USEC( l, h);
-
-    switch( outputState) {
-    case BEGIN_OF_FIRST_SPACE:
-        PIN_LOW();
-        nextTimerValue_usec = PPM_SPACE_usec;
-
-        outputImpl->switchSet();
-        inputImpl->start();
-
-        if( inFrameTime_usec > maxFrameTime_usec) {
-          maxFrameTime_usec = inFrameTime_usec;
-        }
-
-        inFrameTime_usec = 0;
-        outputState = END_OF_SPACE;
-        break;
-        
-    case END_OF_SPACE:
-        PIN_HIGH();
-        nextTimerValue_usec = outputImpl->ppmSet[outputImpl->currentSet].channel[outputChannel];
-
-        outputState = END_OF_MARK;
-        break;
-
-    case END_OF_MARK:
-        PIN_LOW();
-        nextTimerValue_usec = PPM_SPACE_usec;
-        
-        outputChannel++;
-        if( outputChannel < PPM_CHANNELS)  {
-            outputState = END_OF_SPACE; // repeat for next channel
-        } else {
-            outputChannel = 0;
-            outputState = END_OF_LAST_SPACE; // done
-        }
-        break;
-        
-    case END_OF_LAST_SPACE:
-        PIN_HIGH();
-        nextTimerValue_usec = PPM_FRAME_usec - inFrameTime_usec;
-
-        outputState = BEGIN_OF_FIRST_SPACE;
-        break;
-        
-    default:
-        nextTimerValue_usec = 0;
-    }
-    
-    /* Multiply by 2 because the timer resulution is 0.5 micro sec. */
-    nextTimerValue_usec <<= 1;
-
-    /* Set output compare register. HIGH BYTE FIRST ! */
-    OCR1AH = H( nextTimerValue_usec);
-    OCR1AL = L( nextTimerValue_usec);
+    nextTimerValue = (PPM_SPACE_usec + outputImpl->ppmSet[outputImpl->currentSet].channel[outputChannel]) << 1;
+    inFrameTime += nextTimerValue;
+    outputChannel++;
+  }
+  
+  /* We nedd to count 1498..1499..0..1
+   * not 1498..1499..1500..0..1
+   * Subtract -2 because of 0.5 usec timer resolution.
+   */
+  nextTimerValue -= 2;
+  
+  ICR3H = H(nextTimerValue);
+  ICR3L = L(nextTimerValue);
 }
 
 OutputImpl::OutputImpl() {
@@ -140,45 +89,47 @@ void OutputImpl::init() {
             ppmSet[1].channel[i] = PPM_MID_usec;
         }
 
-        inFrameTime_usec = 0;
         maxFrameTime_usec = 0;
-        outputChannel = 0;
-        outputState = BEGIN_OF_FIRST_SPACE;
         ppmOverrun = 0;
         channelSetDone = true;
 
-        /* Set port line to output */
+        outputChannel = 0;
+        inFrameTime = 0;
+    
         pinMode( PPM_PORT, OUTPUT);
-
-        /* Don't use output compare pins */
-        TCCR1A = (byte)0;
-        /* Prescaler /8 = 2Mhz = 0.5 usec */
-        TCCR1B = _BV(CS11);
+    
+        /* Enable timer in power reduction register */
+        PRR1 &= ~_BV(PRTIM3);
+        TCCR3B = (byte)0;
+    
         /* Set initial timer counter value */
-        TCNT1H = (byte)0;
-        TCNT1L = (byte)0;
-        /* Set output compare register. HIGH BYTE FIRST ! */
-        OCR1AH = H( PPM_INIT_usec);
-        OCR1AL = L( PPM_INIT_usec);
-        /* Enable output compare match A interrupt */
-        TIMSK1 = _BV(OCIE1A);
-    }
-}
+        TCNT3H = (byte)0;
+        TCNT3L = (byte)0;
+       
+        /* COM3A1, COM3A0     :  Set OC3A on compare match, clear at TOP
+         * WGM33, WGM32, WGM31: TOP is ICR3
+         */
+        TCCR3A = _BV(COM3A1) | _BV(COM3A0) | _BV(WGM31);
 
-/* Current in frame time, in usec.
- */
-timingUsec_t OutputImpl::getInFrameTime() {
-    
-    timingUsec_t t;
-    uint8_t l, h;
+        /* CS31:  Prescaler /8 = 2Mhz = 0.5 usec */
+        TCCR3B = _BV(WGM33) | _BV(WGM32) | _BV(CS31);
 
-    ATOMIC_BLOCK( ATOMIC_RESTORESTATE) {
-        t = inFrameTime_usec;
-        l = TCNT1L; // Read low byte first!
-        h = TCNT1H;
-    }
+        TCCR3C = (byte)0;
+
+        /* Set TOP */
+        ICR3H = H((PPM_SPACE_usec + PPM_INIT_usec) << 1);
+        ICR3L = L((PPM_SPACE_usec + PPM_INIT_usec) << 1);
+
+        /* Set compare to end of pulse
+         *  
+         * Subtract 2 because output is set to the next falling edge after compare.
+         */
+        OCR3AH = H((PPM_SPACE_usec << 1) -2);
+        OCR3AL = L((PPM_SPACE_usec << 1) -2);
     
-    return t + CONVERT_TIMER_TO_USEC( l, h);
+        /* TOIE3: Timer overflow interrupt */
+        TIMSK3 = _BV(TOIE3);
+    }
 }
 
 timingUsec_t OutputImpl::getMaxFrameTime() {
@@ -207,15 +158,12 @@ uint16_t OutputImpl::getOverrunCounter() {
  */
 void OutputImpl::switchSet() {
     
-    ATOMIC_BLOCK( ATOMIC_RESTORESTATE) {
+    if( channelSetDone) {
+        channelSetDone = false; 
+        currentSet = OTHER_PPMSET( currentSet);
 
-        if( channelSetDone) {
-            channelSetDone = false; 
-            currentSet = OTHER_PPMSET( currentSet);
-
-        } else {
-            ppmOverrun++;
-        }
+    } else {
+        ppmOverrun++;
     }
 }
 
