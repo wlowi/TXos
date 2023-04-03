@@ -127,7 +127,7 @@ Durch Drehen wird ein Eingang ausgewählt und duch ENTER bestätigt.
 Beim Erstellen einen neuen Modells wird diese Zuordnung als Vorgabe verwendet.
 
 ---
-## Kalibrieren
+### Kalibrieren
 
 Die Kalibrierung legt die Mittelstellung sowie die Endpositionen der Kreuzknüppel und Potertiomenter fest. 
 
@@ -153,14 +153,14 @@ Das Display zeigt wieder "CALIB." an. Die Mittelstellung sowie die Endstellungen
 ![TXos Kalibrieren 5](img/TXos_callib_5.png "TXos Kalibrieren 5")
 
 ---
-## Trimmung Kal.
+### Trimmung Kal.
 
 Zur Kalibrierung der Trimmhebel verfahren Sie wie bei der Kalibrierung der Knüppel.
 
 ![TXos Kalibrieren 5](img/TXos_callib_trim.png "TXos Kalibrieren 5")
 
 ---
-## Bat. Warnung
+### Bat. Warnung
 
 Einstellen der Warn- und Alarmschwellwerte und kalibrierung der gemessenen Batteriespannung.
 
@@ -178,4 +178,105 @@ Wird der Alarmschwellwert unterschritten wechselt die Farbe der Batteriespannung
 ---
 ## Modelleinstellungen
 
+Modelleinstellungen werden pro Modell gespeichert und geladen.
+
 ![Modelleinstellungen](img/TXos_model_menu.png "Modelleinstellungen")
+
+---
+### Modell
+
+Das Modul 
+
+![Modell](img/TXos_model.png "Modell")
+
+
+---
+### Trimmspeicher
+
+![Trimmspeicher](img/TXos_.png "Trimmspeicher")
+
+---
+### Geber Limit
+
+![Geber Limit](img/TXos_.png "Geber Limit")
+
+---
+### Geber Umkehr
+
+![Geber Umkehr](img/TXos_.png "Geber Umkehr")
+
+---
+### Geberschalter
+
+![Geberschalter](img/TXos_.png "Geberschalter")
+
+---
+### Schaltkanal
+
+![Schaltkanal](img/TXos_.png "Schaltkanal")
+
+---
+### Kanal Zuord.
+
+![Kanal Zuord.](img/TXos_.png "Kanal Zuord.")
+
+---
+### Kanal Verz.
+
+![Kanal Verz](img/TXos_.png "Kanal Verz")
+
+---
+### Phasen
+
+![Phasen](img/TXos_.png "Phasen")
+
+---
+### Phasentrimm
+
+![Phasentrimm](img/TXos_.png "Phasentrimm")
+
+---
+### Logikschalter
+
+![Logikschalter](img/TXos_.png "Logikschalter")
+
+---
+### Dual & Expo
+
+![Dual & Expo](img/TXos_.png "Dual & Expo")
+
+---
+### Mischer
+
+![Mischer](img/TXos_.png "Mischer")
+
+---
+### Motor Aus
+
+![Motor Aus](img/TXos_.png "Motor Aus")
+
+---
+### Timer
+
+![Timer](img/TXos_.png "Timer")
+
+---
+### Servo Zuord.
+
+![Servo Zuord.](img/TXos_.png "Servo Zuord.")
+
+---
+### Servo Umkehr
+
+![Servo Umkehr](img/TXos_.png "Servo Umkehr")
+
+---
+### Servo Mitte
+
+![Servo Mitte](img/TXos_.png "Servo Mitte")
+
+---
+### Servo Limit
+
+![Servo Limit](img/TXos_.png "Servo Limit")
+
