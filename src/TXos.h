@@ -36,6 +36,7 @@
 
 #define TXOS_VERSION "0.3.1"
 
+
 #if defined( ARDUINO )
     #define LOG( f )
     #define LOGV( f, ... )
@@ -44,6 +45,7 @@
     #define LOG( f ) printf( f )
     #define LOGV( f, ... ) printf( f, __VA_ARGS__)
 #endif
+
 
 /* Holds small float values with 2 fractional digits.
  * This is currently only used to display battery voltage.

@@ -61,7 +61,7 @@ class Bind : public Module {
 
         bool isRowEditable( uint8_t row) final { return false; }
         bool isRowExecutable( uint8_t row) final;
-        void rowExecute( uint8_t row ) final;
+        void rowExecute( TextUI *ui, uint8_t row ) final;
         bool hasChanged( uint8_t row, uint8_t col) final;
 };
 

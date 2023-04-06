@@ -62,7 +62,7 @@ class ModelSelect : public Module {
         /* From TableEditable */
         bool isRowEditable( uint8_t row) final { return false; }; // override
         bool isRowExecutable( uint8_t row) final { return true; }; // override
-        void rowExecute( uint8_t row ) final; // override
+        void rowExecute( TextUI *ui, uint8_t row ) final; // override
 
         uint8_t getRowCount() final;
         const char *getRowName( uint8_t row) final;

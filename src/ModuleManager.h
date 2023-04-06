@@ -41,47 +41,67 @@
 #define _ModuleManager_h_
 
 #include "TXos.h"
-#include "Menu.h"
 #include "Module.h"
 #include "ConfigBlock.h"
+
+#define MODULE_SET_SYSTEM     1
+#define MODULE_SET_MODEL      2
 
 class ModuleManager {
     
     private:
 
-        Menu *systemMenu = new Menu( TEXT_SYSTEM_SETUP);
-        Menu *modelMenu = new Menu( TEXT_MODEL_SETUP);
+        TextUIMenu *systemMenu = new TextUIMenu( TEXT_SYSTEM_SETUP, true);
+        TextUIMenu *modelMenu = new TextUIMenu( TEXT_MODEL_SETUP, true);
 
+        /* A list of modules to run. This models modify stick and switch inputs */
         Module *runlistFirst = nullptr;
         Module *runlistLast = nullptr;
 
+        /* All system models */
+        Module *systemSetFirst = nullptr;
+        Module *systemSetLast = nullptr;
+
+        /* All model related models */
+        Module *modelSetFirst = nullptr;
+        Module *modelSetLast = nullptr;
+
         ConfigBlock *blockService;
 
-        void parseBlock( Menu *menu);
-        void generateBlock( configBlockID_t modelID, Menu *menu);
+        void parseBlock( uint8_t setType);
+        void generateBlock( configBlockID_t modelID, uint8_t setType);
 
     public:
         explicit ModuleManager( ConfigBlock &svc);
 
-        void addToSystemMenu( Module *modulePtr);
-        void addToModelMenu( Module *modulePtr);
+        void addToSystemMenu( TextUIScreen *scr);
+        void addToModelMenu( TextUIScreen *scr);
+
+        void addToSystemSetAndMenu( Module *modulePtr);
+        void addToModelSetAndMenu( Module *modulePtr);
+
         void addToRunList( Module *modulePtr);
 
-        Menu *getSystemMenu();
-        Menu *getModelMenu();
+        Module *getModuleByType( uint8_t setType, moduleType_t type);
+
+        TextUIMenu *getSystemMenu();
+        TextUIMenu *getModelMenu();
         
         uint8_t parseModule( configBlockID_t modelID, Module &moduleRef);
 
         void runModules( Controls &controls);
 
         void switchPhase( phase_t phase);
+        void setModelDefaults();
+        void setSystemDefaults();
+        void initModel();
 
         uint8_t getModelCount() const;
         void loadModel( configBlockID_t modelID);
         void saveModel( configBlockID_t modelID);
 
-        void loadSystemConfig(configBlockID_t blockID);
-        void saveSystemConfig(configBlockID_t blockID);
+        void loadSystemConfig( configBlockID_t blockID);
+        void saveSystemConfig( configBlockID_t blockID);
 };
 
 #endif

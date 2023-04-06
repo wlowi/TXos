@@ -29,11 +29,9 @@
  */
 
 #include "ModelSelect.h"
-#include "UserInterface.h"
 #include "SystemConfig.h"
 
 extern ModuleManager moduleManager;
-extern UserInterface userInterface;
 extern SystemConfig systemConfig;
 
 ModelSelect::ModelSelect() : Module( MODULE_MODEL_SELECT_TYPE, TEXT_MODULE_MODEL_SELECT) {
@@ -68,14 +66,14 @@ void ModelSelect::setDefaults() {
  * Called when we select a model.
  * This will load the model configuration.
  */
-void ModelSelect::rowExecute( uint8_t row) {
+void ModelSelect::rowExecute( TextUI *ui, uint8_t row) {
 
     LOGV("ModelSelect::execute( %d )\n", row);
 
     CFG->modelID = row +1;
     moduleManager.loadModel( CFG->modelID);
     systemConfig.save();
-    userInterface.toScreen( SCREEN_HOME);
+    ui->toHome();
 }
 
 uint8_t ModelSelect::getRowCount() {

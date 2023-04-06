@@ -49,7 +49,7 @@ void AssignInput::run( Controls &controls) {
 
 void AssignInput::setDefaults() {
 
-    const ModeAssign *modeAssign = (ModeAssign*)moduleManager.getSystemMenu()->getModuleByType( MODULE_MODE_ASSIGN_TYPE);
+    const ModeAssign *modeAssign = (ModeAssign*)moduleManager.getModuleByType( MODULE_SET_SYSTEM, MODULE_MODE_ASSIGN_TYPE);
 
     INIT_NON_PHASED_CONFIGURATION(
 

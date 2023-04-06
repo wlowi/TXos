@@ -26,9 +26,8 @@
 
 #include "DualExpo.h"
 #include "ModuleManager.h"
-#include "UserInterface.h"
 
-extern UserInterface userInterface;
+extern TextUI userInterface;
 extern ModuleManager moduleManager;
 
 extern const char* const LogicalChannelNames[LOGICAL_CHANNELS];
@@ -139,7 +138,7 @@ void DualExpo::switchPhase(phase_t ph) {
 
     SWITCH_PHASE( ph);
     
-    Phases *phases = (Phases*)moduleManager.getModelMenu()->getModuleByType( MODULE_PHASES_TYPE);
+    Phases *phases = (Phases*)moduleManager.getModuleByType( MODULE_SET_MODEL, MODULE_PHASES_TYPE);
     if( phases) {
         phaseName = phases->getPhaseName();
     } else {

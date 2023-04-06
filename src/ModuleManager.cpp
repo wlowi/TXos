@@ -25,35 +25,65 @@
 */
 
 #include "ModuleManager.h"
-#include "UserInterface.h"
+#include "TextUI.h"
+#include "HomeScreen.h"
 
-extern UserInterface userInterface;
+extern HomeScreen *homeScreen;
 
 ModuleManager::ModuleManager( ConfigBlock &svc) : blockService( &svc) {
 
+    modelMenu->addScreen( systemMenu);
 }
 
 /*
- * Add a module.
+ * Add a Screen.
  */
-void ModuleManager::addToSystemMenu( Module *modulePtr) {
+void ModuleManager::addToSystemMenu( TextUIScreen *scr) {
 
-    systemMenu->addModule( modulePtr);
+    systemMenu->addScreen( scr);
 }
 
-void ModuleManager::addToModelMenu( Module *modulePtr) {
+void ModuleManager::addToModelMenu( TextUIScreen *scr) {
 
-    modelMenu->addModule( modulePtr);
+    modelMenu->addScreen( scr);
 }
 
-Menu *ModuleManager::getSystemMenu() {
+TextUIMenu *ModuleManager::getSystemMenu() {
 
     return systemMenu;
 }
 
-Menu *ModuleManager::getModelMenu() {
+TextUIMenu *ModuleManager::getModelMenu() {
 
     return modelMenu;
+}
+
+void ModuleManager::addToSystemSetAndMenu( Module *modulePtr) {
+
+    modulePtr->setNext = nullptr;
+
+    if( systemSetFirst == nullptr) {
+        systemSetFirst = systemSetLast = modulePtr;
+    } else {
+        systemSetLast->setNext = modulePtr;
+        systemSetLast = modulePtr;
+    }
+
+    addToSystemMenu( modulePtr);
+}
+
+void ModuleManager::addToModelSetAndMenu( Module *modulePtr) {
+
+    modulePtr->setNext = nullptr;
+
+    if( modelSetFirst == nullptr) {
+        modelSetFirst = modelSetLast = modulePtr;
+    } else {
+        modelSetLast->setNext = modulePtr;
+        modelSetLast = modulePtr;
+    }
+
+    addToModelMenu( modulePtr);
 }
 
 void ModuleManager::addToRunList( Module *modulePtr) {
@@ -68,6 +98,25 @@ void ModuleManager::addToRunList( Module *modulePtr) {
     }
 }
 
+Module *ModuleManager::getModuleByType( uint8_t setType, moduleType_t type) {
+
+    Module *current = nullptr;
+    
+    if( setType == MODULE_SET_MODEL) {
+        current = modelSetFirst;
+    } else if( setType == MODULE_SET_SYSTEM) {
+        current = systemSetFirst;
+    }
+
+    while( current != nullptr) {
+        if( current->getConfigType() == type) { 
+            break;
+        }
+        current = current->setNext;
+    }
+
+    return current;
+}
 
 #define GET( p, s)                              \
     do {                                        \
@@ -140,7 +189,49 @@ void ModuleManager::switchPhase( phase_t phase) {
 
     LOGV("\nModuleManager::switchPhase(): new phase %d\n", phase);
     /* System modules do not have phases. */
-    modelMenu->switchPhase( phase);
+
+    Module *current = modelSetFirst;
+
+    while( current != nullptr) {
+        current->switchPhase( phase);
+        current = current->setNext;
+    }
+}
+
+void ModuleManager::setModelDefaults() {
+
+    LOG("\nModuleManager::setModelDefaults():\n");
+
+    Module *current = modelSetFirst;
+
+    while( current != nullptr) {
+        current->setDefaults();
+        current = current->setNext;
+    }
+}
+
+void ModuleManager::setSystemDefaults() {
+
+    LOG("\nModuleManager::setSystemDefaults():\n");
+
+    Module *current = systemSetFirst;
+
+    while( current != nullptr) {
+        current->setDefaults();
+        current = current->setNext;
+    }
+}
+
+void ModuleManager::initModel() {
+
+    LOG("\nModuleManager::initModel():\n");
+
+    Module *current = modelSetFirst;
+
+    while( current != nullptr) {
+        current->init();
+        current = current->setNext;
+    }
 }
 
 uint8_t ModuleManager::getModelCount() const {
@@ -155,19 +246,19 @@ void ModuleManager::loadModel( configBlockID_t modelID) {
 
     LOGV("\nModuleManager::loadModel(): loading model %d\n", modelID);
 
-    modelMenu->setDefaults();
+    setModelDefaults();
 
     blockService->readBlock( modelID);
 
     if( blockService->isBlockValid()) {
-        parseBlock( modelMenu);
+        parseBlock( MODULE_SET_MODEL);
     } else {
         LOGV("** ModuleManager::loadModel(): Block %d is invalid.\n", modelID);
-        userInterface.postMessage( 1, MSG_MODEL_LOAD_FAILED);
+        homeScreen->postMessage( 1, MSG_MODEL_LOAD_FAILED);
         saveModel( modelID);
     }
 
-    modelMenu->init();
+    initModel();
 }
 
 /*
@@ -177,7 +268,7 @@ void ModuleManager::saveModel( configBlockID_t modelID) {
 
     LOGV("\nModuleManager::saveModel(): saving model %d\n", modelID);
 
-    generateBlock( modelID, modelMenu);
+    generateBlock( modelID, MODULE_SET_MODEL);
     blockService->writeBlock();
 }
 
@@ -192,11 +283,11 @@ void ModuleManager::loadSystemConfig(configBlockID_t blockID) {
     blockService->readBlock( blockID);
 
     if( blockService->isBlockValid()) {
-        parseBlock( systemMenu);
+        parseBlock( MODULE_SET_SYSTEM);
     } else {
         LOG("** ModuleManager::loadSystemConfig(): system config is invalid, saving defaults\n");
-        userInterface.postMessage( 1, MSG_BAD_SYSCONFIG);
-        systemMenu->setDefaults();
+        homeScreen->postMessage( 1, MSG_BAD_SYSCONFIG);
+        setSystemDefaults();
         saveSystemConfig( blockID);
     }
 }
@@ -208,14 +299,14 @@ void ModuleManager::saveSystemConfig(configBlockID_t blockID) {
 
     LOG("\nModuleManager::saveSystemConfig(): saving system config\n");
 
-    generateBlock( blockID, systemMenu);
+    generateBlock( blockID, MODULE_SET_SYSTEM);
     blockService->writeBlock();
 }
 /*
  * Parse data in configuration block and distribute data to 
  * each module.
  */
-void ModuleManager::parseBlock( Menu *menu) {
+void ModuleManager::parseBlock( uint8_t setType) {
 
     const uint8_t *payload;
     moduleType_t type;
@@ -233,7 +324,7 @@ void ModuleManager::parseBlock( Menu *menu) {
 
         LOGV("ModuleManager::parseBlock(): GET type=%d size=%d\n", type, size);
 
-        current = menu->getModuleByType( type);
+        current = getModuleByType( setType, type);
 
         if( current == nullptr) {
             LOGV("** ModuleManager::parseBlock(): No module of type=%d\n", type);
@@ -243,7 +334,7 @@ void ModuleManager::parseBlock( Menu *menu) {
         } else if( current->getConfigSize() != size) {
             LOGV("** ModuleManager::parseBlock(): Config size mismatch of module type=%d %d != %d\n",
                 type, current->getConfigSize(), size);
-            userInterface.postMessage( 1, MSG_CONFIG_SIZE);
+            homeScreen->postMessage( 1, MSG_CONFIG_SIZE);
             payload += size;
             totalSize += size;
             
@@ -296,14 +387,20 @@ void ModuleManager::parseBlock( Menu *menu) {
     } while( 0 )
 
 
-void ModuleManager::generateBlock( configBlockID_t modelID, Menu *menu) {
+void ModuleManager::generateBlock( configBlockID_t modelID, uint8_t setType) {
 
     uint8_t *payload;
     moduleType_t type;
     moduleSize_t size;
     uint16_t totalSize = 0;
     size_t payloadSize;
-    Module *current = menu->getFirstModule();
+    Module *current = nullptr;
+
+    if( setType == MODULE_SET_MODEL) {
+        current = modelSetFirst;
+    } else if( setType == MODULE_SET_SYSTEM) {
+        current = systemSetFirst;
+    }
 
     blockService->formatBlock( modelID);
 
@@ -333,7 +430,7 @@ void ModuleManager::generateBlock( configBlockID_t modelID, Menu *menu) {
             }
         }
 
-        current = current->menuNext;
+        current = current->setNext;
     }
 
     // Terminating invalid module type

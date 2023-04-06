@@ -35,7 +35,7 @@ moduleType_t Module::getConfigType() const {
     return moduleType;
 }
 
-const char *Module::getName() {
+const char *Module::getMenuName() {
 
     return moduleName;
 }

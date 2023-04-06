@@ -34,6 +34,8 @@
 
 #include <stdint.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include <cstring>
 
 #ifndef NULL
 #define NULL __null
@@ -47,13 +49,19 @@
 
 typedef uint8_t byte;
 
+typedef bool boolean;
+
 #define delay( s)
 
-extern long millis();
+extern unsigned long millis();
 
 /* From AVR atomic.h */
 
 #define ATOMIC_BLOCK( s )
 #define ATOMIC_RESTORESTATE
+#define ATOMIC_FORCEON
+
+#define __FlashStringHelper char
+#define F( b ) b
 
 #endif

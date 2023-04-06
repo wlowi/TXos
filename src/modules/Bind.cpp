@@ -91,7 +91,7 @@ bool Bind::isRowExecutable( uint8_t row) {
     return (row == 0);
 }
 
-void Bind::rowExecute( uint8_t row ) {
+void Bind::rowExecute( TextUI *ui, uint8_t row ) {
 
     if( bindStep == BIND_STEP_NONE) {
         bindOn();

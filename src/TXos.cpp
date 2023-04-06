@@ -117,12 +117,14 @@
 #include "Output.h"
 #include "Ports.h"
 #include "Buzzer.h"
-#include "UserInterface.h"
+#include "TextUI.h"
 
 #include "Module.h"
 #include "ModuleManager.h"
 #include "ConfigBlock.h"
 #include "SystemConfig.h"
+
+#include "HomeScreen.h"
 
 #include "ModelSelect.h"
 #include "Model.h"
@@ -132,7 +134,6 @@
 #include "ServoReverse.h"
 #include "ServoSubtrim.h"
 #include "ServoLimit.h"
-#include "SystemSetup.h"
 #include "CalibrateSticks.h"
 #include "CalibrateTrim.h"
 #include "Bind.h"
@@ -164,6 +165,10 @@
 #include "OutputImpl.h"
 #include "PortsImpl.h"
 #include "BuzzerImpl.h"
+#include "DisplayImpl.h"
+
+#else
+
 #include "DisplayImpl.h"
 
 #endif
@@ -347,8 +352,11 @@ size_t memdebug[4];
 #endif
 
 #else
+/* NOT ARDUINO HARDWARE */
 
 #define ENABLE_STATISTICS_MODULE
+
+extern DisplayImpl *displayImpl;
 
 #endif
 
@@ -356,11 +364,13 @@ Controls controls;
 Output output;
 Ports ports;
 Buzzer buzzer( ports);
-UserInterface userInterface;
+TextUI userInterface;
 ConfigBlock configBlock;
 SystemConfig systemConfig;
 ModelSelect modelSelect;
 ModuleManager moduleManager( configBlock);
+
+HomeScreen *homeScreen;
 
 #ifdef ENABLE_STATISTICS_MODULE
 Statistics statistics;
@@ -412,75 +422,88 @@ void setup( void) {
     buzzer.init();
 */
 
+#ifdef ARDUINO
+    userInterface.setDisplay( new TextUILcdST7735());
+    userInterface.setInput( new TextUISimpleKbd( BUTTON_COUNT, buttons, keys));
+#else
+    userInterface.setDisplay( displayImpl->getLcd());
+    userInterface.setInput( displayImpl->getInput());
+#endif
+
+    homeScreen = new HomeScreen();
+
     /* The order of modules is important.
      * It defines the order with the menu.
      */
-    
+
     /* System menu */
     
-    moduleManager.addToSystemMenu( &modelSelect);
+    moduleManager.addToSystemSetAndMenu( &modelSelect);
     ServoMonitor *servoMonitor = new ServoMonitor( controls);
-    moduleManager.addToSystemMenu( servoMonitor);
+    moduleManager.addToSystemSetAndMenu( servoMonitor);
     SwitchMonitor *switchMonitor = new SwitchMonitor( controls);
-    moduleManager.addToSystemMenu( switchMonitor);
+    moduleManager.addToSystemSetAndMenu( switchMonitor);
     Bind *bind = new Bind();
-    moduleManager.addToSystemMenu( bind);
+    moduleManager.addToSystemSetAndMenu( bind);
     RangeTest *rangeTest = new RangeTest();
-    moduleManager.addToSystemMenu( rangeTest);
+    moduleManager.addToSystemSetAndMenu( rangeTest);
     ModeAssign *modeAssign = new ModeAssign();
-    moduleManager.addToSystemMenu( modeAssign);
+    moduleManager.addToSystemSetAndMenu( modeAssign);
     CalibrateSticks *calibrateSticks = new CalibrateSticks();
-    moduleManager.addToSystemMenu( calibrateSticks);
+    moduleManager.addToSystemSetAndMenu( calibrateSticks);
     CalibrateTrim *calibrateTrim = new CalibrateTrim();
-    moduleManager.addToSystemMenu( calibrateTrim);
+    moduleManager.addToSystemSetAndMenu( calibrateTrim);
     VccMonitor *vccMonitor = new VccMonitor();
-    moduleManager.addToSystemMenu( vccMonitor);
+    moduleManager.addToSystemSetAndMenu( vccMonitor);
 #ifdef ENABLE_STATISTICS_MODULE
-    moduleManager.addToSystemMenu( &statistics);
+    moduleManager.addToSystemSetAndMenu( &statistics);
 #endif
 
     /* Model menu */
 
-    moduleManager.addToModelMenu( new SystemSetup());
+    /* The system menu is automatically added as first item to the
+     * model menu by ModuleManager.
+     */
+
     Model *model = new Model();
-    moduleManager.addToModelMenu( model);
+    moduleManager.addToModelSetAndMenu( model);
     AnalogTrim *analogTrim = new AnalogTrim();
-    moduleManager.addToModelMenu( analogTrim);
+    moduleManager.addToModelSetAndMenu( analogTrim);
     ChannelRange *channelRange = new ChannelRange();
-    moduleManager.addToModelMenu( channelRange);
+    moduleManager.addToModelSetAndMenu( channelRange);
     ChannelReverse *channelReverse = new ChannelReverse();
-    moduleManager.addToModelMenu( channelReverse);
+    moduleManager.addToModelSetAndMenu( channelReverse);
     AnalogSwitch *analogSwitch = new AnalogSwitch();
-    moduleManager.addToModelMenu( analogSwitch);
+    moduleManager.addToModelSetAndMenu( analogSwitch);
     SwitchedChannels *switchedChannels = new SwitchedChannels();
-    moduleManager.addToModelMenu( switchedChannels);
+    moduleManager.addToModelSetAndMenu( switchedChannels);
     AssignInput *assignInput = new AssignInput();
-    moduleManager.addToModelMenu( assignInput);
+    moduleManager.addToModelSetAndMenu( assignInput);
     ChannelDelay *channelDelay = new ChannelDelay();
-    moduleManager.addToModelMenu( channelDelay);
+    moduleManager.addToModelSetAndMenu( channelDelay);
     Phases *phases = new Phases();
-    moduleManager.addToModelMenu( phases);
+    moduleManager.addToModelSetAndMenu( phases);
     PhasesTrim *phasesTrim = new PhasesTrim();
-    moduleManager.addToModelMenu( phasesTrim);
+    moduleManager.addToModelSetAndMenu( phasesTrim);
     LogicSwitch *logicSwitch = new LogicSwitch();
-    moduleManager.addToModelMenu( logicSwitch);
+    moduleManager.addToModelSetAndMenu( logicSwitch);
     DualExpo *dualExpo = new DualExpo();
-    moduleManager.addToModelMenu( dualExpo);
+    moduleManager.addToModelSetAndMenu( dualExpo);
     Mixer *mixer = new Mixer();
-    moduleManager.addToModelMenu( mixer);
+    moduleManager.addToModelSetAndMenu( mixer);
     EngineCut *engineCut = new EngineCut();
-    moduleManager.addToModelMenu( engineCut);
+    moduleManager.addToModelSetAndMenu( engineCut);
     Timer *timer = new Timer();
-    moduleManager.addToModelMenu( timer);
+    moduleManager.addToModelSetAndMenu( timer);
 
     ServoRemap *servoRemap = new ServoRemap();
-    moduleManager.addToModelMenu( servoRemap);
+    moduleManager.addToModelSetAndMenu( servoRemap);
     ServoReverse *servoReverse = new ServoReverse();
-    moduleManager.addToModelMenu( servoReverse);
+    moduleManager.addToModelSetAndMenu( servoReverse);
     ServoSubtrim *servoSubtrim = new ServoSubtrim();
-    moduleManager.addToModelMenu( servoSubtrim);
+    moduleManager.addToModelSetAndMenu( servoSubtrim);
     ServoLimit *servoLimit = new ServoLimit();
-    moduleManager.addToModelMenu( servoLimit);
+    moduleManager.addToModelSetAndMenu( servoLimit);
 
     /* The order of modules is important.
      * It defines the order of execution in RunModules().
@@ -516,7 +539,7 @@ void setup( void) {
     moduleManager.addToRunList( timer);
     moduleManager.addToRunList( vccMonitor);
 
-    userInterface.init();
+    userInterface.setHomeScreen( homeScreen);
 
     systemConfig.load();
 
@@ -548,6 +571,8 @@ void loop( void) {
     uint16_t overrun;
 #endif
 
+    Event *e = userInterface.getEvent();
+
 #if defined( ARDUINO )
     set_sleep_mode( SLEEP_MODE_IDLE);
     cli();
@@ -555,7 +580,6 @@ void loop( void) {
     sei();
     sleep_cpu();
     sleep_disable();
-
     wdt_reset();
 #ifdef ENABLE_STATISTICS_MODULE
     now = millis();
@@ -596,7 +620,7 @@ void loop( void) {
     now = millis();
 #endif
 
-    userInterface.handle();
+    userInterface.handle( e);
 
 #ifdef ENABLE_STATISTICS_MODULE
     now = millis() - now;
@@ -607,9 +631,9 @@ void loop( void) {
     
     if( overrun != lastOverrun && statistics.debugOverrun()) {
         lastOverrun = overrun;
-        userInterface.printDebug( overrun);
+        homeScreen->printDebug( overrun);
     } else if( statistics.debugTiming()) {
-        userInterface.printDebug( (uint16_t)now);
+        homeScreen->printDebug( (uint16_t)now);
     }
     
 #endif

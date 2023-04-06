@@ -49,9 +49,9 @@ BuzzerImpl *buzzerImpl;
 
 SWITCH_CONFIGURATION
 
-long millis() {
+unsigned long millis() {
 
-    return (long)clock() * 1000 / CLOCKS_PER_SEC;
+    return (unsigned long)clock() * 1000 / CLOCKS_PER_SEC;
 }
 
 class TXosTest : public wxApp

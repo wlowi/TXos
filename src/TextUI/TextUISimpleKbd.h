@@ -1,5 +1,5 @@
 /*
-  TXos. A remote control transmitter OS.
+  TextUI. A simple text based UI.
 
   MIT License
 
@@ -24,33 +24,42 @@
   SOFTWARE.
 */
 
-#ifndef _SystemSetup_h_
-#define _SystemSetup_h_
+#ifndef _TextUISimpleKbd_h_
+#define _TextUISimpleKbd_h_
 
-#include "Module.h"
+#include "TextUI.h"
 
-class SystemSetup : public Module {
+#define BUTTON_LONG_TIMEOUT_msec      250
+#define BUTTON_REPEAT_TIMEOUT_msec   1000
+#define BUTTON_REPEAT_SPEED_msec       50
 
-    NO_CONFIG()
+class TextUISimpleKbd : public TextUIInput {
+
+  private:
+    uint8_t buttonCount;
+    uint8_t *buttonPort;
+    uint8_t *shortKey;
+    uint8_t *longKey;
+
+    /* A per key bitmap
+     *  bit 0    => button pressed
+     *  bit 1    => short
+     *  bit 2    => long
+     */
+    uint8_t *buttonState;
+
+    /* There should be a pressed timestamp for every key.
+     * We currently do not support multiple keys pressed at the same time. 
+     */
+    long pressedTimeStamp = 0;
+    long repeatTimeStamp = 0;
     
-    public:
-        explicit SystemSetup();
-        
-        /* From MOdule */
-        void run( Controls &controls) final;
-        void setDefaults() final;
+  public:
+    TextUISimpleKbd( uint8_t count, uint8_t ports[], uint8_t skey[], uint8_t lkey[]);
 
-        /* From TableEditable */
-        bool isRowEditable( uint8_t row) final { return false; }
-        bool isModuleExecutable() final { return true; }
-
-        void moduleExecute() final;
-
-        uint8_t getRowCount() final;
-        const char *getRowName( uint8_t row) final;
-        uint8_t getColCount( uint8_t row) final;
-        void getValue( uint8_t row, uint8_t col, Cell *cell) final;
-        void setValue( uint8_t row, uint8_t col, Cell *cell) final;
+    /* TextUIInput */
+    bool pending();
+    void setEvent( Event *e);
 };
 
 #endif

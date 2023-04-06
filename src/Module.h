@@ -32,7 +32,7 @@
 #define _Module_h_
 
 #include "TXos.h"
-#include "TableEditable.h"
+#include "TextUI.h"
 #include "Controls.h"
 
 typedef uint8_t moduleType_t;
@@ -44,7 +44,7 @@ typedef uint8_t moduleSize_t;
 /* List all available modules here */
 
 /* System modules */
-#define MODULE_SYSTEM_SETUP_TYPE        ((moduleType_t)1)
+// #define MODULE_SYSTEM_SETUP_TYPE        ((moduleType_t)1)   obsolete
 #define MODULE_MODEL_SELECT_TYPE        ((moduleType_t)2)
 #define MODULE_SERVO_MONITOR_TYPE       ((moduleType_t)3)
 #define MODULE_SWITCH_MONITOR_TYPE      ((moduleType_t)4)
@@ -77,14 +77,14 @@ typedef uint8_t moduleSize_t;
 #define MODULE_LOGIC_SWITCH_TYPE        ((moduleType_t)67)
 #define MODULE_ANALOG_TRIM_TYPE         ((moduleType_t)68)
 
-class Module : public TableEditable {
+class Module : public TextUIScreen {
 
     private:
         const char *moduleName;
         moduleType_t moduleType;
 
-        Module *menuNext = nullptr;
         Module *runlistNext = nullptr;
+        Module *setNext = nullptr;
 
     public:
         Module( moduleType_t type, const char *name);
@@ -121,8 +121,14 @@ class Module : public TableEditable {
         /* Get the modules configuration type identifier.  */
         moduleType_t getConfigType() const;
 
-        /* From Interface TableEditable */
-        const char *getName() final;
+        /* From Interface TextUIScreen */
+        bool goBackItem() { return true; }
+        void activate(TextUI *ui) { moduleEnter(); }
+        void deactivate(TextUI *ui) { moduleExit(); }
+        bool isRowEditable(uint8_t row) { return true; }
+        bool isColEditable(uint8_t row, uint8_t col) { return true; }
+        const char *getMenuName() final;
+	    const char *getHeader() { return getMenuName(); }
 };
 
 #include "Phases.h"

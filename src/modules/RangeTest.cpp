@@ -83,7 +83,7 @@ bool RangeTest::isRowExecutable( uint8_t row) {
     return (row == 0);
 }
 
-void RangeTest::rowExecute( uint8_t row ) {
+void RangeTest::rowExecute( TextUI *ui, uint8_t row ) {
 
     if( rangeTestStep == RANGETEST_STEP_NONE) {
         rangeTestOn();

@@ -35,16 +35,18 @@ WX_LIBS = $(shell wx-config --libs)
 WX_CXXFLAGS_GEN = $(shell wx-config --cxxflags)
 WX_CXXFLAGS = $(subst -I,-isystem,$(WX_CXXFLAGS_GEN))
 
-EMU_OBJ = emu/EEPROM.o emu/InputImpl.o emu/OutputImpl.o emu/PortsImpl.o emu/BuzzerImpl.o emu/LcdWidget.o emu/DisplayImpl.o
+## EMU_OBJ = emu/EEPROM.o emu/InputImpl.o emu/OutputImpl.o emu/PortsImpl.o emu/BuzzerImpl.o emu/LcdWidget.o emu/DisplayImpl.o
+EMU_OBJ = emu/EEPROM.o emu/InputImpl.o emu/OutputImpl.o emu/PortsImpl.o emu/BuzzerImpl.o emu/EmuTextUILcdST7735.o emu/EmuTextUISimpleKbd.o emu/DisplayImpl.o
 
 CONTROLS_OBJ = controls/Controls.o
 
-UI_OBJ = ui/UserInterface.o ui/SelectList.o ui/Cell.o ui/Menu.o
+## UI_OBJ = ui/UserInterface.o ui/SelectList.o ui/Cell.o ui/Menu.o
+UI_OBJ = TextUI/Cell.o TextUI/TextUI.o TextUI/TextUIHandler.o TextUI/TextUILcd.o TextUI/TextUIMenu.o
 
 OUTPUT_OBJ = output/Output.o output/Ports.o output/Buzzer.o
 
 MODULE_OBJ = modules/ModelSelect.o modules/Model.o modules/EngineCut.o modules/ServoReverse.o modules/ServoSubtrim.o modules/ServoLimit.o \
-  modules/SwitchMonitor.o modules/ServoMonitor.o modules/SystemSetup.o modules/CalibrateSticks.o modules/CalibrateTrim.o \
+  modules/SwitchMonitor.o modules/ServoMonitor.o modules/CalibrateSticks.o modules/CalibrateTrim.o \
   modules/Bind.o modules/RangeTest.o modules/DualExpo.o modules/Phases.o modules/Timer.o modules/VccMonitor.o modules/PhasesTrim.o \
   modules/SwitchedChannels.o modules/AssignInput.o modules/ServoRemap.o modules/AnalogSwitch.o modules/ChannelRange.o \
   modules/ChannelReverse.o modules/ChannelDelay.o modules/Mixer.o modules/Statistics.o modules/LogicSwitch.o modules/ModeAssign.o \
@@ -52,16 +54,19 @@ MODULE_OBJ = modules/ModelSelect.o modules/Model.o modules/EngineCut.o modules/S
 
 CXXFLAGS += -g -O0 -Wall -Wpedantic -Wextra -Wno-unused-parameter
 
-CXXINC += -I. -Icontrols -Iui -Ioutput -Imodules -Iemu
+## CXXINC += -I. -Icontrols -Iui -Ioutput -Imodules -Iemu
+CXXINC += -I. -Icontrols -ITextUI -Ioutput -Imodules -Iemu
 
-OBJECTS = TXos.o Module.o ModuleManager.o ConfigBlock.o SystemConfig.o $(CONTROLS_OBJ) $(UI_OBJ) $(OUTPUT_OBJ) $(MODULE_OBJ)
+OBJECTS = TXos.o Module.o ModuleManager.o ConfigBlock.o SystemConfig.o HomeScreen.o $(CONTROLS_OBJ) $(UI_OBJ) $(OUTPUT_OBJ) $(MODULE_OBJ)
 
 # Unittest
 UTOBJECTS = unittest/UtModules.o
+## UTEMU_OBJ = unittest/emu/EEPROM.o unittest/emu/InputImpl.o unittest/emu/OutputImpl.o unittest/emu/PortsImpl.o \
+##  unittest/emu/BuzzerImpl.o unittest/emu/LcdWidget.o unittest/emu/DisplayImpl.o
 UTEMU_OBJ = unittest/emu/EEPROM.o unittest/emu/InputImpl.o unittest/emu/OutputImpl.o unittest/emu/PortsImpl.o \
-  unittest/emu/BuzzerImpl.o unittest/emu/LcdWidget.o unittest/emu/DisplayImpl.o
-UTCXXINC += -I. -Icontrols -Iui -Ioutput -Imodules -Iunittest -Iunittest/emu
-
+  unittest/emu/BuzzerImpl.o unittest/emu/EmuTextUILcdST7735.o unittest/emu/EmuTextUISimpleKbd.o unittest/emu/DisplayImpl.o
+## UTCXXINC += -I. -Icontrols -Iui -Ioutput -Imodules -Iunittest -Iunittest/emu
+UTCXXINC += -I. -Icontrols -ITextUI -Ioutput -Imodules -Iunittest -Iunittest/emu
 
 # implementation
 

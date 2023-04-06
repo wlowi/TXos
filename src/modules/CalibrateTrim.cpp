@@ -90,7 +90,7 @@ bool CalibrateTrim::isRowExecutable( uint8_t row) {
     return (row == 0);
 }
 
-void CalibrateTrim::rowExecute( uint8_t row ) {
+void CalibrateTrim::rowExecute( TextUI *ui, uint8_t row ) {
 
     switch( calibrationStep) {
     case CALIBRATION_STEP_NONE:

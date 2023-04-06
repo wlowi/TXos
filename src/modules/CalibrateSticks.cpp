@@ -89,7 +89,7 @@ bool CalibrateSticks::isRowExecutable( uint8_t row) {
     return (row == 0);
 }
 
-void CalibrateSticks::rowExecute( uint8_t row ) {
+void CalibrateSticks::rowExecute( TextUI *ui, uint8_t row ) {
 
     switch( calibrationStep) {
     case CALIBRATION_STEP_NONE:

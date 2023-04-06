@@ -224,7 +224,7 @@ void InputImpl::OnSwitch( wxCommandEvent& event) {
                 default:
                     swValues[i] = SW_STATE_DONTCARE;
             }
-            printf("HandleSwitch %d %d\n", i, swValues[i]);
+            printf("InputImpl::OnSwitch(): HandleSwitch %d %d\n", i, swValues[i]);
             break;
         }
     }
