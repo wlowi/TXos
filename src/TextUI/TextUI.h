@@ -49,10 +49,12 @@
     #define UILOGV(f, ...)
 #endif
 
-#define EVENT_TYPE_NONE 0
-#define EVENT_TYPE_IRQ 1
+#define EVENT_TYPE_NONE  0
+#define EVENT_TYPE_TICK  1
 #define EVENT_TYPE_TIMER 2
-#define EVENT_TYPE_KEY 3
+#define EVENT_TYPE_KEY   3
+
+#define EVENT_TICK_msec  100
 
 #define KEY_NONE  0
 #define KEY_UP    1
@@ -106,11 +108,11 @@ public:
         eventPending = false;
     }
 
-    void setIRQEvent()
+    void setTickEvent()
     {
-        eventType = EVENT_TYPE_IRQ;
+        eventType = EVENT_TYPE_TICK;
         key = KEY_NONE;
-        count = 0;
+        count = EVENT_TICK_msec;
         eventPending = true;
     }
 
@@ -199,6 +201,7 @@ public:
 
     virtual void normalColors() = 0;
     virtual void selectedColors() = 0;
+    virtual void editColors() = 0;
 
     virtual void setInvert(bool inv) = 0;
 
@@ -523,8 +526,10 @@ private:
     boolean itemPopped = false;
     TextUILcd *display = nullptr;
     TextUIInput *inputQueue = nullptr;
+    TextUIInput *currentInput = nullptr;
     uiTimer_t timer_msec = 0;
     unsigned long nextTimer_msec = 0;
+    unsigned long nextTick_msec = 0;
 
 public:
     void setTimer(uiTimer_t msec);

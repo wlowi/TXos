@@ -3,7 +3,7 @@
 # Create links for all cpp and header files from ../src hierarchy
 #
 
-SOURCE="../src ../src/controls ../src/modules ../src/output ../src/ui atmega2560"
+SOURCE="../src ../src/controls ../src/modules ../src/output ../src/TextUI atmega2560"
 
 sh rmlinks.sh
 

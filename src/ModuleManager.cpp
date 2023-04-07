@@ -86,6 +86,32 @@ void ModuleManager::addToModelSetAndMenu( Module *modulePtr) {
     addToModelMenu( modulePtr);
 }
 
+bool ModuleManager::inSystemSet( Module *modulePtr)
+{
+    Module *m = systemSetFirst;
+
+    while( m != nullptr)
+    {
+        if( m == modulePtr) return true;
+        m = m->setNext;
+    }
+
+    return false;
+}
+
+bool ModuleManager::inModelSet( Module *modulePtr)
+{
+    Module *m = modelSetFirst;
+
+    while( m != nullptr)
+    {
+        if( m == modulePtr) return true;
+        m = m->setNext;
+    }
+
+    return false;
+}
+
 void ModuleManager::addToRunList( Module *modulePtr) {
 
     modulePtr->runlistNext = nullptr;

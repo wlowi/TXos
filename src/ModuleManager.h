@@ -80,6 +80,9 @@ class ModuleManager {
         void addToSystemSetAndMenu( Module *modulePtr);
         void addToModelSetAndMenu( Module *modulePtr);
 
+        bool inSystemSet( Module *modulePtr);
+        bool inModelSet( Module *modulePtr);
+
         void addToRunList( Module *modulePtr);
 
         Module *getModuleByType( uint8_t setType, moduleType_t type);
@@ -97,9 +100,14 @@ class ModuleManager {
         void initModel();
 
         uint8_t getModelCount() const;
+
+        /* Model save is performed in Module.deactivate() */
         void loadModel( configBlockID_t modelID);
         void saveModel( configBlockID_t modelID);
 
+        /* Systemconfig save is done in Module.deactivete and
+         * after model load.
+         */
         void loadSystemConfig( configBlockID_t blockID);
         void saveSystemConfig( configBlockID_t blockID);
 };

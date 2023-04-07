@@ -40,7 +40,6 @@ EMU_OBJ = emu/EEPROM.o emu/InputImpl.o emu/OutputImpl.o emu/PortsImpl.o emu/Buzz
 
 CONTROLS_OBJ = controls/Controls.o
 
-## UI_OBJ = ui/UserInterface.o ui/SelectList.o ui/Cell.o ui/Menu.o
 UI_OBJ = TextUI/Cell.o TextUI/TextUI.o TextUI/TextUIHandler.o TextUI/TextUILcd.o TextUI/TextUIMenu.o
 
 OUTPUT_OBJ = output/Output.o output/Ports.o output/Buzzer.o
@@ -54,18 +53,14 @@ MODULE_OBJ = modules/ModelSelect.o modules/Model.o modules/EngineCut.o modules/S
 
 CXXFLAGS += -g -O0 -Wall -Wpedantic -Wextra -Wno-unused-parameter
 
-## CXXINC += -I. -Icontrols -Iui -Ioutput -Imodules -Iemu
 CXXINC += -I. -Icontrols -ITextUI -Ioutput -Imodules -Iemu
 
 OBJECTS = TXos.o Module.o ModuleManager.o ConfigBlock.o SystemConfig.o HomeScreen.o $(CONTROLS_OBJ) $(UI_OBJ) $(OUTPUT_OBJ) $(MODULE_OBJ)
 
 # Unittest
 UTOBJECTS = unittest/UtModules.o
-## UTEMU_OBJ = unittest/emu/EEPROM.o unittest/emu/InputImpl.o unittest/emu/OutputImpl.o unittest/emu/PortsImpl.o \
-##  unittest/emu/BuzzerImpl.o unittest/emu/LcdWidget.o unittest/emu/DisplayImpl.o
 UTEMU_OBJ = unittest/emu/EEPROM.o unittest/emu/InputImpl.o unittest/emu/OutputImpl.o unittest/emu/PortsImpl.o \
   unittest/emu/BuzzerImpl.o unittest/emu/EmuTextUILcdST7735.o unittest/emu/EmuTextUISimpleKbd.o unittest/emu/DisplayImpl.o
-## UTCXXINC += -I. -Icontrols -Iui -Ioutput -Imodules -Iunittest -Iunittest/emu
 UTCXXINC += -I. -Icontrols -ITextUI -Ioutput -Imodules -Iunittest -Iunittest/emu
 
 # implementation

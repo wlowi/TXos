@@ -413,6 +413,12 @@ void EmuTextUILcdST7735::selectedColors() {
     setFg(0,0,0);
 }
 
+void EmuTextUILcdST7735::editColors() {
+
+    setBg(255,255,255);
+    setFg(0,0,0);
+}
+
 void EmuTextUILcdST7735::setInvert( bool inv) {
 
     if( inv) {

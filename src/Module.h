@@ -89,7 +89,6 @@ class Module : public TextUIScreen {
     public:
         Module( moduleType_t type, const char *name);
         friend class ModuleManager;
-        friend class Menu;
         
         /* */
         virtual void run( Controls &controls) = 0;
@@ -123,8 +122,9 @@ class Module : public TextUIScreen {
 
         /* From Interface TextUIScreen */
         bool goBackItem() { return true; }
-        void activate(TextUI *ui) { moduleEnter(); }
-        void deactivate(TextUI *ui) { moduleExit(); }
+        void activate(TextUI *ui);
+        void deactivate(TextUI *ui);
+        
         bool isRowEditable(uint8_t row) { return true; }
         bool isColEditable(uint8_t row, uint8_t col) { return true; }
         const char *getMenuName() final;

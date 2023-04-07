@@ -62,6 +62,7 @@ class TextUILcdSSD1306 : public TextUILcd {
 
     void normalColors();
     void selectedColors();
+    void editColors();
 
     void setInvert( bool inv);
 

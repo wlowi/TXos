@@ -94,6 +94,11 @@ void TextUILcdSSD1306::selectedColors() {
   setInvert( true);
 }
 
+void TextUILcdSSD1306::editColors() {
+
+  setInvert( true);
+}
+
 void TextUILcdSSD1306::setInvert( bool inv) {
 
   lcd.setInvertMode( inv);

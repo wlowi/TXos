@@ -25,6 +25,13 @@
 */
 
 #include "Module.h"
+#include "ModuleManager.h"
+#include "SystemConfig.h"
+#include "ModelSelect.h"
+
+extern ModuleManager moduleManager;
+extern SystemConfig systemConfig;
+extern ModelSelect modelSelect;
 
 Module::Module( moduleType_t type, const char *name) : moduleName( name), moduleType( type) {
 
@@ -38,4 +45,21 @@ moduleType_t Module::getConfigType() const {
 const char *Module::getMenuName() {
 
     return moduleName;
+}
+
+void Module::activate(TextUI *ui)
+{
+    moduleEnter();
+}
+
+void Module::deactivate(TextUI *ui)
+{
+    moduleExit();
+
+    if( moduleManager.inSystemSet( this)) {
+        systemConfig.save();
+
+    } else if( moduleManager.inModelSet( this)) {
+        moduleManager.saveModel( modelSelect.getModelID());
+    }
 }

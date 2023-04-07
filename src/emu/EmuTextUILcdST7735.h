@@ -54,7 +54,7 @@ class EmuTextUILcdST7735 : public TextUILcd, public wxPanel
 
         void normalColors();
         void selectedColors();
-
+        void editColors();
         void setInvert( bool inv);
 
         void setFontSize( uint8_t sz);

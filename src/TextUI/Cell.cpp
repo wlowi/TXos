@@ -37,7 +37,7 @@ void Cell::render( TextUILcd *lcd, bool edit) {
     lcd->setColumn( screenCol);
 
     if( edit) {
-        lcd->selectedColors();
+        lcd->editColors();
     } else {
         lcd->normalColors();
     }
