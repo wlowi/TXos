@@ -24,7 +24,7 @@
   SOFTWARE.
 */
 
-#include "DisplayImpl.h"
+#include "TextUIRotaryEncoder.h"
 
 static volatile byte oldVal;
 
@@ -111,72 +111,56 @@ ISR( PCINT2_vect)
     oldVal |= encVal;
 }
 
-DisplayImpl::DisplayImpl() {
-    
-    lcd = new LcdWidget();
-    
-    init();
-}
-
-void DisplayImpl::init()
+TextUIRotaryEncoder::TextUIRotaryEncoder()
 {
-    cli();
+    ATOMIC_BLOCK( ATOMIC_RESTORESTATE ) {
 
-    pinMode( PIN_CLK, INPUT);
-    pinMode( PIN_DIR, INPUT);
-    pinMode( PIN_SWITCH, INPUT);
+      pinMode( PIN_CLK, INPUT);
+      pinMode( PIN_DIR, INPUT);
+      pinMode( PIN_SWITCH, INPUT);
 
-    /* Enable pull-up */
-    digitalWrite( PIN_CLK, HIGH);
-    digitalWrite( PIN_DIR, HIGH);
-    digitalWrite( PIN_SWITCH, HIGH);
+      /* Enable pull-up */
+      digitalWrite( PIN_CLK, HIGH);
+      digitalWrite( PIN_DIR, HIGH);
+      digitalWrite( PIN_SWITCH, HIGH);
     
-    PCMSK2 |= ROTARYENC_PCINT_MASK;
-    PCICR |= _BV(PCIE2);
+      PCMSK2 |= ROTARYENC_PCINT_MASK;
+      PCICR |= _BV(PCIE2);
     
-    enc = button = buttonDown_msec = 0;
-    buttonIsDown = false;
+      enc = button = buttonDown_msec = 0;
+      buttonIsDown = false;
 
-    oldVal  = digitalRead( PIN_CLK) ? ROTARYENC_CLK    : 0;
-    oldVal |= digitalRead( PIN_DIR) ? ROTARYENC_DIR    : 0;
-    oldVal |= digitalRead( PIN_SWITCH) ? ROTARYENC_SWITCH : 0;
-
-    sei();
-}
-
-LcdWidget *DisplayImpl::getLCD( void) {
-
-    return lcd;
-}
-
-Event *DisplayImpl::getEvent() {
-
-    cli();
-    
-    if( button == ROTARYENC_BUTTON_SHORT) {
-      event.key = KEY_ENTER;
-      event.count = 1;
-      button = 0;
-    } else if( button == ROTARYENC_BUTTON_LONG) {
-      event.key = KEY_CLEAR;
-      event.count = 1;
-      button = 0;
-    } else if( enc >= 2) {
-      event.key = KEY_DOWN;
-      event.count = enc /2;
-      enc &= 1;
-    } else if( enc <= -2) {
-      event.key = KEY_UP;
-      enc = -enc;
-      event.count = enc /2;
-      enc &= 1;
-      enc = -enc;
-    } else {
-      event.key = KEY_NONE;
-      event.count = 0;
+      oldVal  = digitalRead( PIN_CLK) ? ROTARYENC_CLK    : 0;
+      oldVal |= digitalRead( PIN_DIR) ? ROTARYENC_DIR    : 0;
+      oldVal |= digitalRead( PIN_SWITCH) ? ROTARYENC_SWITCH : 0;
     }
+}
 
-    sei();
-    
-    return &event;
+bool TextUIRotaryEncoder::pending() {
+
+  return (button != 0) || (enc >= 2) || (enc <= -2);
+}
+
+void TextUIRotaryEncoder::setEvent(Event *e) {
+
+    ATOMIC_BLOCK( ATOMIC_RESTORESTATE ) {
+
+        if( button == ROTARYENC_BUTTON_SHORT) {
+            e->setKeyEvent( KEY_ENTER, 1);
+            button = 0;
+        } else if( button == ROTARYENC_BUTTON_LONG) {
+            e->setKeyEvent( KEY_CLEAR, 1);
+            button = 0;
+        } else if( enc >= 2) {
+            e->setKeyEvent( KEY_DOWN, enc >> 1);
+            enc &= 1;
+        } else if( enc <= -2) {
+            enc = -enc;
+            e->setKeyEvent( KEY_UP, enc >> 1);
+            enc &= 1;
+            enc = -enc;
+        } else {
+            e->setNoEvent();
+        }
+    }
 }

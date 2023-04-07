@@ -1,5 +1,5 @@
 /*
-  TextUI. A simple text based UI.
+  TXos. A remote control transmitter OS.
 
   MIT License
 
@@ -24,59 +24,29 @@
   SOFTWARE.
 */
 
-#ifndef _TextUILcdSSD1306_h
-#define _TextUILcdSSD1306_h
+#ifndef _TextUIRotaryEncoder_h_
+#define _TextUIRotaryEncoder_h_
 
 #include "TextUI.h"
 
-#undef TEXTUI_LCD_USE_AVRI2C
+class TextUIRotaryEncoder : public TextUIInput
+ {
 
-#ifdef TEXTUI_LCD_USE_AVRI2C
-  #include "SSD1306AsciiAvrI2c.h"
-#else
-  #include "SSD1306AsciiWire.h"
-#endif
+    private:
 
-const uint8_t DISPLAY_I2C_ADDRESS = 0x3C;
+    public:
+        TextUIRotaryEncoder();
 
-class TextUILcdSSD1306 : public TextUILcd {
-
-  private:
-#ifdef TEXTUI_LCD_USE_AVRI2C
-    SSD1306AsciiAvrI2c lcd;
-#else
-    SSD1306AsciiWire lcd;
-#endif
-
-  public:
-    TextUILcdSSD1306();
-    
-    void clear();
-    void clearEOL();
-
-    bool colorSupport();
-    
-    void setBg( uint8_t r, uint8_t g, uint8_t b);
-    void setFg( uint8_t r, uint8_t g, uint8_t b);
-
-    void normalColors();
-    void selectedColors();
-    void editColors();
-
-    void setInvert( bool inv);
-
-    /* FONT_SMALL .. FONT_LARGE */
-    void setFontSize( uint8_t sz);
-    
-    uint16_t getRows();
-    uint16_t getColumns();
-
-    /* row and column in characters */
-    void setCursor( uint8_t r, uint8_t c);
-    void setRow( uint8_t r);
-    void setColumn( uint8_t c);
-
-    void printChar( char ch);
+        
+        /* Returns true if there is an event pending.
+         * setEvent() clears pending state.
+         * 
+         * Note that there may be multiple events pending
+         * for different keys. setEvent() clears the pending
+         * state only for the key returned.
+         */
+        bool pending();
+        void setEvent(Event *e);
 };
 
 #endif

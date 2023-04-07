@@ -68,6 +68,8 @@
  */
 #define SWITCHES                      ((uint8_t)15)
 
+/* In your mind add one "Always On" logical switch
+ */
 #define MECHANICAL_SWITCHES           ((uint8_t)6)
 #define MECHANICAL_SWITCHES_FIRST_IDX ((uint8_t)0)
 
@@ -77,8 +79,14 @@
 #define LOGIC_SWITCHES                ((uint8_t)2)
 #define LOGIC_SWITCHES_FIRST_IDX      ((uint8_t)9)
 
+/* In your mind add one logical switch that holds the
+ * phase number.
+ */
 #define PHASE_SWITCHES                ((uint8_t)3)
 #define PHASE_SWITCHES_FIRST_IDX      ((uint8_t)12)
+
+/* 1(AlwaysOn) + 6(Mechanical) + 2(Channel) + 2(Logical) + 4(Phase) = 15 */
+
 
 /* Switch configuration
  * In this case we have:

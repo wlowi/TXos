@@ -103,9 +103,9 @@
  * ==============================
  * 
  * Timer 0   8 bit       Arduino micros() millis() delay()...
- * Timer 1  16 bit       PPM generation    OutputImpl.cpp
+ * Timer 1  16 bit       Buzzer Sound      BuzzerImpl.cpp
  * Timer 2   8 bit 
- * Timer 3  16 bit       Buzzer Sound      BuzzerImpl.cpp
+ * Timer 3  16 bit       PPM generation    OutputImpl.cpp
  * Timer 4  16 bit 
  * Timer 5  16 bit 
  * 
@@ -161,11 +161,13 @@
 #include "avr/sleep.h"
 #include "avr/wdt.h"
 
+#include "TextUILcdST7735.h"
+#include "TextUIRotaryEncoder.h"
+
 #include "InputImpl.h"
 #include "OutputImpl.h"
 #include "PortsImpl.h"
 #include "BuzzerImpl.h"
-#include "DisplayImpl.h"
 
 #else
 
@@ -287,7 +289,6 @@ InputImpl *inputImpl;
 OutputImpl *outputImpl;
 PortsImpl *portsImpl;
 BuzzerImpl *buzzerImpl;
-DisplayImpl *displayImpl;
 
 #undef ENABLE_MEMDEBUG
 #undef ENABLE_BDEBUG
@@ -409,7 +410,6 @@ void setup( void) {
                                SwitchPins);
 
     outputImpl = new OutputImpl();
-    displayImpl = new DisplayImpl();
     
 #if defined( ENABLE_MEMDEBUG ) || defined( ENABLE_BDEBUG) || defined( ENABLE_SERIAL)
     Serial.begin(19200);
@@ -424,7 +424,8 @@ void setup( void) {
 
 #ifdef ARDUINO
     userInterface.setDisplay( new TextUILcdST7735());
-    userInterface.setInput( new TextUISimpleKbd( BUTTON_COUNT, buttons, keys));
+    userInterface.setInput( new TextUIRotaryEncoder());
+    //userInterface.setInput( new TextUISimpleKbd( BUTTON_COUNT, buttons, keys));
 #else
     userInterface.setDisplay( displayImpl->getLcd());
     userInterface.setInput( displayImpl->getInput());

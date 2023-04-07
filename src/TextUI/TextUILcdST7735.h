@@ -1,5 +1,5 @@
 /*
-  TXos. A remote control transmitter OS.
+  TextUI. A simple text based UI.
 
   MIT License
 
@@ -24,40 +24,56 @@
   SOFTWARE.
 */
 
-#ifndef _DisplayImpl_h_
-#define _DisplayImpl_h_
+#ifndef _TextUILcdST7735_h_
+#define _TextUILcdST7735_h_
 
-#include "Arduino.h"
-#include "LcdWidget.h"
+#include "TextUI.h"
 
-#define KEY_NONE        0
-#define KEY_UP          1
-#define KEY_ENTER       2
-#define KEY_CLEAR       3
-#define KEY_DOWN        4
+typedef uint16_t pixel;
 
-class Event {
-
-    public:
-        uint8_t key;
-        uint8_t count;
-
-        void markProcessed() { key = KEY_NONE; }
-        bool pending() { return key != KEY_NONE; }
-};
-
-class DisplayImpl {
-
+class TextUILcdST7735 : public TextUILcd
+{
     private:
-        LcdWidget *lcd;
-        Event event;
+        unsigned int width;
+        unsigned int height;
+        pixel fgCol565;
+        pixel bgCol565;
+        bool invers;
+        unsigned int fontSz; // 1 - 3
+        unsigned int textX;
+        unsigned int textY;
+
+        pixel rgbToCol565( uint8_t r, uint8_t g, uint8_t b);
 
     public:
-        DisplayImpl();
-        void init();
-        
-        LcdWidget *getLCD( void);
-        Event *getEvent();
+      TextUILcdST7735();
+    
+      void clear();
+      void clearEOL();
+
+      bool colorSupport();
+    
+      void setBg( uint8_t r, uint8_t g, uint8_t b);
+      void setFg( uint8_t r, uint8_t g, uint8_t b);
+
+      void normalColors();
+      void selectedColors();
+      void editColors();
+
+      void setInvert( bool inv);
+
+      /* FONT_SMALL .. FONT_LARGE */
+      void setFontSize( uint8_t sz);
+    
+      uint16_t getRows();
+      uint16_t getColumns();
+
+      /* row and column in characters */
+      void setCursor( uint8_t r, uint8_t c);
+      void setRow( uint8_t r);
+      void setColumn( uint8_t c);
+
+      void printChar( char ch);
 };
 
 #endif

@@ -59,11 +59,6 @@ void TextUILcdSSD1306::clear() {
   lcd.clear();
 }
 
-void TextUILcdSSD1306::clear( uint8_t x0, uint8_t r0, uint8_t x1, uint8_t r1) {
-
-  lcd.clear( x0, x1, r0, r1);
-}
-
 void TextUILcdSSD1306::clearEOL() {
 
   lcd.clearToEOL();
@@ -142,73 +137,4 @@ void TextUILcdSSD1306::setColumn( uint8_t c) {
 void TextUILcdSSD1306::printChar( char ch) {
 
   lcd.write( ch);
-}
-
-void TextUILcdSSD1306::drawGrid( uint8_t dataArray[], uint8_t sz, uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, uint8_t grid, boolean marker)
-{
-  uint8_t m;
-  uint8_t y;
-  uint8_t p;
-  uint8_t sRow;
-  uint8_t eRow;
-  uint8_t d0Row;
-  uint8_t d1Row;
-  uint8_t d0;
-  uint8_t d1;
-  uint8_t r;
-  uint8_t x;
-  uint8_t i;
-  
-  sRow = y0 / 8;
-  eRow = y1 / 8;
-
-  for( r = sRow; r <= eRow; r++) {
-    lcd.setCol( x0);
-    lcd.setRow( r);
-
-    i = 0;
-    p = y1 - dataArray[i++];
-    for( x = x0; (x <= x1) && (i < sz); x++) {
-      y = y1 - dataArray[i++];
-
-      if( y < p) {
-        d0 = y; d1 = p;
-      } else {
-        d0 = p; d1 = y;
-      }
-
-      d0Row = d0 / 8;
-      d1Row = d1 / 8;
-      
-      if( r == d0Row && d0Row == d1Row) {
-        m = 255 - ((1 << (d0 % 8)) -1);
-        m &= (1 << ((d1 % 8) +1)) -1;
-      } else if( r == d0Row) {
-        m = 255 - ((1 << (d0 % 8)) -1);
-      } else if( r == d1Row) {
-        m = (1 << ((d1 % 8) +1)) -1;
-      } else if (r < d0Row || r > d1Row) {
-        if( grid && ((x % grid) == 0)) {
-          m = 0b10000000; 
-        } else {
-          m = 0;
-        }
-      } else {
-        m = 0xff;
-      }
-      
-      lcd.ssd1306WriteRam( m);
-      p = y;
-    }
-
-    for( ; x <= x1; x++) {
-      lcd.ssd1306WriteRam( 0);
-    }
-  }
-
-  if( marker) {
-    lcd.setCol( x1);
-    lcd.setRow( sRow);
-    lcd.ssd1306WriteRam( 0x0f);
-  }
 }
