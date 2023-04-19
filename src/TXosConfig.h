@@ -133,6 +133,10 @@ const switchConf_t switchConfiguration[SWITCHES] = { \
 
 /* Port definitions */
 
+#define PORT_TFT_CS              10
+#define PORT_TFT_DC               9
+#define PORT_TFT_RST             -1
+
 /* Analog sticks and other analog channels */
 #define PORT_ANALOG_INPUT_COUNT   6
 #define PORT_ANALOG_INPUT        A0,A1,A2,A3,A4,A5

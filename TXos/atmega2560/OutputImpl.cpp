@@ -54,19 +54,16 @@ ISR(TIMER3_OVF_vect) {
     
   } else {
     
-    nextTimerValue = (PPM_SPACE_usec + outputImpl->ppmSet[outputImpl->currentSet].channel[outputChannel]) << 1;
+    nextTimerValue = (outputImpl->ppmSet[outputImpl->currentSet].channel[outputChannel]) << 1;
     inFrameTime += nextTimerValue;
     outputChannel++;
   }
   
   /* We nedd to count 1498..1499..0..1
    * not 1498..1499..1500..0..1
-   * Subtract -2 because of 0.5 usec timer resolution.
    */
-  nextTimerValue -= 2;
-  
-  ICR3H = H(nextTimerValue);
-  ICR3L = L(nextTimerValue);
+  nextTimerValue--;
+  ICR3 = nextTimerValue;
 }
 
 OutputImpl::OutputImpl() {
@@ -99,36 +96,31 @@ void OutputImpl::init() {
         pinMode( PPM_PORT, OUTPUT);
     
         /* Enable timer in power reduction register */
-        PRR1 &= ~_BV(PRTIM3);
-        TCCR3B = (byte)0;
+        PRR1 &= ~bit(PRTIM3);
     
         /* Set initial timer counter value */
-        TCNT3H = (byte)0;
-        TCNT3L = (byte)0;
+        TCNT3 = 0;
        
         /* COM3A1, COM3A0     :  Set OC3A on compare match, clear at TOP
          * WGM33, WGM32, WGM31: TOP is ICR3
          */
-        TCCR3A = _BV(COM3A1) | _BV(COM3A0) | _BV(WGM31);
+        TCCR3A = bit(COM3A1) | bit(COM3A0) | bit(WGM31);
 
         /* CS31:  Prescaler /8 = 2Mhz = 0.5 usec */
-        TCCR3B = _BV(WGM33) | _BV(WGM32) | _BV(CS31);
+        TCCR3B = bit(WGM33) | bit(WGM32) | bit(CS31);
 
         TCCR3C = (byte)0;
 
         /* Set TOP */
-        ICR3H = H((PPM_SPACE_usec + PPM_INIT_usec) << 1);
-        ICR3L = L((PPM_SPACE_usec + PPM_INIT_usec) << 1);
+        ICR3 = ((PPM_SPACE_usec + PPM_INIT_usec) << 1) -1;
 
         /* Set compare to end of pulse
-         *  
-         * Subtract 2 because output is set to the next falling edge after compare.
+         * Subtract 1 because we count 298..299..0..1
          */
-        OCR3AH = H((PPM_SPACE_usec << 1) -2);
-        OCR3AL = L((PPM_SPACE_usec << 1) -2);
+        OCR3A = (PPM_SPACE_usec << 1) -1;
     
         /* TOIE3: Timer overflow interrupt */
-        TIMSK3 = _BV(TOIE3);
+        TIMSK3 = bit(TOIE3);
     }
 }
 
@@ -197,9 +189,9 @@ void OutputImpl::SetChannelValue(int channel, int value) {
      * 
      * ppmTiming_t
      * ===========
-     * PPM_MID_usec        ((timingUsec_t) 1200)
-     * PPM_MIN_usec        (PPM_MID_usec - PPM_RANGE_usec)
-     * PPM_MAX_usec        (PPM_MID_usec + PPM_RANGE_usec)
+     * PPM_MID_usec        ((timingUsec_t) 1500)
+     * PPM_MIN_usec        (PPM_MID_usec - PPM_RANGE_usec) = 900
+     * PPM_MAX_usec        (PPM_MID_usec + PPM_RANGE_usec) = 2100
      *  
      */
 

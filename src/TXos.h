@@ -34,7 +34,7 @@
 #endif
 
 
-#define TXOS_VERSION "0.4.0"
+#define TXOS_VERSION "0.4.1"
 
 
 #if defined( ARDUINO )

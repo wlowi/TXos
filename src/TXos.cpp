@@ -423,7 +423,7 @@ void setup( void) {
 */
 
 #ifdef ARDUINO
-    userInterface.setDisplay( new TextUILcdST7735());
+    userInterface.setDisplay( new TextUILcdST7735( PORT_TFT_CS, PORT_TFT_DC, PORT_TFT_RST));
     userInterface.setInput( new TextUIRotaryEncoder());
     //userInterface.setInput( new TextUISimpleKbd( BUTTON_COUNT, buttons, keys));
 #else
@@ -572,16 +572,17 @@ void loop( void) {
     uint16_t overrun;
 #endif
 
-    Event *e = userInterface.getEvent();
-
 #if defined( ARDUINO )
+
     set_sleep_mode( SLEEP_MODE_IDLE);
     cli();
     sleep_enable();
     sei();
     sleep_cpu();
     sleep_disable();
+
     wdt_reset();
+
 #ifdef ENABLE_STATISTICS_MODULE
     now = millis();
     statistics.updateWdTimeout( now - wdLastReset);
@@ -604,9 +605,9 @@ void loop( void) {
 #endif
 
 #ifdef ENABLE_BDEBUG
-    Serial.print("d:");
-    Serial.println(bdebug);
-    BDEBUG_CLEAR();
+        Serial.print("d:");
+        Serial.println(bdebug);
+        BDEBUG_CLEAR();
 #endif
         
 #if defined( ARDUINO )
@@ -621,7 +622,7 @@ void loop( void) {
     now = millis();
 #endif
 
-    userInterface.handle( e);
+    userInterface.handle( userInterface.getEvent());
 
 #ifdef ENABLE_STATISTICS_MODULE
     now = millis() - now;

@@ -29,24 +29,55 @@
 
 #include "TextUI.h"
 
+#include <Adafruit_GFX.h>    // Core graphics library
+#include <Adafruit_ST7735.h> // Hardware-specific library for ST7735
+
 typedef uint16_t pixel;
 
+/**
+ * @brief A driver for TFT displays with ST7735 controller.
+ * 
+ * Example:
+ * 
+ *      #include "TextUI.h"
+ *      #include "TextUILcdST7735.h"
+ * 
+ *      #define TFT_CS        10
+ *      #define TFT_DC         9
+ *      #define TFT_RST       -1 // Or set to -1 and connect to Arduino RESET pin
+ *      // It also uses the board specific hardware SPI pins.
+ * 
+ *      TextUI textUi;
+ *      textUi.setDisplay( new TextUILcdST7735( TFT_CS, TFT_DC, TFT_RST));
+ */
 class TextUILcdST7735 : public TextUILcd
 {
     private:
+        Adafruit_ST7735 *tft;
+
         unsigned int width;
         unsigned int height;
         pixel fgCol565;
         pixel bgCol565;
         bool invers;
-        unsigned int fontSz; // 1 - 3
+        uint8_t fontSz; // 1 - 3
         unsigned int textX;
         unsigned int textY;
 
         pixel rgbToCol565( uint8_t r, uint8_t g, uint8_t b);
 
     public:
-      TextUILcdST7735();
+      /**
+       * @brief Construct a new TextUILcdST7735 driver.
+       * 
+       * This driver used the board specific hardware SPI interface 
+       * and its corresponding pins.
+       * 
+       * @param tft_cs uint8_t: Chip select
+       * @param tft_dc uint8_t: Data/Command select
+       * @param tft_rst uint8_t: Reset pin ( can be -1 )
+       */
+      TextUILcdST7735( uint8_t tft_cs, uint8_t tft_dc, uint8_t tft_rst);
     
       void clear();
       void clearEOL();
@@ -63,10 +94,10 @@ class TextUILcdST7735 : public TextUILcd
       void setInvert( bool inv);
 
       /* FONT_SMALL .. FONT_LARGE */
-      void setFontSize( uint8_t sz);
+      void setFontSize( FontSize_t sz);
     
-      uint16_t getRows();
-      uint16_t getColumns();
+      uint8_t getRows();
+      uint8_t getColumns();
 
       /* row and column in characters */
       void setCursor( uint8_t r, uint8_t c);

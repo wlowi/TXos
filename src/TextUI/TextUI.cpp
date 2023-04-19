@@ -83,13 +83,6 @@ Event *TextUI::getEvent() {
       if( currentInput->pending() )
       {
         currentInput->setEvent( &event);
-        currentInput = currentInput->getNext();
-        if( currentInput == nullptr)
-        {
-          currentInput = inputQueue;
-        }
-
-        break;
       }
 
       currentInput = currentInput->getNext();
@@ -98,20 +91,28 @@ Event *TextUI::getEvent() {
         currentInput = inputQueue;
       }
 
+      if( event.getType() != EVENT_TYPE_NONE) { break; }
+
     } while( currentInput != lastInput);
   }
 
   if( event.getType() == EVENT_TYPE_NONE ) {
+  
     if( timer_msec && (now >= nextTimer_msec)) {
     
-      nextTimer_msec = now + timer_msec;
+      nextTimer_msec += timer_msec;
+      if( nextTimer_msec <= now) {
+	nextTimer_msec = now + timer_msec;
+      }
       event.setTimerEvent();
     
     } else if( now >= nextTick_msec ) {
 
-      nextTick_msec = now + EVENT_TICK_msec;
+      nextTick_msec += EVENT_TICK_msec;
+      if( nextTick_msec <= now) {
+      	nextTick_msec = now + EVENT_TICK_msec;
+      }
       event.setTickEvent();
-
     }
   }
 

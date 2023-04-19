@@ -41,7 +41,7 @@
  *      |   |
  *    PPM_SPACE
  *
- *          |   PPM_MID   |
+ *      |     PPM_MID     |
  *
  *
  *  100%  ==   1.1  -  1.9 mSec
@@ -55,9 +55,11 @@
 
 #define PPM_FRAME_usec      ((timingUsec_t)22000)
 #define PPM_SPACE_usec      ((timingUsec_t)  400)
-#define PPM_MID_usec        ((timingUsec_t) 1100)
+#define PPM_MID_usec        ((timingUsec_t) 1500)
+
+/* 100 %  1500 +/- 400 = [1100,1900] uSec */
 #define PPM_RANGE100_usec   ((timingUsec_t)  400)
-/* 150 % */
+/* 150 %  1500 +/- 600 = [900,2100] uSec*/
 #define PPM_RANGEMAX_usec   ((timingUsec_t)  600)
 
 #define PPM_MIN_usec        (PPM_MID_usec - PPM_RANGEMAX_usec)

@@ -66,10 +66,10 @@ class TextUILcdSSD1306 : public TextUILcd {
     void setInvert( bool inv);
 
     /* FONT_SMALL .. FONT_LARGE */
-    void setFontSize( uint8_t sz);
+    void setFontSize( FontSize_t sz);
     
-    uint16_t getRows();
-    uint16_t getColumns();
+    uint8_t getRows();
+    uint8_t getColumns();
 
     /* row and column in characters */
     void setCursor( uint8_t r, uint8_t c);
