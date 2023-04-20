@@ -155,6 +155,7 @@
 #include "LogicSwitch.h"
 #include "ModeAssign.h"
 #include "AnalogTrim.h"
+#include "ServoTest.h"
 
 #if defined( ARDUINO )
 
@@ -293,6 +294,7 @@ BuzzerImpl *buzzerImpl;
 #undef ENABLE_MEMDEBUG
 #undef ENABLE_BDEBUG
 #define ENABLE_STATISTICS_MODULE
+#define ENABLE_SERVOTEST_MODULE
 #define ENABLE_SERIAL
 
 
@@ -356,6 +358,7 @@ size_t memdebug[4];
 /* NOT ARDUINO HARDWARE */
 
 #define ENABLE_STATISTICS_MODULE
+#define ENABLE_SERVOTEST_MODULE
 
 extern DisplayImpl *displayImpl;
 
@@ -377,6 +380,10 @@ HomeScreen *homeScreen;
 Statistics statistics;
 uint16_t lastOverrun = UINT16_MAX;
 uint16_t wdLastReset;
+#endif
+
+#ifdef ENABLE_SERVOTEST_MODULE
+ServoTest servotest;
 #endif
 
 #ifdef ENABLE_BDEBUG
@@ -459,7 +466,9 @@ void setup( void) {
 #ifdef ENABLE_STATISTICS_MODULE
     moduleManager.addToSystemSetAndMenu( &statistics);
 #endif
-
+#ifdef ENABLE_SERVOTEST_MODULE
+    moduleManager.addToSystemSetAndMenu( &servotest);
+#endif
     /* Model menu */
 
     /* The system menu is automatically added as first item to the
@@ -539,6 +548,9 @@ void setup( void) {
     moduleManager.addToRunList( switchMonitor);
     moduleManager.addToRunList( timer);
     moduleManager.addToRunList( vccMonitor);
+#ifdef ENABLE_SERVOTEST_MODULE
+    moduleManager.addToRunList( &servotest);
+#endif
 
     userInterface.setHomeScreen( homeScreen);
 

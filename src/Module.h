@@ -55,6 +55,7 @@ typedef uint8_t moduleSize_t;
 #define MODULE_VCC_MONITOR_TYPE         ((moduleType_t)9)
 #define MODULE_STATISTICS_TYPE          ((moduleType_t)10)
 #define MODULE_MODE_ASSIGN_TYPE         ((moduleType_t)11)
+#define MODULE_SERVO_TEST_TYPE          ((moduleType_t)12)
 
 /* Model specific modules */
 #define MODULE_MODEL_TYPE               ((moduleType_t)50)

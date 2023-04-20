@@ -35,14 +35,14 @@
  *  16 *  8 = 128
  *  32 *  4 = 128
  */
-static const unsigned int lines[] =  { 0, 16, 8, 4 };
+static const uint8_t lines[] =  { 0, 16, 8, 4 };
 
 /* 160 pixel, Base font width 6
  *   6 * 26 = 156
  *  12 * 13 = 156
  *  24 *  6 = 144
  */
-static const unsigned int columns[] = { 0, 26, 13, 6 };
+static const uint8_t columns[] = { 0, 26, 13, 6 };
 
 /* standard ascii 5x7 font */
 static const uint8_t  font5x7[] = {
@@ -429,7 +429,7 @@ void EmuTextUILcdST7735::setInvert( bool inv) {
 
 }
 
-void EmuTextUILcdST7735::setFontSize( uint8_t sz)
+void EmuTextUILcdST7735::setFontSize( FontSize_t sz)
 {
     if( sz == TEXTUI_FONT_SMALL) {
         fontSz = 1;
@@ -440,12 +440,12 @@ void EmuTextUILcdST7735::setFontSize( uint8_t sz)
     }
 }
 
-uint16_t EmuTextUILcdST7735::getRows() {
+uint8_t EmuTextUILcdST7735::getRows() {
 
     return lines[fontSz];
 }
 
-uint16_t EmuTextUILcdST7735::getColumns() {
+uint8_t EmuTextUILcdST7735::getColumns() {
 
     return columns[fontSz];
 }

@@ -54,6 +54,7 @@
 #define TEXT_MODULE_SERVO_REMAP       CC("Servo Remap")
 #define TEXT_MODULE_SERVO_REVERSE     CC("Servo Reverse")
 #define TEXT_MODULE_SERVO_SUBTRIM     CC("Servo Subtrim")
+#define TEXT_MODULE_SERVO_TEST        CC("Servo Test")
 #define TEXT_MODULE_STATISTICS        CC("Statistics")
 #define TEXT_MODULE_SWITCHED_CHANNELS CC("Switched Ch.")
 #define TEXT_MODULE_SWITCHES          CC("Switches")

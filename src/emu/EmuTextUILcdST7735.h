@@ -57,10 +57,10 @@ class EmuTextUILcdST7735 : public TextUILcd, public wxPanel
         void editColors();
         void setInvert( bool inv);
 
-        void setFontSize( uint8_t sz);
+        void setFontSize( FontSize_t sz);
     
-        uint16_t getRows();
-        uint16_t getColumns();
+        uint8_t getRows();
+        uint8_t getColumns();
     
         void setCursor( uint8_t r, uint8_t c);
         void setRow( uint8_t r);
