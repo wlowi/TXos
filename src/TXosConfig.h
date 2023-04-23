@@ -137,6 +137,13 @@ const switchConf_t switchConfiguration[SWITCHES] = { \
 #define PORT_TFT_DC               9
 #define PORT_TFT_RST             -1
 
+/* Rotary encoder
+ * Must be in range A8 - A15
+ */
+#define PORT_ROTENC_CLK         A12
+#define PORT_ROTENC_DIR         A13
+#define PORT_ROTENC_BUTTON      A14
+
 /* Analog sticks and other analog channels */
 #define PORT_ANALOG_INPUT_COUNT   6
 #define PORT_ANALOG_INPUT        A0,A1,A2,A3,A4,A5

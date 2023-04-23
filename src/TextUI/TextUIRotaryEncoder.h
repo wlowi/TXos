@@ -29,14 +29,84 @@
 
 #include "TextUI.h"
 
+/**
+ * @brief A driver for rotary encoder.
+ * 
+ * The driver uses pin change interrupt 2 (PNINT2). This is fixed and cannot be changed unless the code in TextUIRotaryEncoder.cpp is modified.
+ * 
+ * For a detailed description of supported pins see documentation of the constructor.
+ * 
+ */
 class TextUIRotaryEncoder : public TextUIInput
- {
-
+{
     private:
+    	uint8_t pinClock;
+    	uint8_t pinDir;
+    	uint8_t pinButton;
+    	
+	byte oldVal;
 
+	unsigned long buttonDown_msec;
+	boolean buttonIsDown;
+	byte button;
+	
+	volatile int enc;
+	
     public:
-        TextUIRotaryEncoder();
+        /**
+         * @brief Construct a new TextUIRotaryEncoder object.
+         * 
+         * Generated events:
+         * 
+         * Action      | Event
+         * ------------|---------
+         * turn        |KEY_UP
+         * turn        |KEY_DOWN
+         * short press |KEY_ENTER
+         * long press  |KEY_CLEAR
+         * 
+         * Note: All 3 pins must be connected to the same pin change interrupt.
+         * 
+         * Currently the pin change interrupt is fixed to PCINT2.
+         * All pins must be connected to PCINT2.
+         * 
+         * Arduino Nano (ATmega328):
+         *
+         *  Interrupt         | Chip Port     | Arduino Pin
+         *  ------------------|---------------|-------------------------
+         *  PCINT0 PCINT0-7   |(Port B0 - B7) |(PCINT0-5:   Pin D8 - D13)
+         *  PCINT1 PCINT8-14  |(Port C0 - C6) |(PCINT8-13:  Pin A0 - A5)
+         *  PCINT2 PCINT16-23 |(Port D0 - D7) |(PCINT16-23: Pin D0 - D7)
+         *
+         * Arduino Mega 2560:
+         * 
+         *  Interrupt         |Chip Port      |Arduino Pin
+         *  ------------------|---------------|---------------------------
+         *  PCINT0 PCINT0-7   |(Port B0 - B7) |(PCINT4-7:   Pin D10 - D13)
+         *  PCINT1 PCINT8     |(Port E0)      |(PCINT8:     Pin D0)
+         *  PCINT1 PCINT9-15  |(Port J0 - J6) |(PCINT9-10:  Pin D15, D14)
+         *  PCINT2 PCINT16-23 |(Port K0 - K7) |(PCINT16-23: Pin A8 -A15)
+         * 
+         * Example:
+         *   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         *   OK:   new TextUIRotaryEncoder( A8, A9, A10) 
+         *   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         * 
+         *   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         *   Not OK:   new TextUIRotaryEncoder( D14, A9, A10)
+         *   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         * 
+         * @param pinClock  Arduino pin of clock line.
+         * @param pinDir    Arduino pin of direction line.
+         * @param pinButton Arduino button pin.
+         */
+        TextUIRotaryEncoder( uint8_t pinClock, uint8_t pinDir, uint8_t pinButton);
 
+        /**
+         * @brief Pin change interrupt handler.
+         * 
+         */
+        void runISR();
         
         /* Returns true if there is an event pending.
          * setEvent() clears pending state.

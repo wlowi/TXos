@@ -431,8 +431,7 @@ void setup( void) {
 
 #ifdef ARDUINO
     userInterface.setDisplay( new TextUILcdST7735( PORT_TFT_CS, PORT_TFT_DC, PORT_TFT_RST));
-    userInterface.setInput( new TextUIRotaryEncoder());
-    //userInterface.setInput( new TextUISimpleKbd( BUTTON_COUNT, buttons, keys));
+    userInterface.setInput( new TextUIRotaryEncoder( PORT_ROTENC_CLK, PORT_ROTENC_DIR, PORT_ROTENC_BUTTON));
 #else
     userInterface.setDisplay( displayImpl->getLcd());
     userInterface.setInput( displayImpl->getInput());

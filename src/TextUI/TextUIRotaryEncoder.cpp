@@ -26,12 +26,7 @@
 
 #include "TextUIRotaryEncoder.h"
 
-static volatile byte oldVal;
-
-static volatile unsigned long buttonDown_msec;
-static volatile boolean buttonIsDown;
-static volatile byte button;
-static volatile int enc;
+#include <util/atomic.h>
 
 #define ROTARYENC_CLK    ((byte)0b00000001)
 #define ROTARYENC_DIR    ((byte)0b00000010)
@@ -47,31 +42,83 @@ static volatile int enc;
 #define ROTARYENC_BUTTON_SHORT_MSEC  10
 #define ROTARYENC_BUTTON_LONG_MSEC  300
 
-#define PIN_CLK     A12
-#define PIN_DIR     A13
-#define PIN_SWITCH  A14
 
-/* PK0 A8  PCINT16
- * PK1 A9  PCINT17
- * PK2 A10 PCINT18
- * PK3 A11 PCINT19
- * PK4 A12 PCINT20
- * PK5 A13 PCINT21
- * PK6 A14 PCINT22
- * PK7 A15 PCINT23
+static TextUIRotaryEncoder *rotEnc = nullptr;
+
+/*
+ * The pin change interrupt is fixed to PCINT2.
+ * If you want to use different pins you need to change the interrupt service routine vector.
+ *
+ * Arduino Nano (ATmega328):
+ *
+ *  Interrupt          Chip Port       Arduino Port
+ *  -----------------  --------------  -------------------------
+ *  PCINT0 PCINT0-7    (Port B0 - B7)  (PCINT0-5:   Pin D8 - D13)
+ *  PCINT1 PCINT8-14   (Port C0 - C6)  (PCINT8-13:  Pin A0 - A5)
+ *  PCINT2 PCINT16-23  (Port D0 - D7)  (PCINT16-23: Pin D0 - D7)
+ *
+ * Arduino Mega 2560:
+ * 
+ *  Interrupt          Chip Port       Arduino Port
+ *  -----------------  --------------  -------------------------
+ *  PCINT0 PCINT0-7    (Port B0 - B7)  (PCINT4-7:   Pin D10 - D13)
+ *  PCINT1 PCINT8      (Port E0)       (PCINT8:     Pin D0)
+ *  PCINT1 PCINT9-15   (Port J0 - J6)  (PCINT9-10:  Pin D15, D14)
+ *  PCINT2 PCINT16-23  (Port K0 - K7)  (PCINT16-23: Pin A8 -A15)
  */
-#define ROTARYENC_PCINT_MASK  (_BV(PCINT20) | _BV(PCINT21) | _BV(PCINT22))
-
 ISR( PCINT2_vect)
 {
+    if( rotEnc != nullptr) {
+    	rotEnc->runISR();
+    }
+}
+
+TextUIRotaryEncoder::TextUIRotaryEncoder( uint8_t pinClock, uint8_t pinDir, uint8_t pinButton)
+{
+    uint8_t pcintMask;
+    
+    this->pinClock = pinClock;
+    this->pinDir = pinDir;
+    this->pinButton = pinButton;
+    
+    pinMode( pinClock, INPUT);
+    pinMode( pinDir, INPUT);
+    pinMode( pinButton, INPUT);
+
+    /* Enable pull-up */
+    digitalWrite( pinClock, HIGH);
+    digitalWrite( pinDir, HIGH);
+    digitalWrite( pinButton, HIGH);
+    
+    oldVal  = digitalRead( pinClock) ? ROTARYENC_CLK    : 0;
+    oldVal |= digitalRead( pinDir) ? ROTARYENC_DIR    : 0;
+    oldVal |= digitalRead( pinButton) ? ROTARYENC_SWITCH : 0;
+
+    enc = button = buttonDown_msec = 0;
+    buttonIsDown = false;
+
+    ATOMIC_BLOCK( ATOMIC_RESTORESTATE ) {
+      
+        pcintMask = bit( digitalPinToPCMSKbit( pinClock))
+		              | bit( digitalPinToPCMSKbit( pinDir))
+                  | bit( digitalPinToPCMSKbit( pinButton));
+    
+        PCMSK2 |= pcintMask;
+        PCICR |= bit(PCIE2);
+
+        rotEnc = this;
+    }
+}
+
+void TextUIRotaryEncoder::runISR() {
+
     byte butVal;
     byte encVal;
-
     unsigned long now = millis();
 
-    encVal =  digitalRead( PIN_CLK) ? ROTARYENC_CLK : 0;
-    encVal |= digitalRead( PIN_DIR) ? ROTARYENC_DIR : 0;
-    butVal = digitalRead( PIN_SWITCH) ? ROTARYENC_SWITCH : 0;
+    encVal =  digitalRead( pinClock) ? ROTARYENC_CLK : 0;
+    encVal |= digitalRead( pinDir) ? ROTARYENC_DIR : 0;
+    butVal = digitalRead( pinButton) ? ROTARYENC_SWITCH : 0;
 
     if( (oldVal & ROTARYENC_SWITCH) && !butVal) { /* Button down */
         buttonDown_msec = now;
@@ -99,46 +146,19 @@ ISR( PCINT2_vect)
         oldVal |= butVal;
     }
 
-    /* This avoids change of encoder value while button is pressed */
-    if( !buttonIsDown) {
-
+    if( (oldVal & ROTARYENC_ENC_MASK) != encVal) {
         if( ((oldVal & ROTARYENC_ENC_MASK) ^ encVal) == ROTARYENC_CLK) {
             if( encVal == 0 || encVal == 3) enc--; else enc++;
         }
-    }
-    
-    oldVal &= ~ROTARYENC_ENC_MASK;
-    oldVal |= encVal;
-}
 
-TextUIRotaryEncoder::TextUIRotaryEncoder()
-{
-    ATOMIC_BLOCK( ATOMIC_RESTORESTATE ) {
-
-      pinMode( PIN_CLK, INPUT);
-      pinMode( PIN_DIR, INPUT);
-      pinMode( PIN_SWITCH, INPUT);
-
-      /* Enable pull-up */
-      digitalWrite( PIN_CLK, HIGH);
-      digitalWrite( PIN_DIR, HIGH);
-      digitalWrite( PIN_SWITCH, HIGH);
-    
-      PCMSK2 |= ROTARYENC_PCINT_MASK;
-      PCICR |= _BV(PCIE2);
-    
-      enc = button = buttonDown_msec = 0;
-      buttonIsDown = false;
-
-      oldVal  = digitalRead( PIN_CLK) ? ROTARYENC_CLK    : 0;
-      oldVal |= digitalRead( PIN_DIR) ? ROTARYENC_DIR    : 0;
-      oldVal |= digitalRead( PIN_SWITCH) ? ROTARYENC_SWITCH : 0;
+        oldVal &= ~ROTARYENC_ENC_MASK;
+        oldVal |= encVal;
     }
 }
 
 bool TextUIRotaryEncoder::pending() {
 
-  return (button != 0) || (enc >= 2) || (enc <= -2);
+    return (button != 0) || (enc >= 2) || (enc <= -2);
 }
 
 void TextUIRotaryEncoder::setEvent(Event *e) {
