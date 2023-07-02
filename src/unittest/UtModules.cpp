@@ -101,7 +101,7 @@ void UtModules::UtCalibrateSticks() {
 
     calibrateSticks.setDefaults();
 
-    ASSERT_TEXT_T( calibrateSticks.getName(), TEXT_MODULE_CAL_STICKS, "calibrateSticks.getName()");
+    ASSERT_TEXT_T( calibrateSticks.getMenuName(), TEXT_MODULE_CAL_STICKS, "calibrateSticks.getName()");
     ASSERT_UINT8_T( calibrateSticks.getConfigType(), MODULE_CAL_STICKS_TYPE , "calibrateSticks.getConfigType()");
     ASSERT_UINT8_T( calibrateSticks.getRowCount(), PORT_ANALOG_INPUT_COUNT +1, "calibrateSticks.getRowCount()");
 
@@ -128,7 +128,7 @@ void UtModules::UtCalibrateTrim() {
 
     calibrateTrim.setDefaults();
 
-    ASSERT_TEXT_T( calibrateTrim.getName(), TEXT_MODULE_CAL_TRIM, "calibrateTrim.getName()");
+    ASSERT_TEXT_T( calibrateTrim.getMenuName(), TEXT_MODULE_CAL_TRIM, "calibrateTrim.getName()");
     ASSERT_UINT8_T( calibrateTrim.getConfigType(), MODULE_CAL_TRIM_TYPE , "calibrateTrim.getConfigType()");
     ASSERT_UINT8_T( calibrateTrim.getRowCount(), PORT_TRIM_INPUT_COUNT +1, "calibrateTrim.getRowCount()");
 
@@ -151,7 +151,7 @@ void UtModules::UtAnalogTrim() {
 
     analogTrim.setDefaults();
 
-    ASSERT_TEXT_T( analogTrim.getName(), TEXT_MODULE_ANALOG_TRIM, "analogTrim.getName()");
+    ASSERT_TEXT_T( analogTrim.getMenuName(), TEXT_MODULE_ANALOG_TRIM, "analogTrim.getName()");
     ASSERT_UINT8_T( analogTrim.getConfigType(), MODULE_ANALOG_TRIM_TYPE , "analogTrim.getConfigType()");
     ASSERT_UINT8_T( analogTrim.getRowCount(), PORT_TRIM_INPUT_COUNT, "analogTrim.getRowCount()");
 
@@ -202,7 +202,7 @@ void UtModules::UtSwitchedChannels() {
 
     switchedChannels.setDefaults();
 
-    ASSERT_TEXT_T( switchedChannels.getName(), TEXT_MODULE_SWITCHED_CHANNELS, "switchedChannels.getName()");
+    ASSERT_TEXT_T( switchedChannels.getMenuName(), TEXT_MODULE_SWITCHED_CHANNELS, "switchedChannels.getName()");
     ASSERT_UINT8_T( switchedChannels.getConfigType(), MODULE_SWITCHED_CHANNELS_TYPE , "switchedChannels.getConfigType()");
     ASSERT_UINT8_T( switchedChannels.getRowCount(), 4 * SWITCHED_CHANNELS, "switchedChannels.getRowCount()");
 
@@ -250,7 +250,7 @@ void UtModules::UtAnalogSwitch() {
 
     analogSwitch.setDefaults();
 
-    ASSERT_TEXT_T( analogSwitch.getName(), TEXT_MODULE_ANALOG_SWITCH, "analogSwitch.getName()");
+    ASSERT_TEXT_T( analogSwitch.getMenuName(), TEXT_MODULE_ANALOG_SWITCH, "analogSwitch.getName()");
     ASSERT_UINT8_T( analogSwitch.getConfigType(), MODULE_ANALOG_SWITCH_TYPE , "analogSwitch.getConfigType()");
     ASSERT_UINT8_T( analogSwitch.getRowCount(), 2 * CHANNEL_SWITCHES, "analogSwitch.getRowCount()");
 
@@ -302,7 +302,7 @@ void UtModules::UtChannelRange() {
 
     channelRange.setDefaults();
 
-    ASSERT_TEXT_T( channelRange.getName(), TEXT_MODULE_CHANNEL_RANGE, "channelRange.getName()");
+    ASSERT_TEXT_T( channelRange.getMenuName(), TEXT_MODULE_CHANNEL_RANGE, "channelRange.getName()");
     ASSERT_UINT8_T( channelRange.getConfigType(), MODULE_CHANNEL_RANGE_TYPE , "channelRange.getConfigType()");
     ASSERT_UINT8_T( channelRange.getRowCount(), PORT_ANALOG_INPUT_COUNT, "channelRange.getRowCount()");
 
@@ -334,7 +334,7 @@ void UtModules::UtChannelReverse() {
 
     channelReverse.setDefaults();
 
-    ASSERT_TEXT_T( channelReverse.getName(), TEXT_MODULE_CHANNEL_REVERSE, "channelReverse.getName()");
+    ASSERT_TEXT_T( channelReverse.getMenuName(), TEXT_MODULE_CHANNEL_REVERSE, "channelReverse.getName()");
     ASSERT_UINT8_T( channelReverse.getConfigType(), MODULE_CHANNEL_REVERSE_TYPE , "channelReverse.getConfigType()");
     ASSERT_UINT8_T( channelReverse.getRowCount(), PORT_ANALOG_INPUT_COUNT, "channelReverse.getRowCount()");
 
@@ -362,7 +362,7 @@ void UtModules::UtAssignInput() {
 
     assignInput.setDefaults();
 
-    ASSERT_TEXT_T( assignInput.getName(), TEXT_MODULE_ASSIGN_INPUT, "assignInput.getName()");
+    ASSERT_TEXT_T( assignInput.getMenuName(), TEXT_MODULE_ASSIGN_INPUT, "assignInput.getName()");
     ASSERT_UINT8_T( assignInput.getConfigType(), MODULE_ASSIGN_INPUT_TYPE , "assignInput.getConfigType()");
     ASSERT_UINT8_T( assignInput.getRowCount(), MIX_CHANNELS, "assignInput.getRowCount()");
 
@@ -414,7 +414,7 @@ void UtModules::UtChannelDelay() {
 
     channelDelay.setDefaults();
 
-    ASSERT_TEXT_T( channelDelay.getName(), TEXT_MODULE_CHANNEL_DELAY, "channelDelay.getName()");
+    ASSERT_TEXT_T( channelDelay.getMenuName(), TEXT_MODULE_CHANNEL_DELAY, "channelDelay.getName()");
     ASSERT_UINT8_T( channelDelay.getConfigType(), MODULE_CHANNEL_DELAY_TYPE , "channelDelay.getConfigType()");
     ASSERT_UINT8_T( channelDelay.getRowCount(), MIX_CHANNELS, "channelDelay.getRowCount()");
 

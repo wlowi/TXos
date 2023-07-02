@@ -35,7 +35,7 @@ bool OutputImpl::acceptChannels() {
 
     long now = millis();
 
-    if( now >= lastFrameMs + 22) {
+    if( now >= lastFrameMs + PPM_FRAME_TIME_MSEC) {
         lastFrameMs = now;
         return true;
     } 

@@ -48,7 +48,7 @@ extern Controls controls;
 
 SWITCH_CONFIGURATION
 
-long millis() {
+unsigned long millis() {
 
     return (long)clock() * 1000 / CLOCKS_PER_SEC;
 }
