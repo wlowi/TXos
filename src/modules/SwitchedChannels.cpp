@@ -35,6 +35,18 @@ SwitchedChannels::SwitchedChannels() : Module( MODULE_SWITCHED_CHANNELS_TYPE, TE
 
 /* From Module */
 
+void SwitchedChannels::exportConfig( Exporter *exporter, uint8_t *config, moduleSize_t configSz) const {
+
+    const switchedChannels_t *cfg = (switchedChannels_t*)config;
+
+    exporter->openSub( 'M', MODULE_SWITCHED_CHANNELS_TYPE);
+    exporter->addUIntArr( 'W', (const byte*)cfg->sw, sizeof(cfg->sw), SWITCHED_CHANNELS);
+    exporter->addIntArr( 'L', (const byte*)cfg->state0_pct, sizeof(cfg->state0_pct), SWITCHED_CHANNELS);
+    exporter->addIntArr( 'M', (const byte*)cfg->state1_pct, sizeof(cfg->state1_pct), SWITCHED_CHANNELS);
+    exporter->addIntArr( 'H', (const byte*)cfg->state2_pct, sizeof(cfg->state2_pct), SWITCHED_CHANNELS);
+    exporter->close();
+}
+
 void SwitchedChannels::run( Controls &controls) {
 
     channel_t ch;

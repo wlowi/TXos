@@ -24,38 +24,34 @@
   SOFTWARE.
 */
 
-#ifndef _AssignInput_h_
-#define _AssignInput_h_
+#ifndef _ImportExport_h_
+#define _ImportExport_h_
 
 #include "Module.h"
 
-/* Assign input channels (analog) to logical channels */
+class ImportExport : public Module {
 
-typedef struct assignInput_t {
+    NO_CONFIG()
 
-    /* source is an analog channel */
-    channel_t source[MIX_CHANNELS];
-
-} assignInput_t;
-
-class AssignInput : public Module {
-
-    NON_PHASED_CONFIG( assignInput_t)
+    private:
 
     public:
-        AssignInput();
+        ImportExport();
 
         /* From Module */
         void run( Controls &controls) final;
         void setDefaults() final;
-        void exportConfig( Exporter *exporter, uint8_t *config, moduleSize_t configSz) const;
-
+        void exportConfig( Exporter *exporter, uint8_t *config, moduleSize_t configSz) const {};
+        
         /* From TableEditable */
         uint8_t getRowCount() final;
         const char *getRowName( uint8_t row) final;
         uint8_t getColCount( uint8_t row) final;
         void getValue( uint8_t row, uint8_t col, Cell *cell) final;
-        void setValue( uint8_t row, uint8_t col, Cell *cell) final;
+
+        bool isRowEditable( uint8_t row) final { return false; }
+        bool isRowExecutable( uint8_t row) final { return true; };
+        void rowExecute( TextUI *ui, uint8_t row ) final;
 };
 
 #endif

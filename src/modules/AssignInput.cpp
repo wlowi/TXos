@@ -40,6 +40,15 @@ AssignInput::AssignInput() : Module( MODULE_ASSIGN_INPUT_TYPE, TEXT_MODULE_ASSIG
 
 /* From Module */
 
+void AssignInput::exportConfig( Exporter *exporter, uint8_t *config, moduleSize_t configSz) const {
+
+    const assignInput_t *cfg = (assignInput_t*)config;
+
+    exporter->openSub( 'M', MODULE_ASSIGN_INPUT_TYPE);
+    exporter->addUIntArr( 'C', (const byte*)cfg->source, sizeof(cfg->source), MIX_CHANNELS);
+    exporter->close();
+}
+
 void AssignInput::run( Controls &controls) {
 
     for( channel_t ch = 0; ch < MIX_CHANNELS; ch++) {

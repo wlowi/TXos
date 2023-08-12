@@ -35,6 +35,15 @@ ServoSubtrim::ServoSubtrim() : Module( MODULE_SERVO_SUBTRIM_TYPE, TEXT_MODULE_SE
 
 /* From Module */
 
+void ServoSubtrim::exportConfig( Exporter *exporter, uint8_t *config, moduleSize_t configSz) const {
+
+    const servoSubtrim_t *cfg = (servoSubtrim_t*)config;
+
+    exporter->openSub( 'M', MODULE_SERVO_SUBTRIM_TYPE);
+    exporter->addIntArr('P', (const byte*)cfg->trim_pct, sizeof(cfg->trim_pct), PPM_CHANNELS);
+    exporter->close();
+}
+
 void ServoSubtrim::run( Controls &controls) {
 
     for( channel_t ch = 0; ch < PPM_CHANNELS; ch++) {

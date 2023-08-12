@@ -54,17 +54,32 @@ DualExpo::DualExpo() : Module( MODULE_DUAL_EXPO_TYPE, TEXT_MODULE_DUAL_EXPO) {
 
 /* From Module */
 
+void DualExpo::exportConfig( Exporter *exporter, uint8_t *config, moduleSize_t configSz) const {
+
+    const dualExpo_t *cfg = (dualExpo_t*)config;
+
+    exporter->openSub( 'M', MODULE_DUAL_EXPO_TYPE);
+    for( uint8_t p = 0; p < PHASES; p++) {
+        exporter->openSub( 'P', p);
+        exporter->addIntArr( 'R', (const byte*)cfg->rate, sizeof(cfg->rate), DUAL_EXPO_CHANNELS);
+        exporter->addIntArr( 'X', (const byte*)cfg->expo, sizeof(cfg->expo), DUAL_EXPO_CHANNELS);
+        exporter->close();
+        cfg++;
+    }
+    exporter->close();
+}
+
 void DualExpo::run( Controls &controls) {
 
     /* Expo */
-    applyExpo( controls, CHANNEL_AILERON, CFG->value[1]);
-    applyExpo( controls, CHANNEL_ELEVATOR, CFG->value[3]);
-    applyExpo( controls, CHANNEL_RUDDER, CFG->value[5]);
+    applyExpo( controls, CHANNEL_AILERON, CFG->expo[0]);
+    applyExpo( controls, CHANNEL_ELEVATOR, CFG->expo[1]);
+    applyExpo( controls, CHANNEL_RUDDER, CFG->expo[2]);
 
     /* Rate */
-    applyRate( controls, CHANNEL_AILERON, CFG->value[0]);
-    applyRate( controls, CHANNEL_ELEVATOR, CFG->value[2]);
-    applyRate( controls, CHANNEL_RUDDER, CFG->value[4]);
+    applyRate( controls, CHANNEL_AILERON, CFG->rate[0]);
+    applyRate( controls, CHANNEL_ELEVATOR, CFG->rate[1]);
+    applyRate( controls, CHANNEL_RUDDER, CFG->rate[2]);
 }
 
 void DualExpo::applyRate( Controls &controls, channel_t ch, percent_t pct) {
@@ -121,8 +136,8 @@ void DualExpo::setDefaults() {
     INIT_PHASED_CONFIGURATION(
 
         for( channel_t ch = 0; ch < DUAL_EXPO_CHANNELS; ch++) {
-            CFG->value[2*ch] = PERCENT_MAX; /* 100% Rate */
-            CFG->value[2*ch+1] = 0; /* Expo */
+            CFG->rate[ch] = PERCENT_MAX; /* 100% Rate */
+            CFG->expo[ch] = 0; /* Expo */
         }
     )
 
@@ -219,7 +234,11 @@ void DualExpo::getValue( uint8_t row, uint8_t col, Cell *cell) {
         }
     } else {
         if( row > 0) {
-            cell->setInt8( 9, CFG->value[row-1], 0, 0, PERCENT_MAX);
+            if( row % 2) {
+                cell->setInt8( 9, CFG->rate[(row-1) / 2], 0, 0, PERCENT_MAX);
+            } else {
+                cell->setInt8( 9, CFG->expo[(row-1) / 2], 0, 0, PERCENT_MAX);
+            }
         }
     }
 }
@@ -231,7 +250,10 @@ void DualExpo::setValue( uint8_t row, uint8_t col, Cell *cell) {
         /* no op */
 
     } else if( row > 0) {
-
-        CFG->value[row-1] = cell->getInt8();    
+        if( row % 2) {
+            CFG->rate[(row-1) / 2] = cell->getInt8();
+        } else {
+            CFG->expo[(row-1) / 2] = cell->getInt8();
+        }
     }
 }

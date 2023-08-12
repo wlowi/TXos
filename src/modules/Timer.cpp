@@ -99,6 +99,16 @@ char *Timer::timeStr() {
 
 /* From Module */
 
+void Timer::exportConfig( Exporter *exporter, uint8_t *config, moduleSize_t configSz) const {
+
+    const flightTimer_t *cfg = (flightTimer_t*)config;
+
+    exporter->openSub( 'M', MODULE_TIMER_TYPE);
+    exporter->addUInt( 'W', cfg->swState);
+    exporter->addUInt( 'T', cfg->time_sec);
+    exporter->close();
+}
+
 void Timer::run( Controls &controls) {
 
     long c;

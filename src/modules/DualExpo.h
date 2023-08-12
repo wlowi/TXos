@@ -34,7 +34,8 @@
 typedef struct dualExpo_t {
 
     /* Dual Rate and expo for Aileron/Elevator/Rudder */
-    percent_t value[2 * DUAL_EXPO_CHANNELS];
+    percent_t rate[DUAL_EXPO_CHANNELS];
+    percent_t expo[DUAL_EXPO_CHANNELS];
 
 } dualExpo_t;
 
@@ -55,6 +56,7 @@ class DualExpo : public Module {
         /* From Module */
         void run( Controls &controls) final;
         void setDefaults() final;
+        void exportConfig( Exporter *exporter, uint8_t *config, moduleSize_t configSz) const;
 
         /* From TableEditable */
         bool needsRefresh() final;

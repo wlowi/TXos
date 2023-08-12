@@ -51,6 +51,7 @@ class PhasesTrim : public Module {
         /* From Module */
         void run( Controls &controls) final;
         void setDefaults() final;
+        void exportConfig( Exporter *exporter, uint8_t *config, moduleSize_t configSz) const;
 
         /* From TableEditable */
         bool needsRefresh() final;

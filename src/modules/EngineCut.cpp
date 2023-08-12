@@ -38,6 +38,16 @@ bool EngineCut::isSave() {
 
 /* From Module */
 
+void EngineCut::exportConfig( Exporter *exporter, uint8_t *config, moduleSize_t configSz) const {
+
+    const engineCut_t *cfg = (engineCut_t*)config;
+
+    exporter->openSub( 'M', MODULE_ENGINE_CUT_TYPE);
+    exporter->addUInt( 'W', cfg->swState);
+    exporter->addInt( 'P', cfg->cut_pct);
+    exporter->close();
+}
+
 void EngineCut::run( Controls &controls) {
 
     save = controls.evalSwitches( CFG->swState);

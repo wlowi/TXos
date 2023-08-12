@@ -48,6 +48,17 @@ bool VccMonitor::belowAlert() const {
 
 /* From Module */
 
+void VccMonitor::exportConfig( Exporter *exporter, uint8_t *config, moduleSize_t configSz) const {
+
+    const vccMonitor_t *cfg = (vccMonitor_t*)config;
+
+    exporter->openSub( 'M', MODULE_VCC_MONITOR_TYPE);
+    exporter->addInt( 'W', cfg->warnLevel);
+    exporter->addInt( 'A', cfg->alertLevel);
+    exporter->addInt( 'J', cfg->vccAdjust);
+    exporter->close();
+}
+
 void VccMonitor::run( Controls &controls) {
 
     long v = controls.auxADCGet( 0);

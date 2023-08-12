@@ -35,6 +35,16 @@ ChannelDelay::ChannelDelay() : Module( MODULE_CHANNEL_DELAY_TYPE, TEXT_MODULE_CH
 
 /* From Module */
 
+void ChannelDelay::exportConfig( Exporter *exporter, uint8_t *config, moduleSize_t configSz) const {
+
+    const channelDelay_t *cfg = (channelDelay_t*)config;
+
+    exporter->openSub( 'M', MODULE_CHANNEL_DELAY_TYPE);
+    exporter->addIntArr( 'P', (const byte*)cfg->posDelay_sec, sizeof(cfg->posDelay_sec), MIX_CHANNELS);
+    exporter->addIntArr( 'N', (const byte*)cfg->negDelay_sec, sizeof(cfg->negDelay_sec), MIX_CHANNELS);
+    exporter->close();
+}
+
 void ChannelDelay::run( Controls &controls) {
 
 #define SCALING_F (10)

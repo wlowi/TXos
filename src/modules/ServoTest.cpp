@@ -80,7 +80,7 @@ void ServoTest::run( Controls &controls) {
                 break;
 
             case 6: // Sweep
-                v = CHANNELVALUE_MID;
+                v = CHANNELVALUE_MID; // @todo
                 break;
             }
 

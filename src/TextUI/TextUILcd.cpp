@@ -25,6 +25,7 @@
 */
 
 #include "TextUI.h"
+#include "TXos.h"
 
 void TextUILcd::printInt( int val) {
   
@@ -137,6 +138,8 @@ void TextUILcd::printStr( const char str[], uint8_t width, int8_t editIdx) {
     printChar( ' ');
     p++;
   } 
+
+  yieldLoop();
 }
 
 #ifdef ARDUINO
@@ -166,6 +169,8 @@ void TextUILcd::printStr( const __FlashStringHelper *str, uint8_t width) {
     printChar( ' ');
     n++;
   }
+
+  yieldLoop();
 }
 
 #endif

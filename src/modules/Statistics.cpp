@@ -26,7 +26,7 @@
 
 #include "Statistics.h"
 
-#define STATISTIC_COUNT 7
+#define STATISTIC_COUNT 8
 
 const char* const statisticNames[STATISTIC_COUNT] {
     TEXT_STATISTIC_TIMING,
@@ -35,11 +35,13 @@ const char* const statisticNames[STATISTIC_COUNT] {
     TEXT_STATISTIC_MODULE,
     TEXT_STATISTIC_PPMOVER,
     TEXT_STATISTIC_FRAMETIME,
-    TEXT_STATISTIC_WDT
+    TEXT_STATISTIC_WDT,
+    TEXT_STATISTIC_MEMFREE
 };
 
 Statistics::Statistics() : Module( MODULE_STATISTICS_TYPE, TEXT_MODULE_STATISTICS) {
 
+    setDefaults();
 }
 
 void Statistics::updateUITime( uint16_t t) {
@@ -77,6 +79,11 @@ void Statistics::updateWdTimeout( uint16_t t) {
     }
 }
 
+void Statistics::updateMemFree( size_t m) {
+
+    memfree = m;
+}
+
 bool Statistics::debugTiming() const {
 
     return dumpTiming;
@@ -100,6 +107,7 @@ void Statistics::setDefaults() {
     wdTimeout = 0;
     ppmOverrun = 0;
     maxFrameTime = 0;
+    memfree = 0;
     dumpTiming = false;
     dumpOverrun = false;
 }
@@ -142,6 +150,8 @@ void Statistics::getValue( uint8_t row, uint8_t col, Cell *cell) {
         cell->setInt16( 7, maxFrameTime, 0, 0, 0);
     } else if( row == 6) {
         cell->setInt16( 7, wdTimeout, 0, 0, 0);
+    } else if( row == 7) {
+        cell->setInt16( 7, (int16_t)memfree, 0, 0, 0);
     }
 }
 

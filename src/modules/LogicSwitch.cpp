@@ -37,6 +37,18 @@ LogicSwitch::LogicSwitch() : Module( MODULE_LOGIC_SWITCH_TYPE, TEXT_MODULE_LOGIC
 
 /* From Module */
 
+void LogicSwitch::exportConfig( Exporter *exporter, uint8_t *config, moduleSize_t configSz) const {
+
+    const logicSwitch_t *cfg = (logicSwitch_t*)config;
+
+    exporter->openSub( 'M', MODULE_LOGIC_SWITCH_TYPE);
+    exporter->addUIntArr( 'L', (const byte*)cfg->type, sizeof(cfg->type), LOGIC_SWITCHES);
+    exporter->addUIntArr( 'A', (const byte*)cfg->swStateA, sizeof(cfg->swStateA), LOGIC_SWITCHES);
+    exporter->addUIntArr( 'B', (const byte*)cfg->swStateB, sizeof(cfg->swStateB), LOGIC_SWITCHES);
+    exporter->addUIntArr( 'C', (const byte*)cfg->swStateC, sizeof(cfg->swStateC), LOGIC_SWITCHES);
+    exporter->close();
+}
+
 void LogicSwitch::run( Controls &controls) {
 
     bool swA;

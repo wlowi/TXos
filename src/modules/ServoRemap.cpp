@@ -36,6 +36,15 @@ ServoRemap::ServoRemap() : Module( MODULE_SERVO_REMAP_TYPE, TEXT_MODULE_SERVO_RE
 
 /* From Module */
 
+void ServoRemap::exportConfig( Exporter *exporter, uint8_t *config, moduleSize_t configSz) const {
+
+    const servoRemap_t *cfg = (servoRemap_t*)config;
+
+    exporter->openSub( 'M', MODULE_SERVO_REMAP_TYPE);
+    exporter->addUIntArr( 'C', (const byte*)cfg->source, sizeof(cfg->source), PPM_CHANNELS);
+    exporter->close();
+}
+
 void ServoRemap::run( Controls &controls) {
 
     for( channel_t ch = 0; ch < PPM_CHANNELS; ch++) {

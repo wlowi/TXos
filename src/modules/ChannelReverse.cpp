@@ -35,6 +35,15 @@ ChannelReverse::ChannelReverse() : Module( MODULE_CHANNEL_REVERSE_TYPE, TEXT_MOD
 
 /* From Module */
 
+void ChannelReverse::exportConfig( Exporter *exporter, uint8_t *config, moduleSize_t configSz) const {
+
+    const channelReverse_t *cfg = (channelReverse_t*)config;
+
+    exporter->openSub( 'M', MODULE_CHANNEL_REVERSE_TYPE);
+    exporter->addUInt( 'B', cfg->revBits);
+    exporter->close();
+}
+
 void ChannelReverse::run( Controls &controls) {
 
     for( channel_t ch = 0; ch < PORT_ANALOG_INPUT_COUNT; ch++) {

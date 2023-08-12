@@ -32,6 +32,7 @@
 #define _Module_h_
 
 #include "TXos.h"
+#include "Exporter.h"
 #include "TextUI.h"
 #include "Controls.h"
 
@@ -56,6 +57,7 @@ typedef uint8_t moduleSize_t;
 #define MODULE_STATISTICS_TYPE          ((moduleType_t)10)
 #define MODULE_MODE_ASSIGN_TYPE         ((moduleType_t)11)
 #define MODULE_SERVO_TEST_TYPE          ((moduleType_t)12)
+#define MODULE_IMPORTEXPORT_TYPE        ((moduleType_t)13)
 
 /* Model specific modules */
 #define MODULE_MODEL_TYPE               ((moduleType_t)50)
@@ -117,6 +119,9 @@ class Module : public TextUIScreen {
 
         /* Returns the size of the modules configuration data. */
         virtual moduleSize_t getConfigSize() = 0;
+
+        /* Export configuration of a module as text to USB */
+        virtual void exportConfig( Exporter *exporter, uint8_t *config, moduleSize_t configSz) const = 0;
 
         /* Get the modules configuration type identifier.  */
         moduleType_t getConfigType() const;

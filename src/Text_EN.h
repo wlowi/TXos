@@ -41,6 +41,7 @@
 #define TEXT_MODULE_CHANNEL_REVERSE   CC("Channel Rev.")
 #define TEXT_MODULE_DUAL_EXPO         CC("Dual & Expo")
 #define TEXT_MODULE_ENGINE_CUT        CC("Engine Cut")
+#define TEXT_MODULE_IMPORTEXPORT      CC("Import/Export")
 #define TEXT_MODULE_LOGIC_SWITCH      CC("Logic Switch")
 #define TEXT_MODULE_MIXER             CC("Mixer")
 #define TEXT_MODULE_MODE_ASSIGN       CC("Mode Assign")
@@ -164,6 +165,10 @@
 #define TEXT_BOOTING                CC("Booting...")
 #define TEXT_CH                     CC("Ch")
 #define TEXT_EXPO                   CC("Expo")
+#define TEXT_EXPORT                 CC("Exp Model")
+#define TEXT_IMPORT                 CC("Imp Model")
+#define TEXT_EXPORT_SYS             CC("Exp Syscf")
+#define TEXT_IMPORT_SYS             CC("Imp Syscf")
 #define TEXT_MIX_ARROW              CC("=>")
 #define TEXT_MIX_OFFSET             CC("Of=")
 #define TEXT_MODEL                  CC("Model")
@@ -221,6 +226,7 @@
 #define TEXT_STATISTIC_PPMOVER      CC("PPM-Ovr")
 #define TEXT_STATISTIC_FRAMETIME    CC("Frame")
 #define TEXT_STATISTIC_WDT          CC("WDT")
+#define TEXT_STATISTIC_MEMFREE      CC("MemFree")
 
 /* User interface warnings and messages */
 #define TEXT_MSG_count              ((uint8_t)5)

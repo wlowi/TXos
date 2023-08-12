@@ -33,6 +33,17 @@ CalibrateTrim::CalibrateTrim() : Module( MODULE_CAL_TRIM_TYPE, TEXT_MODULE_CAL_T
 
 /* From Module */
 
+void CalibrateTrim::exportConfig( Exporter *exporter, uint8_t *config, moduleSize_t configSz) const {
+
+    const calibrateTrim_t *cfg = (calibrateTrim_t*)config;
+
+    exporter->openSub( 'M', MODULE_CAL_TRIM_TYPE);
+    exporter->addIntArr( 'L', (const byte*)cfg->minPos, sizeof(cfg->minPos), PORT_TRIM_INPUT_COUNT);
+    exporter->addIntArr( 'M', (const byte*)cfg->midPos, sizeof(cfg->midPos), PORT_TRIM_INPUT_COUNT);
+    exporter->addIntArr( 'H', (const byte*)cfg->maxPos, sizeof(cfg->maxPos), PORT_TRIM_INPUT_COUNT);
+    exporter->close();
+}
+
 void CalibrateTrim::run( Controls &controls) {
 
     long v;

@@ -49,13 +49,13 @@ MODULE_OBJ = modules/ModelSelect.o modules/Model.o modules/EngineCut.o modules/S
   modules/Bind.o modules/RangeTest.o modules/DualExpo.o modules/Phases.o modules/Timer.o modules/VccMonitor.o modules/PhasesTrim.o \
   modules/SwitchedChannels.o modules/AssignInput.o modules/ServoRemap.o modules/AnalogSwitch.o modules/ChannelRange.o \
   modules/ChannelReverse.o modules/ChannelDelay.o modules/Mixer.o modules/Statistics.o modules/LogicSwitch.o modules/ModeAssign.o \
-  modules/AnalogTrim.o modules/ServoTest.o
+  modules/AnalogTrim.o modules/ServoTest.o modules/ImportExport.o
 
 CXXFLAGS += -g -O0 -Wall -Wpedantic -Wextra -Wno-unused-parameter
 
 CXXINC += -I. -Icontrols -ITextUI -Ioutput -Imodules -Iemu
 
-OBJECTS = TXos.o Module.o ModuleManager.o ConfigBlock.o SystemConfig.o HomeScreen.o $(CONTROLS_OBJ) $(UI_OBJ) $(OUTPUT_OBJ) $(MODULE_OBJ)
+OBJECTS = TXos.o Module.o Exporter.o ModuleManager.o ConfigBlock.o SystemConfig.o HomeScreen.o $(CONTROLS_OBJ) $(UI_OBJ) $(OUTPUT_OBJ) $(MODULE_OBJ)
 
 # Unittest
 UTOBJECTS = unittest/UtModules.o

@@ -156,8 +156,9 @@
 #include "ModeAssign.h"
 #include "AnalogTrim.h"
 #include "ServoTest.h"
+#include "ImportExport.h"
 
-#if defined( ARDUINO )
+#ifdef ARDUINO
 
 #include "avr/sleep.h"
 #include "avr/wdt.h"
@@ -269,7 +270,7 @@ const buzzerCmd_t SoundWelcome[] = {
   BUZZER_STOP()
 };
 
-#if defined( ARDUINO )
+#ifdef ARDUINO
 
 /* All analog pins */
 #define ANALOG_PIN_COUNT (PORT_ANALOG_INPUT_COUNT + PORT_TRIM_INPUT_COUNT + PORT_AUX_INPUT_COUNT)
@@ -291,12 +292,13 @@ OutputImpl *outputImpl;
 PortsImpl *portsImpl;
 BuzzerImpl *buzzerImpl;
 
-#undef ENABLE_MEMDEBUG
+/* Serial required for Import/Export module since V0.4.3 */
+#define ENABLE_SERIAL
+#define ENABLE_MEMDEBUG
+#undef ENABLE_SERIAL_MEMDEBUG
 #undef ENABLE_BDEBUG
 #define ENABLE_STATISTICS_MODULE
 #define ENABLE_SERVOTEST_MODULE
-#define ENABLE_SERIAL
-
 
 #ifdef ENABLE_MEMDEBUG
 
@@ -399,7 +401,7 @@ void setup( void) {
 #endif
 
 
-#if defined( ARDUINO )
+#ifdef ARDUINO
 
     portsImpl = new PortsImpl();
     buzzerImpl = new BuzzerImpl();
@@ -409,7 +411,7 @@ void setup( void) {
     ports.init();
     buzzer.init();
 
-#if defined( ARDUINO )
+#ifdef ARDUINO
 
     inputImpl = new InputImpl( PORT_ANALOG_INPUT_COUNT, PORT_TRIM_INPUT_COUNT, PORT_AUX_INPUT_COUNT,
                                AnalogPins,
@@ -418,16 +420,12 @@ void setup( void) {
 
     outputImpl = new OutputImpl();
     
-#if defined( ENABLE_MEMDEBUG ) || defined( ENABLE_BDEBUG) || defined( ENABLE_SERIAL)
+#ifdef ENABLE_SERIAL
     Serial.begin(19200);
 #endif
    
 #endif
 
-/*
-    ports.init();
-    buzzer.init();
-*/
 
 #ifdef ARDUINO
     userInterface.setDisplay( new TextUILcdST7735( PORT_TFT_CS, PORT_TFT_DC, PORT_TFT_RST));
@@ -446,6 +444,8 @@ void setup( void) {
     /* System menu */
     
     moduleManager.addToSystemSetAndMenu( &modelSelect);
+    ImportExport *importExport = new ImportExport();
+    moduleManager.addToSystemSetAndMenu( importExport);
     ServoMonitor *servoMonitor = new ServoMonitor( controls);
     moduleManager.addToSystemSetAndMenu( servoMonitor);
     SwitchMonitor *switchMonitor = new SwitchMonitor( controls);
@@ -559,7 +559,7 @@ void setup( void) {
 
     controls.init();
 
-#if defined( ARDUINO )
+#ifdef ARDUINO
 #ifdef ENABLE_MEMDEBUG
     MEMDEBUG_INIT();
 #endif
@@ -570,11 +570,14 @@ void setup( void) {
 
     buzzer.play( SoundWelcome);
 
-#ifdef ENABLE_BDEBUG
+#if (defined( ENABLE_BDEBUG) && defined( ENABLE_SERIAL))
     Serial.print("D:");
     Serial.println(bdebug);
 #endif
 }
+
+static void watchdog_reset();
+static void handle_channels();
 
 void loop( void) {
 
@@ -583,7 +586,7 @@ void loop( void) {
     uint16_t overrun;
 #endif
 
-#if defined( ARDUINO )
+#ifdef ARDUINO
 
     set_sleep_mode( SLEEP_MODE_IDLE);
     cli();
@@ -591,43 +594,35 @@ void loop( void) {
     sei();
     sleep_cpu();
     sleep_disable();
-
-    wdt_reset();
-
-#ifdef ENABLE_STATISTICS_MODULE
-    now = millis();
-    statistics.updateWdTimeout( now - wdLastReset);
-    wdLastReset = now;
-#endif
+    
+    watchdog_reset();
+    
 #endif
 
-    if( output.acceptChannels() ) {
+    handle_channels();
 
-#ifdef ENABLE_STATISTICS_MODULE
-        now = millis();
-#endif
-
-        controls.GetControlValues();
-        moduleManager.runModules( controls);
-        output.setChannels( controls);
-
-#ifdef ENABLE_STATISTICS_MODULE
-        statistics.updateModulesTime( (uint16_t)(millis() - now));
-#endif
+#ifdef ARDUINO
 
 #ifdef ENABLE_BDEBUG
+    if( bdebugi) {
+#ifdef ENABLE_SERIAL
         Serial.print("d:");
         Serial.println(bdebug);
+#endif
         BDEBUG_CLEAR();
-#endif
-        
-#if defined( ARDUINO )
-#ifdef ENABLE_MEMDEBUG
-        MEMDEBUG_CHECK();
-        Serial.println(gapFree);
-#endif
-#endif     
     }
+#endif
+
+        
+#ifdef ENABLE_MEMDEBUG
+    MEMDEBUG_CHECK();
+#ifdef ENABLE_SERIAL_MEMDEBUG
+    Serial.print("m:");
+    Serial.println(gapFree);
+#endif
+#endif
+
+#endif
 
 #ifdef ENABLE_STATISTICS_MODULE
     now = millis();
@@ -641,7 +636,10 @@ void loop( void) {
     overrun = output.getOverrunCounter();
     statistics.updatePPMOverrun( overrun);
     statistics.updateFrameTime( output.getMaxFrameTime());
-    
+#ifdef ENABLE_MEMDEBUG
+    statistics.updateMemFree( gapFree);
+#endif
+
     if( overrun != lastOverrun && statistics.debugOverrun()) {
         lastOverrun = overrun;
         homeScreen->printDebug( overrun);
@@ -650,4 +648,44 @@ void loop( void) {
     }
     
 #endif
+}
+
+void yieldLoop() {
+
+#ifdef ENABLE_SERIAL
+    Serial.flush();
+#endif
+
+    watchdog_reset();
+    handle_channels();
+}
+
+void watchdog_reset() {
+
+#ifdef ARDUINO
+    wdt_reset();
+
+#ifdef ENABLE_STATISTICS_MODULE
+    unsigned long now = millis();
+    statistics.updateWdTimeout( now - wdLastReset);
+    wdLastReset = now;
+#endif
+#endif
+}
+
+void handle_channels() {
+  
+    if( output.acceptChannels() ) {
+
+#ifdef ENABLE_STATISTICS_MODULE
+        unsigned long now = millis();
+#endif
+        controls.GetControlValues();
+        moduleManager.runModules( controls);
+        output.setChannels( controls);
+
+#ifdef ENABLE_STATISTICS_MODULE
+        statistics.updateModulesTime( (uint16_t)(millis() - now));
+#endif
+    }
 }

@@ -33,6 +33,17 @@ CalibrateSticks::CalibrateSticks() : Module( MODULE_CAL_STICKS_TYPE, TEXT_MODULE
 
 /* From Module */
 
+void CalibrateSticks::exportConfig( Exporter *exporter, uint8_t *config, moduleSize_t configSz) const {
+
+    const calibrateSticks_t *cfg = (calibrateSticks_t*)config;
+
+    exporter->openSub( 'M', MODULE_CAL_STICKS_TYPE);
+    exporter->addIntArr( 'L', (const byte*)cfg->minPos, sizeof(cfg->minPos), PORT_ANALOG_INPUT_COUNT);
+    exporter->addIntArr( 'M', (const byte*)cfg->midPos, sizeof(cfg->midPos), PORT_ANALOG_INPUT_COUNT);
+    exporter->addIntArr( 'H', (const byte*)cfg->maxPos, sizeof(cfg->maxPos), PORT_ANALOG_INPUT_COUNT);
+    exporter->close();
+}
+
 void CalibrateSticks::run( Controls &controls) {
 
     long v;

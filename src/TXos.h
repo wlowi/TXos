@@ -34,7 +34,7 @@
 #endif
 
 
-#define TXOS_VERSION "0.4.2"
+#define TXOS_VERSION "0.4.3"
 
 
 #if defined( ARDUINO )
@@ -46,6 +46,7 @@
     #define LOGV( f, ... ) printf( f, __VA_ARGS__)
 #endif
 
+extern void yieldLoop();
 
 /* Holds small float values with 2 fractional digits.
  * This is currently only used to display battery voltage.

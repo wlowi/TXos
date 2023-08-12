@@ -33,6 +33,16 @@ ServoLimit::ServoLimit() : Module( MODULE_SERVO_LIMIT_TYPE, TEXT_MODULE_SERVO_LI
     setDefaults();
 }
 
+void ServoLimit::exportConfig( Exporter *exporter, uint8_t *config, moduleSize_t configSz) const {
+
+    const servoLimit_t *cfg = (servoLimit_t*)config;
+
+    exporter->openSub( 'M', MODULE_SERVO_LIMIT_TYPE);
+    exporter->addIntArr( 'P', (const byte *)cfg->posLimit_pct, sizeof(cfg->posLimit_pct), PPM_CHANNELS);
+    exporter->addIntArr('N', (const byte*)cfg->negLimit_pct, sizeof(cfg->negLimit_pct), PPM_CHANNELS);
+    exporter->close();
+}
+
 /* From Module */
 
 void ServoLimit::run( Controls &controls) {

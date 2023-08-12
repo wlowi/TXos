@@ -39,6 +39,20 @@ PhasesTrim::PhasesTrim() : Module( MODULE_PHASES_TRIM_TYPE, TEXT_MODULE_PHASES_T
 
 /* From Module */
 
+void PhasesTrim::exportConfig( Exporter *exporter, uint8_t *config, moduleSize_t configSz) const {
+
+    const phasesTrim_t *cfg = (phasesTrim_t*)config;
+
+    exporter->openSub( 'M', MODULE_PHASES_TRIM_TYPE);
+    for( uint8_t p = 0; p < PHASES; p++) {
+        exporter->openSub( 'P', p);
+        exporter->addIntArr( 'P', (const byte*)cfg->trim_pct, sizeof(cfg->trim_pct), PHASED_TRIM_CHANNELS);
+        exporter->close();
+        cfg++;
+    }
+    exporter->close();
+}
+
 void PhasesTrim::run( Controls &controls) {
 
     uint8_t ch;

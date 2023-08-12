@@ -36,6 +36,16 @@ AnalogSwitch::AnalogSwitch() : Module( MODULE_ANALOG_SWITCH_TYPE, TEXT_MODULE_AN
 
 /* From Module */
 
+void AnalogSwitch::exportConfig( Exporter *exporter, uint8_t *config, moduleSize_t configSz) const {
+
+    const analogSwitch_t *cfg = (analogSwitch_t*)config;
+
+    exporter->openSub( 'M', MODULE_ANALOG_SWITCH_TYPE);
+    exporter->addUIntArr( 'C', (const byte*)cfg->source, sizeof(cfg->source), CHANNEL_SWITCHES);
+    exporter->addIntArr( 'P', (const byte*)cfg->trigger_pct, sizeof(cfg->trigger_pct), CHANNEL_SWITCHES);
+    exporter->close();
+}
+
 void AnalogSwitch::run( Controls &controls) {
 
     long v;

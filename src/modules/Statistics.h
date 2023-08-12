@@ -39,6 +39,7 @@ class Statistics : public Module {
         uint16_t ppmOverrun;
         uint16_t wdTimeout;
         timingUsec_t maxFrameTime;
+        size_t memfree;
 
         bool dumpTiming;
         bool dumpOverrun;
@@ -51,11 +52,14 @@ class Statistics : public Module {
         void updatePPMOverrun( uint16_t c);
         void updateFrameTime( timingUsec_t t);
         void updateWdTimeout( uint16_t t);
+        void updateMemFree( size_t m);
+
         bool debugTiming() const;
         bool debugOverrun() const;
 
         void run( Controls &controls) final;
         void setDefaults() final;
+        void exportConfig( Exporter *exporter, uint8_t *config, moduleSize_t configSz) const {};
 
         /* From TableEditable */
         bool isRowEditable( uint8_t row) final;

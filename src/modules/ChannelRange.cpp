@@ -35,6 +35,15 @@ ChannelRange::ChannelRange() : Module( MODULE_CHANNEL_RANGE_TYPE, TEXT_MODULE_CH
 
 /* From Module */
 
+void ChannelRange::exportConfig( Exporter *exporter, uint8_t *config, moduleSize_t configSz) const {
+
+    const channelRange_t *cfg = (channelRange_t*)config;
+
+    exporter->openSub( 'M', MODULE_CHANNEL_RANGE_TYPE);
+    exporter->addIntArr( 'P', (const byte*)cfg->range_pct, sizeof(cfg->range_pct), PORT_ANALOG_INPUT_COUNT);
+    exporter->close();
+}
+
 void ChannelRange::run( Controls &controls) {
 
     long v;

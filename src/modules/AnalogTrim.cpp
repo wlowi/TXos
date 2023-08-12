@@ -35,6 +35,15 @@ AnalogTrim::AnalogTrim() : Module( MODULE_ANALOG_TRIM_TYPE, TEXT_MODULE_ANALOG_T
 
 /* From Module */
 
+void AnalogTrim::exportConfig( Exporter *exporter, uint8_t *config, moduleSize_t configSz) const {
+
+    const analogTrim_t *cfg = (analogTrim_t*)config;
+
+    exporter->openSub( 'M', MODULE_ANALOG_TRIM_TYPE);
+    exporter->addIntArr( 'P', (const byte*)cfg->storedTrim_pct, sizeof(cfg->storedTrim_pct), PORT_TRIM_INPUT_COUNT);
+    exporter->close();
+}
+
 void AnalogTrim::run( Controls &controls) {
 
     channelValue_t v;

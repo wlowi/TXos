@@ -25,6 +25,8 @@
 */
 
 #include "ModuleManager.h"
+#include "ImportExport.h"
+#include "Exporter.h"
 #include "TextUI.h"
 #include "HomeScreen.h"
 
@@ -328,6 +330,127 @@ void ModuleManager::saveSystemConfig(configBlockID_t blockID) {
     generateBlock( blockID, MODULE_SET_SYSTEM);
     blockService->writeBlock();
 }
+
+void ModuleManager::exportSystemConfig() {
+
+    LOG("ModuleManager::exportSystemConfig(): called\n");
+
+    uint8_t rc;
+    const uint8_t *payload;
+    moduleType_t type;
+    moduleSize_t size;
+    uint16_t totalSize;
+    uint8_t buffer[64];
+    const Module *module;
+    Exporter exporter;
+
+    /* Block 0 is system config. Model blocks start at 1 */
+    rc = blockService->readBlock( 0);
+    if( rc != CONFIGBLOCK_RC_OK) {
+        /* This may be an uninitialized block. */
+        LOG("** ModuleManager::exportSystemConfig(): Failed to read system config block\n");
+        return;
+    } else {
+        LOG("ModuleManager::exportSystemConfig(): Read system config block \n");
+    }
+
+    payload = blockService->getPayload();
+    totalSize = 0;
+
+    GET( (uint8_t*)&type, sizeof(moduleType_t));
+
+    exporter.open('S', 0);
+
+    while( type != MODULE_INVALID_TYPE) {
+        GET( (uint8_t*)&size, sizeof(moduleSize_t));
+
+        LOGV("ModuleManager::exportSystemConfig(): GET type=%d size=%d\n", type, size);
+
+        GET( buffer, size);
+    
+        module = getModuleByType( MODULE_SET_SYSTEM, type);
+        if( module == nullptr) {
+            LOGV("** ModuleManager::exportSystemConfig(): Failed to get module of type=%d\n", type);
+        } else {
+            module->exportConfig( &exporter, buffer, size);
+            exporter.writePart();
+            yieldLoop();
+        }
+
+        GET( (uint8_t*)&type, sizeof(moduleType_t));
+    }
+
+    exporter.close();
+    exporter.write();
+}
+
+void ModuleManager::importSystemConfig() {
+
+    LOG("ModuleManager::importSystemConfig(): called\n");
+}
+
+void ModuleManager::exportModels() {
+
+    LOG("ModuleManager::exportModels(): called\n");
+
+    uint8_t rc;
+    const uint8_t *payload;
+    moduleType_t type;
+    moduleSize_t size;
+    uint16_t totalSize;
+    uint8_t modelCount = getModelCount();
+    uint8_t buffer[64];
+    const Module *module;
+    Exporter exporter;
+
+    /* Block 0 is system config. Model blocks start at 1 */
+    for( configBlockID_t modelID = 1; modelID <= modelCount; modelID++) {
+
+        rc = blockService->readBlock( modelID);
+        if( rc != CONFIGBLOCK_RC_OK) {
+            /* This may be an uninitialized block. */
+            LOGV("** ModuleManager::exportModels(): Failed to read block %d\n", modelID);
+            continue;
+        } else {
+            LOGV("ModuleManager::exportModels(): Read model block %d\n", modelID);
+        }
+
+        payload = blockService->getPayload();
+        totalSize = 0;
+
+        GET( (uint8_t*)&type, sizeof(moduleType_t));
+
+        exporter.open('M', modelID);
+
+        while( type != MODULE_INVALID_TYPE) {
+            GET( (uint8_t*)&size, sizeof(moduleSize_t));
+
+            LOGV("ModuleManager::exportModels(): GET type=%d size=%d\n", type, size);
+
+            GET( buffer, size);
+    
+            module = getModuleByType( MODULE_SET_MODEL, type);
+            if( module == nullptr) {
+                LOGV("** ModuleManager::exportModels(): Failed to get module of type=%d\n", type);
+            } else {
+                module->exportConfig( &exporter, buffer, size);
+                exporter.writePart();
+                yieldLoop();
+            }
+
+            GET( (uint8_t*)&type, sizeof(moduleType_t));
+        }
+
+        exporter.close();
+        exporter.write();
+    }
+}
+
+void ModuleManager::importModels() {
+
+    LOG("ModuleManager::importModels(): called\n");
+}
+
 /*
  * Parse data in configuration block and distribute data to 
  * each module.

@@ -48,6 +48,16 @@ const char *Phases::getPhaseName() {
 
 /* From Module */
 
+void Phases::exportConfig( Exporter *exporter, uint8_t *config, moduleSize_t configSz) const {
+
+    const phases_t *cfg = (phases_t*)config;
+
+    exporter->openSub( 'M', MODULE_PHASES_TYPE);
+    exporter->addUInt( 'W', cfg->sw);
+    exporter->addUIntArr( 'N', (const byte*)cfg->phaseName, sizeof(cfg->phaseName), PHASES);
+    exporter->close();
+}
+
 void Phases::run( Controls &controls) {
 
     switchState_t state;

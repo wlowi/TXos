@@ -54,6 +54,19 @@ void Mixer::limitChannels( Controls &controls) {
 
 /* From Module */
 
+void Mixer::exportConfig( Exporter *exporter, uint8_t *config, moduleSize_t configSz) const {
+
+    const mixer_t *cfg = (mixer_t*)config;
+
+    exporter->openSub( 'M', MODULE_MIXER_TYPE);
+    exporter->addUIntArr( 'W', (const byte*)cfg->mixSw, sizeof(cfg->mixSw), MIXER);
+    exporter->addUIntArr( 'S', (const byte*)cfg->source, sizeof(cfg->source), MIXER);
+    exporter->addUIntArr( 'T', (const byte*)cfg->target, sizeof(cfg->target), MIXER);
+    exporter->addIntArr( 'P', (const byte*)cfg->mixPct, sizeof(cfg->mixPct), MIXER);
+    exporter->addIntArr( 'O', (const byte*)cfg->mixOffset, sizeof(cfg->mixOffset), MIXER);
+    exporter->close();
+}
+
 void Mixer::run( Controls &controls) {
 
     channelValue_t sourceValue;
