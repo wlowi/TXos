@@ -24,20 +24,30 @@
   SOFTWARE.
 */
 
+/* Run Servo tests 
+ *
+ * Note that the servo test module obeys servo limits 
+ */
+
 #include "ServoTest.h"
 
 #define TEST_COUNT 7
+
+const uint8_t TEST_OFF = 3;
 
 const char* const testNames[TEST_COUNT] {
 
     "-125%",
     "-100%",
-    "  off",
     "   0%",
+    "  off",
+    "Sweep",
     "+100%",
-    "+125%",
-    "Sweep"
+    "+125%"
+
 };
+
+const channelValue_t INCREMENT = 10;
 
 ServoTest::ServoTest() : Module( MODULE_SERVO_TEST_TYPE, TEXT_MODULE_SERVO_TEST) {
 
@@ -48,50 +58,83 @@ ServoTest::ServoTest() : Module( MODULE_SERVO_TEST_TYPE, TEXT_MODULE_SERVO_TEST)
 
 void ServoTest::run( Controls &controls) {
 
-    channelValue_t v;
+    if( testNo != TEST_OFF) { // off
 
-    if( testNo != 2) { // off
+        if( doInit) {
+            for( channel_t ch = 0; ch < PPM_CHANNELS; ch++) {
+                lastV[ch] = controls.outputGet( ch);
+                increment[ch] = INCREMENT;
+            }
+            doInit = false;
+        }
 
         for( channel_t ch = 0; ch < PPM_CHANNELS; ch++) {        
 
             switch( testNo) {
             case 0: // -125%
-                v = CHANNELVALUE_MIN_LIMIT;
+                moveTo( ch, CHANNELVALUE_MIN_LIMIT);
                 break;
 
             case 1: // -100%
-                v = CHANNELVALUE_MIN;
+                moveTo( ch, CHANNELVALUE_MIN);
                 break;
 
-            case 2: // off
-                v = controls.outputGet( ch);
+            case 2: // 0%
+                moveTo( ch, CHANNELVALUE_MID);
                 break;
 
-            case 3: // 0%
-                v = CHANNELVALUE_MID;
+//            case 3: off
+
+            case 4: // Sweep
+                lastV[ch] += increment[ch];
+
+                if( lastV[ch] > CHANNELVALUE_MAX) {
+                    lastV[ch] = CHANNELVALUE_MAX;
+                    increment[ch] = -increment[ch];
+                } else if( lastV[ch] < CHANNELVALUE_MIN) {
+                    lastV[ch] = CHANNELVALUE_MIN;
+                    increment[ch] = -increment[ch];
+                }
                 break;
 
-            case 4: // 100%
-                v = CHANNELVALUE_MAX;
+            case 5: // 100%
+                moveTo( ch, CHANNELVALUE_MAX);
                 break;
 
-            case 5: // 125%
-                v = CHANNELVALUE_MAX_LIMIT;
-                break;
-
-            case 6: // Sweep
-                v = CHANNELVALUE_MID; // @todo
+            case 6: // 125%
+                moveTo( ch, CHANNELVALUE_MAX_LIMIT);
                 break;
             }
 
-            controls.outputSet( ch, v);
+            controls.outputSet( ch, lastV[ch]);
+        }
+    }
+}
+
+void ServoTest::moveTo( channel_t ch, channelValue_t v) {
+
+    if (lastV[ch] < v)
+    {
+        lastV[ch] += INCREMENT;
+        if (lastV[ch] > v)
+        {
+            lastV[ch] = v;
+        }
+    }
+    else if (lastV[ch] > v)
+    {
+        lastV[ch] -= INCREMENT;
+        if (lastV[ch] < v)
+        {
+            lastV[ch] = v;
         }
     }
 }
 
 void ServoTest::setDefaults() {
 
-    testNo = 2;
+    testNo = TEST_OFF; // test off
+    doInit = false;
 }
 
 void ServoTest::moduleExit() {
@@ -123,6 +166,12 @@ void ServoTest::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
 void ServoTest::setValue( uint8_t row, uint8_t col, Cell *cell) {
 
-    testNo = cell->getList();
+    uint8_t newTest;
+
+    newTest = cell->getList(); 
+    if( testNo == TEST_OFF && newTest != TEST_OFF ) {
+        doInit = true;
+    }
+    testNo = newTest;
 }
 

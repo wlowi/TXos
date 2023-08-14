@@ -540,6 +540,9 @@ void setup( void) {
     moduleManager.addToRunList( servoRemap);
     moduleManager.addToRunList( servoReverse);
     moduleManager.addToRunList( servoSubtrim);
+#ifdef ENABLE_SERVOTEST_MODULE
+    moduleManager.addToRunList( &servotest);
+#endif
     moduleManager.addToRunList( servoLimit);
 
     /* The follow moduels do not impact channel values */
@@ -547,9 +550,6 @@ void setup( void) {
     moduleManager.addToRunList( switchMonitor);
     moduleManager.addToRunList( timer);
     moduleManager.addToRunList( vccMonitor);
-#ifdef ENABLE_SERVOTEST_MODULE
-    moduleManager.addToRunList( &servotest);
-#endif
 
     userInterface.setHomeScreen( homeScreen);
 

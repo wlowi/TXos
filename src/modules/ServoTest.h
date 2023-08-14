@@ -37,6 +37,11 @@ class ServoTest : public Module {
     
     private:
         uint8_t testNo;
+        bool doInit = false;
+        channelValue_t lastV[PPM_CHANNELS];
+        channelValue_t increment[PPM_CHANNELS];
+
+        void moveTo( channel_t ch, channelValue_t v);
 
     public:
         ServoTest();
