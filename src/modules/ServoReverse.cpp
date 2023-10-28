@@ -35,12 +35,12 @@ ServoReverse::ServoReverse() : Module( MODULE_SERVO_REVERSE_TYPE, TEXT_MODULE_SE
 
 /* From Module */
 
-void ServoReverse::exportConfig( Exporter *exporter, uint8_t *config, moduleSize_t configSz) const {
+void ServoReverse::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t configSz) const {
 
     const servoReverse_t *cfg = (servoReverse_t*)config;
 
     exporter->openSub( 'M', MODULE_SERVO_REVERSE_TYPE);
-    exporter->addUInt('B', cfg->revBits);
+    exporter->addUInt16('B', cfg->revBits);
     exporter->close();
 }
 

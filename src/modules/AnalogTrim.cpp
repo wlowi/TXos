@@ -35,7 +35,7 @@ AnalogTrim::AnalogTrim() : Module( MODULE_ANALOG_TRIM_TYPE, TEXT_MODULE_ANALOG_T
 
 /* From Module */
 
-void AnalogTrim::exportConfig( Exporter *exporter, uint8_t *config, moduleSize_t configSz) const {
+void AnalogTrim::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t configSz) const {
 
     const analogTrim_t *cfg = (analogTrim_t*)config;
 

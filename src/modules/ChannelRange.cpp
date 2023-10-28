@@ -35,7 +35,7 @@ ChannelRange::ChannelRange() : Module( MODULE_CHANNEL_RANGE_TYPE, TEXT_MODULE_CH
 
 /* From Module */
 
-void ChannelRange::exportConfig( Exporter *exporter, uint8_t *config, moduleSize_t configSz) const {
+void ChannelRange::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t configSz) const {
 
     const channelRange_t *cfg = (channelRange_t*)config;
 

@@ -36,7 +36,7 @@ ServoRemap::ServoRemap() : Module( MODULE_SERVO_REMAP_TYPE, TEXT_MODULE_SERVO_RE
 
 /* From Module */
 
-void ServoRemap::exportConfig( Exporter *exporter, uint8_t *config, moduleSize_t configSz) const {
+void ServoRemap::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t configSz) const {
 
     const servoRemap_t *cfg = (servoRemap_t*)config;
 

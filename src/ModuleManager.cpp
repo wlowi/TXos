@@ -26,7 +26,7 @@
 
 #include "ModuleManager.h"
 #include "ImportExport.h"
-#include "Exporter.h"
+#include "Comm.h"
 #include "TextUI.h"
 #include "HomeScreen.h"
 
@@ -146,9 +146,23 @@ Module *ModuleManager::getModuleByType( uint8_t setType, moduleType_t type) {
     return current;
 }
 
+/* Copy memory form "payload" into "p".
+ * "p" must be a pointer to memory.
+ * The block is of size "s".
+ * "payload" is advanced and totalsize increased by "s"
+ */
 #define GET( p, s)                              \
     do {                                        \
         blockService->memcpy( p, payload, s);   \
+        payload += s;                           \
+        totalSize += s;                         \
+    } while( 0 )
+
+/* Copy memory from "p" to "payload".
+ */
+#define PUT( p, s)                              \
+    do {                                        \
+        blockService->memcpy( payload, p, s);   \
         payload += s;                           \
         totalSize += s;                         \
     } while( 0 )
@@ -213,6 +227,8 @@ void ModuleManager::runModules( Controls &controls) {
     }
 }
 
+/* Notify all modules about a phase switch.
+ */
 void ModuleManager::switchPhase( phase_t phase) {
 
     LOGV("\nModuleManager::switchPhase(): new phase %d\n", phase);
@@ -226,6 +242,8 @@ void ModuleManager::switchPhase( phase_t phase) {
     }
 }
 
+/* Set default values for all modules.
+ */
 void ModuleManager::setModelDefaults() {
 
     LOG("\nModuleManager::setModelDefaults():\n");
@@ -238,6 +256,8 @@ void ModuleManager::setModelDefaults() {
     }
 }
 
+/* Set defaults for system config block.
+ */
 void ModuleManager::setSystemDefaults() {
 
     LOG("\nModuleManager::setSystemDefaults():\n");
@@ -250,6 +270,9 @@ void ModuleManager::setSystemDefaults() {
     }
 }
 
+/* Initialize all modules.
+ * This is called after model load.
+ */
 void ModuleManager::initModel() {
 
     LOG("\nModuleManager::initModel():\n");
@@ -266,7 +289,9 @@ uint8_t ModuleManager::getModelCount() const {
 
     return blockService->getModelBlockCount();
 }
-/*
+
+/* Load a model from EEPROM.
+ *
  * Read configuration block from EEPROM and distribute
  * configuration data to each module.
  */
@@ -342,7 +367,7 @@ void ModuleManager::exportSystemConfig() {
     uint16_t totalSize;
     uint8_t buffer[64];
     const Module *module;
-    Exporter exporter;
+    Comm commm;
 
     /* Block 0 is system config. Model blocks start at 1 */
     rc = blockService->readBlock( 0);
@@ -359,7 +384,7 @@ void ModuleManager::exportSystemConfig() {
 
     GET( (uint8_t*)&type, sizeof(moduleType_t));
 
-    exporter.open('S', 0);
+    commm.open( COMM_PACKET_SYSTEM_CONFIG);
 
     while( type != MODULE_INVALID_TYPE) {
         GET( (uint8_t*)&size, sizeof(moduleSize_t));
@@ -372,16 +397,16 @@ void ModuleManager::exportSystemConfig() {
         if( module == nullptr) {
             LOGV("** ModuleManager::exportSystemConfig(): Failed to get module of type=%d\n", type);
         } else {
-            module->exportConfig( &exporter, buffer, size);
-            exporter.writePart();
+            module->exportConfig( &commm, buffer, size);
+            commm.writePart();
             yieldLoop();
         }
 
         GET( (uint8_t*)&type, sizeof(moduleType_t));
     }
 
-    exporter.close();
-    exporter.write();
+    commm.close();
+    commm.write();
 }
 
 void ModuleManager::importSystemConfig() {
@@ -389,66 +414,84 @@ void ModuleManager::importSystemConfig() {
     LOG("ModuleManager::importSystemConfig(): called\n");
 }
 
+/* Export all models. */
 void ModuleManager::exportModels() {
 
     LOG("ModuleManager::exportModels(): called\n");
+
+    uint8_t modelCount = getModelCount();
+
+    /* Block 0 is system config. Model blocks start at 1 */
+    for( configBlockID_t modelID = 1; modelID <= modelCount; modelID++) {
+        exportModel( modelID);
+    }
+}
+
+void ModuleManager::exportModel( configBlockID_t modelID) {
+
+    LOGV("ModuleManager::exportModel( modelID=%d): called\n", modelID);
 
     uint8_t rc;
     const uint8_t *payload;
     moduleType_t type;
     moduleSize_t size;
     uint16_t totalSize;
-    uint8_t modelCount = getModelCount();
     uint8_t buffer[64];
     const Module *module;
-    Exporter exporter;
+    Comm comm;
 
-    /* Block 0 is system config. Model blocks start at 1 */
-    for( configBlockID_t modelID = 1; modelID <= modelCount; modelID++) {
+    rc = blockService->readBlock( modelID);
+    if( rc != CONFIGBLOCK_RC_OK) {
+        /* This may be an uninitialized block. */
+        LOGV("** ModuleManager::exportModel(): Failed to read block %d\n", modelID);
+        return;
+    } else {
+        LOGV("ModuleManager::exportModel(): Read model block %d\n", modelID);
+    }
 
-        rc = blockService->readBlock( modelID);
-        if( rc != CONFIGBLOCK_RC_OK) {
-            /* This may be an uninitialized block. */
-            LOGV("** ModuleManager::exportModels(): Failed to read block %d\n", modelID);
-            continue;
+    payload = blockService->getPayload();
+    totalSize = 0;
+
+    GET( (uint8_t*)&type, sizeof(moduleType_t));
+
+    comm.open( COMM_PACKET_MODEL_CONFIG, modelID);
+
+    while( type != MODULE_INVALID_TYPE) {
+        GET( (uint8_t*)&size, sizeof(moduleSize_t));
+
+        LOGV("ModuleManager::exportModels(): GET type=%d size=%d\n", type, size);
+
+        GET( buffer, size);
+    
+        module = getModuleByType( MODULE_SET_MODEL, type);
+        if( module == nullptr) {
+            LOGV("** ModuleManager::exportModels(): Failed to get module of type=%d\n", type);
         } else {
-            LOGV("ModuleManager::exportModels(): Read model block %d\n", modelID);
+            module->exportConfig( &comm, buffer, size);
+            comm.writePart();
+            yieldLoop();
         }
-
-        payload = blockService->getPayload();
-        totalSize = 0;
 
         GET( (uint8_t*)&type, sizeof(moduleType_t));
-
-        exporter.open('M', modelID);
-
-        while( type != MODULE_INVALID_TYPE) {
-            GET( (uint8_t*)&size, sizeof(moduleSize_t));
-
-            LOGV("ModuleManager::exportModels(): GET type=%d size=%d\n", type, size);
-
-            GET( buffer, size);
-    
-            module = getModuleByType( MODULE_SET_MODEL, type);
-            if( module == nullptr) {
-                LOGV("** ModuleManager::exportModels(): Failed to get module of type=%d\n", type);
-            } else {
-                module->exportConfig( &exporter, buffer, size);
-                exporter.writePart();
-                yieldLoop();
-            }
-
-            GET( (uint8_t*)&type, sizeof(moduleType_t));
-        }
-
-        exporter.close();
-        exporter.write();
     }
+
+    comm.close();
+    comm.write();
 }
 
-void ModuleManager::importModels() {
+void ModuleManager::importModel() {
 
-    LOG("ModuleManager::importModels(): called\n");
+    LOG("ModuleManager::importModel(): called\n");
+
+    Comm comm;
+
+
+
+    if( blockService->isBlockValid()) {
+        blockService->writeBlock();
+    } else {
+        LOG("** ModuleManager::importModel(): model config is invalid, not saved\n");
+    }
 }
 
 /*
@@ -526,16 +569,15 @@ void ModuleManager::parseBlock( uint8_t setType) {
  * -----------
  * moduleTypeInvalid << End Marker
  * -----------
+ *
+ * Generate a system or model config block from active modules.
+ * 
+ * The setType must be MODULE_SET_MODEL or MODULE_SET_SYSTEM and
+ * defines which module set is used to generate the block.
+ * 
+ * The modelID must be SYSTEMCONFIG_BLOCKID for the system config block 
+ * or avalid model is ( 1 .. modelBlockCount )
  */
-
-#define PUT( p, s)                              \
-    do {                                        \
-        blockService->memcpy( payload, p, s);   \
-        payload += s;                           \
-        totalSize += s;                         \
-    } while( 0 )
-
-
 void ModuleManager::generateBlock( configBlockID_t modelID, uint8_t setType) {
 
     uint8_t *payload;

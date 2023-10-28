@@ -46,7 +46,7 @@ class ServoLimit : public Module {
         /* From Module */
         void run( Controls &controls) final;
         void setDefaults() final;
-        void exportConfig( Exporter *exporter, uint8_t *config, moduleSize_t configSz) const;
+        void exportConfig( Comm *exporter, uint8_t *config, moduleSize_t configSz) const;
 
         /* From TableEditable */
         uint8_t getRowCount() final;

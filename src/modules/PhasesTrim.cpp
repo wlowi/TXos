@@ -39,7 +39,7 @@ PhasesTrim::PhasesTrim() : Module( MODULE_PHASES_TRIM_TYPE, TEXT_MODULE_PHASES_T
 
 /* From Module */
 
-void PhasesTrim::exportConfig( Exporter *exporter, uint8_t *config, moduleSize_t configSz) const {
+void PhasesTrim::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t configSz) const {
 
     const phasesTrim_t *cfg = (phasesTrim_t*)config;
 

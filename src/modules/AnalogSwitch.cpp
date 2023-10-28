@@ -36,7 +36,7 @@ AnalogSwitch::AnalogSwitch() : Module( MODULE_ANALOG_SWITCH_TYPE, TEXT_MODULE_AN
 
 /* From Module */
 
-void AnalogSwitch::exportConfig( Exporter *exporter, uint8_t *config, moduleSize_t configSz) const {
+void AnalogSwitch::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t configSz) const {
 
     const analogSwitch_t *cfg = (analogSwitch_t*)config;
 

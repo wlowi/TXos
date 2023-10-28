@@ -35,7 +35,7 @@ SwitchedChannels::SwitchedChannels() : Module( MODULE_SWITCHED_CHANNELS_TYPE, TE
 
 /* From Module */
 
-void SwitchedChannels::exportConfig( Exporter *exporter, uint8_t *config, moduleSize_t configSz) const {
+void SwitchedChannels::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t configSz) const {
 
     const switchedChannels_t *cfg = (switchedChannels_t*)config;
 

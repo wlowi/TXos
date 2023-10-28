@@ -35,7 +35,7 @@ ServoSubtrim::ServoSubtrim() : Module( MODULE_SERVO_SUBTRIM_TYPE, TEXT_MODULE_SE
 
 /* From Module */
 
-void ServoSubtrim::exportConfig( Exporter *exporter, uint8_t *config, moduleSize_t configSz) const {
+void ServoSubtrim::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t configSz) const {
 
     const servoSubtrim_t *cfg = (servoSubtrim_t*)config;
 

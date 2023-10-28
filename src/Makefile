@@ -55,7 +55,7 @@ CXXFLAGS += -g -O0 -Wall -Wpedantic -Wextra -Wno-unused-parameter
 
 CXXINC += -I. -Icontrols -ITextUI -Ioutput -Imodules -Iemu
 
-OBJECTS = TXos.o Module.o Exporter.o ModuleManager.o ConfigBlock.o SystemConfig.o HomeScreen.o $(CONTROLS_OBJ) $(UI_OBJ) $(OUTPUT_OBJ) $(MODULE_OBJ)
+OBJECTS = TXos.o Module.o Comm.o ModuleManager.o ConfigBlock.o SystemConfig.o HomeScreen.o $(CONTROLS_OBJ) $(UI_OBJ) $(OUTPUT_OBJ) $(MODULE_OBJ)
 
 # Unittest
 UTOBJECTS = unittest/UtModules.o
@@ -78,6 +78,9 @@ endif
 all: $(PROGRAM)
 
 unittest: $(UNITTEST) 
+
+run:
+	./$(PROGRAM)
 
 $(PROGRAM):$(OBJECTS) $(EMU_OBJ) $(PROGRAM).o
 	$(CXX) -g $(CXXINC) -o $(PROGRAM) $(PROGRAM).o $(OBJECTS) $(EMU_OBJ) $(WX_LIBS) 

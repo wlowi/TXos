@@ -35,7 +35,7 @@ ChannelDelay::ChannelDelay() : Module( MODULE_CHANNEL_DELAY_TYPE, TEXT_MODULE_CH
 
 /* From Module */
 
-void ChannelDelay::exportConfig( Exporter *exporter, uint8_t *config, moduleSize_t configSz) const {
+void ChannelDelay::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t configSz) const {
 
     const channelDelay_t *cfg = (channelDelay_t*)config;
 

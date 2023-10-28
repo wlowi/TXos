@@ -115,7 +115,8 @@ class ModuleManager {
         void importSystemConfig();
 
         void exportModels();
-        void importModels();
+        void exportModel( configBlockID_t modelID);
+        void importModel();
 };
 
 #endif

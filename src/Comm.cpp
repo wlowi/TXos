@@ -24,20 +24,20 @@
   SOFTWARE.
 */
 
-#include "Exporter.h"
+#include "Comm.h"
 
-Exporter::Exporter() {
+Comm::Comm() {
 
     textBuffer[0] = '\0';
 }
 
-bool Exporter::ensureSpace( uint16_t bytes) const {
+bool Comm::ensureSpace( uint16_t bytes) const {
 
     // +2 because every line is terminated by newline + null
-    return ( (idx + bytes +2) <= EXPORTER_TEXT_MAXLEN);
+    return ( (idx + bytes +2) <= COMM_TEXT_MAXLEN);
 }
 
-void Exporter::bufferChar( char ch) {
+void Comm::bufferChar( char ch) {
 
     // @TODO Escape character
     
@@ -52,7 +52,7 @@ void Exporter::bufferChar( char ch) {
     textBuffer[idx++] = ch;
 }
 
-void Exporter::bufferString( const char *s) {
+void Comm::bufferString( const char *s) {
 
     while( *s ) {
         bufferChar(*s);
@@ -60,27 +60,27 @@ void Exporter::bufferString( const char *s) {
     }
 }
 
-void Exporter::terminateLine() {
+void Comm::terminateLine() {
 
     textBuffer[idx++] = '\n';
     textBuffer[idx] = '\0';
 }
 
-void Exporter::write() {
+void Comm::write() {
 
     writePart();
     subLevel = 0;
     checksum = 0;
 }
 
-void Exporter::writePart() {
+void Comm::writePart() {
 
     if( idx > 0) {
 #ifdef ARDUINO
     Serial.write( textBuffer );
     Serial.flush();
 #else
-    LOGV("Exporter::write() EXPORT %ld bytes:\n%s", strlen(textBuffer), textBuffer);
+    LOGV("Comm::write() Sent %ld bytes:\n%s", strlen(textBuffer), textBuffer);
 #endif
     }
 
@@ -88,7 +88,7 @@ void Exporter::writePart() {
     idx = 0;
 }
 
-void Exporter::bufferUInt( uint32_t v) {
+void Comm::bufferUInt( uint32_t v) {
 
     char b[12]; // Max. 10 characters for a 32 bit number.
     uint8_t i = 0;
@@ -109,7 +109,7 @@ void Exporter::bufferUInt( uint32_t v) {
     }
 }
 
-void Exporter::bufferInt( int32_t v) {
+void Comm::bufferInt( int32_t v) {
 
     uint32_t uv;
 
@@ -123,7 +123,22 @@ void Exporter::bufferInt( int32_t v) {
     return bufferUInt( uv);
 }
 
-void Exporter::open( char bType, uint8_t bId) {
+void Comm::open( char bType) {
+
+    textBuffer[0] = '\0';
+    idx = 0;
+    subLevel = 0;
+    checksum = 0;
+
+    // "{TIII"
+    if( ensureSpace( 5)) {
+        bufferChar( '{');
+        bufferChar( bType);
+        terminateLine();
+    }
+}
+
+void Comm::open( char bType, uint8_t bId) {
 
     textBuffer[0] = '\0';
     idx = 0;
@@ -139,7 +154,7 @@ void Exporter::open( char bType, uint8_t bId) {
     }
 }
 
-void Exporter::openSub( char sType, uint8_t sId) {
+void Comm::openSub( char sType, uint8_t sId) {
 
     // "[TIII"
     if( ensureSpace( 5)) {
@@ -151,7 +166,7 @@ void Exporter::openSub( char sType, uint8_t sId) {
     }
 }
 
-void Exporter::close() {
+void Comm::close() {
 
     // "}ccc"
     // "]"
@@ -166,75 +181,132 @@ void Exporter::close() {
         terminateLine();
     }
 }
-void Exporter::addString( char fName, const char *text) {
+void Comm::addString( char fName, const char *text) {
 
     uint16_t len = (uint16_t)strlen(text);
 
     // "N"text"
     if( ensureSpace( 2 + len)) {
         bufferChar( fName);
-        bufferChar( '"');
+        bufferChar( COMM_DATATYPE_STRING);
         bufferString( text);
         terminateLine();
     }
 }
 
-void Exporter::addChar( char fName, char ch) {
+void Comm::addChar( char fName, char ch) {
 
     // "N'C"
     if( ensureSpace( 3)) {
         bufferChar( fName);
-        bufferChar( '\'');
+        bufferChar( COMM_DATATYPE_CHAR);
         bufferChar( ch);
         terminateLine();
     }
 }
 
-void Exporter::addBool( char fName, bool b) {
+void Comm::addBool( char fName, bool b) {
 
     // "N?B"
     if( ensureSpace( 3)) {
         bufferChar( fName);
-        bufferChar( '?');
+        bufferChar( COMM_DATATYPE_BOOL);
         bufferChar( b ? '1' : '0');
         terminateLine();
     }
 }
 
-void Exporter::addInt( char fName, int32_t d) {
+void Comm::addInt8( char fName, int8_t d) {
 
-    // "N#sdddddddddd"
-    if( ensureSpace( 13)) {
+    // "N-w:sddd"
+    if( ensureSpace( 8)) {
         bufferChar( fName);
-        bufferChar( '#');
+        bufferChar( COMM_DATATYPE_SIGNED_INT);
+        bufferChar( '1');
+        bufferChar( COMM_DATATYPE_DELIM);
         bufferInt( d);
         terminateLine();
     }
 }
 
-void Exporter::addUInt( char fName, uint32_t d) {
+void Comm::addUInt8( char fName, uint8_t d) {
 
-    // "N#dddddddddd"
-    if( ensureSpace( 12)) {
+    // "N+w:ddd"
+    if( ensureSpace( 7)) {
         bufferChar( fName);
-        bufferChar( '#');
+        bufferChar( COMM_DATATYPE_UNSIGNED_INT);
+        bufferChar( '1');
+        bufferChar( COMM_DATATYPE_DELIM);
         bufferUInt( d);
         terminateLine();
     }
 }
 
-void Exporter::addIntArr( char fName, const byte *arr, size_t sz, uint16_t cnt) {
+void Comm::addInt16( char fName, int16_t d) {
+
+    // "N-w:sddddd"
+    if( ensureSpace( 10)) {
+        bufferChar( fName);
+        bufferChar( COMM_DATATYPE_SIGNED_INT);
+        bufferChar( '2');
+        bufferChar( COMM_DATATYPE_DELIM);
+        bufferInt( d);
+        terminateLine();
+    }
+}
+
+void Comm::addUInt16( char fName, uint16_t d) {
+
+    // "N+w:ddddd"
+    if( ensureSpace( 9)) {
+        bufferChar( fName);
+        bufferChar( COMM_DATATYPE_UNSIGNED_INT);
+        bufferChar( '2');
+        bufferChar( COMM_DATATYPE_DELIM);
+        bufferUInt( d);
+        terminateLine();
+    }
+}
+void Comm::addInt32( char fName, int32_t d) {
+
+    // "N-w:sdddddddddd"
+    if( ensureSpace( 15)) {
+        bufferChar( fName);
+        bufferChar( COMM_DATATYPE_SIGNED_INT);
+        bufferChar( '4');
+        bufferChar( COMM_DATATYPE_DELIM);
+        bufferInt( d);
+        terminateLine();
+    }
+}
+
+void Comm::addUInt32( char fName, uint32_t d) {
+
+    // "N+w:dddddddddd"
+    if( ensureSpace( 14)) {
+        bufferChar( fName);
+        bufferChar( COMM_DATATYPE_UNSIGNED_INT);
+        bufferChar( '4');
+        bufferChar( COMM_DATATYPE_DELIM);
+        bufferUInt( d);
+        terminateLine();
+    }
+}
+
+void Comm::addIntArr( char fName, const byte *arr, size_t sz, uint16_t cnt) {
 
     /* byteSz 1, 2 or 4 */
     uint8_t byteSz = sz / cnt;
     uint16_t charSz = (byteSz==1 ? 5 : 0) + (byteSz==2 ? 7 : 0) + (byteSz==4 ? 12 : 0);
 
-    //LOGV("Exporter::addIntArr(): byteSz %d charSz %d\n", byteSz, charSz);
+    //LOGV("Comm::addIntArr(): byteSz %d charSz %d\n", byteSz, charSz);
 
-    // "N%ddd,ddd,ddd..."
-    if( ensureSpace( 2 + (cnt * charSz))) {
+    // "N#w:ddd,ddd,ddd..."
+    if( ensureSpace( 4 + (cnt * charSz))) {
         bufferChar( fName);
-        bufferChar( '%');
+        bufferChar( COMM_DATATYPE_SIGNED_ARRAY);
+        bufferUInt( byteSz);
+        bufferChar( COMM_DATATYPE_DELIM);
         for( uint16_t i = 0; i < cnt; i++) {
             if( i > 0) {
                 bufferChar( ',');
@@ -254,18 +326,20 @@ void Exporter::addIntArr( char fName, const byte *arr, size_t sz, uint16_t cnt) 
     }
 }
 
-void Exporter::addUIntArr( char fName, const byte *arr, size_t sz, uint16_t cnt) {
+void Comm::addUIntArr( char fName, const byte *arr, size_t sz, uint16_t cnt) {
 
     /* byteSz 1, 2 or 4 */
     uint8_t byteSz = sz / cnt;
     uint16_t charSz = (byteSz==1 ? 4 : 0) + (byteSz==2 ? 6 : 0) + (byteSz==4 ? 11 : 0);
 
-    //LOGV("Exporter::addUIntArr(): byteSz %d charSz %d\n", byteSz, charSz);
+    //LOGV("Comm::addUIntArr(): byteSz %d charSz %d\n", byteSz, charSz);
 
-    // "N%ddd,ddd,ddd..."
-    if( ensureSpace( 2 + (cnt * charSz))) {
+    // "N%w:ddd,ddd,ddd..."
+    if( ensureSpace( 4 + (cnt * charSz))) {
         bufferChar( fName);
-        bufferChar( '%');
+        bufferChar( COMM_DATATYPE_UNSIGNED_ARRAY);
+        bufferUInt( byteSz);
+        bufferChar( COMM_DATATYPE_DELIM);
         for( uint16_t i = 0; i < cnt; i++) {
             if( i > 0) {
                 bufferChar( ',');

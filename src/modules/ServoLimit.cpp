@@ -33,7 +33,7 @@ ServoLimit::ServoLimit() : Module( MODULE_SERVO_LIMIT_TYPE, TEXT_MODULE_SERVO_LI
     setDefaults();
 }
 
-void ServoLimit::exportConfig( Exporter *exporter, uint8_t *config, moduleSize_t configSz) const {
+void ServoLimit::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t configSz) const {
 
     const servoLimit_t *cfg = (servoLimit_t*)config;
 

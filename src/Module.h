@@ -32,7 +32,7 @@
 #define _Module_h_
 
 #include "TXos.h"
-#include "Exporter.h"
+#include "Comm.h"
 #include "TextUI.h"
 #include "Controls.h"
 
@@ -121,7 +121,7 @@ class Module : public TextUIScreen {
         virtual moduleSize_t getConfigSize() = 0;
 
         /* Export configuration of a module as text to USB */
-        virtual void exportConfig( Exporter *exporter, uint8_t *config, moduleSize_t configSz) const = 0;
+        virtual void exportConfig( Comm *exporter, uint8_t *config, moduleSize_t configSz) const = 0;
 
         /* Get the modules configuration type identifier.  */
         moduleType_t getConfigType() const;

@@ -38,13 +38,13 @@ bool EngineCut::isSave() {
 
 /* From Module */
 
-void EngineCut::exportConfig( Exporter *exporter, uint8_t *config, moduleSize_t configSz) const {
+void EngineCut::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t configSz) const {
 
     const engineCut_t *cfg = (engineCut_t*)config;
 
     exporter->openSub( 'M', MODULE_ENGINE_CUT_TYPE);
-    exporter->addUInt( 'W', cfg->swState);
-    exporter->addInt( 'P', cfg->cut_pct);
+    exporter->addUInt8( 'W', cfg->swState);
+    exporter->addInt8( 'P', cfg->cut_pct);
     exporter->close();
 }
 

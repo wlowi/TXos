@@ -35,12 +35,12 @@ ChannelReverse::ChannelReverse() : Module( MODULE_CHANNEL_REVERSE_TYPE, TEXT_MOD
 
 /* From Module */
 
-void ChannelReverse::exportConfig( Exporter *exporter, uint8_t *config, moduleSize_t configSz) const {
+void ChannelReverse::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t configSz) const {
 
     const channelReverse_t *cfg = (channelReverse_t*)config;
 
     exporter->openSub( 'M', MODULE_CHANNEL_REVERSE_TYPE);
-    exporter->addUInt( 'B', cfg->revBits);
+    exporter->addUInt16( 'B', cfg->revBits);
     exporter->close();
 }
 

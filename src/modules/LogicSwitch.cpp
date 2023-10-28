@@ -37,7 +37,7 @@ LogicSwitch::LogicSwitch() : Module( MODULE_LOGIC_SWITCH_TYPE, TEXT_MODULE_LOGIC
 
 /* From Module */
 
-void LogicSwitch::exportConfig( Exporter *exporter, uint8_t *config, moduleSize_t configSz) const {
+void LogicSwitch::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t configSz) const {
 
     const logicSwitch_t *cfg = (logicSwitch_t*)config;
 

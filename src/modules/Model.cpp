@@ -34,18 +34,18 @@ Model::Model() : Module( MODULE_MODEL_TYPE, TEXT_MODULE_MODEL) {
     setDefaults();
 }
 
-void Model::exportConfig( Exporter *exporter, uint8_t *config, moduleSize_t configSz) const {
+void Model::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t configSz) const {
 
     const model_t *cfg = (model_t*)config;
 
     exporter->openSub( 'M', MODULE_MODEL_TYPE);
     exporter->addString( 'N', cfg->modelName);
-    exporter->addUInt( 'M', cfg->wingMix);
-    exporter->addUInt( 'Q', cfg->qrDiffSw);
+    exporter->addUInt8( 'M', cfg->wingMix);
+    exporter->addUInt8( 'Q', cfg->qrDiffSw);
     exporter->addUIntArr( 'W', (const byte*)cfg->mixSw, sizeof(cfg->mixSw), TEXT_MIX_count);
     exporter->addIntArr( 'P', (const byte*)cfg->mixPct, sizeof(cfg->mixPct), TEXT_MIX_count);
     exporter->addIntArr( 'O', (const byte*)cfg->mixOffset, sizeof(cfg->mixOffset), TEXT_MIX_count);
-    exporter->addInt( 'D', cfg->qrDiffPct);
+    exporter->addInt8( 'D', cfg->qrDiffPct);
     exporter->close();
 }
 

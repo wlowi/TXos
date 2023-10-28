@@ -33,7 +33,7 @@ CalibrateSticks::CalibrateSticks() : Module( MODULE_CAL_STICKS_TYPE, TEXT_MODULE
 
 /* From Module */
 
-void CalibrateSticks::exportConfig( Exporter *exporter, uint8_t *config, moduleSize_t configSz) const {
+void CalibrateSticks::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t configSz) const {
 
     const calibrateSticks_t *cfg = (calibrateSticks_t*)config;
 

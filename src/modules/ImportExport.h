@@ -34,6 +34,8 @@ class ImportExport : public Module {
     NO_CONFIG()
 
     private:
+        uint8_t state;
+        bool changed;
 
     public:
         ImportExport();
@@ -41,8 +43,11 @@ class ImportExport : public Module {
         /* From Module */
         void run( Controls &controls) final;
         void setDefaults() final;
-        void exportConfig( Exporter *exporter, uint8_t *config, moduleSize_t configSz) const {};
+        void exportConfig( Comm *exporter, uint8_t *config, moduleSize_t configSz) const {};
         
+        void moduleEnter();
+        void moduleExit();
+
         /* From TableEditable */
         uint8_t getRowCount() final;
         const char *getRowName( uint8_t row) final;
@@ -50,8 +55,8 @@ class ImportExport : public Module {
         void getValue( uint8_t row, uint8_t col, Cell *cell) final;
 
         bool isRowEditable( uint8_t row) final { return false; }
-        bool isRowExecutable( uint8_t row) final { return true; };
-        void rowExecute( TextUI *ui, uint8_t row ) final;
+        bool isRowExecutable( uint8_t row) final { return false; };
+        bool hasChanged( uint8_t row, uint8_t col) final;
 };
 
 #endif

@@ -81,6 +81,13 @@ class ConfigBlock {
 
     private:
         size_t storageSize;
+
+        /* For 4096 bytes of EEPROM modelBlockCount is 15:
+         * 1 system config block of size SYSTEMCONFIG_BLOCK_SIZE (128) =  128
+         * 15 model config blocks of size MODELCONFIG_BLOCK_SIZE (264) = 3960
+         *                                                               ====
+         *                                                               4088
+         */
         configBlockID_t modelBlockCount;
 
         configBlockID_t blockID = CONFIG_BLOCKID_INVALID;

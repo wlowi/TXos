@@ -40,7 +40,7 @@ AssignInput::AssignInput() : Module( MODULE_ASSIGN_INPUT_TYPE, TEXT_MODULE_ASSIG
 
 /* From Module */
 
-void AssignInput::exportConfig( Exporter *exporter, uint8_t *config, moduleSize_t configSz) const {
+void AssignInput::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t configSz) const {
 
     const assignInput_t *cfg = (assignInput_t*)config;
 

@@ -29,6 +29,9 @@
 
 extern ModuleManager moduleManager;
 
+const uint8_t STATE_INACTIVE = 0;
+const uint8_t STATE_CONNECTING = 1;
+
 ImportExport::ImportExport() : Module( MODULE_IMPORTEXPORT_TYPE, TEXT_MODULE_IMPORTEXPORT) {
 
     setDefaults();
@@ -36,56 +39,91 @@ ImportExport::ImportExport() : Module( MODULE_IMPORTEXPORT_TYPE, TEXT_MODULE_IMP
 
 /* From Module */
 
+/* Initial state is STATE_CONNECTING.
+ * In this state we are waiting for a connnect request.
+ * Once the connect request is received we send an info packet.
+ * The info packet contains the firmware release and the number of supported models.
+*/
+
 void ImportExport::run( Controls &controls) {
 
+    switch( state) {
+        case STATE_CONNECTING:
+            break;
+
+        case STATE_INACTIVE:
+        default:
+            break;
+    }
     /* noop */
 }
 
 void ImportExport::setDefaults() {
 
+    state = STATE_INACTIVE;
+    changed = true;
+}
+
+void ImportExport::moduleEnter() {
+
+    state = STATE_CONNECTING;
+    changed = true;
+}
+        
+void ImportExport::moduleExit() {
+
+    setDefaults();
 }
 
 /* From TextUIScreen */
 
-void ImportExport::rowExecute( TextUI *ui, uint8_t row ) {
+bool ImportExport::hasChanged( uint8_t row, uint8_t col) {
 
-    LOG("ImportExport::rowExecute(): called\n");
-
-    if( row == 0) {
-        moduleManager.exportModels();
-    } else if( row == 1) {
-        moduleManager.importModels();
-    } else if( row == 2) {
-        moduleManager.exportSystemConfig();
-    } else {
-        moduleManager.importSystemConfig();
+    bool ret = false;
+    
+    if( row == 2) {
+        ret = changed;
+        changed = false;
     }
+
+    return ret;
 }
 
 uint8_t ImportExport::getRowCount() {
 
-    return 4;
+    return 3;
 }
 
 const char *ImportExport::getRowName( uint8_t row) {
 
-    if( row == 0) {
-        return TEXT_EXPORT;
-    } else if( row == 1) {
-        return TEXT_IMPORT;
-    } else if( row == 2) {
-        return TEXT_EXPORT_SYS;
-    } else {
-        return TEXT_IMPORT_SYS;
+    if( row == 1) {
+        return TEXT_STATUS;
     }
+
+    return "";
 }
 
 uint8_t ImportExport::getColCount( uint8_t row) {
 
-    return 1;
+    if( row == 2) {
+        return 1;
+    }
+
+    return 0;
 }
 
 void ImportExport::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
-    cell->setLabel( 10, TEXT_OFF, strlen(TEXT_OFF));
+    if( row == 2 ) {
+        switch( state) {
+
+            case STATE_INACTIVE:
+                cell->setLabel( 0, TEXT_OFF, strlen(TEXT_OFF));
+                break;
+
+            case STATE_CONNECTING:
+                cell->setLabel( 0, TEXT_CONNECTING, strlen(TEXT_CONNECTING));
+                break;
+        }
+    }
 }

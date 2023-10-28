@@ -54,7 +54,7 @@ void Mixer::limitChannels( Controls &controls) {
 
 /* From Module */
 
-void Mixer::exportConfig( Exporter *exporter, uint8_t *config, moduleSize_t configSz) const {
+void Mixer::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t configSz) const {
 
     const mixer_t *cfg = (mixer_t*)config;
 

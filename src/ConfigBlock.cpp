@@ -65,7 +65,7 @@ configBlock_rc ConfigBlock::readBlock( configBlockID_t id) {
     return CONFIGBLOCK_RC_INVID;
 }
 
-/*
+/* Format member variable "block".
  * Verify config block id and format a block.
  * Formatting a block means filling it with 0xff.
  */
@@ -86,7 +86,7 @@ configBlock_rc ConfigBlock::formatBlock( configBlockID_t id) {
     return CONFIGBLOCK_RC_INVID;  
 }
 
-/*
+/* Write content of member variable "block" to EEPROM.
  * Verify current block id, update block checksum and write block to EEPROM.
  */
 configBlock_rc ConfigBlock::writeBlock() {

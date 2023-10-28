@@ -41,7 +41,7 @@ channel_t ModeAssign::getModeChannel( channel_t ch) const {
 
 /* From Module */
 
-void ModeAssign::exportConfig( Exporter *exporter, uint8_t *config, moduleSize_t configSz) const {
+void ModeAssign::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t configSz) const {
 
     const modeAssign_t *cfg = (modeAssign_t*)config;
 

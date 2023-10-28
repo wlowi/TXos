@@ -33,7 +33,7 @@ CalibrateTrim::CalibrateTrim() : Module( MODULE_CAL_TRIM_TYPE, TEXT_MODULE_CAL_T
 
 /* From Module */
 
-void CalibrateTrim::exportConfig( Exporter *exporter, uint8_t *config, moduleSize_t configSz) const {
+void CalibrateTrim::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t configSz) const {
 
     const calibrateTrim_t *cfg = (calibrateTrim_t*)config;
 

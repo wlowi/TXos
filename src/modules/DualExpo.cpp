@@ -54,7 +54,7 @@ DualExpo::DualExpo() : Module( MODULE_DUAL_EXPO_TYPE, TEXT_MODULE_DUAL_EXPO) {
 
 /* From Module */
 
-void DualExpo::exportConfig( Exporter *exporter, uint8_t *config, moduleSize_t configSz) const {
+void DualExpo::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t configSz) const {
 
     const dualExpo_t *cfg = (dualExpo_t*)config;
 
