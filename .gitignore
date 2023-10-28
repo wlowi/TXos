@@ -8,4 +8,5 @@ src/TXosTest
 src/TXosUnitTest
 txboardmega/*-bak
 txboardmega/*.bck
+txboardmega/*-backups
 doc/expo.ods
