@@ -83,19 +83,19 @@ class OutputImpl
         uint8_t currentSet;
 
     private:
-    	  /* Count how may times the user mode code was unable to compute 
-     	   * and set all channels within one PPM frame.
-     	   * This should always be 0.
-     	   */
-    	  uint16_t ppmOverrun;
-    	  bool channelSetDone;
+        /* Count how may times the user mode code was unable to compute 
+         * and set all channels within one PPM frame.
+         * This should always be 0.
+         */
+        uint16_t ppmOverrun;
+        bool channelSetDone;
     	
     public:
         OutputImpl();
 
-    	  void switchSet();
+        void switchSet();
 
-	      bool acceptChannels();
+        bool acceptChannels();
         void SetChannelValue( int channel, int value);
         
         timingUsec_t getInFrameTime();
@@ -103,7 +103,7 @@ class OutputImpl
         uint16_t getOverrunCounter();
         
     private:
-    	  void init();
+        void init();
 };
 
 #endif

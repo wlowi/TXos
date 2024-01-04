@@ -30,6 +30,10 @@
  */
 
 #include "ServoTest.h"
+#include "ServoRemap.h"
+#include "ModuleManager.h"
+
+extern ModuleManager moduleManager;
 
 #define TEST_COUNT 7
 
@@ -68,7 +72,14 @@ void ServoTest::run( Controls &controls) {
             doInit = false;
         }
 
+        ServoRemap *remap = (ServoRemap*)moduleManager.getModuleByType( MODULE_SET_MODEL, MODULE_SERVO_REMAP_TYPE);
+
         for( channel_t ch = 0; ch < PPM_CHANNELS; ch++) {        
+
+            // For safety: Do not test engine channel
+            if( remap && (remap->getSourceForChannel(ch) == CHANNEL_THROTTLE)) {
+                continue;
+            }
 
             switch( testNo) {
             case 0: // -125%

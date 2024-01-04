@@ -32,38 +32,50 @@
 extern OutputImpl *outputImpl;
 extern InputImpl *inputImpl;
 
-static channel_t outputChannel;
+static channel_t outputChannel = 0;
 
-/* inFrameTime is used to compute the remaining time until frame end */
-static volatile timingUsec_t inFrameTime;
-static volatile timingUsec_t maxFrameTime_usec;
+/* inFrameTime is used to compute the remaining time until frame end.
+ * Unit is 0.5 usec because timer is running at 2 Mhz.
+ */
+static volatile timingUsec_t inFrameTime_half_uSec = 0;
+static volatile timingUsec_t maxFrameTime_half_uSec = 0;
 
 ISR(TIMER3_OVF_vect) {
 
-  timingUsec_t nextTimerValue;
+  timingUsec_t nextTimerTop;
   
+  /* Output compare register is set to trigger at space end which is 400 usec. 
+   * The pin will be set to high at output compare match and 
+   * reset at TOP.
+   */
   if( outputChannel >= PPM_CHANNELS) {
-    
-    nextTimerValue = (PPM_FRAME_usec << 1) - inFrameTime;
 
     outputImpl->switchSet();
     inputImpl->start();
 
-    inFrameTime = 0;
+    /* Fill gap until end of frame time (22msec) */
+    nextTimerTop = (PPM_FRAME_usec << 1) - inFrameTime_half_uSec;
+    inFrameTime_half_uSec += nextTimerTop;
+
+    if( inFrameTime_half_uSec > maxFrameTime_half_uSec) {
+        maxFrameTime_half_uSec = inFrameTime_half_uSec;
+    }
+
+    inFrameTime_half_uSec = 0;
     outputChannel = 0;
-    
+
   } else {
     
-    nextTimerValue = (outputImpl->ppmSet[outputImpl->currentSet].channel[outputChannel]) << 1;
-    inFrameTime += nextTimerValue;
+    nextTimerTop = (outputImpl->ppmSet[outputImpl->currentSet].channel[outputChannel]) << 1;
+    inFrameTime_half_uSec += nextTimerTop;
     outputChannel++;
   }
-  
+
   /* We nedd to count 1498..1499..0..1
    * not 1498..1499..1500..0..1
    */
-  nextTimerValue--;
-  ICR3 = nextTimerValue;
+  nextTimerTop--;
+  ICR3 = nextTimerTop;
 }
 
 OutputImpl::OutputImpl() {
@@ -75,7 +87,7 @@ OutputImpl::OutputImpl() {
  * - Set all channels to mid.
  * - Switch PPM pin to output.
  * - Initialize timer
- *     Timer 1 counts at a rate of 2Mhz ( 0.5 micro sec. )
+ *     Timer 3 counts at a rate of 2Mhz ( 0.5 micro sec. )
  */
 void OutputImpl::init() {
 
@@ -86,13 +98,17 @@ void OutputImpl::init() {
             ppmSet[1].channel[i] = PPM_MID_usec;
         }
 
-        maxFrameTime_usec = 0;
+        maxFrameTime_half_uSec = 0;
         ppmOverrun = 0;
         channelSetDone = true;
 
         outputChannel = 0;
-        inFrameTime = 0;
-    
+        inFrameTime_half_uSec = 0;
+        
+        TCCR3A = (byte)0;
+        TCCR3B = (byte)0;
+        TCCR3C = (byte)0;
+
         pinMode( PPM_PORT, OUTPUT);
     
         /* Enable timer in power reduction register */
@@ -115,7 +131,7 @@ void OutputImpl::init() {
         ICR3 = ((PPM_SPACE_usec + PPM_INIT_usec) << 1) -1;
 
         /* Set compare to end of pulse
-         * Subtract 1 because we count 298..299..0..1
+         * Subtract 1 because we count 798..799..0..1
          */
         OCR3A = (PPM_SPACE_usec << 1) -1;
     
@@ -129,7 +145,7 @@ timingUsec_t OutputImpl::getMaxFrameTime() {
     timingUsec_t t;
 
     ATOMIC_BLOCK( ATOMIC_RESTORESTATE) {
-        t = maxFrameTime_usec;
+        t = maxFrameTime_half_uSec / 2;
     }
     
     return t;

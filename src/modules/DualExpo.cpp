@@ -32,19 +32,29 @@ extern ModuleManager moduleManager;
 
 extern const char* const LogicalChannelNames[LOGICAL_CHANNELS];
 
-#define EXPO_LOOKUP_TABLE_SIZE   10
+#define EXPO_LOOKUP_TABLE_SIZE   20
 
 const channelValue_t expoLookup[EXPO_LOOKUP_TABLE_SIZE] = {
-    7,      //  0-10%      0 - 125
-    17,     // 10-20%    126 - 250
-    35,     // 20-30%    251 - 375
-    64,     // 30-40%    376 - 500
-    111,    // 40-50%    501 - 625
-    190,    // 50-60%    626 - 750
-    320,    // 60-70%    751 - 875
-    534,    // 70-80%    876 - 1000
-    886,    // 80-90%   1001 - 1125
-    1250    // 90-100%  1126 - 1250
+    3,      //  0- 5%       0 -  62
+    6,      //  5-10%      62 - 125
+    10,     // 10-15%     125 - 187
+    15,     // 15-20%     187 - 250
+    21,     // 20-25%     250 - 312
+    29,     // 25-30%     312 - 375
+    40,     // 30-35%     375 - 437
+    54,     // 35-40%     437 - 500
+    72,     // 40-45%     500 - 562
+    95,     // 45-50%     562 - 625
+    124,    // 50-55%     625 - 687
+    162,    // 55-60%     687 - 750
+    210,    // 60-65%     750 - 812
+    272,    // 65-70%     812 - 875
+    352,    // 70-75%     875 - 937
+    454,    // 75-80%     937 - 1000
+    586,    // 80-85%    1000 - 1062
+    755,    // 85-90%    1062 - 1125
+    972,    // 90-95%    1125 - 1187
+    1250   // 95-100%   1187 - 1250
 };
 
 DualExpo::DualExpo() : Module( MODULE_DUAL_EXPO_TYPE, TEXT_MODULE_DUAL_EXPO) {
@@ -114,21 +124,22 @@ void DualExpo::applyExpo( Controls &controls, channel_t ch, percent_t pct) {
         v = -v;
     }
 
-    interval = (uint8_t)(v / dx); // interval in range 0 - 10
+    interval = (uint8_t)(v / dx); // interval in range 0 - 20
 
-    if( interval < EXPO_LOOKUP_TABLE_SIZE) {
-        x1 = interval * dx;
-        x2 = (interval+1) * dx;
-
-        y1 = (interval == 0) ? 0
-            : ((pct * ((long)expoLookup[interval-1]*dx/125)) + ((long)(100 - pct) * x1)) / 100L;
- 
-        y2 =  ((pct * ((long)expoLookup[interval]*dx/125)) + ((long)(100 - pct) * x2)) / 100L;
-
-        v = (channelValue_t)((long)(v-x1) * (long)(y2-y1) / dx) + y1;
-
-        controls.logicalSet( ch, (channelValue_t)(negative ? -v : v));
+    if( interval >= EXPO_LOOKUP_TABLE_SIZE) {
+        interval = EXPO_LOOKUP_TABLE_SIZE-1;
     }
+
+    x1 = interval * dx;
+    x2 = (interval+1) * dx;
+    
+    y1 = (interval == 0) ? 0
+        : ((pct * ((long)expoLookup[interval-1]*dx/125)) + ((long)(100 - pct) * x1)) / 100L;
+ 
+    y2 =  ((pct * ((long)expoLookup[interval]*dx/125)) + ((long)(100 - pct) * x2)) / 100L;
+
+    v = (channelValue_t)((long)(v-x1) * (long)(y2-y1) / dx) + y1;
+    controls.logicalSet( ch, (channelValue_t)(negative ? -v : v));
 }
 
 void DualExpo::setDefaults() {

@@ -44,6 +44,12 @@ class ServoRemap : public Module {
     public:
         ServoRemap();
 
+        /* Get source for servo channel. 
+         * E.g. CHANNEL_THROTTLE
+         * Used by servo test to skip throttle channel for safety.
+         */
+        channel_t getSourceForChannel( channel_t ch) { return ch < PPM_CHANNELS ? CFG->source[ch] : 0; }
+
         /* From Module */
         void run( Controls &controls) final;
         void setDefaults() final;

@@ -61,7 +61,7 @@
  * generate the PPM signal.
  */
 #define PPM_CHANNELS                  ((channel_t)9)
-#define PPM_FRAME_TIME_MSEC           (22)
+#define PPM_FRAME_TIME_MSEC           (21)
 
 /* Total number of switches. Max is 16.
  * This includes channel switches and logical switches.
