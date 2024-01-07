@@ -53,7 +53,7 @@
  */
 
 
-#define PPM_FRAME_usec      ((timingUsec_t) (PPM_FRAME_TIME_MSEC * 1000))
+#define PPM_FRAME_usec      ((timingUsec_t) PPM_FRAME_TIME_usec)
 #define PPM_SPACE_usec      ((timingUsec_t)  400)
 #define PPM_MID_usec        ((timingUsec_t) 1500)
 

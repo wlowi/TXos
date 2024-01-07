@@ -31,6 +31,8 @@
 
 /* Delay channel movement for all mixable channels. */
 
+#define CHANNELDELAY_MAX_SEC     (10)
+
 typedef struct channelDelay_t {
 
     float1 posDelay_sec[MIX_CHANNELS];

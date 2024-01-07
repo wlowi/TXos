@@ -49,44 +49,35 @@ void ChannelDelay::run( Controls &controls) {
 
 #define SCALING_F (10)
 
-    int16_t target10;   // scaled by 10 for increased precision
-    int16_t limit10;    // same here
+    int16_t targetPosition10;  // scaled by 10 for increased precision
+    int16_t stepPosition10;    // same here
     int16_t delay_msec;
 
     for( uint8_t mix = 0; mix < MIX_CHANNELS; mix++) {
 
-        target10 = controls.logicalGet( mix) * SCALING_F;
+        /* The target position in 1/10 % scaled to 1/100 % */
+        targetPosition10 = controls.logicalGet( mix) * SCALING_F;
 
-        if( CFG->posDelay_sec[mix] == 0 && CFG->negDelay_sec[mix] == 0) {
-            lastChannelValue10[mix] = target10;
+        if( (CFG->posDelay_sec[mix] > 0) && (targetPosition10 > lastChannelValue10[mix]) ) {
+            // posDelay_sec is a scaled float in 1/10 sec resolution. Convert to msec.
+            delay_msec = CFG->posDelay_sec[mix] * 100;
+            stepPosition10 = (int16_t)((int32_t)((CHANNELVALUE_MAX - CHANNELVALUE_MIN) * SCALING_F) * PPM_FRAME_TIME_usec / 1000 / delay_msec);
+            lastChannelValue10[mix] += stepPosition10;
+            if( lastChannelValue10[mix] > targetPosition10) { // Do not exceed targeted value.
+                lastChannelValue10[mix] = targetPosition10;
+            }
+
+        } else if( (CFG->negDelay_sec[mix] > 0) && (targetPosition10 < lastChannelValue10[mix]) ) {
+            delay_msec = CFG->negDelay_sec[mix] * 100;
+            stepPosition10 = (int16_t)((int32_t)((CHANNELVALUE_MAX - CHANNELVALUE_MIN) * SCALING_F) * PPM_FRAME_TIME_usec / 1000 / delay_msec);
+            lastChannelValue10[mix] -= stepPosition10;
+            if( lastChannelValue10[mix] < targetPosition10) {
+                lastChannelValue10[mix] = targetPosition10;
+            }
+
+        } else {
+            lastChannelValue10[mix] = targetPosition10;
             continue;
-        }
-
-        if( lastChannelValue10[mix] < target10) {
-            if( CFG->posDelay_sec[mix] > 0) {
-                // posDelay_sec is a scaled float in 1/10 sec resolution.
-                delay_msec = CFG->posDelay_sec[mix] * 100;
-                limit10 = ((CHANNELVALUE_MAX - CHANNELVALUE_MIN) * SCALING_F) / (delay_msec / PPM_FRAME_TIME_MSEC);
-                lastChannelValue10[mix] += limit10;
-                if( lastChannelValue10[mix] > target10) {
-                    lastChannelValue10[mix] = target10;
-                }
-            } else {
-               lastChannelValue10[mix] = target10;
-            }
-
-        } else if( lastChannelValue10[mix] > target10) {
-            if( CFG->negDelay_sec[mix] > 0) {
-                delay_msec = CFG->negDelay_sec[mix] * 100;
-                limit10 = ((CHANNELVALUE_MAX - CHANNELVALUE_MIN) * SCALING_F) / (delay_msec / PPM_FRAME_TIME_MSEC);
-                lastChannelValue10[mix] -= limit10;
-                if( lastChannelValue10[mix] < target10) {
-                    lastChannelValue10[mix] = target10;
-                }
-            } else {
-                lastChannelValue10[mix] = target10;
-            }
-
         }
 
         controls.logicalSet( mix, (channelValue_t)(lastChannelValue10[mix] / SCALING_F));
@@ -128,9 +119,9 @@ uint8_t ChannelDelay::getColCount( uint8_t row) {
 void ChannelDelay::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
     if( col == 0) {
-        cell->setFloat1( 4, CFG->posDelay_sec[row], 4, 0, 100 /* 10.0 sec */);
+        cell->setFloat1( 4, CFG->posDelay_sec[row], 4, 0, CHANNELDELAY_MAX_SEC * 10 /* 10.0 sec */);
     } else if( col == 1) {
-        cell->setFloat1( 9, CFG->negDelay_sec[row], 4, 0, 100 /* 10.0 sec */);
+        cell->setFloat1( 9, CFG->negDelay_sec[row], 4, 0, CHANNELDELAY_MAX_SEC * 10 /* 10.0 sec */);
     }
 }
 
