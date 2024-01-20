@@ -52,9 +52,9 @@ void Phases::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t configS
 
     const phases_t *cfg = (phases_t*)config;
 
-    exporter->openSub( 'M', MODULE_PHASES_TYPE);
-    exporter->addUInt8( 'W', cfg->sw);
-    exporter->addUIntArr( 'N', (const byte*)cfg->phaseName, sizeof(cfg->phaseName), PHASES);
+    exporter->openSub( COMM_SUBPACKET_PHASES );
+    exporter->addUInt8( COMM_FIELD_SWITCH, cfg->sw);
+    exporter->addUIntArr( COMM_FIELD_PHASE_NAMES, (const byte*)cfg->phaseName, sizeof(cfg->phaseName), PHASES);
     exporter->close();
 }
 

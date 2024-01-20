@@ -39,8 +39,8 @@ void ChannelRange::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t c
 
     const channelRange_t *cfg = (channelRange_t*)config;
 
-    exporter->openSub( 'M', MODULE_CHANNEL_RANGE_TYPE);
-    exporter->addIntArr( 'P', (const byte*)cfg->range_pct, sizeof(cfg->range_pct), PORT_ANALOG_INPUT_COUNT);
+    exporter->openSub( COMM_SUBPACKET_CHANNEL_RANGE );
+    exporter->addIntArr( COMM_FIELD_PERCENT_ARRAY, (const byte*)cfg->range_pct, sizeof(cfg->range_pct), PORT_ANALOG_INPUT_COUNT);
     exporter->close();
 }
 

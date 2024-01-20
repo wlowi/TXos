@@ -40,8 +40,8 @@ void ServoRemap::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t con
 
     const servoRemap_t *cfg = (servoRemap_t*)config;
 
-    exporter->openSub( 'M', MODULE_SERVO_REMAP_TYPE);
-    exporter->addUIntArr( 'C', (const byte*)cfg->source, sizeof(cfg->source), PPM_CHANNELS);
+    exporter->openSub( COMM_SUBPACKET_SERVO_REMAP );
+    exporter->addUIntArr( COMM_FIELD_CHANNEL_ARRAY, (const byte*)cfg->source, sizeof(cfg->source), PPM_CHANNELS);
     exporter->close();
 }
 

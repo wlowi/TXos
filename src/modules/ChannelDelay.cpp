@@ -39,9 +39,9 @@ void ChannelDelay::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t c
 
     const channelDelay_t *cfg = (channelDelay_t*)config;
 
-    exporter->openSub( 'M', MODULE_CHANNEL_DELAY_TYPE);
-    exporter->addIntArr( 'P', (const byte*)cfg->posDelay_sec, sizeof(cfg->posDelay_sec), MIX_CHANNELS);
-    exporter->addIntArr( 'N', (const byte*)cfg->negDelay_sec, sizeof(cfg->negDelay_sec), MIX_CHANNELS);
+    exporter->openSub( COMM_SUBPACKET_CHANNEL_DELAY );
+    exporter->addIntArr( COMM_FIELD_DELAY_ARRAY, (const byte*)cfg->posDelay_sec, sizeof(cfg->posDelay_sec), MIX_CHANNELS);
+    exporter->addIntArr( COMM_FIELD_NEG_DELAY_ARRAY, (const byte*)cfg->negDelay_sec, sizeof(cfg->negDelay_sec), MIX_CHANNELS);
     exporter->close();
 }
 

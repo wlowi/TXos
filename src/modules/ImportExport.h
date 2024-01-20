@@ -29,6 +29,39 @@
 
 #include "Module.h"
 
+/* A dictionary describes fields to export and import via ImportExport class.
+ *
+ * To save memory the dictionary is stored in PROGMEM.
+ * This helper macros make it easier to defined the dictionary data structures.
+ *
+ */
+typedef struct DICTROW_t {
+    uint8_t dataType;
+    nameType_t rowName;
+    size_t offset;
+    size_t size;
+    uint16_t count;
+} DICTROW_t;
+
+typedef struct DICT_t {
+    nameType_t name;
+    nameType_t subName;
+} DICT_t;
+
+
+/* r=row name n=field name s=structure f=field c=count */
+#define DICTROW( r, n, s, f, c ) \
+static const DICTROW_t r PROGMEM = { 1, n, offsetof( s, f), sizeof( s::f), c };
+
+#define DICT( d, n, s, ... ) \
+static const DICT_t d##_dict PROGMEM = { n, s }; \
+static const DICTROW_t* const d##_rows[] PROGMEM = { __VA_ARGS__ };
+
+#define DICTROW_P( d ) &d##_rows
+#define DICT_P( d ) &d##_dict
+
+
+
 class ImportExport : public Module {
 
     NO_CONFIG()
@@ -36,9 +69,11 @@ class ImportExport : public Module {
     private:
         uint8_t state;
         bool changed;
+        Stream &inOut;
+        Comm &comm;
 
     public:
-        ImportExport();
+        ImportExport( Stream &stream);
 
         /* From Module */
         void run( Controls &controls) final;

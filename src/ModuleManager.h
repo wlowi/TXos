@@ -111,12 +111,12 @@ class ModuleManager {
         void loadSystemConfig( configBlockID_t blockID);
         void saveSystemConfig( configBlockID_t blockID);
 
-        void exportSystemConfig();
-        void importSystemConfig();
+        void exportSystemConfig( Comm &comm);
+        void importSystemConfig( Comm &comm);
 
-        void exportModels();
-        void exportModel( configBlockID_t modelID);
-        void importModel();
+        void exportModels( Comm &comm);
+        void exportModel(  Comm &comm, configBlockID_t modelID);
+        void importModel( Comm &comm);
 };
 
 #endif

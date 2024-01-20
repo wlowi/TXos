@@ -45,8 +45,8 @@ void ModeAssign::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t con
 
     const modeAssign_t *cfg = (modeAssign_t*)config;
 
-    exporter->openSub( 'M', MODULE_MODE_ASSIGN_TYPE);
-    exporter->addUIntArr( 'C', (const byte*)cfg->source, sizeof(cfg->source), MODE_CHANNELS);
+    exporter->openSub( COMM_SUBPACKET_MODE_ASSIGN );
+    exporter->addUIntArr( COMM_FIELD_CHANNEL_ARRAY, (const byte*)cfg->source, sizeof(cfg->source), MODE_CHANNELS);
     exporter->close();
 }
 

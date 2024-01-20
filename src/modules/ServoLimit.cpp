@@ -37,9 +37,9 @@ void ServoLimit::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t con
 
     const servoLimit_t *cfg = (servoLimit_t*)config;
 
-    exporter->openSub( 'M', MODULE_SERVO_LIMIT_TYPE);
-    exporter->addIntArr( 'P', (const byte *)cfg->posLimit_pct, sizeof(cfg->posLimit_pct), PPM_CHANNELS);
-    exporter->addIntArr('N', (const byte*)cfg->negLimit_pct, sizeof(cfg->negLimit_pct), PPM_CHANNELS);
+    exporter->openSub( COMM_SUBPACKET_SERVO_LIMIT );
+    exporter->addIntArr( COMM_FIELD_PERCENT_ARRAY, (const byte *)cfg->posLimit_pct, sizeof(cfg->posLimit_pct), PPM_CHANNELS);
+    exporter->addIntArr( COMM_FIELD_NEG_PERCENT_ARRAY, (const byte*)cfg->negLimit_pct, sizeof(cfg->negLimit_pct), PPM_CHANNELS);
     exporter->close();
 }
 

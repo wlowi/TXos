@@ -38,14 +38,14 @@ void Model::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t configSz
 
     const model_t *cfg = (model_t*)config;
 
-    exporter->openSub( 'M', MODULE_MODEL_TYPE);
-    exporter->addString( 'N', cfg->modelName);
-    exporter->addUInt8( 'M', cfg->wingMix);
-    exporter->addUInt8( 'Q', cfg->qrDiffSw);
-    exporter->addUIntArr( 'W', (const byte*)cfg->mixSw, sizeof(cfg->mixSw), TEXT_MIX_count);
-    exporter->addIntArr( 'P', (const byte*)cfg->mixPct, sizeof(cfg->mixPct), TEXT_MIX_count);
-    exporter->addIntArr( 'O', (const byte*)cfg->mixOffset, sizeof(cfg->mixOffset), TEXT_MIX_count);
-    exporter->addInt8( 'D', cfg->qrDiffPct);
+    exporter->openSub( COMM_SUBPACKET_MODEL );
+    exporter->addString( COMM_FIELD_MODEL_NAME, cfg->modelName);
+    exporter->addUInt8( COMM_FIELD_MODEL_MIX, cfg->wingMix);
+    exporter->addUInt8( COMM_FIELD_MODEL_SWITCH_QDIFF, cfg->qrDiffSw);
+    exporter->addInt8( COMM_FIELD_MODEL_QDIFF_PCT, cfg->qrDiffPct);
+    exporter->addUIntArr( COMM_FIELD_MODEL_SWITCH_MIX, (const byte*)cfg->mixSw, sizeof(cfg->mixSw), TEXT_MIX_count);
+    exporter->addIntArr( COMM_FIELD_MODEL_PERCENT_MIX, (const byte*)cfg->mixPct, sizeof(cfg->mixPct), TEXT_MIX_count);
+    exporter->addIntArr( COMM_FIELD_MODEL_OFFSET_MIX, (const byte*)cfg->mixOffset, sizeof(cfg->mixOffset), TEXT_MIX_count);
     exporter->close();
 }
 

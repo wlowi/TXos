@@ -32,7 +32,7 @@ extern ModuleManager moduleManager;
 const uint8_t STATE_INACTIVE = 0;
 const uint8_t STATE_CONNECTING = 1;
 
-ImportExport::ImportExport() : Module( MODULE_IMPORTEXPORT_TYPE, TEXT_MODULE_IMPORTEXPORT) {
+ImportExport::ImportExport( Stream &stream) : Module( MODULE_IMPORTEXPORT_TYPE, TEXT_MODULE_IMPORTEXPORT), inOut( stream), comm(*new Comm(&stream)) {
 
     setDefaults();
 }
@@ -47,15 +47,37 @@ ImportExport::ImportExport() : Module( MODULE_IMPORTEXPORT_TYPE, TEXT_MODULE_IMP
 
 void ImportExport::run( Controls &controls) {
 
-    switch( state) {
-        case STATE_CONNECTING:
+    nameType_t cmd;
+    char dType;
+    uint8_t width;
+    uint16_t count;
+    uint8_t rc;
+
+    if( state != STATE_CONNECTING) {
+        return;
+    }
+
+    if( (rc = comm.nextPacket(&cmd)) == COMM_RC_OK) {
+
+        switch (cmd) {
+        case COMM_PACKET_GET_MODELCONFIG:
+            /* Read packet end marker */
+            comm.nextField( &cmd, &dType, &width, &count);
+            moduleManager.exportModels( comm);
             break;
 
-        case STATE_INACTIVE:
-        default:
+        case COMM_PACKET_GET_SYSCONFIG:
+            comm.nextField( &cmd, &dType, &width, &count);
+            moduleManager.exportSystemConfig( comm);
             break;
+
+        default:
+            comm.nextField( &cmd, &dType, &width, &count);
+            comm.open(COMM_PACKET_ERROR);
+            comm.close();
+            comm.write();
+        }
     }
-    /* noop */
 }
 
 void ImportExport::setDefaults() {
@@ -65,6 +87,10 @@ void ImportExport::setDefaults() {
 }
 
 void ImportExport::moduleEnter() {
+
+    comm.open(COMM_PACKET_INFO);
+    comm.close();
+    comm.write();
 
     state = STATE_CONNECTING;
     changed = true;

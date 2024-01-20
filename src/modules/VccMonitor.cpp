@@ -52,10 +52,10 @@ void VccMonitor::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t con
 
     const vccMonitor_t *cfg = (vccMonitor_t*)config;
 
-    exporter->openSub( 'M', MODULE_VCC_MONITOR_TYPE);
-    exporter->addInt16( 'W', cfg->warnLevel);
-    exporter->addInt16( 'A', cfg->alertLevel);
-    exporter->addInt8( 'J', cfg->vccAdjust);
+    exporter->openSub( COMM_SUBPACKET_VCC_MONITOR );
+    exporter->addInt16( COMM_FIELD_WARN, cfg->warnLevel);
+    exporter->addInt16( COMM_FIELD_ALERT, cfg->alertLevel);
+    exporter->addInt8( COMM_FIELD_ADJUST, cfg->vccAdjust);
     exporter->close();
 }
 

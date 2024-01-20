@@ -39,11 +39,11 @@ void SwitchedChannels::exportConfig( Comm *exporter, uint8_t *config, moduleSize
 
     const switchedChannels_t *cfg = (switchedChannels_t*)config;
 
-    exporter->openSub( 'M', MODULE_SWITCHED_CHANNELS_TYPE);
-    exporter->addUIntArr( 'W', (const byte*)cfg->sw, sizeof(cfg->sw), SWITCHED_CHANNELS);
-    exporter->addIntArr( 'L', (const byte*)cfg->state0_pct, sizeof(cfg->state0_pct), SWITCHED_CHANNELS);
-    exporter->addIntArr( 'M', (const byte*)cfg->state1_pct, sizeof(cfg->state1_pct), SWITCHED_CHANNELS);
-    exporter->addIntArr( 'H', (const byte*)cfg->state2_pct, sizeof(cfg->state2_pct), SWITCHED_CHANNELS);
+    exporter->openSub( COMM_SUBPACKET_SWITCHED_CHANNELS );
+    exporter->addUIntArr( COMM_FIELD_SWITCH_ARRAY, (const byte*)cfg->sw, sizeof(cfg->sw), SWITCHED_CHANNELS);
+    exporter->addIntArr( COMM_FIELD_LOW_ARRAY, (const byte*)cfg->state0_pct, sizeof(cfg->state0_pct), SWITCHED_CHANNELS);
+    exporter->addIntArr( COMM_FIELD_MID_ARRAY, (const byte*)cfg->state1_pct, sizeof(cfg->state1_pct), SWITCHED_CHANNELS);
+    exporter->addIntArr( COMM_FIELD_HIGH_ARRAY, (const byte*)cfg->state2_pct, sizeof(cfg->state2_pct), SWITCHED_CHANNELS);
     exporter->close();
 }
 

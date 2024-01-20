@@ -42,9 +42,9 @@ void EngineCut::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t conf
 
     const engineCut_t *cfg = (engineCut_t*)config;
 
-    exporter->openSub( 'M', MODULE_ENGINE_CUT_TYPE);
-    exporter->addUInt8( 'W', cfg->swState);
-    exporter->addInt8( 'P', cfg->cut_pct);
+    exporter->openSub( COMM_SUBPACKET_ENGINE_CUT );
+    exporter->addUInt8( COMM_FIELD_SWITCH, cfg->swState);
+    exporter->addInt8( COMM_FIELD_PERCENT, cfg->cut_pct);
     exporter->close();
 }
 

@@ -39,8 +39,8 @@ void ChannelReverse::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t
 
     const channelReverse_t *cfg = (channelReverse_t*)config;
 
-    exporter->openSub( 'M', MODULE_CHANNEL_REVERSE_TYPE);
-    exporter->addUInt16( 'B', cfg->revBits);
+    exporter->openSub( COMM_SUBPACKET_CHANNEL_REVERSE );
+    exporter->addUInt16( COMM_FIELD_BITS, cfg->revBits);
     exporter->close();
 }
 

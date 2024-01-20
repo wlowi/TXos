@@ -39,8 +39,8 @@ void ServoSubtrim::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t c
 
     const servoSubtrim_t *cfg = (servoSubtrim_t*)config;
 
-    exporter->openSub( 'M', MODULE_SERVO_SUBTRIM_TYPE);
-    exporter->addIntArr('P', (const byte*)cfg->trim_pct, sizeof(cfg->trim_pct), PPM_CHANNELS);
+    exporter->openSub( COMM_SUBPACKET_SERVO_SUBTRIM );
+    exporter->addIntArr( COMM_FIELD_PERCENT_ARRAY, (const byte*)cfg->trim_pct, sizeof(cfg->trim_pct), PPM_CHANNELS);
     exporter->close();
 }
 

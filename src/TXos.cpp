@@ -444,7 +444,7 @@ void setup( void) {
     /* System menu */
     
     moduleManager.addToSystemSetAndMenu( &modelSelect);
-    ImportExport *importExport = new ImportExport();
+    ImportExport *importExport = new ImportExport( Serial);
     moduleManager.addToSystemSetAndMenu( importExport);
     ServoMonitor *servoMonitor = new ServoMonitor( controls);
     moduleManager.addToSystemSetAndMenu( servoMonitor);
@@ -550,6 +550,7 @@ void setup( void) {
     moduleManager.addToRunList( switchMonitor);
     moduleManager.addToRunList( timer);
     moduleManager.addToRunList( vccMonitor);
+    moduleManager.addToRunList( importExport);
 
     userInterface.setHomeScreen( homeScreen);
 

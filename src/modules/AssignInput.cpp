@@ -44,8 +44,8 @@ void AssignInput::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t co
 
     const assignInput_t *cfg = (assignInput_t*)config;
 
-    exporter->openSub( 'M', MODULE_ASSIGN_INPUT_TYPE);
-    exporter->addUIntArr( 'C', (const byte*)cfg->source, sizeof(cfg->source), MIX_CHANNELS);
+    exporter->openSub( COMM_SUBPACKET_ASSIGN_INPUT );
+    exporter->addUIntArr( COMM_FIELD_CHANNEL_ARRAY, (const byte*)cfg->source, sizeof(cfg->source), MIX_CHANNELS);
     exporter->close();
 }
 

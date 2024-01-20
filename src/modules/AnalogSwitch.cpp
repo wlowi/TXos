@@ -40,9 +40,9 @@ void AnalogSwitch::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t c
 
     const analogSwitch_t *cfg = (analogSwitch_t*)config;
 
-    exporter->openSub( 'M', MODULE_ANALOG_SWITCH_TYPE);
-    exporter->addUIntArr( 'C', (const byte*)cfg->source, sizeof(cfg->source), CHANNEL_SWITCHES);
-    exporter->addIntArr( 'P', (const byte*)cfg->trigger_pct, sizeof(cfg->trigger_pct), CHANNEL_SWITCHES);
+    exporter->openSub( COMM_SUBPACKET_ANALOG_SWITCH );
+    exporter->addUIntArr( COMM_FIELD_CHANNEL_ARRAY, (const byte*)cfg->source, sizeof(cfg->source), CHANNEL_SWITCHES);
+    exporter->addIntArr( COMM_FIELD_PERCENT_ARRAY, (const byte*)cfg->trigger_pct, sizeof(cfg->trigger_pct), CHANNEL_SWITCHES);
     exporter->close();
 }
 

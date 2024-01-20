@@ -37,10 +37,10 @@ void CalibrateSticks::exportConfig( Comm *exporter, uint8_t *config, moduleSize_
 
     const calibrateSticks_t *cfg = (calibrateSticks_t*)config;
 
-    exporter->openSub( 'M', MODULE_CAL_STICKS_TYPE);
-    exporter->addIntArr( 'L', (const byte*)cfg->minPos, sizeof(cfg->minPos), PORT_ANALOG_INPUT_COUNT);
-    exporter->addIntArr( 'M', (const byte*)cfg->midPos, sizeof(cfg->midPos), PORT_ANALOG_INPUT_COUNT);
-    exporter->addIntArr( 'H', (const byte*)cfg->maxPos, sizeof(cfg->maxPos), PORT_ANALOG_INPUT_COUNT);
+    exporter->openSub( COMM_SUBPACKET_CALIBRATE_STICKS );
+    exporter->addIntArr( COMM_FIELD_LOW_ARRAY, (const byte*)cfg->minPos, sizeof(cfg->minPos), PORT_ANALOG_INPUT_COUNT);
+    exporter->addIntArr( COMM_FIELD_MID_ARRAY, (const byte*)cfg->midPos, sizeof(cfg->midPos), PORT_ANALOG_INPUT_COUNT);
+    exporter->addIntArr( COMM_FIELD_HIGH_ARRAY, (const byte*)cfg->maxPos, sizeof(cfg->maxPos), PORT_ANALOG_INPUT_COUNT);
     exporter->close();
 }
 

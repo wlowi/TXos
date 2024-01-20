@@ -138,5 +138,6 @@ class Module : public TextUIScreen {
 };
 
 #include "Phases.h"
+#include "ImportExport.h"
 
 #endif

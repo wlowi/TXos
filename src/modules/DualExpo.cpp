@@ -68,11 +68,12 @@ void DualExpo::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t confi
 
     const dualExpo_t *cfg = (dualExpo_t*)config;
 
-    exporter->openSub( 'M', MODULE_DUAL_EXPO_TYPE);
+    exporter->openSub( COMM_SUBPACKET_DUAL_EXPO );
     for( uint8_t p = 0; p < PHASES; p++) {
-        exporter->openSub( 'P', p);
-        exporter->addIntArr( 'R', (const byte*)cfg->rate, sizeof(cfg->rate), DUAL_EXPO_CHANNELS);
-        exporter->addIntArr( 'X', (const byte*)cfg->expo, sizeof(cfg->expo), DUAL_EXPO_CHANNELS);
+        exporter->openSub( COMM_SUBPACKET_DUAL_EXPO_PHASE);
+        exporter->addUInt8( COMM_FIELD_PHASE, p);
+        exporter->addIntArr( COMM_FIELD_RATE_ARRAY, (const byte*)cfg->rate, sizeof(cfg->rate), DUAL_EXPO_CHANNELS);
+        exporter->addIntArr( COMM_FIELD_EXPO_ARRAY, (const byte*)cfg->expo, sizeof(cfg->expo), DUAL_EXPO_CHANNELS);
         exporter->close();
         cfg++;
     }

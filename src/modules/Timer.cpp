@@ -103,9 +103,9 @@ void Timer::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t configSz
 
     const flightTimer_t *cfg = (flightTimer_t*)config;
 
-    exporter->openSub( 'M', MODULE_TIMER_TYPE);
-    exporter->addUInt8( 'W', cfg->swState);
-    exporter->addUInt16( 'T', cfg->time_sec);
+    exporter->openSub( COMM_SUBPACKET_TIMER);
+    exporter->addUInt8( COMM_FIELD_SWITCH, cfg->swState);
+    exporter->addUInt16( COMM_FIELD_TIME, cfg->time_sec);
     exporter->close();
 }
 

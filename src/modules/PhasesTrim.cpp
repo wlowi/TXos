@@ -32,6 +32,12 @@ extern ModuleManager moduleManager;
 
 extern const char* const LogicalChannelNames[LOGICAL_CHANNELS];
 
+
+/* The import/export dictionary. */
+DICTROW( r1, COMM_FIELD_PERCENT_ARRAY, phasesTrim_t, trim_pct, PHASED_TRIM_CHANNELS)
+DICT( PhasesTrim, COMM_SUBPACKET_PHASES_TRIM, COMM_SUBPACKET_PHASES_TRIM_PHASE, &r1)
+
+
 PhasesTrim::PhasesTrim() : Module( MODULE_PHASES_TRIM_TYPE, TEXT_MODULE_PHASES_TRIM) {
 
     setDefaults();
@@ -43,10 +49,33 @@ void PhasesTrim::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t con
 
     const phasesTrim_t *cfg = (phasesTrim_t*)config;
 
-    exporter->openSub( 'M', MODULE_PHASES_TRIM_TYPE);
+    uint8_t dataType;
+    nameType_t sName;
+    nameType_t name;
+    size_t offset;
+    size_t size;
+    uint16_t count;
+
+    const DICT_t *dict = DICT_P(PhasesTrim);
+    sName = pgm_read_word_far( &(dict->name));
+
+    exporter->openSub( sName );
+    sName = pgm_read_word_far( &(dict->subName));
+
     for( uint8_t p = 0; p < PHASES; p++) {
-        exporter->openSub( 'P', p);
-        exporter->addIntArr( 'P', (const byte*)cfg->trim_pct, sizeof(cfg->trim_pct), PHASED_TRIM_CHANNELS);
+
+        exporter->openSub( sName);
+        exporter->addUInt8( COMM_FIELD_PHASE, p);
+        // exporter->addIntArr( COMM_FIELD_PERCENT_ARRAY, (const byte*)cfg->trim_pct, sizeof(cfg->trim_pct), PHASED_TRIM_CHANNELS);
+
+        const DICTROW_t *row = pgm_read_ptr_far( DICTROW_P(PhasesTrim)[0] ); // Pointer to PROGMEM !
+        dataType = pgm_read_byte_far( &(row->dataType));
+        name = pgm_read_word_far( &(row->rowName));
+        offset  = pgm_read_dword_far( &(row->offset));
+        size = pgm_read_dword_far( &(row->size));
+        count = pgm_read_word_far( &(row->count));
+
+        exporter->addIntArr( name, ((const byte*)cfg) + offset, size, count);
         exporter->close();
         cfg++;
     }

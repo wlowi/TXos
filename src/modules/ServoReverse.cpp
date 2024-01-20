@@ -39,8 +39,8 @@ void ServoReverse::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t c
 
     const servoReverse_t *cfg = (servoReverse_t*)config;
 
-    exporter->openSub( 'M', MODULE_SERVO_REVERSE_TYPE);
-    exporter->addUInt16('B', cfg->revBits);
+    exporter->openSub( COMM_SUBPACKET_SERVO_REVERSE );
+    exporter->addUInt16( COMM_FIELD_BITS, cfg->revBits);
     exporter->close();
 }
 

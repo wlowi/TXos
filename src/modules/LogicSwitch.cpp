@@ -41,11 +41,11 @@ void LogicSwitch::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t co
 
     const logicSwitch_t *cfg = (logicSwitch_t*)config;
 
-    exporter->openSub( 'M', MODULE_LOGIC_SWITCH_TYPE);
-    exporter->addUIntArr( 'L', (const byte*)cfg->type, sizeof(cfg->type), LOGIC_SWITCHES);
-    exporter->addUIntArr( 'A', (const byte*)cfg->swStateA, sizeof(cfg->swStateA), LOGIC_SWITCHES);
-    exporter->addUIntArr( 'B', (const byte*)cfg->swStateB, sizeof(cfg->swStateB), LOGIC_SWITCHES);
-    exporter->addUIntArr( 'C', (const byte*)cfg->swStateC, sizeof(cfg->swStateC), LOGIC_SWITCHES);
+    exporter->openSub( COMM_SUBPACKET_LOGIC_SWITCH );
+    exporter->addUIntArr( COMM_FIELD_SWITCH_ARRAY, (const byte*)cfg->type, sizeof(cfg->type), LOGIC_SWITCHES);
+    exporter->addUIntArr( COMM_FIELD_STATEA_ARRAY, (const byte*)cfg->swStateA, sizeof(cfg->swStateA), LOGIC_SWITCHES);
+    exporter->addUIntArr( COMM_FIELD_STATEB_ARRAY, (const byte*)cfg->swStateB, sizeof(cfg->swStateB), LOGIC_SWITCHES);
+    exporter->addUIntArr( COMM_FIELD_STATEC_ARRAY, (const byte*)cfg->swStateC, sizeof(cfg->swStateC), LOGIC_SWITCHES);
     exporter->close();
 }
 

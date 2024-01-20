@@ -356,7 +356,7 @@ void ModuleManager::saveSystemConfig(configBlockID_t blockID) {
     blockService->writeBlock();
 }
 
-void ModuleManager::exportSystemConfig() {
+void ModuleManager::exportSystemConfig( Comm &comm) {
 
     LOG("ModuleManager::exportSystemConfig(): called\n");
 
@@ -367,7 +367,6 @@ void ModuleManager::exportSystemConfig() {
     uint16_t totalSize;
     uint8_t buffer[64];
     const Module *module;
-    Comm commm;
 
     /* Block 0 is system config. Model blocks start at 1 */
     rc = blockService->readBlock( 0);
@@ -384,7 +383,7 @@ void ModuleManager::exportSystemConfig() {
 
     GET( (uint8_t*)&type, sizeof(moduleType_t));
 
-    commm.open( COMM_PACKET_SYSTEM_CONFIG);
+    comm.open( COMM_PACKET_SYSCONFIG);
 
     while( type != MODULE_INVALID_TYPE) {
         GET( (uint8_t*)&size, sizeof(moduleSize_t));
@@ -397,25 +396,25 @@ void ModuleManager::exportSystemConfig() {
         if( module == nullptr) {
             LOGV("** ModuleManager::exportSystemConfig(): Failed to get module of type=%d\n", type);
         } else {
-            module->exportConfig( &commm, buffer, size);
-            commm.writePart();
+            module->exportConfig( &comm, buffer, size);
+            comm.writePart();
             yieldLoop();
         }
 
         GET( (uint8_t*)&type, sizeof(moduleType_t));
     }
 
-    commm.close();
-    commm.write();
+    comm.close();
+    comm.write();
 }
 
-void ModuleManager::importSystemConfig() {
+void ModuleManager::importSystemConfig( Comm &comm) {
 
     LOG("ModuleManager::importSystemConfig(): called\n");
 }
 
 /* Export all models. */
-void ModuleManager::exportModels() {
+void ModuleManager::exportModels( Comm &comm) {
 
     LOG("ModuleManager::exportModels(): called\n");
 
@@ -423,11 +422,11 @@ void ModuleManager::exportModels() {
 
     /* Block 0 is system config. Model blocks start at 1 */
     for( configBlockID_t modelID = 1; modelID <= modelCount; modelID++) {
-        exportModel( modelID);
+        exportModel( comm, modelID);
     }
 }
 
-void ModuleManager::exportModel( configBlockID_t modelID) {
+void ModuleManager::exportModel(  Comm &comm, configBlockID_t modelID) {
 
     LOGV("ModuleManager::exportModel( modelID=%d): called\n", modelID);
 
@@ -438,7 +437,6 @@ void ModuleManager::exportModel( configBlockID_t modelID) {
     uint16_t totalSize;
     uint8_t buffer[64];
     const Module *module;
-    Comm comm;
 
     rc = blockService->readBlock( modelID);
     if( rc != CONFIGBLOCK_RC_OK) {
@@ -454,7 +452,8 @@ void ModuleManager::exportModel( configBlockID_t modelID) {
 
     GET( (uint8_t*)&type, sizeof(moduleType_t));
 
-    comm.open( COMM_PACKET_MODEL_CONFIG, modelID);
+    comm.open( COMM_PACKET_MODELCONFIG);
+    comm.addUInt8( COMM_FIELD_ID, modelID);
 
     while( type != MODULE_INVALID_TYPE) {
         GET( (uint8_t*)&size, sizeof(moduleSize_t));
@@ -479,12 +478,9 @@ void ModuleManager::exportModel( configBlockID_t modelID) {
     comm.write();
 }
 
-void ModuleManager::importModel() {
+void ModuleManager::importModel( Comm &comm) {
 
     LOG("ModuleManager::importModel(): called\n");
-
-    Comm comm;
-
 
 
     if( blockService->isBlockValid()) {

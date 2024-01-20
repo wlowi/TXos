@@ -37,10 +37,10 @@ void CalibrateTrim::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t 
 
     const calibrateTrim_t *cfg = (calibrateTrim_t*)config;
 
-    exporter->openSub( 'M', MODULE_CAL_TRIM_TYPE);
-    exporter->addIntArr( 'L', (const byte*)cfg->minPos, sizeof(cfg->minPos), PORT_TRIM_INPUT_COUNT);
-    exporter->addIntArr( 'M', (const byte*)cfg->midPos, sizeof(cfg->midPos), PORT_TRIM_INPUT_COUNT);
-    exporter->addIntArr( 'H', (const byte*)cfg->maxPos, sizeof(cfg->maxPos), PORT_TRIM_INPUT_COUNT);
+    exporter->openSub( COMM_SUBPACKET_CALIBRATE_TRIM );
+    exporter->addIntArr( COMM_FIELD_LOW_ARRAY, (const byte*)cfg->minPos, sizeof(cfg->minPos), PORT_TRIM_INPUT_COUNT);
+    exporter->addIntArr( COMM_FIELD_MID_ARRAY, (const byte*)cfg->midPos, sizeof(cfg->midPos), PORT_TRIM_INPUT_COUNT);
+    exporter->addIntArr( COMM_FIELD_HIGH_ARRAY, (const byte*)cfg->maxPos, sizeof(cfg->maxPos), PORT_TRIM_INPUT_COUNT);
     exporter->close();
 }
 

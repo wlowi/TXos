@@ -39,8 +39,8 @@ void AnalogTrim::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t con
 
     const analogTrim_t *cfg = (analogTrim_t*)config;
 
-    exporter->openSub( 'M', MODULE_ANALOG_TRIM_TYPE);
-    exporter->addIntArr( 'P', (const byte*)cfg->storedTrim_pct, sizeof(cfg->storedTrim_pct), PORT_TRIM_INPUT_COUNT);
+    exporter->openSub( COMM_SUBPACKET_ANALOG_TRIM );
+    exporter->addIntArr( COMM_FIELD_PERCENT_ARRAY, (const byte*)cfg->storedTrim_pct, sizeof(cfg->storedTrim_pct), PORT_TRIM_INPUT_COUNT);
     exporter->close();
 }
 
