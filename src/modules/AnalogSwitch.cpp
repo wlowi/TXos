@@ -29,6 +29,13 @@
 extern Controls controls;
 extern const char* const InputChannelNames[INPUT_CHANNELS];
 
+/* The import/export dictionary. 
+ * See ImportExport.h
+ */
+DICTROWA( r1, COMM_DATATYPE_UINTARR, COMM_FIELD_CHANNEL_ARRAY, analogSwitch_t, source, CHANNEL_SWITCHES)
+DICTROWA( r2, COMM_DATATYPE_INTARR, COMM_FIELD_PERCENT_ARRAY, analogSwitch_t, trigger_pct, CHANNEL_SWITCHES)
+DICT( AnalogSwitch, COMM_SUBPACKET_ANALOG_SWITCH, &r1, &r2)
+
 AnalogSwitch::AnalogSwitch() : Module( MODULE_ANALOG_SWITCH_TYPE, TEXT_MODULE_ANALOG_SWITCH) {
 
     setDefaults();
@@ -36,14 +43,9 @@ AnalogSwitch::AnalogSwitch() : Module( MODULE_ANALOG_SWITCH_TYPE, TEXT_MODULE_AN
 
 /* From Module */
 
-void AnalogSwitch::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t configSz) const {
+void AnalogSwitch::exportConfig( ImportExport *exporter, uint8_t *config, moduleSize_t configSz) const {
 
-    const analogSwitch_t *cfg = (analogSwitch_t*)config;
-
-    exporter->openSub( COMM_SUBPACKET_ANALOG_SWITCH );
-    exporter->addUIntArr( COMM_FIELD_CHANNEL_ARRAY, (const byte*)cfg->source, sizeof(cfg->source), CHANNEL_SWITCHES);
-    exporter->addIntArr( COMM_FIELD_PERCENT_ARRAY, (const byte*)cfg->trigger_pct, sizeof(cfg->trigger_pct), CHANNEL_SWITCHES);
-    exporter->close();
+    exporter->runExport( DICT_ptr(AnalogSwitch), DICTROW_ptr(AnalogSwitch), config, sizeof(analogSwitch_t));
 }
 
 void AnalogSwitch::run( Controls &controls) {

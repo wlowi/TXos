@@ -26,6 +26,14 @@
 
 #include "CalibrateSticks.h"
 
+/* The import/export dictionary. 
+ * See ImportExport.h
+ */
+DICTROWA( r1, COMM_DATATYPE_INTARR, COMM_FIELD_LOW_ARRAY, calibrateSticks_t, minPos, PORT_ANALOG_INPUT_COUNT)
+DICTROWA( r2, COMM_DATATYPE_INTARR, COMM_FIELD_MID_ARRAY, calibrateSticks_t, midPos, PORT_ANALOG_INPUT_COUNT)
+DICTROWA( r3, COMM_DATATYPE_INTARR, COMM_FIELD_HIGH_ARRAY, calibrateSticks_t, maxPos, PORT_ANALOG_INPUT_COUNT)
+DICT( CalibrateSticks, COMM_SUBPACKET_CALIBRATE_STICKS, &r1, &r2, &r3)
+
 CalibrateSticks::CalibrateSticks() : Module( MODULE_CAL_STICKS_TYPE, TEXT_MODULE_CAL_STICKS) {
 
     setDefaults();
@@ -33,15 +41,9 @@ CalibrateSticks::CalibrateSticks() : Module( MODULE_CAL_STICKS_TYPE, TEXT_MODULE
 
 /* From Module */
 
-void CalibrateSticks::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t configSz) const {
+void CalibrateSticks::exportConfig( ImportExport *exporter, uint8_t *config, moduleSize_t configSz) const {
 
-    const calibrateSticks_t *cfg = (calibrateSticks_t*)config;
-
-    exporter->openSub( COMM_SUBPACKET_CALIBRATE_STICKS );
-    exporter->addIntArr( COMM_FIELD_LOW_ARRAY, (const byte*)cfg->minPos, sizeof(cfg->minPos), PORT_ANALOG_INPUT_COUNT);
-    exporter->addIntArr( COMM_FIELD_MID_ARRAY, (const byte*)cfg->midPos, sizeof(cfg->midPos), PORT_ANALOG_INPUT_COUNT);
-    exporter->addIntArr( COMM_FIELD_HIGH_ARRAY, (const byte*)cfg->maxPos, sizeof(cfg->maxPos), PORT_ANALOG_INPUT_COUNT);
-    exporter->close();
+    exporter->runExport( DICT_ptr(CalibrateSticks), DICTROW_ptr(CalibrateSticks), config, sizeof(calibrateSticks_t));
 }
 
 void CalibrateSticks::run( Controls &controls) {

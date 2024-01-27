@@ -44,6 +44,13 @@ const buzzerCmd_t SoundZero[] = {
   BUZZER_STOP()
 };
 
+/* The import/export dictionary. 
+ * See ImportExport.h
+ */
+DICTROW( r1, COMM_DATATYPE_UINT8, COMM_FIELD_SWITCH, flightTimer_t, swState)
+DICTROW( r2, COMM_DATATYPE_UINT16, COMM_FIELD_TIME, flightTimer_t, time_sec)
+DICT( Timer, COMM_SUBPACKET_TIMER, &r1, &r2)
+
 Timer::Timer() : Module( MODULE_TIMER_TYPE, TEXT_MODULE_TIMER) {
 
     setDefaults();
@@ -99,14 +106,9 @@ char *Timer::timeStr() {
 
 /* From Module */
 
-void Timer::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t configSz) const {
+void Timer::exportConfig( ImportExport *exporter, uint8_t *config, moduleSize_t configSz) const {
 
-    const flightTimer_t *cfg = (flightTimer_t*)config;
-
-    exporter->openSub( COMM_SUBPACKET_TIMER);
-    exporter->addUInt8( COMM_FIELD_SWITCH, cfg->swState);
-    exporter->addUInt16( COMM_FIELD_TIME, cfg->time_sec);
-    exporter->close();
+    exporter->runExport( DICT_ptr(Timer), DICTROW_ptr(Timer), config, sizeof(flightTimer_t));
 }
 
 void Timer::run( Controls &controls) {

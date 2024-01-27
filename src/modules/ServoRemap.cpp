@@ -29,6 +29,12 @@
 extern const char* const LogicalChannelNames[LOGICAL_CHANNELS];
 extern const char* const OutputChannelNames[PPM_CHANNELS];
 
+/* The import/export dictionary. 
+ * See ImportExport.h
+ */
+DICTROWA( r1, COMM_DATATYPE_UINTARR, COMM_FIELD_CHANNEL_ARRAY, servoRemap_t, source, PPM_CHANNELS)
+DICT( ServoRemap, COMM_SUBPACKET_SERVO_REMAP, &r1)
+
 ServoRemap::ServoRemap() : Module( MODULE_SERVO_REMAP_TYPE, TEXT_MODULE_SERVO_REMAP) {
 
     setDefaults();
@@ -36,13 +42,9 @@ ServoRemap::ServoRemap() : Module( MODULE_SERVO_REMAP_TYPE, TEXT_MODULE_SERVO_RE
 
 /* From Module */
 
-void ServoRemap::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t configSz) const {
+void ServoRemap::exportConfig( ImportExport *exporter, uint8_t *config, moduleSize_t configSz) const {
 
-    const servoRemap_t *cfg = (servoRemap_t*)config;
-
-    exporter->openSub( COMM_SUBPACKET_SERVO_REMAP );
-    exporter->addUIntArr( COMM_FIELD_CHANNEL_ARRAY, (const byte*)cfg->source, sizeof(cfg->source), PPM_CHANNELS);
-    exporter->close();
+    exporter->runExport( DICT_ptr(ServoRemap), DICTROW_ptr(ServoRemap), config, sizeof(servoRemap_t));
 }
 
 void ServoRemap::run( Controls &controls) {

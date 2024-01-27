@@ -28,19 +28,21 @@
 
 extern const char* const OutputChannelNames[PPM_CHANNELS];
 
+/* The import/export dictionary. 
+ * See ImportExport.h
+ */
+DICTROWA( r1, COMM_DATATYPE_INTARR, COMM_FIELD_PERCENT_ARRAY, servoLimit_t, posLimit_pct, PPM_CHANNELS)
+DICTROWA( r2, COMM_DATATYPE_INTARR, COMM_FIELD_NEG_PERCENT_ARRAY, servoLimit_t, negLimit_pct, PPM_CHANNELS)
+DICT( ServoLimit, COMM_SUBPACKET_SERVO_LIMIT, &r1, &r2)
+
 ServoLimit::ServoLimit() : Module( MODULE_SERVO_LIMIT_TYPE, TEXT_MODULE_SERVO_LIMIT) {
 
     setDefaults();
 }
 
-void ServoLimit::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t configSz) const {
+void ServoLimit::exportConfig( ImportExport *exporter, uint8_t *config, moduleSize_t configSz) const {
 
-    const servoLimit_t *cfg = (servoLimit_t*)config;
-
-    exporter->openSub( COMM_SUBPACKET_SERVO_LIMIT );
-    exporter->addIntArr( COMM_FIELD_PERCENT_ARRAY, (const byte *)cfg->posLimit_pct, sizeof(cfg->posLimit_pct), PPM_CHANNELS);
-    exporter->addIntArr( COMM_FIELD_NEG_PERCENT_ARRAY, (const byte*)cfg->negLimit_pct, sizeof(cfg->negLimit_pct), PPM_CHANNELS);
-    exporter->close();
+    exporter->runExport( DICT_ptr(ServoLimit), DICTROW_ptr(ServoLimit), config, sizeof(servoLimit_t));
 }
 
 /* From Module */

@@ -26,6 +26,13 @@
 
 #include "EngineCut.h"
 
+/* The import/export dictionary. 
+ * See ImportExport.h
+ */
+DICTROW( r1, COMM_DATATYPE_UINT8, COMM_FIELD_SWITCH, engineCut_t, swState)
+DICTROW( r2, COMM_DATATYPE_INT8, COMM_FIELD_PERCENT, engineCut_t, cut_pct)
+DICT( EngineCut, COMM_SUBPACKET_ENGINE_CUT, &r1, &r2)
+
 EngineCut::EngineCut() : Module( MODULE_ENGINE_CUT_TYPE, TEXT_MODULE_ENGINE_CUT) {
 
     setDefaults();
@@ -38,14 +45,9 @@ bool EngineCut::isSave() {
 
 /* From Module */
 
-void EngineCut::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t configSz) const {
+void EngineCut::exportConfig( ImportExport *exporter, uint8_t *config, moduleSize_t configSz) const {
 
-    const engineCut_t *cfg = (engineCut_t*)config;
-
-    exporter->openSub( COMM_SUBPACKET_ENGINE_CUT );
-    exporter->addUInt8( COMM_FIELD_SWITCH, cfg->swState);
-    exporter->addInt8( COMM_FIELD_PERCENT, cfg->cut_pct);
-    exporter->close();
+    exporter->runExport( DICT_ptr(EngineCut), DICTROW_ptr(EngineCut), config, sizeof(engineCut_t));
 }
 
 void EngineCut::run( Controls &controls) {

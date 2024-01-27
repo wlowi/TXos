@@ -28,6 +28,16 @@
 
 extern const char* const LogicalChannelNames[LOGICAL_CHANNELS];
 
+/* The import/export dictionary. 
+ * See ImportExport.h
+ */
+DICTROWA( r1, COMM_DATATYPE_UINTARR, COMM_FIELD_MODEL_SWITCH_MIX, mixer_t, mixSw, MIXER)
+DICTROWA( r2, COMM_DATATYPE_UINTARR, COMM_FIELD_CHANNEL_SOURCE, mixer_t, source, MIXER)
+DICTROWA( r3, COMM_DATATYPE_UINTARR, COMM_FIELD_CHANNEL_TARGET, mixer_t, target, MIXER)
+DICTROWA( r4, COMM_DATATYPE_INTARR, COMM_FIELD_MODEL_PERCENT_MIX, mixer_t, mixPct, MIXER)
+DICTROWA( r5, COMM_DATATYPE_INTARR, COMM_FIELD_MODEL_OFFSET_MIX, mixer_t, mixOffset, MIXER)
+DICT( Mixer, COMM_SUBPACKET_MIXER, &r1, &r2, &r3, &r4, &r5)
+
 Mixer::Mixer() : Module( MODULE_MIXER_TYPE, TEXT_MODULE_MIXER) {
 
     setDefaults();
@@ -54,17 +64,9 @@ void Mixer::limitChannels( Controls &controls) {
 
 /* From Module */
 
-void Mixer::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t configSz) const {
+void Mixer::exportConfig( ImportExport *exporter, uint8_t *config, moduleSize_t configSz) const {
 
-    const mixer_t *cfg = (mixer_t*)config;
-
-    exporter->openSub( COMM_SUBPACKET_MIXER );
-    exporter->addUIntArr( COMM_FIELD_MODEL_SWITCH_MIX, (const byte*)cfg->mixSw, sizeof(cfg->mixSw), MIXER);
-    exporter->addUIntArr( COMM_FIELD_CHANNEL_SOURCE, (const byte*)cfg->source, sizeof(cfg->source), MIXER);
-    exporter->addUIntArr( COMM_FIELD_CHANNEL_TARGET, (const byte*)cfg->target, sizeof(cfg->target), MIXER);
-    exporter->addIntArr( COMM_FIELD_MODEL_PERCENT_MIX, (const byte*)cfg->mixPct, sizeof(cfg->mixPct), MIXER);
-    exporter->addIntArr( COMM_FIELD_MODEL_OFFSET_MIX, (const byte*)cfg->mixOffset, sizeof(cfg->mixOffset), MIXER);
-    exporter->close();
+    exporter->runExport( DICT_ptr(Mixer), DICTROW_ptr(Mixer), config, sizeof(mixer_t));
 }
 
 void Mixer::run( Controls &controls) {

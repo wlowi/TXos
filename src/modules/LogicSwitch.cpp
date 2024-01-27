@@ -30,6 +30,15 @@ extern Controls controls;
 
 extern const char* const LogicTypes[TEXT_LOGIC_SW_TYPE_count];
 
+/* The import/export dictionary. 
+ * See ImportExport.h
+ */
+DICTROWA( r1, COMM_DATATYPE_UINTARR, COMM_FIELD_SWITCH_ARRAY, logicSwitch_t, type, LOGIC_SWITCHES)
+DICTROWA( r2, COMM_DATATYPE_UINTARR, COMM_FIELD_STATEA_ARRAY, logicSwitch_t, swStateA, LOGIC_SWITCHES)
+DICTROWA( r3, COMM_DATATYPE_UINTARR, COMM_FIELD_STATEB_ARRAY, logicSwitch_t, swStateB, LOGIC_SWITCHES)
+DICTROWA( r4, COMM_DATATYPE_UINTARR, COMM_FIELD_STATEC_ARRAY, logicSwitch_t, swStateC, LOGIC_SWITCHES)
+DICT( LogicSwitch, COMM_SUBPACKET_LOGIC_SWITCH, &r1, &r2, &r3, &r4)
+
 LogicSwitch::LogicSwitch() : Module( MODULE_LOGIC_SWITCH_TYPE, TEXT_MODULE_LOGIC_SWITCH) {
 
     setDefaults();
@@ -37,16 +46,9 @@ LogicSwitch::LogicSwitch() : Module( MODULE_LOGIC_SWITCH_TYPE, TEXT_MODULE_LOGIC
 
 /* From Module */
 
-void LogicSwitch::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t configSz) const {
+void LogicSwitch::exportConfig( ImportExport *exporter, uint8_t *config, moduleSize_t configSz) const {
 
-    const logicSwitch_t *cfg = (logicSwitch_t*)config;
-
-    exporter->openSub( COMM_SUBPACKET_LOGIC_SWITCH );
-    exporter->addUIntArr( COMM_FIELD_SWITCH_ARRAY, (const byte*)cfg->type, sizeof(cfg->type), LOGIC_SWITCHES);
-    exporter->addUIntArr( COMM_FIELD_STATEA_ARRAY, (const byte*)cfg->swStateA, sizeof(cfg->swStateA), LOGIC_SWITCHES);
-    exporter->addUIntArr( COMM_FIELD_STATEB_ARRAY, (const byte*)cfg->swStateB, sizeof(cfg->swStateB), LOGIC_SWITCHES);
-    exporter->addUIntArr( COMM_FIELD_STATEC_ARRAY, (const byte*)cfg->swStateC, sizeof(cfg->swStateC), LOGIC_SWITCHES);
-    exporter->close();
+    exporter->runExport( DICT_ptr(LogicSwitch), DICTROW_ptr(LogicSwitch), config, sizeof(logicSwitch_t));
 }
 
 void LogicSwitch::run( Controls &controls) {

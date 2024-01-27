@@ -57,7 +57,7 @@ class AnalogTrim : public Module {
         /* From Module */
         void run( Controls &controls) final;
         void setDefaults() final;
-        void exportConfig( Comm *exporter, uint8_t *config, moduleSize_t configSz) const;
+        void exportConfig( ImportExport *exporter, uint8_t *config, moduleSize_t configSz) const;
 
         void moduleEnter() final;
         void moduleExit() final;

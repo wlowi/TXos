@@ -33,6 +33,12 @@ extern ModuleManager moduleManager;
 extern const char* const InputChannelNames[INPUT_CHANNELS];
 extern const char* const LogicalChannelNames[LOGICAL_CHANNELS];
 
+/* The import/export dictionary. 
+ * See ImportExport.h
+ */
+DICTROWA( r1, COMM_DATATYPE_UINTARR, COMM_FIELD_CHANNEL_ARRAY, assignInput_t, source, MIX_CHANNELS)
+DICT( AssignInput, COMM_SUBPACKET_ASSIGN_INPUT, &r1)
+
 AssignInput::AssignInput() : Module( MODULE_ASSIGN_INPUT_TYPE, TEXT_MODULE_ASSIGN_INPUT) {
 
     setDefaults();
@@ -40,13 +46,9 @@ AssignInput::AssignInput() : Module( MODULE_ASSIGN_INPUT_TYPE, TEXT_MODULE_ASSIG
 
 /* From Module */
 
-void AssignInput::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t configSz) const {
+void AssignInput::exportConfig( ImportExport *exporter, uint8_t *config, moduleSize_t configSz) const {
 
-    const assignInput_t *cfg = (assignInput_t*)config;
-
-    exporter->openSub( COMM_SUBPACKET_ASSIGN_INPUT );
-    exporter->addUIntArr( COMM_FIELD_CHANNEL_ARRAY, (const byte*)cfg->source, sizeof(cfg->source), MIX_CHANNELS);
-    exporter->close();
+    exporter->runExport( DICT_ptr(AssignInput), DICTROW_ptr(AssignInput), config, sizeof(assignInput_t));
 }
 
 void AssignInput::run( Controls &controls) {

@@ -199,21 +199,21 @@ using nameType_t = uint16_t;
 #define COMM_FIELD_ALERT                  FIELD_TYPE('V','A')
 #define COMM_FIELD_ADJUST                 FIELD_TYPE('V','J')
 
-#define COMM_CHAR_OPEN                '{'
-#define COMM_CHAR_CLOSE               '}'
-#define COMM_CHAR_SUBOPEN             '{'
-#define COMM_CHAR_SUBCLOSE            '}'
-#define COMM_CHAR_DELIM               ':'
-#define COMM_CHAR_SEPERATOR           ','
-#define COMM_CHAR_NL                  '\n'
+#define COMM_CHAR_OPEN                      '{'
+#define COMM_CHAR_CLOSE                     '}'
+#define COMM_CHAR_SUBOPEN                   '{'
+#define COMM_CHAR_SUBCLOSE                  '}'
+#define COMM_CHAR_DELIM                     ':'
+#define COMM_CHAR_SEPERATOR                 ','
+#define COMM_CHAR_NL                        '\n'
 
-#define COMM_DATATYPE_STRING          '"'
-#define COMM_DATATYPE_CHAR            '\''
-#define COMM_DATATYPE_BOOL            '?'
-#define COMM_DATATYPE_UNSIGNED_INT    '+'
-#define COMM_DATATYPE_SIGNED_INT      '-'
-#define COMM_DATATYPE_UNSIGNED_ARRAY  '%'
-#define COMM_DATATYPE_SIGNED_ARRAY    '#'
+#define COMM_CHAR_DATATYPE_STRING           '"'
+#define COMM_CHAR_DATATYPE_CHAR             '\''
+#define COMM_CHAR_DATATYPE_BOOL             '?'
+#define COMM_CHAR_DATATYPE_UNSIGNED_INT     '+'
+#define COMM_CHAR_DATATYPE_SIGNED_INT       '-'
+#define COMM_CHAR_DATATYPE_UNSIGNED_ARRAY   '%'
+#define COMM_CHAR_DATATYPE_SIGNED_ARRAY     '#'
 
 #define EOD (-1)
 
@@ -303,6 +303,18 @@ class Comm {
 
 
         /* Send API */
+
+        #define COMM_DATATYPE_STRING    1
+        #define COMM_DATATYPE_CHAR      2
+        #define COMM_DATATYPE_BOOL      3
+        #define COMM_DATATYPE_INT8      4
+        #define COMM_DATATYPE_UINT8     5
+        #define COMM_DATATYPE_INT16     6
+        #define COMM_DATATYPE_UINT16    7
+        #define COMM_DATATYPE_INT32     8
+        #define COMM_DATATYPE_UINT32    9
+        #define COMM_DATATYPE_INTARR    10
+        #define COMM_DATATYPE_UINTARR   11
 
         void open( nameType_t bType);
         void openSub( nameType_t sType);

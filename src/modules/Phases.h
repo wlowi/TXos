@@ -29,65 +29,6 @@
 
 #include "Module.h"
 
-#define NO_CONFIG()                                 \
-public:                                             \
-    void switchPhase(phase_t ph) { /* no op */ }    \
-    moduleSize_t getConfigSize() { return 0; }      \
-    uint8_t *getConfig() { return nullptr; }
-
-
-#define PHASED_CONFIG( c_t )                        \
-private:                                            \
-    c_t configuration[ PHASES ];                    \
-    c_t *cfgPtr;                                    \
-    phase_t phase;                                  \
-public:                                             \
-    void switchPhase(phase_t ph);                   \
-    moduleSize_t getConfigSize() {                  \
-        return (moduleSize_t)sizeof( configuration);\
-    }                                               \
-    uint8_t *getConfig() {                          \
-        return (uint8_t*)&configuration;            \
-    }
-
-#define INIT_PHASED_CONFIGURATION( block )          \
-    for( phase_t phase=0; phase<PHASES; phase++) {  \
-        cfgPtr = &configuration[phase];             \
-        block                                       \
-    }                                               \
-    cfgPtr = &configuration[0];
-
-
-#define NON_PHASED_CONFIG( c_t )                    \
-private:                                            \
-    c_t configuration;                              \
-    c_t *cfgPtr;                                    \
-public:                                             \
-    void switchPhase(phase_t ph) { /* no op */ }    \
-    moduleSize_t getConfigSize() {                  \
-        return (moduleSize_t)sizeof( configuration);\
-    }                                               \
-    uint8_t *getConfig() {                          \
-        return (uint8_t*)&configuration;            \
-    }
-
-#define INIT_NON_PHASED_CONFIGURATION( block )      \
-    cfgPtr = &configuration;                        \
-    block
-
-
-#define CFG cfgPtr
-
-
-#define SWITCH_PHASE( p)                \
-do {                                    \
-    if( p < PHASES) {                   \
-        phase = p;                      \
-        cfgPtr = &configuration[p];     \
-    }                                   \
-} while( false)
-
-
 typedef struct phases_t {
 
     switch_t sw;
@@ -113,7 +54,7 @@ class Phases : public Module {
         /* From Module */
         void run( Controls &controls) final;
         void setDefaults() final;
-        void exportConfig( Comm *exporter, uint8_t *config, moduleSize_t configSz) const;
+        void exportConfig( ImportExport *exporter, uint8_t *config, moduleSize_t configSz) const;
 
         /* From TableEditable */
         uint8_t getRowCount() final;

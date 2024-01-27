@@ -29,6 +29,12 @@
 extern const char* const InputChannelNames[INPUT_CHANNELS];
 extern const char* const LogicalChannelNames[LOGICAL_CHANNELS];
 
+/* The import/export dictionary. 
+ * See ImportExport.h
+ */
+DICTROWA( r1, COMM_DATATYPE_UINTARR, COMM_FIELD_CHANNEL_ARRAY, modeAssign_t, source, MODE_CHANNELS)
+DICT( ModeAssign, COMM_SUBPACKET_MODE_ASSIGN, &r1)
+
 ModeAssign::ModeAssign() : Module( MODULE_MODE_ASSIGN_TYPE, TEXT_MODULE_MODE_ASSIGN) {
 
     setDefaults();
@@ -41,13 +47,9 @@ channel_t ModeAssign::getModeChannel( channel_t ch) const {
 
 /* From Module */
 
-void ModeAssign::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t configSz) const {
+void ModeAssign::exportConfig( ImportExport *exporter, uint8_t *config, moduleSize_t configSz) const {
 
-    const modeAssign_t *cfg = (modeAssign_t*)config;
-
-    exporter->openSub( COMM_SUBPACKET_MODE_ASSIGN );
-    exporter->addUIntArr( COMM_FIELD_CHANNEL_ARRAY, (const byte*)cfg->source, sizeof(cfg->source), MODE_CHANNELS);
-    exporter->close();
+    exporter->runExport( DICT_ptr(ModeAssign), DICTROW_ptr(ModeAssign), config, sizeof(modeAssign_t));
 }
 
 void ModeAssign::run( Controls &controls) {

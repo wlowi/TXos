@@ -26,6 +26,14 @@
 
 #include "CalibrateTrim.h"
 
+/* The import/export dictionary. 
+ * See ImportExport.h
+ */
+DICTROWA( r1, COMM_DATATYPE_INTARR, COMM_FIELD_LOW_ARRAY, calibrateTrim_t, minPos, PORT_TRIM_INPUT_COUNT)
+DICTROWA( r2, COMM_DATATYPE_INTARR, COMM_FIELD_MID_ARRAY, calibrateTrim_t, midPos, PORT_TRIM_INPUT_COUNT)
+DICTROWA( r3, COMM_DATATYPE_INTARR, COMM_FIELD_HIGH_ARRAY, calibrateTrim_t, maxPos, PORT_TRIM_INPUT_COUNT)
+DICT( CalibrateTrim, COMM_SUBPACKET_CALIBRATE_TRIM, &r1, &r2, &r3)
+
 CalibrateTrim::CalibrateTrim() : Module( MODULE_CAL_TRIM_TYPE, TEXT_MODULE_CAL_TRIM) {
 
     setDefaults();
@@ -33,15 +41,9 @@ CalibrateTrim::CalibrateTrim() : Module( MODULE_CAL_TRIM_TYPE, TEXT_MODULE_CAL_T
 
 /* From Module */
 
-void CalibrateTrim::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t configSz) const {
+void CalibrateTrim::exportConfig( ImportExport *exporter, uint8_t *config, moduleSize_t configSz) const {
 
-    const calibrateTrim_t *cfg = (calibrateTrim_t*)config;
-
-    exporter->openSub( COMM_SUBPACKET_CALIBRATE_TRIM );
-    exporter->addIntArr( COMM_FIELD_LOW_ARRAY, (const byte*)cfg->minPos, sizeof(cfg->minPos), PORT_TRIM_INPUT_COUNT);
-    exporter->addIntArr( COMM_FIELD_MID_ARRAY, (const byte*)cfg->midPos, sizeof(cfg->midPos), PORT_TRIM_INPUT_COUNT);
-    exporter->addIntArr( COMM_FIELD_HIGH_ARRAY, (const byte*)cfg->maxPos, sizeof(cfg->maxPos), PORT_TRIM_INPUT_COUNT);
-    exporter->close();
+    exporter->runExport( DICT_ptr(CalibrateTrim), DICTROW_ptr(CalibrateTrim), config, sizeof(calibrateTrim_t));
 }
 
 void CalibrateTrim::run( Controls &controls) {

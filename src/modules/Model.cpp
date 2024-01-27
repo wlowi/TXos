@@ -29,24 +29,26 @@
 extern const char* const WingMixNames[TEXT_WINGMIX_count];
 extern const char* const MixNames[TEXT_MIX_count];
 
+/* The import/export dictionary. 
+ * See ImportExport.h
+ */
+DICTROW( r1, COMM_DATATYPE_STRING, COMM_FIELD_MODEL_NAME, model_t, modelName)
+DICTROW( r2, COMM_DATATYPE_UINT8, COMM_FIELD_MODEL_MIX, model_t, wingMix)
+DICTROW( r3, COMM_DATATYPE_UINT8, COMM_FIELD_MODEL_SWITCH_QDIFF, model_t, qrDiffSw)
+DICTROW( r4, COMM_DATATYPE_INT8, COMM_FIELD_MODEL_QDIFF_PCT, model_t, qrDiffPct)
+DICTROWA( r5, COMM_DATATYPE_UINTARR, COMM_FIELD_MODEL_SWITCH_MIX, model_t, mixSw, TEXT_MIX_count)
+DICTROWA( r6, COMM_DATATYPE_INTARR, COMM_FIELD_MODEL_PERCENT_MIX, model_t, mixPct, TEXT_MIX_count)
+DICTROWA( r7, COMM_DATATYPE_INTARR, COMM_FIELD_MODEL_OFFSET_MIX, model_t, mixOffset, TEXT_MIX_count)
+DICT( Model, COMM_SUBPACKET_MODEL, &r1, &r2, &r3, &r4, &r5, &r6, &r7)
+
 Model::Model() : Module( MODULE_MODEL_TYPE, TEXT_MODULE_MODEL) {
 
     setDefaults();
 }
 
-void Model::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t configSz) const {
+void Model::exportConfig( ImportExport *exporter, uint8_t *config, moduleSize_t configSz) const {
 
-    const model_t *cfg = (model_t*)config;
-
-    exporter->openSub( COMM_SUBPACKET_MODEL );
-    exporter->addString( COMM_FIELD_MODEL_NAME, cfg->modelName);
-    exporter->addUInt8( COMM_FIELD_MODEL_MIX, cfg->wingMix);
-    exporter->addUInt8( COMM_FIELD_MODEL_SWITCH_QDIFF, cfg->qrDiffSw);
-    exporter->addInt8( COMM_FIELD_MODEL_QDIFF_PCT, cfg->qrDiffPct);
-    exporter->addUIntArr( COMM_FIELD_MODEL_SWITCH_MIX, (const byte*)cfg->mixSw, sizeof(cfg->mixSw), TEXT_MIX_count);
-    exporter->addIntArr( COMM_FIELD_MODEL_PERCENT_MIX, (const byte*)cfg->mixPct, sizeof(cfg->mixPct), TEXT_MIX_count);
-    exporter->addIntArr( COMM_FIELD_MODEL_OFFSET_MIX, (const byte*)cfg->mixOffset, sizeof(cfg->mixOffset), TEXT_MIX_count);
-    exporter->close();
+    exporter->runExport( DICT_ptr(Model), DICTROW_ptr(Model), config, sizeof(model_t));
 }
 
 channelValue_t Model::mixValue( channelValue_t v, uint8_t mix) {

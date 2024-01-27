@@ -40,6 +40,8 @@ typedef uint8_t moduleType_t;
 
 typedef uint8_t moduleSize_t;
 
+class ImportExport;
+
 #define MODULE_INVALID_TYPE             ((moduleType_t)0)
 
 /* List all available modules here */
@@ -79,6 +81,66 @@ typedef uint8_t moduleSize_t;
 #define MODULE_CHANNEL_DELAY_TYPE       ((moduleType_t)66)
 #define MODULE_LOGIC_SWITCH_TYPE        ((moduleType_t)67)
 #define MODULE_ANALOG_TRIM_TYPE         ((moduleType_t)68)
+
+/***** Configuration definition macros *****/
+
+#define NO_CONFIG()                                 \
+public:                                             \
+    void switchPhase(phase_t ph) { /* no op */ }    \
+    moduleSize_t getConfigSize() { return 0; }      \
+    uint8_t *getConfig() { return nullptr; }
+
+
+#define PHASED_CONFIG( c_t )                        \
+private:                                            \
+    c_t configuration[ PHASES ];                    \
+    c_t *cfgPtr;                                    \
+    phase_t phase;                                  \
+public:                                             \
+    void switchPhase(phase_t ph);                   \
+    moduleSize_t getConfigSize() {                  \
+        return (moduleSize_t)sizeof( configuration);\
+    }                                               \
+    uint8_t *getConfig() {                          \
+        return (uint8_t*)&configuration;            \
+    }
+
+#define INIT_PHASED_CONFIGURATION( block )          \
+    for( phase_t phase=0; phase<PHASES; phase++) {  \
+        cfgPtr = &configuration[phase];             \
+        block                                       \
+    }                                               \
+    cfgPtr = &configuration[0];
+
+
+#define NON_PHASED_CONFIG( c_t )                    \
+private:                                            \
+    c_t configuration;                              \
+    c_t *cfgPtr;                                    \
+public:                                             \
+    void switchPhase(phase_t ph) { /* no op */ }    \
+    moduleSize_t getConfigSize() {                  \
+        return (moduleSize_t)sizeof( configuration);\
+    }                                               \
+    uint8_t *getConfig() {                          \
+        return (uint8_t*)&configuration;            \
+    }
+
+#define INIT_NON_PHASED_CONFIGURATION( block )      \
+    cfgPtr = &configuration;                        \
+    block
+
+#define CFG cfgPtr
+
+#define SWITCH_PHASE( p)                \
+do {                                    \
+    if( p < PHASES) {                   \
+        phase = p;                      \
+        cfgPtr = &configuration[p];     \
+    }                                   \
+} while( false)
+
+/***** ******/
 
 class Module : public TextUIScreen {
 
@@ -121,7 +183,7 @@ class Module : public TextUIScreen {
         virtual moduleSize_t getConfigSize() = 0;
 
         /* Export configuration of a module as text to USB */
-        virtual void exportConfig( Comm *exporter, uint8_t *config, moduleSize_t configSz) const = 0;
+        virtual void exportConfig( ImportExport *exporter, uint8_t *config, moduleSize_t configSz) const = 0;
 
         /* Get the modules configuration type identifier.  */
         moduleType_t getConfigType() const;

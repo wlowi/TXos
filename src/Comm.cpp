@@ -192,7 +192,7 @@ void Comm::addString( nameType_t fName, const char *text) {
     // "N"LLLLL:text"
     if( ensureSpace( 9 + len)) {
         bufferName( fName);
-        bufferChar( COMM_DATATYPE_STRING);
+        bufferChar( COMM_CHAR_DATATYPE_STRING);
         bufferUInt( len);
         bufferChar( COMM_CHAR_DELIM);
         bufferString( text);
@@ -205,7 +205,7 @@ void Comm::addChar( nameType_t fName, char ch) {
     // "N':C"
     if( ensureSpace( 5)) {
         bufferName( fName);
-        bufferChar( COMM_DATATYPE_CHAR);
+        bufferChar( COMM_CHAR_DATATYPE_CHAR);
         bufferChar( COMM_CHAR_DELIM);
         bufferChar( ch);
         terminateLine();
@@ -217,7 +217,7 @@ void Comm::addBool( nameType_t fName, bool b) {
     // "N?:B"
     if( ensureSpace( 5)) {
         bufferName( fName);
-        bufferChar( COMM_DATATYPE_BOOL);
+        bufferChar( COMM_CHAR_DATATYPE_BOOL);
         bufferChar( COMM_CHAR_DELIM);
         bufferChar( b ? '1' : '0');
         terminateLine();
@@ -229,7 +229,7 @@ void Comm::addInt8( nameType_t fName, int8_t d) {
     // "N-W:sddd"
     if( ensureSpace( 9)) {
         bufferName( fName);
-        bufferChar( COMM_DATATYPE_SIGNED_INT);
+        bufferChar( COMM_CHAR_DATATYPE_SIGNED_INT);
         bufferChar( '1');
         bufferChar( COMM_CHAR_DELIM);
         bufferInt( d);
@@ -242,7 +242,7 @@ void Comm::addUInt8( nameType_t fName, uint8_t d) {
     // "N+W:ddd"
     if( ensureSpace( 8)) {
         bufferName( fName);
-        bufferChar( COMM_DATATYPE_UNSIGNED_INT);
+        bufferChar( COMM_CHAR_DATATYPE_UNSIGNED_INT);
         bufferChar( '1');
         bufferChar( COMM_CHAR_DELIM);
         bufferUInt( d);
@@ -255,7 +255,7 @@ void Comm::addInt16( nameType_t fName, int16_t d) {
     // "N-W:sddddd"
     if( ensureSpace( 11)) {
         bufferName( fName);
-        bufferChar( COMM_DATATYPE_SIGNED_INT);
+        bufferChar( COMM_CHAR_DATATYPE_SIGNED_INT);
         bufferChar( '2');
         bufferChar( COMM_CHAR_DELIM);
         bufferInt( d);
@@ -268,7 +268,7 @@ void Comm::addUInt16( nameType_t fName, uint16_t d) {
     // "N+W:ddddd"
     if( ensureSpace( 10)) {
         bufferName( fName);
-        bufferChar( COMM_DATATYPE_UNSIGNED_INT);
+        bufferChar( COMM_CHAR_DATATYPE_UNSIGNED_INT);
         bufferChar( '2');
         bufferChar( COMM_CHAR_DELIM);
         bufferUInt( d);
@@ -280,7 +280,7 @@ void Comm::addInt32( nameType_t fName, int32_t d) {
     // "N-W:sdddddddddd"
     if( ensureSpace( 16)) {
         bufferName( fName);
-        bufferChar( COMM_DATATYPE_SIGNED_INT);
+        bufferChar( COMM_CHAR_DATATYPE_SIGNED_INT);
         bufferChar( '4');
         bufferChar( COMM_CHAR_DELIM);
         bufferInt( d);
@@ -293,7 +293,7 @@ void Comm::addUInt32( nameType_t fName, uint32_t d) {
     // "N+W:dddddddddd"
     if( ensureSpace( 15)) {
         bufferName( fName);
-        bufferChar( COMM_DATATYPE_UNSIGNED_INT);
+        bufferChar( COMM_CHAR_DATATYPE_UNSIGNED_INT);
         bufferChar( '4');
         bufferChar( COMM_CHAR_DELIM);
         bufferUInt( d);
@@ -310,7 +310,7 @@ void Comm::addIntArr( nameType_t fName, const byte *arr, size_t sz, uint16_t cnt
     // "N#W:LLLLL:ddd,ddd,ddd..."
     if( ensureSpace( 11 + (cnt * charSz))) {
         bufferName( fName);
-        bufferChar( COMM_DATATYPE_SIGNED_ARRAY);
+        bufferChar( COMM_CHAR_DATATYPE_SIGNED_ARRAY);
         bufferUInt( byteSz);
         bufferChar( COMM_CHAR_DELIM);
         bufferUInt( cnt);
@@ -344,7 +344,7 @@ void Comm::addUIntArr( nameType_t fName, const byte *arr, size_t sz, uint16_t cn
     // "N%w:LLLLL:ddd,ddd,ddd..."
     if( ensureSpace( 11 + (cnt * charSz))) {
         bufferName( fName);
-        bufferChar( COMM_DATATYPE_UNSIGNED_ARRAY);
+        bufferChar( COMM_CHAR_DATATYPE_UNSIGNED_ARRAY);
         bufferUInt( byteSz);
         bufferChar( COMM_CHAR_DELIM);
         bufferUInt( cnt);
@@ -422,25 +422,25 @@ uint8_t Comm::nextField( nameType_t *fType, char *dType, uint8_t *width, uint16_
     }
 
     switch (*dType) {
-        case COMM_DATATYPE_STRING:
+        case COMM_CHAR_DATATYPE_STRING:
             *width = 1;
             rc = parseUInt16( count); 
             break;
 
-        case COMM_DATATYPE_CHAR:
-        case COMM_DATATYPE_BOOL:
+        case COMM_CHAR_DATATYPE_CHAR:
+        case COMM_CHAR_DATATYPE_BOOL:
             *width = 1;
             *count = 1;
             break;
 
-        case COMM_DATATYPE_UNSIGNED_INT:
-        case COMM_DATATYPE_SIGNED_INT:
+        case COMM_CHAR_DATATYPE_UNSIGNED_INT:
+        case COMM_CHAR_DATATYPE_SIGNED_INT:
             rc = parseUInt8( width); 
             *count = 1;
             break;
 
-        case COMM_DATATYPE_UNSIGNED_ARRAY:
-        case COMM_DATATYPE_SIGNED_ARRAY:
+        case COMM_CHAR_DATATYPE_UNSIGNED_ARRAY:
+        case COMM_CHAR_DATATYPE_SIGNED_ARRAY:
             rc = parseUInt8( width);
             if( rc != COMM_RC_OK) { break; }
             rc = expectChar(COMM_CHAR_DELIM) ? COMM_RC_OK : COMM_RC_PROTOCOL;
@@ -462,7 +462,7 @@ uint8_t Comm::nextData( void *data, char dType, uint8_t width, uint16_t count) {
     uint8_t rc = COMM_RC_NODATA;
 
     switch ( dType) {
-        case COMM_DATATYPE_STRING:
+        case COMM_CHAR_DATATYPE_STRING:
             while( count--) {
                 ch = getChar();
                 if( ch == EOD) {
@@ -474,17 +474,17 @@ uint8_t Comm::nextData( void *data, char dType, uint8_t width, uint16_t count) {
             rc = COMM_RC_OK;
             break;
 
-        case COMM_DATATYPE_CHAR:
+        case COMM_CHAR_DATATYPE_CHAR:
             *((char*)data) = (char)getChar();
             rc = COMM_RC_OK;
             break;
 
-        case COMM_DATATYPE_BOOL:
+        case COMM_CHAR_DATATYPE_BOOL:
             *((bool*)data) = ((char)getChar() == '0') ? false : true;
             rc = COMM_RC_OK;
             break;
 
-        case COMM_DATATYPE_UNSIGNED_INT:
+        case COMM_CHAR_DATATYPE_UNSIGNED_INT:
             switch( width) {
                 case 1:
                     parseUInt8( ((uint8_t*)data));
@@ -499,7 +499,7 @@ uint8_t Comm::nextData( void *data, char dType, uint8_t width, uint16_t count) {
             rc = COMM_RC_OK;
             break;
 
-        case COMM_DATATYPE_SIGNED_INT:
+        case COMM_CHAR_DATATYPE_SIGNED_INT:
             switch( width) {
                 case 1:
                     parseInt8( ((int8_t*)data));
@@ -514,7 +514,7 @@ uint8_t Comm::nextData( void *data, char dType, uint8_t width, uint16_t count) {
             rc = COMM_RC_OK;
             break;
 
-        case COMM_DATATYPE_UNSIGNED_ARRAY:
+        case COMM_CHAR_DATATYPE_UNSIGNED_ARRAY:
             while( count--) {
                 switch( width) {
                 case 1:
@@ -534,7 +534,7 @@ uint8_t Comm::nextData( void *data, char dType, uint8_t width, uint16_t count) {
             rc = COMM_RC_OK;
             break;
 
-        case COMM_DATATYPE_SIGNED_ARRAY:
+        case COMM_CHAR_DATATYPE_SIGNED_ARRAY:
             while( count--) {
                 switch( width) {
                 case 1:
@@ -633,13 +633,13 @@ boolean Comm::available() {
 
 boolean Comm::verifyType( char dType) {
 
-    return dType == COMM_DATATYPE_STRING
-        || dType == COMM_DATATYPE_CHAR
-        || dType == COMM_DATATYPE_BOOL
-        || dType == COMM_DATATYPE_UNSIGNED_INT
-        || dType == COMM_DATATYPE_SIGNED_INT
-        || dType == COMM_DATATYPE_UNSIGNED_ARRAY
-        || dType == COMM_DATATYPE_SIGNED_ARRAY;
+    return dType == COMM_CHAR_DATATYPE_STRING
+        || dType == COMM_CHAR_DATATYPE_CHAR
+        || dType == COMM_CHAR_DATATYPE_BOOL
+        || dType == COMM_CHAR_DATATYPE_UNSIGNED_INT
+        || dType == COMM_CHAR_DATATYPE_SIGNED_INT
+        || dType == COMM_CHAR_DATATYPE_UNSIGNED_ARRAY
+        || dType == COMM_CHAR_DATATYPE_SIGNED_ARRAY;
 }
 
 uint8_t Comm::parseInt8( int8_t *p) {

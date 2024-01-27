@@ -28,6 +28,12 @@
 
 extern const char* const InputChannelNames[INPUT_CHANNELS];
 
+/* The import/export dictionary. 
+ * See ImportExport.h
+ */
+DICTROW( r1, COMM_DATATYPE_UINT16, COMM_FIELD_BITS, channelReverse_t, revBits)
+DICT( ChannelReverse, COMM_SUBPACKET_CHANNEL_REVERSE, &r1)
+
 ChannelReverse::ChannelReverse() : Module( MODULE_CHANNEL_REVERSE_TYPE, TEXT_MODULE_CHANNEL_REVERSE) {
 
     setDefaults();
@@ -35,13 +41,9 @@ ChannelReverse::ChannelReverse() : Module( MODULE_CHANNEL_REVERSE_TYPE, TEXT_MOD
 
 /* From Module */
 
-void ChannelReverse::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t configSz) const {
+void ChannelReverse::exportConfig( ImportExport *exporter, uint8_t *config, moduleSize_t configSz) const {
 
-    const channelReverse_t *cfg = (channelReverse_t*)config;
-
-    exporter->openSub( COMM_SUBPACKET_CHANNEL_REVERSE );
-    exporter->addUInt16( COMM_FIELD_BITS, cfg->revBits);
-    exporter->close();
+    exporter->runExport( DICT_ptr(ChannelReverse), DICTROW_ptr(ChannelReverse), config, sizeof(channelReverse_t));
 }
 
 void ChannelReverse::run( Controls &controls) {

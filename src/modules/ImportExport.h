@@ -49,16 +49,25 @@ typedef struct DICT_t {
 } DICT_t;
 
 
-/* r=row name n=field name s=structure f=field c=count */
-#define DICTROW( r, n, s, f, c ) \
-static const DICTROW_t r PROGMEM = { 1, n, offsetof( s, f), sizeof( s::f), c };
+/* r=row name d=comm-datatype n=field name s=structure f=field c=count */
+#define DICTROW( r, d, n, s, f ) \
+static const DICTROW_t r PROGMEM = { d, n, offsetof( s, f), sizeof( s::f), 1 };
 
-#define DICT( d, n, s, ... ) \
-static const DICT_t d##_dict PROGMEM = { n, s }; \
-static const DICTROW_t* const d##_rows[] PROGMEM = { __VA_ARGS__ };
+/* For arrays */
+#define DICTROWA( r, d, n, s, f, c ) \
+static const DICTROW_t r PROGMEM = { d, n, offsetof( s, f), sizeof( s::f), c };
 
-#define DICTROW_P( d ) &d##_rows
-#define DICT_P( d ) &d##_dict
+#define DICT( d, n, ... ) \
+static const DICTROW_t* const d##_rows[] PROGMEM = { __VA_ARGS__ , (const DICTROW_t*)0 }; \
+static const DICT_t d##_dict PROGMEM = { n, 0 };
+
+/* For phased config */
+#define DICTP( d, n, s, ... ) \
+static const DICTROW_t* const d##_rows[] PROGMEM = { __VA_ARGS__ , (const DICTROW_t*)0 }; \
+static const DICT_t d##_dict PROGMEM = { n, s };
+
+#define DICTROW_ptr( d ) (const DICTROW_t**)&d##_rows
+#define DICT_ptr( d ) &d##_dict
 
 
 
@@ -72,13 +81,19 @@ class ImportExport : public Module {
         Stream &inOut;
         Comm &comm;
 
+        void exportModulePhase( const DICTROW_t* row[], uint8_t* config);
+
     public:
         ImportExport( Stream &stream);
+
+        Comm& getComm() { return comm; }
+
+        void runExport( const DICT_t *dict,  const DICTROW_t *row[], uint8_t *config, moduleSize_t configSz);
 
         /* From Module */
         void run( Controls &controls) final;
         void setDefaults() final;
-        void exportConfig( Comm *exporter, uint8_t *config, moduleSize_t configSz) const {};
+        void exportConfig( ImportExport *exporter, uint8_t *config, moduleSize_t configSz) const {};
         
         void moduleEnter();
         void moduleExit();

@@ -31,6 +31,13 @@ extern ModuleManager moduleManager;
 
 extern const char* const PhaseNames[TEXT_PHASES_count];
 
+/* The import/export dictionary. 
+ * See ImportExport.h
+ */
+DICTROW( r1, COMM_DATATYPE_UINT8, COMM_FIELD_SWITCH, phases_t, sw)
+DICTROWA( r2, COMM_DATATYPE_UINTARR, COMM_FIELD_PHASE_NAMES, phases_t, phaseName, PHASES)
+DICT( Phases, COMM_SUBPACKET_PHASES, &r1, &r2)
+
 Phases::Phases() : Module( MODULE_PHASES_TYPE, TEXT_MODULE_PHASES) {
 
     setDefaults();
@@ -48,14 +55,9 @@ const char *Phases::getPhaseName() {
 
 /* From Module */
 
-void Phases::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t configSz) const {
+void Phases::exportConfig( ImportExport *exporter, uint8_t *config, moduleSize_t configSz) const {
 
-    const phases_t *cfg = (phases_t*)config;
-
-    exporter->openSub( COMM_SUBPACKET_PHASES );
-    exporter->addUInt8( COMM_FIELD_SWITCH, cfg->sw);
-    exporter->addUIntArr( COMM_FIELD_PHASE_NAMES, (const byte*)cfg->phaseName, sizeof(cfg->phaseName), PHASES);
-    exporter->close();
+    exporter->runExport( DICT_ptr(Phases), DICTROW_ptr(Phases), config, sizeof(phases_t));
 }
 
 void Phases::run( Controls &controls) {

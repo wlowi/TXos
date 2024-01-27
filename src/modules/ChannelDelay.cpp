@@ -28,6 +28,13 @@
 
 extern const char* const LogicalChannelNames[LOGICAL_CHANNELS];
 
+/* The import/export dictionary. 
+ * See ImportExport.h
+ */
+DICTROWA( r1, COMM_DATATYPE_INTARR, COMM_FIELD_DELAY_ARRAY, channelDelay_t, posDelay_sec, MIX_CHANNELS)
+DICTROWA( r2, COMM_DATATYPE_INTARR, COMM_FIELD_NEG_DELAY_ARRAY, channelDelay_t, negDelay_sec, MIX_CHANNELS)
+DICT( ChannelDelay, COMM_SUBPACKET_CHANNEL_DELAY, &r1, &r2)
+
 ChannelDelay::ChannelDelay() : Module( MODULE_CHANNEL_DELAY_TYPE, TEXT_MODULE_CHANNEL_DELAY) {
 
     setDefaults();
@@ -35,14 +42,9 @@ ChannelDelay::ChannelDelay() : Module( MODULE_CHANNEL_DELAY_TYPE, TEXT_MODULE_CH
 
 /* From Module */
 
-void ChannelDelay::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t configSz) const {
+void ChannelDelay::exportConfig( ImportExport *exporter, uint8_t *config, moduleSize_t configSz) const {
 
-    const channelDelay_t *cfg = (channelDelay_t*)config;
-
-    exporter->openSub( COMM_SUBPACKET_CHANNEL_DELAY );
-    exporter->addIntArr( COMM_FIELD_DELAY_ARRAY, (const byte*)cfg->posDelay_sec, sizeof(cfg->posDelay_sec), MIX_CHANNELS);
-    exporter->addIntArr( COMM_FIELD_NEG_DELAY_ARRAY, (const byte*)cfg->negDelay_sec, sizeof(cfg->negDelay_sec), MIX_CHANNELS);
-    exporter->close();
+    exporter->runExport( DICT_ptr(ChannelDelay), DICTROW_ptr(ChannelDelay), config, sizeof(channelDelay_t));
 }
 
 void ChannelDelay::run( Controls &controls) {

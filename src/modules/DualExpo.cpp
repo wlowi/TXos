@@ -57,6 +57,13 @@ const channelValue_t expoLookup[EXPO_LOOKUP_TABLE_SIZE] = {
     1250   // 95-100%   1187 - 1250
 };
 
+/* The import/export dictionary. 
+ * See ImportExport.h
+ */
+DICTROWA( r1, COMM_DATATYPE_INTARR, COMM_FIELD_RATE_ARRAY, dualExpo_t, rate, DUAL_EXPO_CHANNELS)
+DICTROWA( r2, COMM_DATATYPE_INTARR, COMM_FIELD_EXPO_ARRAY, dualExpo_t, expo, DUAL_EXPO_CHANNELS)
+DICTP( DualExpo, COMM_SUBPACKET_DUAL_EXPO, COMM_SUBPACKET_DUAL_EXPO_PHASE, &r1, &r2)
+
 DualExpo::DualExpo() : Module( MODULE_DUAL_EXPO_TYPE, TEXT_MODULE_DUAL_EXPO) {
 
     setDefaults();
@@ -64,20 +71,9 @@ DualExpo::DualExpo() : Module( MODULE_DUAL_EXPO_TYPE, TEXT_MODULE_DUAL_EXPO) {
 
 /* From Module */
 
-void DualExpo::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t configSz) const {
+void DualExpo::exportConfig( ImportExport *exporter, uint8_t *config, moduleSize_t configSz) const {
 
-    const dualExpo_t *cfg = (dualExpo_t*)config;
-
-    exporter->openSub( COMM_SUBPACKET_DUAL_EXPO );
-    for( uint8_t p = 0; p < PHASES; p++) {
-        exporter->openSub( COMM_SUBPACKET_DUAL_EXPO_PHASE);
-        exporter->addUInt8( COMM_FIELD_PHASE, p);
-        exporter->addIntArr( COMM_FIELD_RATE_ARRAY, (const byte*)cfg->rate, sizeof(cfg->rate), DUAL_EXPO_CHANNELS);
-        exporter->addIntArr( COMM_FIELD_EXPO_ARRAY, (const byte*)cfg->expo, sizeof(cfg->expo), DUAL_EXPO_CHANNELS);
-        exporter->close();
-        cfg++;
-    }
-    exporter->close();
+    exporter->runExport( DICT_ptr(DualExpo), DICTROW_ptr(DualExpo), config, sizeof(dualExpo_t));
 }
 
 void DualExpo::run( Controls &controls) {

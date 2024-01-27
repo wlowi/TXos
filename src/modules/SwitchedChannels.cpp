@@ -28,6 +28,15 @@
 
 extern const char* const InputChannelNames[INPUT_CHANNELS];
 
+/* The import/export dictionary. 
+ * See ImportExport.h
+ */
+DICTROWA( r1, COMM_DATATYPE_UINTARR, COMM_FIELD_SWITCH_ARRAY, switchedChannels_t, sw, SWITCHED_CHANNELS)
+DICTROWA( r2, COMM_DATATYPE_INTARR, COMM_FIELD_LOW_ARRAY, switchedChannels_t, state0_pct, SWITCHED_CHANNELS)
+DICTROWA( r3, COMM_DATATYPE_INTARR, COMM_FIELD_MID_ARRAY, switchedChannels_t, state1_pct, SWITCHED_CHANNELS)
+DICTROWA( r4, COMM_DATATYPE_INTARR, COMM_FIELD_HIGH_ARRAY, switchedChannels_t, state2_pct, SWITCHED_CHANNELS)
+DICT( SwitchedChannels, COMM_SUBPACKET_SWITCHED_CHANNELS, &r1, &r2, &r3, &r4)
+
 SwitchedChannels::SwitchedChannels() : Module( MODULE_SWITCHED_CHANNELS_TYPE, TEXT_MODULE_SWITCHED_CHANNELS) {
 
     setDefaults();
@@ -35,16 +44,9 @@ SwitchedChannels::SwitchedChannels() : Module( MODULE_SWITCHED_CHANNELS_TYPE, TE
 
 /* From Module */
 
-void SwitchedChannels::exportConfig( Comm *exporter, uint8_t *config, moduleSize_t configSz) const {
+void SwitchedChannels::exportConfig( ImportExport *exporter, uint8_t *config, moduleSize_t configSz) const {
 
-    const switchedChannels_t *cfg = (switchedChannels_t*)config;
-
-    exporter->openSub( COMM_SUBPACKET_SWITCHED_CHANNELS );
-    exporter->addUIntArr( COMM_FIELD_SWITCH_ARRAY, (const byte*)cfg->sw, sizeof(cfg->sw), SWITCHED_CHANNELS);
-    exporter->addIntArr( COMM_FIELD_LOW_ARRAY, (const byte*)cfg->state0_pct, sizeof(cfg->state0_pct), SWITCHED_CHANNELS);
-    exporter->addIntArr( COMM_FIELD_MID_ARRAY, (const byte*)cfg->state1_pct, sizeof(cfg->state1_pct), SWITCHED_CHANNELS);
-    exporter->addIntArr( COMM_FIELD_HIGH_ARRAY, (const byte*)cfg->state2_pct, sizeof(cfg->state2_pct), SWITCHED_CHANNELS);
-    exporter->close();
+    exporter->runExport( DICT_ptr(SwitchedChannels), DICTROW_ptr(SwitchedChannels), config, sizeof(switchedChannels_t));
 }
 
 void SwitchedChannels::run( Controls &controls) {
