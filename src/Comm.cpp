@@ -94,7 +94,7 @@ size_t Comm::writePart() {
 #if defined(ARDUINO)
         bytesWritten = inOut->write( textBuffer );
         inOut->flush();
-#elif defined(DESIGNER)
+#elif defined(EMULATION)
         bytesWritten = inOut->write( textBuffer );
         inOut->flush();
 #elif defined(UNITTEST)

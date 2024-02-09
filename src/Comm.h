@@ -29,6 +29,10 @@
 
 #include "TXos.h"
 
+#ifdef EMULATION
+  #include "Stream.h"
+#endif
+
 /*
  * Commm Packet Format
  * ===================

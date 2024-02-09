@@ -178,6 +178,14 @@ void ImportExport::run(Controls& controls)
             moduleManager.exportSystemConfig(this);
             break;
 
+        case COMM_PACKET_SYSCONFIG:
+
+            break;
+
+        case COMM_PACKET_MODELCONFIG:
+            moduleManager.importModel(this);
+            break;
+
         default:
             comm.nextField(&cmd, &dType, &width, &count);
             comm.open(COMM_PACKET_ERROR);

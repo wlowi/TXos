@@ -49,6 +49,8 @@ typedef struct DICT_t {
 } DICT_t;
 
 
+#ifdef ARDUINO
+
 /* r=row name d=comm-datatype n=field name s=structure f=field c=count */
 #define DICTROW( r, d, n, s, f ) \
 static const DICTROW_t r PROGMEM = { d, n, offsetof( s, f), sizeof( s::f), 1 };
@@ -69,7 +71,34 @@ static const DICT_t d##_dict PROGMEM = { n, s };
 #define DICTROW_ptr( d ) (const DICTROW_t**)&d##_rows
 #define DICT_ptr( d ) &d##_dict
 
+#else
 
+/* r=row name d=comm-datatype n=field name s=structure f=field c=count */
+#define DICTROW( r, d, n, s, f ) \
+static const DICTROW_t r  = { d, n, offsetof( s, f), sizeof( s::f), 1 };
+
+/* For arrays */
+#define DICTROWA( r, d, n, s, f, c ) \
+static const DICTROW_t r  = { d, n, offsetof( s, f), sizeof( s::f), c };
+
+#define DICT( d, n, ... ) \
+static const DICTROW_t* const d##_rows[]  = { __VA_ARGS__ , (const DICTROW_t*)0 }; \
+static const DICT_t d##_dict  = { n, 0 };
+
+/* For phased config */
+#define DICTP( d, n, s, ... ) \
+static const DICTROW_t* const d##_rows[]  = { __VA_ARGS__ , (const DICTROW_t*)0 }; \
+static const DICT_t d##_dict  = { n, s };
+
+#define DICTROW_ptr( d ) (const DICTROW_t**)&d##_rows
+#define DICT_ptr( d ) &d##_dict
+
+#define pgm_read_byte( b ) (*(b))
+#define pgm_read_word( b ) (*(b))
+#define pgm_read_dword( b ) (*(b))
+#define pgm_read_ptr_far( b ) (*(b))
+
+#endif
 
 class ImportExport : public Module {
 

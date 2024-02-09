@@ -1,5 +1,5 @@
 /*
-  TXos. A remote control transmitter OS.
+  Lights. A remote control lights controller.
 
   MIT License
 
@@ -24,48 +24,33 @@
   SOFTWARE.
 */
 
-/*
- * Arduino.h
- * Dummy defines for simulation.
+#ifndef __Stream_h__
+#define __Stream_h__
+
+#include "stddef.h"
+
+/* A stream class to make Arduino code work in Designer.
+ * This is used by Lights/Comm class.
+ *
+ * It takes a Usb class and reads/writes from there.
  */
+class Stream {
 
-#ifndef _Arduino_h_
-#define _Arduino_h_
+    public:
+        virtual ~Stream() = 0;
 
-#include <stdint.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <cstring>
-#include <ctype.h>
+        virtual void setTimeout(unsigned long timeout) = 0;
 
-#include "EmuSerial.h"
+        virtual size_t write( const char* text) = 0;
+        virtual void flush() = 0;
 
-#ifndef NULL
-#define NULL __null
-#endif
+        virtual int read() = 0;
 
-#define HIGH 0x1
-#define LOW  0x0
+        virtual int available() = 0;
 
-#define INPUT 0x0
-#define OUTPUT 0x1
+        virtual void close() = 0;
+};
 
-typedef uint8_t byte;
-
-typedef bool boolean;
-
-#define delay( s)
-
-extern unsigned long millis();
-extern EmuSerial Serial;
-
-/* From AVR atomic.h */
-
-#define ATOMIC_BLOCK( s )
-#define ATOMIC_RESTORESTATE
-#define ATOMIC_FORCEON
-
-#define __FlashStringHelper char
-#define F( b ) b
+inline Stream::~Stream() {}
 
 #endif

@@ -24,48 +24,57 @@
   SOFTWARE.
 */
 
-/*
- * Arduino.h
- * Dummy defines for simulation.
+#ifndef _EmuSerial_h_
+#define _EmuSerial_h_
+
+#include <wx/thread.h>
+
+#include "stddef.h"
+#include "Stream.h"
+
+/* The buffer size needs to be big enough to store data for a complete transfer.
+ * Currently EmuSerial is called from main thread and SerialConsole is also
+ * called from main thread. There is no way to switch between threads 
+ * and comsume the buffer content.
  */
+const int EMUSERIAL_BUFFER_SIZE = 10240;
 
-#ifndef _Arduino_h_
-#define _Arduino_h_
+class EmuSerial : public Stream {
 
-#include <stdint.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <cstring>
-#include <ctype.h>
+private:
+    char sendBuffer[EMUSERIAL_BUFFER_SIZE];
+    char recvBuffer[EMUSERIAL_BUFFER_SIZE];
 
-#include "EmuSerial.h"
+    /* send = emulation to SerialConsole */
+    wxCriticalSection sendCriticalSection;
+    int sendInPtr = 0;
+    int sendOutPtr = 0;
 
-#ifndef NULL
-#define NULL __null
-#endif
+    /* recv = SerialConsole to emulation */
+    wxCriticalSection recvCriticalSection;
+    int recvInPtr = 0;
+    int recvOutPtr = 0;
 
-#define HIGH 0x1
-#define LOW  0x0
+public:
+    EmuSerial();
 
-#define INPUT 0x0
-#define OUTPUT 0x1
+    void send(const char *text);
 
-typedef uint8_t byte;
+    int receive();
+    
+    /* Interface: Stream */
 
-typedef bool boolean;
+    void setTimeout(unsigned long timeout) {}; // noop
 
-#define delay( s)
+    size_t write(const char* text);
 
-extern unsigned long millis();
-extern EmuSerial Serial;
+    void flush() {}; // noop
 
-/* From AVR atomic.h */
+    int read();
 
-#define ATOMIC_BLOCK( s )
-#define ATOMIC_RESTORESTATE
-#define ATOMIC_FORCEON
+    int available();
 
-#define __FlashStringHelper char
-#define F( b ) b
+    void close() {}; // noop 
+};
 
 #endif

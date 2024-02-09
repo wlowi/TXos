@@ -33,10 +33,13 @@
 #include "BuzzerImpl.h"
 
 #include "EEPROM.h"
-
+#include "EmuSerial.h"
+#include "SerialConsole.h"
 #include "time.h"
 
 EEPROMClass EEPROM(4096);
+SerialConsole *serialConsole;
+EmuSerial Serial;
 
 extern void setup( void);
 extern void loop( void);
@@ -46,6 +49,10 @@ OutputImpl *outputImpl;
 DisplayImpl *displayImpl;
 PortsImpl *portsImpl;
 BuzzerImpl *buzzerImpl;
+
+
+static wxWindowID idConsole = wxWindow::NewControlId();
+
 
 SWITCH_CONFIGURATION
 
@@ -69,12 +76,8 @@ class MyFrame : public wxFrame
         void OnClose(wxCloseEvent& event);
         void OnExit(wxCommandEvent& event);
         void OnAbout(wxCommandEvent& event);
+        void OnConsole(wxCommandEvent& event);
         void handleIdle(wxIdleEvent& event);
-};
-
-enum
-{
-    ID_Hello = 1
 };
  
 wxIMPLEMENT_APP(TXosTest);
@@ -92,8 +95,7 @@ MyFrame::MyFrame()
     : wxFrame(NULL, wxID_ANY, "TXosTest")
 {
     wxMenu *menuFile = new wxMenu;
-    menuFile->Append(ID_Hello, "&Hello...\tCtrl-H",
-                     "Help string shown in status bar for this menu item");
+    menuFile->Append(idConsole, "&Console", "Open Serial Console Emulation");
     menuFile->AppendSeparator();
     menuFile->Append(wxID_EXIT);
  
@@ -109,6 +111,7 @@ MyFrame::MyFrame()
     CreateStatusBar();
     SetStatusText("TXosTest");
  
+    Bind(wxEVT_MENU, &MyFrame::OnConsole, this, idConsole);
     Bind(wxEVT_MENU, &MyFrame::OnAbout, this, wxID_ABOUT);
     Bind(wxEVT_MENU, &MyFrame::OnExit, this, wxID_EXIT);
     Bind(wxEVT_CLOSE_WINDOW, &MyFrame::OnClose, this);
@@ -136,21 +139,34 @@ MyFrame::MyFrame()
 
     Bind(wxEVT_IDLE, &MyFrame::handleIdle, this);
 
+    serialConsole = new SerialConsole( Serial);
+
     portsImpl = new PortsImpl();
     buzzerImpl = new BuzzerImpl();
 }
  
 void MyFrame::OnClose(wxCloseEvent& event)
 {
+    serialConsole->Show(false);
+    serialConsole->Destroy();
     EEPROM.saveToFile();
     Destroy();
 }
 
 void MyFrame::OnExit(wxCommandEvent& event)
-{
+{    
     Close();
 }
  
+void MyFrame::OnConsole(wxCommandEvent& event)
+{
+    if( serialConsole->IsShown()) {
+        serialConsole->Show(false);
+    } else {
+        serialConsole->Show(true);
+    }
+} 
+
 void MyFrame::OnAbout(wxCommandEvent& event)
 {
     //wxMessageBox("TXos Test Helper",

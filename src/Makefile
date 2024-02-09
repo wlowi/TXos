@@ -36,7 +36,7 @@ WX_CXXFLAGS_GEN = $(shell wx-config --cxxflags)
 WX_CXXFLAGS = $(subst -I,-isystem,$(WX_CXXFLAGS_GEN))
 
 ## EMU_OBJ = emu/EEPROM.o emu/InputImpl.o emu/OutputImpl.o emu/PortsImpl.o emu/BuzzerImpl.o emu/LcdWidget.o emu/DisplayImpl.o
-EMU_OBJ = emu/EEPROM.o emu/InputImpl.o emu/OutputImpl.o emu/PortsImpl.o emu/BuzzerImpl.o emu/EmuTextUILcdST7735.o emu/EmuTextUISimpleKbd.o emu/DisplayImpl.o
+EMU_OBJ = emu/EEPROM.o emu/EmuSerial.o emu/SerialConsole.o emu/InputImpl.o emu/OutputImpl.o emu/PortsImpl.o emu/BuzzerImpl.o emu/EmuTextUILcdST7735.o emu/EmuTextUISimpleKbd.o emu/DisplayImpl.o
 
 CONTROLS_OBJ = controls/Controls.o
 
@@ -72,7 +72,7 @@ ifeq ($(MAKECMDGOALS),unittest)
 	$(CXX) -DUNITTEST $(CXXFLAGS) $(UTCXXINC) -c  -o $@ $<
 else
 .cpp.o:
-	$(CXX) $(CXXFLAGS) $(CXXINC) $(WX_CXXFLAGS) -c  -o $@ $<
+	$(CXX) -DEMULATION $(CXXFLAGS) $(CXXINC) $(WX_CXXFLAGS) -c  -o $@ $<
 endif
 
 all: $(PROGRAM)

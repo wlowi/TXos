@@ -482,13 +482,45 @@ void ModuleManager::exportModel( ImportExport *exporter, configBlockID_t modelID
 
 void ModuleManager::importModel( ImportExport *importer) {
 
+    nameType_t cmd;
+    char dType;
+    uint8_t width;
+    uint16_t count;
+    uint8_t rc;
+    Comm& comm = importer->getComm();
+
+    configBlockID_t modelID = CONFIG_BLOCKID_INVALID;
+
     LOG("ModuleManager::importModel(): called\n");
 
-
-    if( blockService->isBlockValid()) {
-        blockService->writeBlock();
+    /* First read model ID */
+    if ((rc = comm.nextField(&cmd, &dType, &width, &count)) == COMM_RC_OK) {
+        if (cmd == COMM_FIELD_ID) {
+            comm.nextData(&modelID, dType, width, count);
+        } else {
+            /* ERROR */
+        }
     } else {
-        LOG("** ModuleManager::importModel(): model config is invalid, not saved\n");
+        /* ERROR */ 
+    }
+
+    if( modelID > 0 && modelID <= blockService->getModelBlockCount() ) {
+
+        while( (rc = comm.nextField(&cmd, &dType, &width, &count)) == COMM_RC_SUBSTART) {
+
+        }
+
+        if( rc == COMM_RC_END) {
+            if( blockService->isBlockValid()) {
+                blockService->writeBlock();
+            } else {
+                LOG("** ModuleManager::importModel(): model config is invalid, not saved\n");
+            }
+        } else {
+            /* ERROR */
+        }
+    } else {
+        /* ERROR */
     }
 }
 

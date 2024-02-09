@@ -24,48 +24,43 @@
   SOFTWARE.
 */
 
-/*
- * Arduino.h
- * Dummy defines for simulation.
- */
+#ifndef _SerialConsole_h_
+#define _SerialConsole_h_
 
-#ifndef _Arduino_h_
-#define _Arduino_h_
+#include <wx/wxprec.h>
+ 
+#ifndef WX_PRECOMP
+    #include <wx/wx.h>
+#endif
 
-#include <stdint.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <cstring>
-#include <ctype.h>
+#include "stddef.h"
 
 #include "EmuSerial.h"
 
-#ifndef NULL
-#define NULL __null
-#endif
+class SerialConsole : public wxFrame {
 
-#define HIGH 0x1
-#define LOW  0x0
+private:
+    EmuSerial &serial;
+    wxTextCtrl *outText = nullptr;
+    wxTextCtrl *inText = nullptr;
 
-#define INPUT 0x0
-#define OUTPUT 0x1
+public:
+    SerialConsole( EmuSerial &io);
+    virtual ~SerialConsole() {
+        if( outText) {
+            delete outText;
+            outText = nullptr;
+        }
+        if( inText) {
+            delete inText;
+            inText = nullptr;
+        }
+    }
 
-typedef uint8_t byte;
-
-typedef bool boolean;
-
-#define delay( s)
-
-extern unsigned long millis();
-extern EmuSerial Serial;
-
-/* From AVR atomic.h */
-
-#define ATOMIC_BLOCK( s )
-#define ATOMIC_RESTORESTATE
-#define ATOMIC_FORCEON
-
-#define __FlashStringHelper char
-#define F( b ) b
+private:
+    void OnClose(wxCloseEvent& event);
+    void OnSend(wxCommandEvent& event);
+    void handleIdle(wxIdleEvent& event);
+};
 
 #endif
