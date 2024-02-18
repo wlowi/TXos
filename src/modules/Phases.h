@@ -54,7 +54,8 @@ class Phases : public Module {
         /* From Module */
         void run( Controls &controls) final;
         void setDefaults() final;
-        void exportConfig( ImportExport *exporter, uint8_t *config, moduleSize_t configSz) const;
+        void exportConfig( ImportExport *exporter, uint8_t *config) const;
+        void importConfig( ImportExport *importer, uint8_t *config) const;
 
         /* From TableEditable */
         uint8_t getRowCount() final;

@@ -35,16 +35,21 @@ DICTROWA( r1, COMM_DATATYPE_INTARR, COMM_FIELD_DELAY_ARRAY, channelDelay_t, posD
 DICTROWA( r2, COMM_DATATYPE_INTARR, COMM_FIELD_NEG_DELAY_ARRAY, channelDelay_t, negDelay_sec, MIX_CHANNELS)
 DICT( ChannelDelay, COMM_SUBPACKET_CHANNEL_DELAY, &r1, &r2)
 
-ChannelDelay::ChannelDelay() : Module( MODULE_CHANNEL_DELAY_TYPE, TEXT_MODULE_CHANNEL_DELAY) {
+ChannelDelay::ChannelDelay() : Module( MODULE_CHANNEL_DELAY_TYPE, TEXT_MODULE_CHANNEL_DELAY, COMM_SUBPACKET_CHANNEL_DELAY) {
 
     setDefaults();
 }
 
 /* From Module */
 
-void ChannelDelay::exportConfig( ImportExport *exporter, uint8_t *config, moduleSize_t configSz) const {
+void ChannelDelay::exportConfig( ImportExport *exporter, uint8_t *config) const {
 
     exporter->runExport( DICT_ptr(ChannelDelay), DICTROW_ptr(ChannelDelay), config, sizeof(channelDelay_t));
+}
+
+void ChannelDelay::importConfig( ImportExport *importer, uint8_t *config) const {
+
+    importer->runImport( DICT_ptr(ChannelDelay), DICTROW_ptr(ChannelDelay), config, sizeof(channelDelay_t));
 }
 
 void ChannelDelay::run( Controls &controls) {

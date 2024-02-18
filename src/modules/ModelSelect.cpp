@@ -34,7 +34,7 @@
 extern ModuleManager moduleManager;
 extern SystemConfig systemConfig;
 
-ModelSelect::ModelSelect() : Module( MODULE_MODEL_SELECT_TYPE, TEXT_MODULE_MODEL_SELECT) {
+ModelSelect::ModelSelect() : Module( MODULE_MODEL_SELECT_TYPE, TEXT_MODULE_MODEL_SELECT, COMM_SUBPACKET_NONE) {
 
     setDefaults();
 }

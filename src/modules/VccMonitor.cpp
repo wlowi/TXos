@@ -34,7 +34,7 @@ DICTROW( r2, COMM_DATATYPE_INT16, COMM_FIELD_ALERT, vccMonitor_t, alertLevel)
 DICTROW( r3, COMM_DATATYPE_INT8, COMM_FIELD_ADJUST, vccMonitor_t, vccAdjust)
 DICT( VccMonitor, COMM_SUBPACKET_VCC_MONITOR, &r1, &r2, &r3)
 
-VccMonitor::VccMonitor() : Module( MODULE_VCC_MONITOR_TYPE, TEXT_MODULE_VCC_MONITOR) {
+VccMonitor::VccMonitor() : Module( MODULE_VCC_MONITOR_TYPE, TEXT_MODULE_VCC_MONITOR, COMM_SUBPACKET_VCC_MONITOR) {
 
     setDefaults();
 }
@@ -56,9 +56,14 @@ bool VccMonitor::belowAlert() const {
 
 /* From Module */
 
-void VccMonitor::exportConfig( ImportExport *exporter, uint8_t *config, moduleSize_t configSz) const {
+void VccMonitor::exportConfig( ImportExport *exporter, uint8_t *config) const {
 
     exporter->runExport( DICT_ptr(VccMonitor), DICTROW_ptr(VccMonitor), config, sizeof(vccMonitor_t));
+}
+
+void VccMonitor::importConfig( ImportExport *importer, uint8_t *config) const {
+
+    importer->runImport( DICT_ptr(VccMonitor), DICTROW_ptr(VccMonitor), config, sizeof(vccMonitor_t));
 }
 
 void VccMonitor::run( Controls &controls) {

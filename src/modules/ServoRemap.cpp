@@ -35,16 +35,21 @@ extern const char* const OutputChannelNames[PPM_CHANNELS];
 DICTROWA( r1, COMM_DATATYPE_UINTARR, COMM_FIELD_CHANNEL_ARRAY, servoRemap_t, source, PPM_CHANNELS)
 DICT( ServoRemap, COMM_SUBPACKET_SERVO_REMAP, &r1)
 
-ServoRemap::ServoRemap() : Module( MODULE_SERVO_REMAP_TYPE, TEXT_MODULE_SERVO_REMAP) {
+ServoRemap::ServoRemap() : Module( MODULE_SERVO_REMAP_TYPE, TEXT_MODULE_SERVO_REMAP, COMM_SUBPACKET_SERVO_REMAP) {
 
     setDefaults();
 }
 
 /* From Module */
 
-void ServoRemap::exportConfig( ImportExport *exporter, uint8_t *config, moduleSize_t configSz) const {
+void ServoRemap::exportConfig( ImportExport *exporter, uint8_t *config) const {
 
     exporter->runExport( DICT_ptr(ServoRemap), DICTROW_ptr(ServoRemap), config, sizeof(servoRemap_t));
+}
+
+void ServoRemap::importConfig( ImportExport *importer, uint8_t *config) const {
+
+    importer->runImport( DICT_ptr(ServoRemap), DICTROW_ptr(ServoRemap), config, sizeof(servoRemap_t));
 }
 
 void ServoRemap::run( Controls &controls) {

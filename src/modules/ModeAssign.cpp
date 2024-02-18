@@ -35,7 +35,7 @@ extern const char* const LogicalChannelNames[LOGICAL_CHANNELS];
 DICTROWA( r1, COMM_DATATYPE_UINTARR, COMM_FIELD_CHANNEL_ARRAY, modeAssign_t, source, MODE_CHANNELS)
 DICT( ModeAssign, COMM_SUBPACKET_MODE_ASSIGN, &r1)
 
-ModeAssign::ModeAssign() : Module( MODULE_MODE_ASSIGN_TYPE, TEXT_MODULE_MODE_ASSIGN) {
+ModeAssign::ModeAssign() : Module( MODULE_MODE_ASSIGN_TYPE, TEXT_MODULE_MODE_ASSIGN, COMM_SUBPACKET_MODE_ASSIGN) {
 
     setDefaults();
 }
@@ -47,9 +47,14 @@ channel_t ModeAssign::getModeChannel( channel_t ch) const {
 
 /* From Module */
 
-void ModeAssign::exportConfig( ImportExport *exporter, uint8_t *config, moduleSize_t configSz) const {
+void ModeAssign::exportConfig( ImportExport *exporter, uint8_t *config) const {
 
     exporter->runExport( DICT_ptr(ModeAssign), DICTROW_ptr(ModeAssign), config, sizeof(modeAssign_t));
+}
+
+void ModeAssign::importConfig( ImportExport *importer, uint8_t *config) const {
+
+    importer->runImport( DICT_ptr(ModeAssign), DICTROW_ptr(ModeAssign), config, sizeof(modeAssign_t));
 }
 
 void ModeAssign::run( Controls &controls) {

@@ -34,16 +34,21 @@ extern const char* const OutputChannelNames[PPM_CHANNELS];
 DICTROWA( r1, COMM_DATATYPE_INTARR, COMM_FIELD_PERCENT_ARRAY, servoSubtrim_t, trim_pct, PPM_CHANNELS)
 DICT( ServoSubtrim, COMM_SUBPACKET_SERVO_SUBTRIM, &r1)
 
-ServoSubtrim::ServoSubtrim() : Module( MODULE_SERVO_SUBTRIM_TYPE, TEXT_MODULE_SERVO_SUBTRIM) {
+ServoSubtrim::ServoSubtrim() : Module( MODULE_SERVO_SUBTRIM_TYPE, TEXT_MODULE_SERVO_SUBTRIM, COMM_SUBPACKET_SERVO_SUBTRIM) {
 
     setDefaults();
 }
 
 /* From Module */
 
-void ServoSubtrim::exportConfig( ImportExport *exporter, uint8_t *config, moduleSize_t configSz) const {
+void ServoSubtrim::exportConfig( ImportExport *exporter, uint8_t *config) const {
 
     exporter->runExport( DICT_ptr(ServoSubtrim), DICTROW_ptr(ServoSubtrim), config, sizeof(servoSubtrim_t));
+}
+
+void ServoSubtrim::importConfig( ImportExport *importer, uint8_t *config) const {
+
+    importer->runImport( DICT_ptr(ServoSubtrim), DICTROW_ptr(ServoSubtrim), config, sizeof(servoSubtrim_t));
 }
 
 void ServoSubtrim::run( Controls &controls) {

@@ -39,16 +39,21 @@ DICTROWA( r3, COMM_DATATYPE_UINTARR, COMM_FIELD_STATEB_ARRAY, logicSwitch_t, swS
 DICTROWA( r4, COMM_DATATYPE_UINTARR, COMM_FIELD_STATEC_ARRAY, logicSwitch_t, swStateC, LOGIC_SWITCHES)
 DICT( LogicSwitch, COMM_SUBPACKET_LOGIC_SWITCH, &r1, &r2, &r3, &r4)
 
-LogicSwitch::LogicSwitch() : Module( MODULE_LOGIC_SWITCH_TYPE, TEXT_MODULE_LOGIC_SWITCH) {
+LogicSwitch::LogicSwitch() : Module( MODULE_LOGIC_SWITCH_TYPE, TEXT_MODULE_LOGIC_SWITCH, COMM_SUBPACKET_LOGIC_SWITCH) {
 
     setDefaults();
 }
 
 /* From Module */
 
-void LogicSwitch::exportConfig( ImportExport *exporter, uint8_t *config, moduleSize_t configSz) const {
+void LogicSwitch::exportConfig( ImportExport *exporter, uint8_t *config) const {
 
     exporter->runExport( DICT_ptr(LogicSwitch), DICTROW_ptr(LogicSwitch), config, sizeof(logicSwitch_t));
+}
+
+void LogicSwitch::importConfig( ImportExport *importer, uint8_t *config) const {
+
+    importer->runImport( DICT_ptr(LogicSwitch), DICTROW_ptr(LogicSwitch), config, sizeof(logicSwitch_t));
 }
 
 void LogicSwitch::run( Controls &controls) {

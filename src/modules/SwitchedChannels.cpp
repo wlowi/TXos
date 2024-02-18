@@ -37,16 +37,21 @@ DICTROWA( r3, COMM_DATATYPE_INTARR, COMM_FIELD_MID_ARRAY, switchedChannels_t, st
 DICTROWA( r4, COMM_DATATYPE_INTARR, COMM_FIELD_HIGH_ARRAY, switchedChannels_t, state2_pct, SWITCHED_CHANNELS)
 DICT( SwitchedChannels, COMM_SUBPACKET_SWITCHED_CHANNELS, &r1, &r2, &r3, &r4)
 
-SwitchedChannels::SwitchedChannels() : Module( MODULE_SWITCHED_CHANNELS_TYPE, TEXT_MODULE_SWITCHED_CHANNELS) {
+SwitchedChannels::SwitchedChannels() : Module( MODULE_SWITCHED_CHANNELS_TYPE, TEXT_MODULE_SWITCHED_CHANNELS, COMM_SUBPACKET_SWITCHED_CHANNELS) {
 
     setDefaults();
 }
 
 /* From Module */
 
-void SwitchedChannels::exportConfig( ImportExport *exporter, uint8_t *config, moduleSize_t configSz) const {
+void SwitchedChannels::exportConfig( ImportExport *exporter, uint8_t *config) const {
 
     exporter->runExport( DICT_ptr(SwitchedChannels), DICTROW_ptr(SwitchedChannels), config, sizeof(switchedChannels_t));
+}
+
+void SwitchedChannels::importConfig( ImportExport *importer, uint8_t *config) const {
+
+    importer->runImport( DICT_ptr(SwitchedChannels), DICTROW_ptr(SwitchedChannels), config, sizeof(switchedChannels_t));
 }
 
 void SwitchedChannels::run( Controls &controls) {

@@ -39,7 +39,7 @@ const char* const statisticNames[STATISTIC_COUNT] {
     TEXT_STATISTIC_MEMFREE
 };
 
-Statistics::Statistics() : Module( MODULE_STATISTICS_TYPE, TEXT_MODULE_STATISTICS) {
+Statistics::Statistics() : Module( MODULE_STATISTICS_TYPE, TEXT_MODULE_STATISTICS, COMM_SUBPACKET_NONE) {
 
     setDefaults();
 }

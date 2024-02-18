@@ -28,7 +28,7 @@
 
 extern Controls controls;
 
-SwitchMonitor::SwitchMonitor( Controls &controls) : Module( MODULE_SWITCH_MONITOR_TYPE, TEXT_MODULE_SWITCHES) , current( controls){
+SwitchMonitor::SwitchMonitor( Controls &controls) : Module( MODULE_SWITCH_MONITOR_TYPE, TEXT_MODULE_SWITCHES, COMM_SUBPACKET_NONE) , current( controls){
 
 }
 

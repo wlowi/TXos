@@ -34,16 +34,21 @@ extern const char* const InputChannelNames[INPUT_CHANNELS];
 DICTROWA( r1, COMM_DATATYPE_INTARR, COMM_FIELD_PERCENT_ARRAY, analogTrim_t, storedTrim_pct, PORT_TRIM_INPUT_COUNT)
 DICT( AnalogTrim, COMM_SUBPACKET_ANALOG_TRIM, &r1)
 
-AnalogTrim::AnalogTrim() : Module( MODULE_ANALOG_TRIM_TYPE, TEXT_MODULE_ANALOG_TRIM) {
+AnalogTrim::AnalogTrim() : Module( MODULE_ANALOG_TRIM_TYPE, TEXT_MODULE_ANALOG_TRIM, COMM_SUBPACKET_ANALOG_TRIM) {
 
     setDefaults();
 }
 
 /* From Module */
 
-void AnalogTrim::exportConfig( ImportExport *exporter, uint8_t *config, moduleSize_t configSz) const {
+void AnalogTrim::exportConfig( ImportExport *exporter, uint8_t *config) const {
 
     exporter->runExport( DICT_ptr(AnalogTrim), DICTROW_ptr(AnalogTrim), config, sizeof(analogTrim_t));
+}
+
+void AnalogTrim::importConfig( ImportExport *importer, uint8_t *config) const {
+
+    importer->runImport( DICT_ptr(AnalogTrim), DICTROW_ptr(AnalogTrim), config, sizeof(analogTrim_t));
 }
 
 void AnalogTrim::run( Controls &controls) {

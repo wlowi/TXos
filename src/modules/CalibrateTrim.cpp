@@ -34,16 +34,21 @@ DICTROWA( r2, COMM_DATATYPE_INTARR, COMM_FIELD_MID_ARRAY, calibrateTrim_t, midPo
 DICTROWA( r3, COMM_DATATYPE_INTARR, COMM_FIELD_HIGH_ARRAY, calibrateTrim_t, maxPos, PORT_TRIM_INPUT_COUNT)
 DICT( CalibrateTrim, COMM_SUBPACKET_CALIBRATE_TRIM, &r1, &r2, &r3)
 
-CalibrateTrim::CalibrateTrim() : Module( MODULE_CAL_TRIM_TYPE, TEXT_MODULE_CAL_TRIM) {
+CalibrateTrim::CalibrateTrim() : Module( MODULE_CAL_TRIM_TYPE, TEXT_MODULE_CAL_TRIM, COMM_SUBPACKET_CALIBRATE_TRIM) {
 
     setDefaults();
 }
 
 /* From Module */
 
-void CalibrateTrim::exportConfig( ImportExport *exporter, uint8_t *config, moduleSize_t configSz) const {
+void CalibrateTrim::exportConfig( ImportExport *exporter, uint8_t *config) const {
 
     exporter->runExport( DICT_ptr(CalibrateTrim), DICTROW_ptr(CalibrateTrim), config, sizeof(calibrateTrim_t));
+}
+
+void CalibrateTrim::importConfig( ImportExport *importer, uint8_t *config) const {
+
+    importer->runImport( DICT_ptr(CalibrateTrim), DICTROW_ptr(CalibrateTrim), config, sizeof(calibrateTrim_t));
 }
 
 void CalibrateTrim::run( Controls &controls) {

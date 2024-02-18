@@ -34,16 +34,21 @@ DICTROWA( r2, COMM_DATATYPE_INTARR, COMM_FIELD_MID_ARRAY, calibrateSticks_t, mid
 DICTROWA( r3, COMM_DATATYPE_INTARR, COMM_FIELD_HIGH_ARRAY, calibrateSticks_t, maxPos, PORT_ANALOG_INPUT_COUNT)
 DICT( CalibrateSticks, COMM_SUBPACKET_CALIBRATE_STICKS, &r1, &r2, &r3)
 
-CalibrateSticks::CalibrateSticks() : Module( MODULE_CAL_STICKS_TYPE, TEXT_MODULE_CAL_STICKS) {
+CalibrateSticks::CalibrateSticks() : Module( MODULE_CAL_STICKS_TYPE, TEXT_MODULE_CAL_STICKS, COMM_SUBPACKET_CALIBRATE_STICKS) {
 
     setDefaults();
 }
 
 /* From Module */
 
-void CalibrateSticks::exportConfig( ImportExport *exporter, uint8_t *config, moduleSize_t configSz) const {
+void CalibrateSticks::exportConfig( ImportExport *exporter, uint8_t *config) const {
 
     exporter->runExport( DICT_ptr(CalibrateSticks), DICTROW_ptr(CalibrateSticks), config, sizeof(calibrateSticks_t));
+}
+
+void CalibrateSticks::importConfig( ImportExport *importer, uint8_t *config) const {
+
+    importer->runImport( DICT_ptr(CalibrateSticks), DICTROW_ptr(CalibrateSticks), config, sizeof(calibrateSticks_t));
 }
 
 void CalibrateSticks::run( Controls &controls) {

@@ -142,6 +142,9 @@ using nameType_t = uint16_t;
 #define COMM_PACKET_MODELCONFIG           PACKET_TYPE('M','C')
 #define COMM_PACKET_SYSCONFIG             PACKET_TYPE('S','C')
 
+/* This marks modules that do not need import/export */
+#define COMM_SUBPACKET_NONE               PACKET_TYPE('\0','\0')
+
 #define COMM_SUBPACKET_ANALOG_SWITCH      PACKET_TYPE('A','S')
 #define COMM_SUBPACKET_ANALOG_TRIM        PACKET_TYPE('A','T')
 #define COMM_SUBPACKET_ASSIGN_INPUT       PACKET_TYPE('A','I')

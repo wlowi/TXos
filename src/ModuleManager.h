@@ -86,6 +86,7 @@ class ModuleManager {
         void addToRunList( Module *modulePtr);
 
         Module *getModuleByType( uint8_t setType, moduleType_t type);
+        Module *getModuleByCommType( uint8_t setType, nameType_t type);
 
         TextUIMenu *getSystemMenu();
         TextUIMenu *getModelMenu();

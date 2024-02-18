@@ -29,7 +29,7 @@
 
 extern Ports ports;
 
-RangeTest::RangeTest() : Module( MODULE_RANGE_TEST_TYPE, TEXT_MODULE_RANGE_TEST) {
+RangeTest::RangeTest() : Module( MODULE_RANGE_TEST_TYPE, TEXT_MODULE_RANGE_TEST, COMM_SUBPACKET_NONE) {
 
     setDefaults();
 }

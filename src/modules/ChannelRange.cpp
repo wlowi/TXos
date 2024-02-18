@@ -34,16 +34,21 @@ extern const char* const InputChannelNames[INPUT_CHANNELS];
 DICTROWA( r1, COMM_DATATYPE_INTARR, COMM_FIELD_PERCENT_ARRAY, channelRange_t, range_pct, PORT_ANALOG_INPUT_COUNT)
 DICT( ChannelRange, COMM_SUBPACKET_CHANNEL_RANGE, &r1)
 
-ChannelRange::ChannelRange() : Module( MODULE_CHANNEL_RANGE_TYPE, TEXT_MODULE_CHANNEL_RANGE) {
+ChannelRange::ChannelRange() : Module( MODULE_CHANNEL_RANGE_TYPE, TEXT_MODULE_CHANNEL_RANGE, COMM_SUBPACKET_CHANNEL_RANGE) {
 
     setDefaults();
 }
 
 /* From Module */
 
-void ChannelRange::exportConfig( ImportExport *exporter, uint8_t *config, moduleSize_t configSz) const {
+void ChannelRange::exportConfig( ImportExport *exporter, uint8_t *config) const {
 
     exporter->runExport( DICT_ptr(ChannelRange), DICTROW_ptr(ChannelRange), config, sizeof(channelRange_t));
+}
+
+void ChannelRange::importConfig( ImportExport *importer, uint8_t *config) const {
+
+    importer->runImport( DICT_ptr(ChannelRange), DICTROW_ptr(ChannelRange), config, sizeof(channelRange_t));
 }
 
 void ChannelRange::run( Controls &controls) {

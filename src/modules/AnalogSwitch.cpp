@@ -36,16 +36,21 @@ DICTROWA( r1, COMM_DATATYPE_UINTARR, COMM_FIELD_CHANNEL_ARRAY, analogSwitch_t, s
 DICTROWA( r2, COMM_DATATYPE_INTARR, COMM_FIELD_PERCENT_ARRAY, analogSwitch_t, trigger_pct, CHANNEL_SWITCHES)
 DICT( AnalogSwitch, COMM_SUBPACKET_ANALOG_SWITCH, &r1, &r2)
 
-AnalogSwitch::AnalogSwitch() : Module( MODULE_ANALOG_SWITCH_TYPE, TEXT_MODULE_ANALOG_SWITCH) {
+AnalogSwitch::AnalogSwitch() : Module( MODULE_ANALOG_SWITCH_TYPE, TEXT_MODULE_ANALOG_SWITCH, COMM_SUBPACKET_ANALOG_SWITCH) {
 
     setDefaults();
 }
 
 /* From Module */
 
-void AnalogSwitch::exportConfig( ImportExport *exporter, uint8_t *config, moduleSize_t configSz) const {
+void AnalogSwitch::exportConfig( ImportExport *exporter, uint8_t *config) const {
 
     exporter->runExport( DICT_ptr(AnalogSwitch), DICTROW_ptr(AnalogSwitch), config, sizeof(analogSwitch_t));
+}
+
+void AnalogSwitch::importConfig( ImportExport *importer, uint8_t *config) const {
+
+    importer->runImport( DICT_ptr(AnalogSwitch), DICTROW_ptr(AnalogSwitch), config, sizeof(analogSwitch_t));
 }
 
 void AnalogSwitch::run( Controls &controls) {

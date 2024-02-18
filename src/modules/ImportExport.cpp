@@ -32,9 +32,8 @@ extern ModuleManager moduleManager;
 const uint8_t STATE_INACTIVE = 0;
 const uint8_t STATE_CONNECTING = 1;
 
-ImportExport::ImportExport(Stream& stream) : Module(MODULE_IMPORTEXPORT_TYPE, TEXT_MODULE_IMPORTEXPORT), inOut(stream), comm(*new Comm(&stream))
+ImportExport::ImportExport(Stream& stream) : Module(MODULE_IMPORTEXPORT_TYPE, TEXT_MODULE_IMPORTEXPORT, COMM_SUBPACKET_NONE), inOut(stream), comm(*new Comm(&stream))
 {
-
     setDefaults();
 }
 
@@ -68,6 +67,103 @@ void ImportExport::runExport(const DICT_t* dict, const DICTROW_t* row[], uint8_t
     comm.close();
 }
 
+/**
+ * @brief 
+ * 
+ * @param dict 
+ * @param row 
+ * @param config 
+ * @param configSz The size of a single config record. Always non-phased size!
+ */
+void ImportExport::runImport(const DICT_t* dict, const DICTROW_t* row[], uint8_t* config, moduleSize_t configSz)
+{
+    nameType_t cmd;
+    char dType;
+    uint8_t width;
+    uint16_t count;
+
+    uint8_t dictDataType;
+    size_t dictOffset;
+    size_t dictSize;
+    uint16_t dictCount;
+
+    uint8_t phase;
+
+    uint8_t rc;
+
+    do {
+        rc = comm.nextField(&cmd, &dType, &width, &count);
+        if( rc == COMM_RC_SUBSTART) {
+            if ((rc = comm.nextPacket(&cmd)) == COMM_RC_OK) {
+                if( dict->subName == cmd) {
+                    LOGV("runImport: valid subpacket %c%c\n", PACKET_NAME(cmd));
+
+                    if ((rc = comm.nextField(&cmd, &dType, &width, &count)) == COMM_RC_OK) {
+                        if (cmd == COMM_FIELD_PHASE) {
+                            comm.nextData(&phase, dType, width, count);
+                            if( phase < PHASES) {
+                                runImport( dict, row, config + (phase*configSz), configSz);
+                            } else {
+                                LOGV("ModuleManager::importModel(): ERROR: invalid phase %d\n", phase);
+                                /* ERROR */
+                                rc = COMM_RC_PROTOCOL;
+                            }
+
+                        } else {
+                            LOG("ModuleManager::importModel(): ERROR: COMM_FIELD_ID expected\n");
+                            /* ERROR */
+                            rc = COMM_RC_PROTOCOL;
+                        }
+                    } else {
+                        LOG("ModuleManager::importModel(): ERROR: Field expected\n");
+                        /* ERROR */ 
+                        rc = COMM_RC_PROTOCOL;
+                    }
+
+                }
+            } else {
+                LOG("ModuleManager::importModel(): ERROR: Failed to read subpacket\n");
+                rc = COMM_RC_PROTOCOL;
+            }
+        } else if( rc == COMM_RC_OK) {
+            LOGV("runImport: %c%c: dType=%c, width=%d, count=%d\n", PACKET_NAME(cmd), dType, width, count);
+            if( findDictEntry( row, cmd, &dictDataType, &dictOffset, &dictSize, &dictCount)) {
+                LOGV("runImport: dictType=%d, offset=%ld, size=%ld count=%d\n", dictDataType, dictOffset, dictSize, dictCount);
+                rc = comm.nextData( config+dictOffset, dType, width, count);
+            } else {
+                LOGV("runImport: ERROR: No dictionary entry found for %c%c\n", PACKET_NAME(cmd));
+                rc = COMM_RC_PROTOCOL;
+            }
+        }
+    } while( rc == COMM_RC_OK);
+}
+
+
+bool ImportExport::findDictEntry( const DICTROW_t* row[], nameType_t cmd, uint8_t *dictDataType, size_t *dictOffset, size_t *dictSize, uint16_t *dictCount) {
+
+    const DICTROW_t* drow;
+    nameType_t name;
+
+    uint8_t ri = 0;
+
+    while ((drow = pgm_read_ptr_far(&(row[ri++])))) {
+
+        name = pgm_read_word(&(drow->rowName));
+
+        if( name == cmd) {
+            *dictDataType = pgm_read_byte(&(drow->dataType));
+            *dictOffset = pgm_read_dword(&(drow->offset));
+            *dictSize = pgm_read_dword(&(drow->size));
+            *dictCount = pgm_read_word(&(drow->count));
+
+            return true;
+        }
+    }
+
+    return false;
+}
+
+
 /* private */
 /*
  * Export a single module phase or a non-phased module.
@@ -83,7 +179,7 @@ void ImportExport::exportModulePhase(const DICTROW_t* row[], uint8_t* config)
 
     uint8_t ri = 0;
 
-    while ((drow = pgm_read_ptr_far(&(row[ri])))) {
+    while ((drow = pgm_read_ptr_far(&(row[ri++])))) {
 
         dataType = pgm_read_byte(&(drow->dataType));
         name = pgm_read_word(&(drow->rowName));
@@ -138,9 +234,7 @@ void ImportExport::exportModulePhase(const DICTROW_t* row[], uint8_t* config)
         }
 
         comm.writePart();
-        ri++;
     }
-
 }
 
 /* From Module */

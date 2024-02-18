@@ -38,7 +38,7 @@ DICTROW( r1, COMM_DATATYPE_UINT8, COMM_FIELD_SWITCH, phases_t, sw)
 DICTROWA( r2, COMM_DATATYPE_UINTARR, COMM_FIELD_PHASE_NAMES, phases_t, phaseName, PHASES)
 DICT( Phases, COMM_SUBPACKET_PHASES, &r1, &r2)
 
-Phases::Phases() : Module( MODULE_PHASES_TYPE, TEXT_MODULE_PHASES) {
+Phases::Phases() : Module( MODULE_PHASES_TYPE, TEXT_MODULE_PHASES, COMM_SUBPACKET_PHASES) {
 
     setDefaults();
 }
@@ -55,9 +55,14 @@ const char *Phases::getPhaseName() {
 
 /* From Module */
 
-void Phases::exportConfig( ImportExport *exporter, uint8_t *config, moduleSize_t configSz) const {
+void Phases::exportConfig( ImportExport *exporter, uint8_t *config) const {
 
     exporter->runExport( DICT_ptr(Phases), DICTROW_ptr(Phases), config, sizeof(phases_t));
+}
+
+void Phases::importConfig( ImportExport *importer, uint8_t *config) const {
+
+    importer->runImport( DICT_ptr(Phases), DICTROW_ptr(Phases), config, sizeof(phases_t));
 }
 
 void Phases::run( Controls &controls) {

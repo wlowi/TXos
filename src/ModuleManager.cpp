@@ -146,6 +146,26 @@ Module *ModuleManager::getModuleByType( uint8_t setType, moduleType_t type) {
     return current;
 }
 
+Module *ModuleManager::getModuleByCommType( uint8_t setType, nameType_t type) {
+
+    Module *current = nullptr;
+    
+    if( setType == MODULE_SET_MODEL) {
+        current = modelSetFirst;
+    } else if( setType == MODULE_SET_SYSTEM) {
+        current = systemSetFirst;
+    }
+
+    while( current != nullptr) {
+        if( current->getCommType() == type) { 
+            break;
+        }
+        current = current->setNext;
+    }
+
+    return current;
+}
+
 /* Copy memory form "payload" into "p".
  * "p" must be a pointer to memory.
  * The block is of size "s".
@@ -397,7 +417,7 @@ void ModuleManager::exportSystemConfig( ImportExport *exporter) {
         if( module == nullptr) {
             LOGV("** ModuleManager::exportSystemConfig(): Failed to get module of type=%d\n", type);
         } else {
-            module->exportConfig( exporter, buffer, size);
+            module->exportConfig( exporter, buffer);
             comm.writePart();
             yieldLoop();
         }
@@ -468,7 +488,7 @@ void ModuleManager::exportModel( ImportExport *exporter, configBlockID_t modelID
         if( module == nullptr) {
             LOGV("** ModuleManager::exportModels(): Failed to get module of type=%d\n", type);
         } else {
-            module->exportConfig( exporter, buffer, size);
+            module->exportConfig( exporter, buffer);
             comm.writePart();
             yieldLoop();
         }
@@ -487,6 +507,12 @@ void ModuleManager::importModel( ImportExport *importer) {
     uint8_t width;
     uint16_t count;
     uint8_t rc;
+    Module *module;
+    uint8_t *payload;
+    size_t payloadSize;
+    uint16_t totalSize = 0;
+    moduleType_t type;
+    moduleSize_t size;
     Comm& comm = importer->getComm();
 
     configBlockID_t modelID = CONFIG_BLOCKID_INVALID;
@@ -498,28 +524,70 @@ void ModuleManager::importModel( ImportExport *importer) {
         if (cmd == COMM_FIELD_ID) {
             comm.nextData(&modelID, dType, width, count);
         } else {
+            LOG("ModuleManager::importModel(): ERROR: COMM_FIELD_ID expected\n");
             /* ERROR */
         }
     } else {
+        LOG("ModuleManager::importModel(): ERROR: Field expected\n");
         /* ERROR */ 
     }
 
+    LOGV("ModuleManager::importModel(): modelID=%d\n", modelID);
+
     if( modelID > 0 && modelID <= blockService->getModelBlockCount() ) {
 
-        while( (rc = comm.nextField(&cmd, &dType, &width, &count)) == COMM_RC_SUBSTART) {
+        blockService->formatBlock( modelID);
 
+        payload = blockService->getPayload();
+        payloadSize = blockService->getPayloadSize();
+
+        while( (rc = comm.nextField(&cmd, &dType, &width, &count)) == COMM_RC_SUBSTART) {
+            if ((rc = comm.nextPacket(&cmd)) == COMM_RC_OK) {
+                LOGV("ModuleManager::importModel(): substart name=%c%c\n", PACKET_NAME(cmd));
+                module = getModuleByCommType( MODULE_SET_MODEL, cmd);
+                if( module == nullptr) {
+                    LOG("** ModuleManager::importModel(): ERROR: no module found\n");
+                } else {
+                    size = module->getConfigSize();
+
+                    if( size > 0) { // Do not store module config of size 0
+
+                        type = module->getConfigType();
+
+                        // +1 is for terminating invalid module type
+                        if( totalSize + sizeof(moduleType_t) + sizeof(moduleSize_t) + size +1 <= payloadSize) {
+                            LOGV("ModuleManager::importModel(): Put type=%d size=%d\n", type, size);
+
+                            PUT( (uint8_t*)&type, sizeof(moduleType_t));
+                            PUT( (uint8_t*)&size, sizeof(moduleSize_t));
+                            
+                            module->importConfig( importer, payload); /** @todo error handling */
+                            payload += size;
+                            totalSize += size;
+
+                        } else {
+                            LOGV("** ModuleManager::importModel(): ERROR: Payload to large. %ld > %ld\n",
+                                totalSize + sizeof(moduleType_t) + sizeof(moduleSize_t) + size,
+                                payloadSize);
+                        }
+                    }
+                }
+            }
         }
 
+        // Terminating invalid module type
+        type = MODULE_INVALID_TYPE;
+        PUT( (uint8_t*)&type, sizeof(moduleType_t));
+
         if( rc == COMM_RC_END) {
-            if( blockService->isBlockValid()) {
-                blockService->writeBlock();
-            } else {
-                LOG("** ModuleManager::importModel(): model config is invalid, not saved\n");
-            }
+            blockService->writeBlock();
+            LOGV("** ModuleManager::importModel(): model config saved. %d bytes\n", totalSize);
         } else {
+            LOG("ModuleManager::importModel(): ERROR: COMM_RC_END expected\n");
             /* ERROR */
         }
     } else {
+        LOG("ModuleManager::importModel(): ERROR: Invalid modelID\n");
         /* ERROR */
     }
 }
@@ -615,12 +683,12 @@ void ModuleManager::generateBlock( configBlockID_t modelID, uint8_t setType) {
     moduleSize_t size;
     uint16_t totalSize = 0;
     size_t payloadSize;
-    Module *current = nullptr;
+    Module *module = nullptr;
 
     if( setType == MODULE_SET_MODEL) {
-        current = modelSetFirst;
+        module = modelSetFirst;
     } else if( setType == MODULE_SET_SYSTEM) {
-        current = systemSetFirst;
+        module = systemSetFirst;
     }
 
     blockService->formatBlock( modelID);
@@ -628,13 +696,13 @@ void ModuleManager::generateBlock( configBlockID_t modelID, uint8_t setType) {
     payload = blockService->getPayload();
     payloadSize = blockService->getPayloadSize();
 
-    while( current != nullptr) {
+    while( module != nullptr) {
         
-        size = current->getConfigSize();
+        size = module->getConfigSize();
 
         if( size > 0) { // Do not store module config of size 0
 
-            type = current->getConfigType();
+            type = module->getConfigType();
 
             // +1 is for terminating invalid module type
             if( totalSize + sizeof(moduleType_t) + sizeof(moduleSize_t) + size +1 <= payloadSize) {
@@ -642,7 +710,7 @@ void ModuleManager::generateBlock( configBlockID_t modelID, uint8_t setType) {
 
                 PUT( (uint8_t*)&type, sizeof(moduleType_t));
                 PUT( (uint8_t*)&size, sizeof(moduleSize_t));
-                PUT( current->getConfig(), size);
+                PUT( module->getConfig(), size);
 
             } else {
                 LOGV("** ModuleManager::generateBlock(): Payload to large. %ld > %ld\n",
@@ -651,7 +719,7 @@ void ModuleManager::generateBlock( configBlockID_t modelID, uint8_t setType) {
             }
         }
 
-        current = current->setNext;
+        module = module->setNext;
     }
 
     // Terminating invalid module type

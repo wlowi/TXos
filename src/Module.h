@@ -147,12 +147,13 @@ class Module : public TextUIScreen {
     private:
         const char *moduleName;
         moduleType_t moduleType;
+        nameType_t commType;
 
         Module *runlistNext = nullptr;
         Module *setNext = nullptr;
 
     public:
-        Module( moduleType_t type, const char *name);
+        Module( moduleType_t mType, const char *name, nameType_t cType);
         friend class ModuleManager;
         
         /* */
@@ -183,10 +184,16 @@ class Module : public TextUIScreen {
         virtual moduleSize_t getConfigSize() = 0;
 
         /* Export configuration of a module as text to USB */
-        virtual void exportConfig( ImportExport *exporter, uint8_t *config, moduleSize_t configSz) const = 0;
+        virtual void exportConfig( ImportExport *exporter, uint8_t *config) const = 0;
+
+        /* Import configuration from USB */
+        virtual void importConfig( ImportExport *exporter, uint8_t *config) const = 0;
 
         /* Get the modules configuration type identifier.  */
         moduleType_t getConfigType() const;
+
+        /* Comm type for import/export */
+        nameType_t getCommType() { return commType; }
 
         /* From Interface TextUIScreen */
         bool goBackItem() { return true; }

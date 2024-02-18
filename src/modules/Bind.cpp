@@ -29,7 +29,7 @@
 
 extern Ports ports;
 
-Bind::Bind() : Module( MODULE_BIND_TYPE, TEXT_MODULE_BIND) {
+Bind::Bind() : Module( MODULE_BIND_TYPE, TEXT_MODULE_BIND, COMM_SUBPACKET_NONE) {
 
     setDefaults();
 }

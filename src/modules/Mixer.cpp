@@ -38,7 +38,7 @@ DICTROWA( r4, COMM_DATATYPE_INTARR, COMM_FIELD_MODEL_PERCENT_MIX, mixer_t, mixPc
 DICTROWA( r5, COMM_DATATYPE_INTARR, COMM_FIELD_MODEL_OFFSET_MIX, mixer_t, mixOffset, MIXER)
 DICT( Mixer, COMM_SUBPACKET_MIXER, &r1, &r2, &r3, &r4, &r5)
 
-Mixer::Mixer() : Module( MODULE_MIXER_TYPE, TEXT_MODULE_MIXER) {
+Mixer::Mixer() : Module( MODULE_MIXER_TYPE, TEXT_MODULE_MIXER, COMM_SUBPACKET_MIXER) {
 
     setDefaults();
 }
@@ -64,9 +64,14 @@ void Mixer::limitChannels( Controls &controls) {
 
 /* From Module */
 
-void Mixer::exportConfig( ImportExport *exporter, uint8_t *config, moduleSize_t configSz) const {
+void Mixer::exportConfig( ImportExport *exporter, uint8_t *config) const {
 
     exporter->runExport( DICT_ptr(Mixer), DICTROW_ptr(Mixer), config, sizeof(mixer_t));
+}
+
+void Mixer::importConfig( ImportExport *importer, uint8_t *config) const {
+
+    importer->runImport( DICT_ptr(Mixer), DICTROW_ptr(Mixer), config, sizeof(mixer_t));
 }
 
 void Mixer::run( Controls &controls) {

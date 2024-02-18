@@ -39,16 +39,21 @@ extern const char* const LogicalChannelNames[LOGICAL_CHANNELS];
 DICTROWA( r1, COMM_DATATYPE_UINTARR, COMM_FIELD_CHANNEL_ARRAY, assignInput_t, source, MIX_CHANNELS)
 DICT( AssignInput, COMM_SUBPACKET_ASSIGN_INPUT, &r1)
 
-AssignInput::AssignInput() : Module( MODULE_ASSIGN_INPUT_TYPE, TEXT_MODULE_ASSIGN_INPUT) {
+AssignInput::AssignInput() : Module( MODULE_ASSIGN_INPUT_TYPE, TEXT_MODULE_ASSIGN_INPUT, COMM_SUBPACKET_ASSIGN_INPUT) {
 
     setDefaults();
 }
 
 /* From Module */
 
-void AssignInput::exportConfig( ImportExport *exporter, uint8_t *config, moduleSize_t configSz) const {
+void AssignInput::exportConfig( ImportExport *exporter, uint8_t *config) const {
 
     exporter->runExport( DICT_ptr(AssignInput), DICTROW_ptr(AssignInput), config, sizeof(assignInput_t));
+}
+
+void AssignInput::importConfig( ImportExport *importer, uint8_t *config) const {
+
+    importer->runImport( DICT_ptr(AssignInput), DICTROW_ptr(AssignInput), config, sizeof(assignInput_t));
 }
 
 void AssignInput::run( Controls &controls) {

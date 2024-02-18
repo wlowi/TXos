@@ -64,16 +64,21 @@ DICTROWA( r1, COMM_DATATYPE_INTARR, COMM_FIELD_RATE_ARRAY, dualExpo_t, rate, DUA
 DICTROWA( r2, COMM_DATATYPE_INTARR, COMM_FIELD_EXPO_ARRAY, dualExpo_t, expo, DUAL_EXPO_CHANNELS)
 DICTP( DualExpo, COMM_SUBPACKET_DUAL_EXPO, COMM_SUBPACKET_DUAL_EXPO_PHASE, &r1, &r2)
 
-DualExpo::DualExpo() : Module( MODULE_DUAL_EXPO_TYPE, TEXT_MODULE_DUAL_EXPO) {
+DualExpo::DualExpo() : Module( MODULE_DUAL_EXPO_TYPE, TEXT_MODULE_DUAL_EXPO, COMM_SUBPACKET_DUAL_EXPO) {
 
     setDefaults();
 }
 
 /* From Module */
 
-void DualExpo::exportConfig( ImportExport *exporter, uint8_t *config, moduleSize_t configSz) const {
+void DualExpo::exportConfig( ImportExport *exporter, uint8_t *config) const {
 
     exporter->runExport( DICT_ptr(DualExpo), DICTROW_ptr(DualExpo), config, sizeof(dualExpo_t));
+}
+
+void DualExpo::importConfig( ImportExport *importer, uint8_t *config) const {
+
+    importer->runImport( DICT_ptr(DualExpo), DICTROW_ptr(DualExpo), config, sizeof(dualExpo_t));
 }
 
 void DualExpo::run( Controls &controls) {

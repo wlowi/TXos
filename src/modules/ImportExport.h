@@ -45,6 +45,10 @@ typedef struct DICTROW_t {
 
 typedef struct DICT_t {
     nameType_t name;
+
+    /* Sub packet name for phased configration.
+     * 0 (COMM_SUBPACKET_NONE) for non-phased configuration.
+     */
     nameType_t subName;
 } DICT_t;
 
@@ -118,12 +122,16 @@ class ImportExport : public Module {
         Comm& getComm() { return comm; }
 
         void runExport( const DICT_t *dict,  const DICTROW_t *row[], uint8_t *config, moduleSize_t configSz);
+        void runImport( const DICT_t *dict,  const DICTROW_t *row[], uint8_t *config, moduleSize_t configSz);
+
+        bool findDictEntry( const DICTROW_t* row[], nameType_t cmd, uint8_t *dictDataType, size_t *dictOffset, size_t *dictSize, uint16_t *dictCount);
 
         /* From Module */
         void run( Controls &controls) final;
         void setDefaults() final;
-        void exportConfig( ImportExport *exporter, uint8_t *config, moduleSize_t configSz) const {};
-        
+        void exportConfig( ImportExport *exporter, uint8_t *config) const {};
+        void importConfig( ImportExport *importer, uint8_t *config) const {};
+
         void moduleEnter();
         void moduleExit();
 

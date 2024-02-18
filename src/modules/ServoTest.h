@@ -49,7 +49,8 @@ class ServoTest : public Module {
         /* From Module */
         void run( Controls &controls) final;
         void setDefaults() final;
-        void exportConfig( ImportExport *exporter, uint8_t *config, moduleSize_t configSz) const {};
+        void exportConfig( ImportExport *exporter, uint8_t *config) const {};
+        void importConfig( ImportExport *importer, uint8_t *config) const {};
         void moduleExit() final;
 
         /* From TableEditable */

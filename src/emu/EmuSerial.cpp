@@ -34,7 +34,7 @@ EmuSerial::EmuSerial() {
 
 void EmuSerial::send(const char* text) {
 
-    printf("EmuSerial: send: %s\n", text);
+    // printf("EmuSerial: send: %s\n", text);
 
     while( *text) {
         recvCriticalSection.Enter();
@@ -82,7 +82,7 @@ size_t EmuSerial::write(const char* text) {
 
     size_t cnt = 0;
 
-    printf("EmuSerial: write: %s\n", text);
+    // printf("EmuSerial: write: %s\n", text);
 
     while( *text) {
         sendCriticalSection.Enter();

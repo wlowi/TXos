@@ -41,14 +41,19 @@ DICTROWA( r6, COMM_DATATYPE_INTARR, COMM_FIELD_MODEL_PERCENT_MIX, model_t, mixPc
 DICTROWA( r7, COMM_DATATYPE_INTARR, COMM_FIELD_MODEL_OFFSET_MIX, model_t, mixOffset, TEXT_MIX_count)
 DICT( Model, COMM_SUBPACKET_MODEL, &r1, &r2, &r3, &r4, &r5, &r6, &r7)
 
-Model::Model() : Module( MODULE_MODEL_TYPE, TEXT_MODULE_MODEL) {
+Model::Model() : Module( MODULE_MODEL_TYPE, TEXT_MODULE_MODEL, COMM_SUBPACKET_MODEL) {
 
     setDefaults();
 }
 
-void Model::exportConfig( ImportExport *exporter, uint8_t *config, moduleSize_t configSz) const {
+void Model::exportConfig( ImportExport *exporter, uint8_t *config) const {
 
     exporter->runExport( DICT_ptr(Model), DICTROW_ptr(Model), config, sizeof(model_t));
+}
+
+void Model::importConfig( ImportExport *importer, uint8_t *config) const {
+
+    importer->runImport( DICT_ptr(Model), DICTROW_ptr(Model), config, sizeof(model_t));
 }
 
 channelValue_t Model::mixValue( channelValue_t v, uint8_t mix) {

@@ -34,16 +34,21 @@ extern const char* const OutputChannelNames[PPM_CHANNELS];
 DICTROW( r1, COMM_DATATYPE_UINT16, COMM_FIELD_BITS, servoReverse_t, revBits)
 DICT( ServoReverse, COMM_SUBPACKET_SERVO_REVERSE, &r1)
 
-ServoReverse::ServoReverse() : Module( MODULE_SERVO_REVERSE_TYPE, TEXT_MODULE_SERVO_REVERSE) {
+ServoReverse::ServoReverse() : Module( MODULE_SERVO_REVERSE_TYPE, TEXT_MODULE_SERVO_REVERSE, COMM_SUBPACKET_SERVO_REVERSE) {
 
     setDefaults();
 }
 
 /* From Module */
 
-void ServoReverse::exportConfig( ImportExport *exporter, uint8_t *config, moduleSize_t configSz) const {
+void ServoReverse::exportConfig( ImportExport *exporter, uint8_t *config) const {
 
     exporter->runExport( DICT_ptr(ServoReverse), DICTROW_ptr(ServoReverse), config, sizeof(servoReverse_t));
+}
+
+void ServoReverse::importConfig( ImportExport *importer, uint8_t *config) const {
+
+    importer->runImport( DICT_ptr(ServoReverse), DICTROW_ptr(ServoReverse), config, sizeof(servoReverse_t));
 }
 
 void ServoReverse::run( Controls &controls) {

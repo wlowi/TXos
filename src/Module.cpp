@@ -33,7 +33,7 @@ extern ModuleManager moduleManager;
 extern SystemConfig systemConfig;
 extern ModelSelect modelSelect;
 
-Module::Module( moduleType_t type, const char *name) : moduleName( name), moduleType( type) {
+Module::Module( moduleType_t mType, const char *name, nameType_t cType) : moduleName( name), moduleType( mType), commType(cType) {
 
 }
 

@@ -38,16 +38,21 @@ extern const char* const LogicalChannelNames[LOGICAL_CHANNELS];
 DICTROWA( r1, COMM_DATATYPE_INTARR, COMM_FIELD_PERCENT_ARRAY, phasesTrim_t, trim_pct, PHASED_TRIM_CHANNELS)
 DICTP( PhasesTrim, COMM_SUBPACKET_PHASES_TRIM, COMM_SUBPACKET_PHASES_TRIM_PHASE, &r1)
 
-PhasesTrim::PhasesTrim() : Module( MODULE_PHASES_TRIM_TYPE, TEXT_MODULE_PHASES_TRIM) {
+PhasesTrim::PhasesTrim() : Module( MODULE_PHASES_TRIM_TYPE, TEXT_MODULE_PHASES_TRIM, COMM_SUBPACKET_PHASES_TRIM) {
 
     setDefaults();
 }
 
 /* From Module */
 
-void PhasesTrim::exportConfig( ImportExport *exporter, uint8_t *config, moduleSize_t configSz) const {
+void PhasesTrim::exportConfig( ImportExport *exporter, uint8_t *config) const {
 
     exporter->runExport( DICT_ptr(PhasesTrim), DICTROW_ptr(PhasesTrim), config, sizeof(phasesTrim_t));
+}
+
+void PhasesTrim::importConfig( ImportExport *importer, uint8_t *config) const {
+
+    importer->runImport( DICT_ptr(PhasesTrim), DICTROW_ptr(PhasesTrim), config, sizeof(phasesTrim_t));
 }
 
 void PhasesTrim::run( Controls &controls) {

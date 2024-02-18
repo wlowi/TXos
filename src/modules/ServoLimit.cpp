@@ -35,14 +35,19 @@ DICTROWA( r1, COMM_DATATYPE_INTARR, COMM_FIELD_PERCENT_ARRAY, servoLimit_t, posL
 DICTROWA( r2, COMM_DATATYPE_INTARR, COMM_FIELD_NEG_PERCENT_ARRAY, servoLimit_t, negLimit_pct, PPM_CHANNELS)
 DICT( ServoLimit, COMM_SUBPACKET_SERVO_LIMIT, &r1, &r2)
 
-ServoLimit::ServoLimit() : Module( MODULE_SERVO_LIMIT_TYPE, TEXT_MODULE_SERVO_LIMIT) {
+ServoLimit::ServoLimit() : Module( MODULE_SERVO_LIMIT_TYPE, TEXT_MODULE_SERVO_LIMIT, COMM_SUBPACKET_SERVO_LIMIT) {
 
     setDefaults();
 }
 
-void ServoLimit::exportConfig( ImportExport *exporter, uint8_t *config, moduleSize_t configSz) const {
+void ServoLimit::exportConfig( ImportExport *exporter, uint8_t *config) const {
 
     exporter->runExport( DICT_ptr(ServoLimit), DICTROW_ptr(ServoLimit), config, sizeof(servoLimit_t));
+}
+
+void ServoLimit::importConfig( ImportExport *importer, uint8_t *config) const {
+
+    importer->runImport( DICT_ptr(ServoLimit), DICTROW_ptr(ServoLimit), config, sizeof(servoLimit_t));
 }
 
 /* From Module */

@@ -34,16 +34,21 @@ extern const char* const InputChannelNames[INPUT_CHANNELS];
 DICTROW( r1, COMM_DATATYPE_UINT16, COMM_FIELD_BITS, channelReverse_t, revBits)
 DICT( ChannelReverse, COMM_SUBPACKET_CHANNEL_REVERSE, &r1)
 
-ChannelReverse::ChannelReverse() : Module( MODULE_CHANNEL_REVERSE_TYPE, TEXT_MODULE_CHANNEL_REVERSE) {
+ChannelReverse::ChannelReverse() : Module( MODULE_CHANNEL_REVERSE_TYPE, TEXT_MODULE_CHANNEL_REVERSE, COMM_SUBPACKET_CHANNEL_REVERSE) {
 
     setDefaults();
 }
 
 /* From Module */
 
-void ChannelReverse::exportConfig( ImportExport *exporter, uint8_t *config, moduleSize_t configSz) const {
+void ChannelReverse::exportConfig( ImportExport *exporter, uint8_t *config) const {
 
     exporter->runExport( DICT_ptr(ChannelReverse), DICTROW_ptr(ChannelReverse), config, sizeof(channelReverse_t));
+}
+
+void ChannelReverse::importConfig( ImportExport *importer, uint8_t *config) const {
+
+    importer->runImport( DICT_ptr(ChannelReverse), DICTROW_ptr(ChannelReverse), config, sizeof(channelReverse_t));
 }
 
 void ChannelReverse::run( Controls &controls) {

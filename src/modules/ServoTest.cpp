@@ -53,7 +53,7 @@ const char* const testNames[TEST_COUNT] {
 
 const channelValue_t INCREMENT = 10;
 
-ServoTest::ServoTest() : Module( MODULE_SERVO_TEST_TYPE, TEXT_MODULE_SERVO_TEST) {
+ServoTest::ServoTest() : Module( MODULE_SERVO_TEST_TYPE, TEXT_MODULE_SERVO_TEST, COMM_SUBPACKET_NONE) {
 
     setDefaults();
 }
