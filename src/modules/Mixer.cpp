@@ -64,14 +64,14 @@ void Mixer::limitChannels( Controls &controls) {
 
 /* From Module */
 
-void Mixer::exportConfig( ImportExport *exporter, uint8_t *config) const {
+COMM_RC_t Mixer::exportConfig( ImportExport *exporter, uint8_t *config) const {
 
-    exporter->runExport( DICT_ptr(Mixer), DICTROW_ptr(Mixer), config, sizeof(mixer_t));
+    return exporter->runExport( DICT_ptr(Mixer), DICTROW_ptr(Mixer), config, sizeof(mixer_t));
 }
 
-void Mixer::importConfig( ImportExport *importer, uint8_t *config) const {
+COMM_RC_t Mixer::importConfig( ImportExport *importer, uint8_t *config) const {
 
-    importer->runImport( DICT_ptr(Mixer), DICTROW_ptr(Mixer), config, sizeof(mixer_t));
+    return importer->runImport( DICT_ptr(Mixer), DICTROW_ptr(Mixer), config, sizeof(mixer_t));
 }
 
 void Mixer::run( Controls &controls) {

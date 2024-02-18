@@ -41,14 +41,14 @@ ServoReverse::ServoReverse() : Module( MODULE_SERVO_REVERSE_TYPE, TEXT_MODULE_SE
 
 /* From Module */
 
-void ServoReverse::exportConfig( ImportExport *exporter, uint8_t *config) const {
+COMM_RC_t ServoReverse::exportConfig( ImportExport *exporter, uint8_t *config) const {
 
-    exporter->runExport( DICT_ptr(ServoReverse), DICTROW_ptr(ServoReverse), config, sizeof(servoReverse_t));
+    return exporter->runExport( DICT_ptr(ServoReverse), DICTROW_ptr(ServoReverse), config, sizeof(servoReverse_t));
 }
 
-void ServoReverse::importConfig( ImportExport *importer, uint8_t *config) const {
+COMM_RC_t ServoReverse::importConfig( ImportExport *importer, uint8_t *config) const {
 
-    importer->runImport( DICT_ptr(ServoReverse), DICTROW_ptr(ServoReverse), config, sizeof(servoReverse_t));
+    return importer->runImport( DICT_ptr(ServoReverse), DICTROW_ptr(ServoReverse), config, sizeof(servoReverse_t));
 }
 
 void ServoReverse::run( Controls &controls) {

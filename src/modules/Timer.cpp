@@ -106,14 +106,14 @@ char *Timer::timeStr() {
 
 /* From Module */
 
-void Timer::exportConfig( ImportExport *exporter, uint8_t *config) const {
+COMM_RC_t Timer::exportConfig( ImportExport *exporter, uint8_t *config) const {
 
-    exporter->runExport( DICT_ptr(Timer), DICTROW_ptr(Timer), config, sizeof(flightTimer_t));
+    return exporter->runExport( DICT_ptr(Timer), DICTROW_ptr(Timer), config, sizeof(flightTimer_t));
 }
 
-void Timer::importConfig( ImportExport *importer, uint8_t *config) const {
+COMM_RC_t Timer::importConfig( ImportExport *importer, uint8_t *config) const {
 
-    importer->runImport( DICT_ptr(Timer), DICTROW_ptr(Timer), config, sizeof(flightTimer_t));
+    return importer->runImport( DICT_ptr(Timer), DICTROW_ptr(Timer), config, sizeof(flightTimer_t));
 }
 
 void Timer::run( Controls &controls) {

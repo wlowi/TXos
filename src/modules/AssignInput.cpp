@@ -46,14 +46,14 @@ AssignInput::AssignInput() : Module( MODULE_ASSIGN_INPUT_TYPE, TEXT_MODULE_ASSIG
 
 /* From Module */
 
-void AssignInput::exportConfig( ImportExport *exporter, uint8_t *config) const {
+COMM_RC_t AssignInput::exportConfig( ImportExport *exporter, uint8_t *config) const {
 
-    exporter->runExport( DICT_ptr(AssignInput), DICTROW_ptr(AssignInput), config, sizeof(assignInput_t));
+    return exporter->runExport( DICT_ptr(AssignInput), DICTROW_ptr(AssignInput), config, sizeof(assignInput_t));
 }
 
-void AssignInput::importConfig( ImportExport *importer, uint8_t *config) const {
+COMM_RC_t AssignInput::importConfig( ImportExport *importer, uint8_t *config) const {
 
-    importer->runImport( DICT_ptr(AssignInput), DICTROW_ptr(AssignInput), config, sizeof(assignInput_t));
+    return importer->runImport( DICT_ptr(AssignInput), DICTROW_ptr(AssignInput), config, sizeof(assignInput_t));
 }
 
 void AssignInput::run( Controls &controls) {

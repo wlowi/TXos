@@ -55,14 +55,14 @@ const char *Phases::getPhaseName() {
 
 /* From Module */
 
-void Phases::exportConfig( ImportExport *exporter, uint8_t *config) const {
+COMM_RC_t Phases::exportConfig( ImportExport *exporter, uint8_t *config) const {
 
-    exporter->runExport( DICT_ptr(Phases), DICTROW_ptr(Phases), config, sizeof(phases_t));
+    return exporter->runExport( DICT_ptr(Phases), DICTROW_ptr(Phases), config, sizeof(phases_t));
 }
 
-void Phases::importConfig( ImportExport *importer, uint8_t *config) const {
+COMM_RC_t Phases::importConfig( ImportExport *importer, uint8_t *config) const {
 
-    importer->runImport( DICT_ptr(Phases), DICTROW_ptr(Phases), config, sizeof(phases_t));
+    return importer->runImport( DICT_ptr(Phases), DICTROW_ptr(Phases), config, sizeof(phases_t));
 }
 
 void Phases::run( Controls &controls) {

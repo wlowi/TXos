@@ -71,14 +71,14 @@ DualExpo::DualExpo() : Module( MODULE_DUAL_EXPO_TYPE, TEXT_MODULE_DUAL_EXPO, COM
 
 /* From Module */
 
-void DualExpo::exportConfig( ImportExport *exporter, uint8_t *config) const {
+COMM_RC_t DualExpo::exportConfig( ImportExport *exporter, uint8_t *config) const {
 
-    exporter->runExport( DICT_ptr(DualExpo), DICTROW_ptr(DualExpo), config, sizeof(dualExpo_t));
+    return exporter->runExport( DICT_ptr(DualExpo), DICTROW_ptr(DualExpo), config, sizeof(dualExpo_t));
 }
 
-void DualExpo::importConfig( ImportExport *importer, uint8_t *config) const {
+COMM_RC_t DualExpo::importConfig( ImportExport *importer, uint8_t *config) const {
 
-    importer->runImport( DICT_ptr(DualExpo), DICTROW_ptr(DualExpo), config, sizeof(dualExpo_t));
+    return importer->runImport( DICT_ptr(DualExpo), DICTROW_ptr(DualExpo), config, sizeof(dualExpo_t));
 }
 
 void DualExpo::run( Controls &controls) {

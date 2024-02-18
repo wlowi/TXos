@@ -41,14 +41,14 @@ ServoSubtrim::ServoSubtrim() : Module( MODULE_SERVO_SUBTRIM_TYPE, TEXT_MODULE_SE
 
 /* From Module */
 
-void ServoSubtrim::exportConfig( ImportExport *exporter, uint8_t *config) const {
+COMM_RC_t ServoSubtrim::exportConfig( ImportExport *exporter, uint8_t *config) const {
 
-    exporter->runExport( DICT_ptr(ServoSubtrim), DICTROW_ptr(ServoSubtrim), config, sizeof(servoSubtrim_t));
+    return exporter->runExport( DICT_ptr(ServoSubtrim), DICTROW_ptr(ServoSubtrim), config, sizeof(servoSubtrim_t));
 }
 
-void ServoSubtrim::importConfig( ImportExport *importer, uint8_t *config) const {
+COMM_RC_t ServoSubtrim::importConfig( ImportExport *importer, uint8_t *config) const {
 
-    importer->runImport( DICT_ptr(ServoSubtrim), DICTROW_ptr(ServoSubtrim), config, sizeof(servoSubtrim_t));
+    return importer->runImport( DICT_ptr(ServoSubtrim), DICTROW_ptr(ServoSubtrim), config, sizeof(servoSubtrim_t));
 }
 
 void ServoSubtrim::run( Controls &controls) {

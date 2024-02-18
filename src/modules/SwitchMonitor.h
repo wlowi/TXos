@@ -42,8 +42,8 @@ class SwitchMonitor : public Module {
         
         void run( Controls &controls) final;
         void setDefaults() final;
-        void exportConfig( ImportExport *exporter, uint8_t *config) const {};
-        void importConfig( ImportExport *importer, uint8_t *config) const {};
+        COMM_RC_t exportConfig( ImportExport *exporter, uint8_t *config) const { return COMM_RC_OK; }
+        COMM_RC_t importConfig( ImportExport *importer, uint8_t *config) const { return COMM_RC_OK; }
 
         /* From TableEditable */
         bool isRowEditable( uint8_t row) final { return false; }

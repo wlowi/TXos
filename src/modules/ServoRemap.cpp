@@ -42,14 +42,14 @@ ServoRemap::ServoRemap() : Module( MODULE_SERVO_REMAP_TYPE, TEXT_MODULE_SERVO_RE
 
 /* From Module */
 
-void ServoRemap::exportConfig( ImportExport *exporter, uint8_t *config) const {
+COMM_RC_t ServoRemap::exportConfig( ImportExport *exporter, uint8_t *config) const {
 
-    exporter->runExport( DICT_ptr(ServoRemap), DICTROW_ptr(ServoRemap), config, sizeof(servoRemap_t));
+    return exporter->runExport( DICT_ptr(ServoRemap), DICTROW_ptr(ServoRemap), config, sizeof(servoRemap_t));
 }
 
-void ServoRemap::importConfig( ImportExport *importer, uint8_t *config) const {
+COMM_RC_t ServoRemap::importConfig( ImportExport *importer, uint8_t *config) const {
 
-    importer->runImport( DICT_ptr(ServoRemap), DICTROW_ptr(ServoRemap), config, sizeof(servoRemap_t));
+    return importer->runImport( DICT_ptr(ServoRemap), DICTROW_ptr(ServoRemap), config, sizeof(servoRemap_t));
 }
 
 void ServoRemap::run( Controls &controls) {

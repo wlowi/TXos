@@ -56,8 +56,8 @@ class DualExpo : public Module {
         /* From Module */
         void run( Controls &controls) final;
         void setDefaults() final;
-        void exportConfig( ImportExport *exporter, uint8_t *config) const;
-        void importConfig( ImportExport *importer, uint8_t *config) const;
+        COMM_RC_t exportConfig( ImportExport *exporter, uint8_t *config) const;
+        COMM_RC_t importConfig( ImportExport *importer, uint8_t *config) const;
 
         /* From TableEditable */
         bool needsRefresh() final;

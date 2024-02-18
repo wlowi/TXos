@@ -371,7 +371,7 @@ void Comm::addUIntArr( nameType_t fName, const byte *arr, size_t sz, uint16_t cn
 
 /* RECEIVE API */
 
-uint8_t Comm::drain() {
+COMM_RC_t Comm::drain() {
 
     while( available()) {
         getChar();
@@ -380,7 +380,7 @@ uint8_t Comm::drain() {
     return COMM_RC_OK;
 }
 
-uint8_t Comm::nextPacket( nameType_t *pType) {
+COMM_RC_t Comm::nextPacket( nameType_t *pType) {
 
     if( searchOpen()) {
         if( parseName( pType) == COMM_RC_OK) {
@@ -392,9 +392,9 @@ uint8_t Comm::nextPacket( nameType_t *pType) {
     return COMM_RC_NODATA;
 }
 
-uint8_t Comm::nextField( nameType_t *fType, char *dType, uint8_t *width, uint16_t *count) {
+COMM_RC_t Comm::nextField( nameType_t *fType, char *dType, uint8_t *width, uint16_t *count) {
 
-    uint8_t rc = COMM_RC_OK;
+    COMM_RC_t rc = COMM_RC_OK;
 
     if( optionalChar( COMM_CHAR_CLOSE )) {
         optionalChar( COMM_CHAR_NL);
@@ -455,11 +455,11 @@ uint8_t Comm::nextField( nameType_t *fType, char *dType, uint8_t *width, uint16_
     return rc;
 }
 
-uint8_t Comm::nextData( void *data, char dType, uint8_t width, uint16_t count) {
+COMM_RC_t Comm::nextData( void *data, char dType, uint8_t width, uint16_t count) {
 
     int ch;
     uint16_t i = 0;
-    uint8_t rc = COMM_RC_NODATA;
+    COMM_RC_t rc = COMM_RC_NODATA;
 
     switch ( dType) {
         case COMM_CHAR_DATATYPE_STRING:
@@ -642,7 +642,7 @@ boolean Comm::verifyType( char dType) {
         || dType == COMM_CHAR_DATATYPE_SIGNED_ARRAY;
 }
 
-uint8_t Comm::parseInt8( int8_t *p) {
+COMM_RC_t Comm::parseInt8( int8_t *p) {
 
     int32_t v = parseInt();
 
@@ -654,7 +654,7 @@ uint8_t Comm::parseInt8( int8_t *p) {
     }
 }
 
-uint8_t Comm::parseUInt8( uint8_t *p) {
+COMM_RC_t Comm::parseUInt8( uint8_t *p) {
 
     uint32_t v  = parseUInt();
 
@@ -666,7 +666,7 @@ uint8_t Comm::parseUInt8( uint8_t *p) {
     }
 }
 
-uint8_t Comm::parseInt16( int16_t *p) {
+COMM_RC_t Comm::parseInt16( int16_t *p) {
 
     int32_t v = parseInt();
 
@@ -678,7 +678,7 @@ uint8_t Comm::parseInt16( int16_t *p) {
     }
 }
 
-uint8_t Comm::parseUInt16( uint16_t *p) {
+COMM_RC_t Comm::parseUInt16( uint16_t *p) {
 
     uint32_t v = parseUInt();
 
@@ -690,14 +690,14 @@ uint8_t Comm::parseUInt16( uint16_t *p) {
     }
 }
 
-uint8_t Comm::parseInt32( int32_t *p) {
+COMM_RC_t Comm::parseInt32( int32_t *p) {
 
     *p = parseInt();
 
     return COMM_RC_OK;
 }
 
-uint8_t Comm::parseUInt32( uint32_t *p) {
+COMM_RC_t Comm::parseUInt32( uint32_t *p) {
 
     *p = parseUInt();
 
@@ -753,7 +753,7 @@ int32_t Comm::parseInt() {
     return negative ? -v : v;
 }
 
-uint8_t Comm::parseName( nameType_t *name) {
+COMM_RC_t Comm::parseName( nameType_t *name) {
 
     int ch;
 

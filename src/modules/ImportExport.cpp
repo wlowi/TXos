@@ -37,7 +37,7 @@ ImportExport::ImportExport(Stream& stream) : Module(MODULE_IMPORTEXPORT_TYPE, TE
     setDefaults();
 }
 
-void ImportExport::runExport(const DICT_t* dict, const DICTROW_t* row[], uint8_t* config, moduleSize_t configSz)
+COMM_RC_t ImportExport::runExport(const DICT_t* dict, const DICTROW_t* row[], uint8_t* config, moduleSize_t configSz)
 {
     nameType_t name;
 
@@ -65,6 +65,8 @@ void ImportExport::runExport(const DICT_t* dict, const DICTROW_t* row[], uint8_t
     }
 
     comm.close();
+
+    return COMM_RC_OK;
 }
 
 /**
@@ -75,7 +77,7 @@ void ImportExport::runExport(const DICT_t* dict, const DICTROW_t* row[], uint8_t
  * @param config 
  * @param configSz The size of a single config record. Always non-phased size!
  */
-void ImportExport::runImport(const DICT_t* dict, const DICTROW_t* row[], uint8_t* config, moduleSize_t configSz)
+COMM_RC_t ImportExport::runImport(const DICT_t* dict, const DICTROW_t* row[], uint8_t* config, moduleSize_t configSz)
 {
     nameType_t cmd;
     char dType;
@@ -89,7 +91,7 @@ void ImportExport::runImport(const DICT_t* dict, const DICTROW_t* row[], uint8_t
 
     uint8_t phase;
 
-    uint8_t rc;
+    COMM_RC_t rc;
 
     do {
         rc = comm.nextField(&cmd, &dType, &width, &count);
@@ -136,6 +138,8 @@ void ImportExport::runImport(const DICT_t* dict, const DICTROW_t* row[], uint8_t
             }
         }
     } while( rc == COMM_RC_OK);
+
+    return rc;
 }
 
 
@@ -247,7 +251,6 @@ void ImportExport::exportModulePhase(const DICTROW_t* row[], uint8_t* config)
 
 void ImportExport::run(Controls& controls)
 {
-
     nameType_t cmd;
     char dType;
     uint8_t width;
@@ -291,17 +294,17 @@ void ImportExport::run(Controls& controls)
 
 void ImportExport::setDefaults()
 {
-
     state = STATE_INACTIVE;
     changed = true;
 }
 
 void ImportExport::moduleEnter()
 {
-
     comm.open(COMM_PACKET_INFO);
     comm.close();
     comm.write();
+
+    comm.drain();
 
     state = STATE_CONNECTING;
     changed = true;
@@ -309,7 +312,6 @@ void ImportExport::moduleEnter()
 
 void ImportExport::moduleExit()
 {
-
     setDefaults();
 }
 
@@ -317,7 +319,6 @@ void ImportExport::moduleExit()
 
 bool ImportExport::hasChanged(uint8_t row, uint8_t col)
 {
-
     bool ret = false;
 
     if (row == 2) {
@@ -330,13 +331,11 @@ bool ImportExport::hasChanged(uint8_t row, uint8_t col)
 
 uint8_t ImportExport::getRowCount()
 {
-
     return 3;
 }
 
 const char* ImportExport::getRowName(uint8_t row)
 {
-
     if (row == 1) {
         return TEXT_STATUS;
     }
@@ -346,7 +345,6 @@ const char* ImportExport::getRowName(uint8_t row)
 
 uint8_t ImportExport::getColCount(uint8_t row)
 {
-
     if (row == 2) {
         return 1;
     }
@@ -356,7 +354,6 @@ uint8_t ImportExport::getColCount(uint8_t row)
 
 void ImportExport::getValue(uint8_t row, uint8_t col, Cell* cell)
 {
-
     if (row == 2) {
         switch (state) {
 

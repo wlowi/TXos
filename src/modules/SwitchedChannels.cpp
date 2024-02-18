@@ -44,14 +44,14 @@ SwitchedChannels::SwitchedChannels() : Module( MODULE_SWITCHED_CHANNELS_TYPE, TE
 
 /* From Module */
 
-void SwitchedChannels::exportConfig( ImportExport *exporter, uint8_t *config) const {
+COMM_RC_t SwitchedChannels::exportConfig( ImportExport *exporter, uint8_t *config) const {
 
-    exporter->runExport( DICT_ptr(SwitchedChannels), DICTROW_ptr(SwitchedChannels), config, sizeof(switchedChannels_t));
+    return exporter->runExport( DICT_ptr(SwitchedChannels), DICTROW_ptr(SwitchedChannels), config, sizeof(switchedChannels_t));
 }
 
-void SwitchedChannels::importConfig( ImportExport *importer, uint8_t *config) const {
+COMM_RC_t SwitchedChannels::importConfig( ImportExport *importer, uint8_t *config) const {
 
-    importer->runImport( DICT_ptr(SwitchedChannels), DICTROW_ptr(SwitchedChannels), config, sizeof(switchedChannels_t));
+    return importer->runImport( DICT_ptr(SwitchedChannels), DICTROW_ptr(SwitchedChannels), config, sizeof(switchedChannels_t));
 }
 
 void SwitchedChannels::run( Controls &controls) {

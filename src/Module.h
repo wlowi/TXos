@@ -184,10 +184,10 @@ class Module : public TextUIScreen {
         virtual moduleSize_t getConfigSize() = 0;
 
         /* Export configuration of a module as text to USB */
-        virtual void exportConfig( ImportExport *exporter, uint8_t *config) const = 0;
+        virtual COMM_RC_t exportConfig( ImportExport *exporter, uint8_t *config) const = 0;
 
         /* Import configuration from USB */
-        virtual void importConfig( ImportExport *exporter, uint8_t *config) const = 0;
+        virtual COMM_RC_t importConfig( ImportExport *exporter, uint8_t *config) const = 0;
 
         /* Get the modules configuration type identifier.  */
         moduleType_t getConfigType() const;

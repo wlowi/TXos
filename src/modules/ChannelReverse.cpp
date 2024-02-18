@@ -41,14 +41,14 @@ ChannelReverse::ChannelReverse() : Module( MODULE_CHANNEL_REVERSE_TYPE, TEXT_MOD
 
 /* From Module */
 
-void ChannelReverse::exportConfig( ImportExport *exporter, uint8_t *config) const {
+COMM_RC_t ChannelReverse::exportConfig( ImportExport *exporter, uint8_t *config) const {
 
-    exporter->runExport( DICT_ptr(ChannelReverse), DICTROW_ptr(ChannelReverse), config, sizeof(channelReverse_t));
+    return exporter->runExport( DICT_ptr(ChannelReverse), DICTROW_ptr(ChannelReverse), config, sizeof(channelReverse_t));
 }
 
-void ChannelReverse::importConfig( ImportExport *importer, uint8_t *config) const {
+COMM_RC_t ChannelReverse::importConfig( ImportExport *importer, uint8_t *config) const {
 
-    importer->runImport( DICT_ptr(ChannelReverse), DICTROW_ptr(ChannelReverse), config, sizeof(channelReverse_t));
+    return importer->runImport( DICT_ptr(ChannelReverse), DICTROW_ptr(ChannelReverse), config, sizeof(channelReverse_t));
 }
 
 void ChannelReverse::run( Controls &controls) {

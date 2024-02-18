@@ -121,16 +121,16 @@ class ImportExport : public Module {
 
         Comm& getComm() { return comm; }
 
-        void runExport( const DICT_t *dict,  const DICTROW_t *row[], uint8_t *config, moduleSize_t configSz);
-        void runImport( const DICT_t *dict,  const DICTROW_t *row[], uint8_t *config, moduleSize_t configSz);
+        COMM_RC_t runExport( const DICT_t *dict,  const DICTROW_t *row[], uint8_t *config, moduleSize_t configSz);
+        COMM_RC_t runImport( const DICT_t *dict,  const DICTROW_t *row[], uint8_t *config, moduleSize_t configSz);
 
         bool findDictEntry( const DICTROW_t* row[], nameType_t cmd, uint8_t *dictDataType, size_t *dictOffset, size_t *dictSize, uint16_t *dictCount);
 
         /* From Module */
         void run( Controls &controls) final;
         void setDefaults() final;
-        void exportConfig( ImportExport *exporter, uint8_t *config) const {};
-        void importConfig( ImportExport *importer, uint8_t *config) const {};
+        COMM_RC_t exportConfig( ImportExport *exporter, uint8_t *config) const { return COMM_RC_OK; }
+        COMM_RC_t importConfig( ImportExport *importer, uint8_t *config) const { return COMM_RC_OK; }
 
         void moduleEnter();
         void moduleExit();

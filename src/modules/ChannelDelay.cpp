@@ -42,14 +42,14 @@ ChannelDelay::ChannelDelay() : Module( MODULE_CHANNEL_DELAY_TYPE, TEXT_MODULE_CH
 
 /* From Module */
 
-void ChannelDelay::exportConfig( ImportExport *exporter, uint8_t *config) const {
+COMM_RC_t ChannelDelay::exportConfig( ImportExport *exporter, uint8_t *config) const {
 
-    exporter->runExport( DICT_ptr(ChannelDelay), DICTROW_ptr(ChannelDelay), config, sizeof(channelDelay_t));
+    return exporter->runExport( DICT_ptr(ChannelDelay), DICTROW_ptr(ChannelDelay), config, sizeof(channelDelay_t));
 }
 
-void ChannelDelay::importConfig( ImportExport *importer, uint8_t *config) const {
+COMM_RC_t ChannelDelay::importConfig( ImportExport *importer, uint8_t *config) const {
 
-    importer->runImport( DICT_ptr(ChannelDelay), DICTROW_ptr(ChannelDelay), config, sizeof(channelDelay_t));
+    return importer->runImport( DICT_ptr(ChannelDelay), DICTROW_ptr(ChannelDelay), config, sizeof(channelDelay_t));
 }
 
 void ChannelDelay::run( Controls &controls) {

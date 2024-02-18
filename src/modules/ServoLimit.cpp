@@ -40,14 +40,14 @@ ServoLimit::ServoLimit() : Module( MODULE_SERVO_LIMIT_TYPE, TEXT_MODULE_SERVO_LI
     setDefaults();
 }
 
-void ServoLimit::exportConfig( ImportExport *exporter, uint8_t *config) const {
+COMM_RC_t ServoLimit::exportConfig( ImportExport *exporter, uint8_t *config) const {
 
-    exporter->runExport( DICT_ptr(ServoLimit), DICTROW_ptr(ServoLimit), config, sizeof(servoLimit_t));
+    return exporter->runExport( DICT_ptr(ServoLimit), DICTROW_ptr(ServoLimit), config, sizeof(servoLimit_t));
 }
 
-void ServoLimit::importConfig( ImportExport *importer, uint8_t *config) const {
+COMM_RC_t ServoLimit::importConfig( ImportExport *importer, uint8_t *config) const {
 
-    importer->runImport( DICT_ptr(ServoLimit), DICTROW_ptr(ServoLimit), config, sizeof(servoLimit_t));
+    return importer->runImport( DICT_ptr(ServoLimit), DICTROW_ptr(ServoLimit), config, sizeof(servoLimit_t));
 }
 
 /* From Module */

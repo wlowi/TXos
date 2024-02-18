@@ -47,14 +47,14 @@ channel_t ModeAssign::getModeChannel( channel_t ch) const {
 
 /* From Module */
 
-void ModeAssign::exportConfig( ImportExport *exporter, uint8_t *config) const {
+COMM_RC_t ModeAssign::exportConfig( ImportExport *exporter, uint8_t *config) const {
 
-    exporter->runExport( DICT_ptr(ModeAssign), DICTROW_ptr(ModeAssign), config, sizeof(modeAssign_t));
+    return exporter->runExport( DICT_ptr(ModeAssign), DICTROW_ptr(ModeAssign), config, sizeof(modeAssign_t));
 }
 
-void ModeAssign::importConfig( ImportExport *importer, uint8_t *config) const {
+COMM_RC_t ModeAssign::importConfig( ImportExport *importer, uint8_t *config) const {
 
-    importer->runImport( DICT_ptr(ModeAssign), DICTROW_ptr(ModeAssign), config, sizeof(modeAssign_t));
+    return importer->runImport( DICT_ptr(ModeAssign), DICTROW_ptr(ModeAssign), config, sizeof(modeAssign_t));
 }
 
 void ModeAssign::run( Controls &controls) {

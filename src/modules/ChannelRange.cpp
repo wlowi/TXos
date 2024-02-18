@@ -41,14 +41,14 @@ ChannelRange::ChannelRange() : Module( MODULE_CHANNEL_RANGE_TYPE, TEXT_MODULE_CH
 
 /* From Module */
 
-void ChannelRange::exportConfig( ImportExport *exporter, uint8_t *config) const {
+COMM_RC_t ChannelRange::exportConfig( ImportExport *exporter, uint8_t *config) const {
 
-    exporter->runExport( DICT_ptr(ChannelRange), DICTROW_ptr(ChannelRange), config, sizeof(channelRange_t));
+    return exporter->runExport( DICT_ptr(ChannelRange), DICTROW_ptr(ChannelRange), config, sizeof(channelRange_t));
 }
 
-void ChannelRange::importConfig( ImportExport *importer, uint8_t *config) const {
+COMM_RC_t ChannelRange::importConfig( ImportExport *importer, uint8_t *config) const {
 
-    importer->runImport( DICT_ptr(ChannelRange), DICTROW_ptr(ChannelRange), config, sizeof(channelRange_t));
+    return importer->runImport( DICT_ptr(ChannelRange), DICTROW_ptr(ChannelRange), config, sizeof(channelRange_t));
 }
 
 void ChannelRange::run( Controls &controls) {

@@ -56,14 +56,14 @@ bool VccMonitor::belowAlert() const {
 
 /* From Module */
 
-void VccMonitor::exportConfig( ImportExport *exporter, uint8_t *config) const {
+COMM_RC_t VccMonitor::exportConfig( ImportExport *exporter, uint8_t *config) const {
 
-    exporter->runExport( DICT_ptr(VccMonitor), DICTROW_ptr(VccMonitor), config, sizeof(vccMonitor_t));
+    return exporter->runExport( DICT_ptr(VccMonitor), DICTROW_ptr(VccMonitor), config, sizeof(vccMonitor_t));
 }
 
-void VccMonitor::importConfig( ImportExport *importer, uint8_t *config) const {
+COMM_RC_t VccMonitor::importConfig( ImportExport *importer, uint8_t *config) const {
 
-    importer->runImport( DICT_ptr(VccMonitor), DICTROW_ptr(VccMonitor), config, sizeof(vccMonitor_t));
+    return importer->runImport( DICT_ptr(VccMonitor), DICTROW_ptr(VccMonitor), config, sizeof(vccMonitor_t));
 }
 
 void VccMonitor::run( Controls &controls) {

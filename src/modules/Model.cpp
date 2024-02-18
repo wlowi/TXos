@@ -46,14 +46,14 @@ Model::Model() : Module( MODULE_MODEL_TYPE, TEXT_MODULE_MODEL, COMM_SUBPACKET_MO
     setDefaults();
 }
 
-void Model::exportConfig( ImportExport *exporter, uint8_t *config) const {
+COMM_RC_t Model::exportConfig( ImportExport *exporter, uint8_t *config) const {
 
-    exporter->runExport( DICT_ptr(Model), DICTROW_ptr(Model), config, sizeof(model_t));
+    return exporter->runExport( DICT_ptr(Model), DICTROW_ptr(Model), config, sizeof(model_t));
 }
 
-void Model::importConfig( ImportExport *importer, uint8_t *config) const {
+COMM_RC_t Model::importConfig( ImportExport *importer, uint8_t *config) const {
 
-    importer->runImport( DICT_ptr(Model), DICTROW_ptr(Model), config, sizeof(model_t));
+    return importer->runImport( DICT_ptr(Model), DICTROW_ptr(Model), config, sizeof(model_t));
 }
 
 channelValue_t Model::mixValue( channelValue_t v, uint8_t mix) {

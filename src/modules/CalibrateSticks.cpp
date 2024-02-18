@@ -41,14 +41,14 @@ CalibrateSticks::CalibrateSticks() : Module( MODULE_CAL_STICKS_TYPE, TEXT_MODULE
 
 /* From Module */
 
-void CalibrateSticks::exportConfig( ImportExport *exporter, uint8_t *config) const {
+COMM_RC_t CalibrateSticks::exportConfig( ImportExport *exporter, uint8_t *config) const {
 
-    exporter->runExport( DICT_ptr(CalibrateSticks), DICTROW_ptr(CalibrateSticks), config, sizeof(calibrateSticks_t));
+    return exporter->runExport( DICT_ptr(CalibrateSticks), DICTROW_ptr(CalibrateSticks), config, sizeof(calibrateSticks_t));
 }
 
-void CalibrateSticks::importConfig( ImportExport *importer, uint8_t *config) const {
+COMM_RC_t CalibrateSticks::importConfig( ImportExport *importer, uint8_t *config) const {
 
-    importer->runImport( DICT_ptr(CalibrateSticks), DICTROW_ptr(CalibrateSticks), config, sizeof(calibrateSticks_t));
+    return importer->runImport( DICT_ptr(CalibrateSticks), DICTROW_ptr(CalibrateSticks), config, sizeof(calibrateSticks_t));
 }
 
 void CalibrateSticks::run( Controls &controls) {

@@ -41,14 +41,14 @@ CalibrateTrim::CalibrateTrim() : Module( MODULE_CAL_TRIM_TYPE, TEXT_MODULE_CAL_T
 
 /* From Module */
 
-void CalibrateTrim::exportConfig( ImportExport *exporter, uint8_t *config) const {
+COMM_RC_t CalibrateTrim::exportConfig( ImportExport *exporter, uint8_t *config) const {
 
-    exporter->runExport( DICT_ptr(CalibrateTrim), DICTROW_ptr(CalibrateTrim), config, sizeof(calibrateTrim_t));
+    return exporter->runExport( DICT_ptr(CalibrateTrim), DICTROW_ptr(CalibrateTrim), config, sizeof(calibrateTrim_t));
 }
 
-void CalibrateTrim::importConfig( ImportExport *importer, uint8_t *config) const {
+COMM_RC_t CalibrateTrim::importConfig( ImportExport *importer, uint8_t *config) const {
 
-    importer->runImport( DICT_ptr(CalibrateTrim), DICTROW_ptr(CalibrateTrim), config, sizeof(calibrateTrim_t));
+    return importer->runImport( DICT_ptr(CalibrateTrim), DICTROW_ptr(CalibrateTrim), config, sizeof(calibrateTrim_t));
 }
 
 void CalibrateTrim::run( Controls &controls) {

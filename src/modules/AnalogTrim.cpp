@@ -41,14 +41,14 @@ AnalogTrim::AnalogTrim() : Module( MODULE_ANALOG_TRIM_TYPE, TEXT_MODULE_ANALOG_T
 
 /* From Module */
 
-void AnalogTrim::exportConfig( ImportExport *exporter, uint8_t *config) const {
+COMM_RC_t AnalogTrim::exportConfig( ImportExport *exporter, uint8_t *config) const {
 
-    exporter->runExport( DICT_ptr(AnalogTrim), DICTROW_ptr(AnalogTrim), config, sizeof(analogTrim_t));
+    return exporter->runExport( DICT_ptr(AnalogTrim), DICTROW_ptr(AnalogTrim), config, sizeof(analogTrim_t));
 }
 
-void AnalogTrim::importConfig( ImportExport *importer, uint8_t *config) const {
+COMM_RC_t AnalogTrim::importConfig( ImportExport *importer, uint8_t *config) const {
 
-    importer->runImport( DICT_ptr(AnalogTrim), DICTROW_ptr(AnalogTrim), config, sizeof(analogTrim_t));
+    return importer->runImport( DICT_ptr(AnalogTrim), DICTROW_ptr(AnalogTrim), config, sizeof(analogTrim_t));
 }
 
 void AnalogTrim::run( Controls &controls) {

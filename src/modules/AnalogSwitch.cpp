@@ -43,14 +43,14 @@ AnalogSwitch::AnalogSwitch() : Module( MODULE_ANALOG_SWITCH_TYPE, TEXT_MODULE_AN
 
 /* From Module */
 
-void AnalogSwitch::exportConfig( ImportExport *exporter, uint8_t *config) const {
+COMM_RC_t AnalogSwitch::exportConfig( ImportExport *exporter, uint8_t *config) const {
 
-    exporter->runExport( DICT_ptr(AnalogSwitch), DICTROW_ptr(AnalogSwitch), config, sizeof(analogSwitch_t));
+    return exporter->runExport( DICT_ptr(AnalogSwitch), DICTROW_ptr(AnalogSwitch), config, sizeof(analogSwitch_t));
 }
 
-void AnalogSwitch::importConfig( ImportExport *importer, uint8_t *config) const {
+COMM_RC_t AnalogSwitch::importConfig( ImportExport *importer, uint8_t *config) const {
 
-    importer->runImport( DICT_ptr(AnalogSwitch), DICTROW_ptr(AnalogSwitch), config, sizeof(analogSwitch_t));
+    return importer->runImport( DICT_ptr(AnalogSwitch), DICTROW_ptr(AnalogSwitch), config, sizeof(analogSwitch_t));
 }
 
 void AnalogSwitch::run( Controls &controls) {

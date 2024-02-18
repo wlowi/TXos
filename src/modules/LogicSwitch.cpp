@@ -46,14 +46,14 @@ LogicSwitch::LogicSwitch() : Module( MODULE_LOGIC_SWITCH_TYPE, TEXT_MODULE_LOGIC
 
 /* From Module */
 
-void LogicSwitch::exportConfig( ImportExport *exporter, uint8_t *config) const {
+COMM_RC_t LogicSwitch::exportConfig( ImportExport *exporter, uint8_t *config) const {
 
-    exporter->runExport( DICT_ptr(LogicSwitch), DICTROW_ptr(LogicSwitch), config, sizeof(logicSwitch_t));
+    return exporter->runExport( DICT_ptr(LogicSwitch), DICTROW_ptr(LogicSwitch), config, sizeof(logicSwitch_t));
 }
 
-void LogicSwitch::importConfig( ImportExport *importer, uint8_t *config) const {
+COMM_RC_t LogicSwitch::importConfig( ImportExport *importer, uint8_t *config) const {
 
-    importer->runImport( DICT_ptr(LogicSwitch), DICTROW_ptr(LogicSwitch), config, sizeof(logicSwitch_t));
+    return importer->runImport( DICT_ptr(LogicSwitch), DICTROW_ptr(LogicSwitch), config, sizeof(logicSwitch_t));
 }
 
 void LogicSwitch::run( Controls &controls) {

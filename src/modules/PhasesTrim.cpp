@@ -45,14 +45,14 @@ PhasesTrim::PhasesTrim() : Module( MODULE_PHASES_TRIM_TYPE, TEXT_MODULE_PHASES_T
 
 /* From Module */
 
-void PhasesTrim::exportConfig( ImportExport *exporter, uint8_t *config) const {
+COMM_RC_t PhasesTrim::exportConfig( ImportExport *exporter, uint8_t *config) const {
 
-    exporter->runExport( DICT_ptr(PhasesTrim), DICTROW_ptr(PhasesTrim), config, sizeof(phasesTrim_t));
+    return exporter->runExport( DICT_ptr(PhasesTrim), DICTROW_ptr(PhasesTrim), config, sizeof(phasesTrim_t));
 }
 
-void PhasesTrim::importConfig( ImportExport *importer, uint8_t *config) const {
+COMM_RC_t PhasesTrim::importConfig( ImportExport *importer, uint8_t *config) const {
 
-    importer->runImport( DICT_ptr(PhasesTrim), DICTROW_ptr(PhasesTrim), config, sizeof(phasesTrim_t));
+    return importer->runImport( DICT_ptr(PhasesTrim), DICTROW_ptr(PhasesTrim), config, sizeof(phasesTrim_t));
 }
 
 void PhasesTrim::run( Controls &controls) {

@@ -128,6 +128,8 @@ const uint16_t COMM_TEXT_MAXLEN = 256;
 /* comm packet types */
 using nameType_t = uint16_t;
 
+using COMM_RC_t = uint8_t;
+
 #define PACKET_TYPE( a, b) ((((nameType_t)a) << 8) +  b)
 #define PACKET_NAME( p ) (char)(p >> 8),(char)p
 
@@ -293,17 +295,17 @@ class Comm {
          */
         boolean verifyType( char dType);
 
-        uint8_t parseInt8( int8_t *p);
-        uint8_t parseUInt8( uint8_t *p);
-        uint8_t parseInt16( int16_t *p);
-        uint8_t parseUInt16( uint16_t *p);
-        uint8_t parseInt32( int32_t *p);
-        uint8_t parseUInt32( uint32_t *p);
+        COMM_RC_t parseInt8( int8_t *p);
+        COMM_RC_t parseUInt8( uint8_t *p);
+        COMM_RC_t parseInt16( int16_t *p);
+        COMM_RC_t parseUInt16( uint16_t *p);
+        COMM_RC_t parseInt32( int32_t *p);
+        COMM_RC_t parseUInt32( uint32_t *p);
 
         uint32_t parseUInt();
         int32_t parseInt();
 
-        uint8_t parseName( nameType_t *name);
+        COMM_RC_t parseName( nameType_t *name);
 
     public:
        Comm( Stream *stream);
@@ -354,14 +356,14 @@ class Comm {
 
         /* Remove everything from input buffer.
          */
-        uint8_t drain();
+        COMM_RC_t drain();
 
         /* Wait for a packet
          *
          * returns COMM_RC_OK        if a valid packet header was received.
          * returns COMM_RC_NODATA    otherwise
          */
-        uint8_t nextPacket( nameType_t *pType);
+        COMM_RC_t nextPacket( nameType_t *pType);
 
         /* Read next field in packet
          *
@@ -375,7 +377,7 @@ class Comm {
          * returns COMM_RC_NODATA     in case of timeout
          * returns COMM_RC_PROTOCOL   in case of a packet format error (Garbage received)
          */
-        uint8_t nextField( nameType_t *fType, char *dType, uint8_t *width, uint16_t *count);
+        COMM_RC_t nextField( nameType_t *fType, char *dType, uint8_t *width, uint16_t *count);
 
         /* Read next field in packet
          *
@@ -390,7 +392,7 @@ class Comm {
          * returns COMM_RC_NODATA     in case of timeout
          * returns COMM_RC_PROTOCOL   in case of a packet format error (Garbage received)
          */
-        uint8_t nextData( void *data, char dType, uint8_t width, uint16_t count);
+        COMM_RC_t nextData( void *data, char dType, uint8_t width, uint16_t count);
 };
 
 #endif

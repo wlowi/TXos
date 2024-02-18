@@ -45,14 +45,14 @@ bool EngineCut::isSave() {
 
 /* From Module */
 
-void EngineCut::exportConfig( ImportExport *exporter, uint8_t *config) const {
+COMM_RC_t EngineCut::exportConfig( ImportExport *exporter, uint8_t *config) const {
 
-    exporter->runExport( DICT_ptr(EngineCut), DICTROW_ptr(EngineCut), config, sizeof(engineCut_t));
+    return exporter->runExport( DICT_ptr(EngineCut), DICTROW_ptr(EngineCut), config, sizeof(engineCut_t));
 }
 
-void EngineCut::importConfig( ImportExport *importer, uint8_t *config) const {
+COMM_RC_t EngineCut::importConfig( ImportExport *importer, uint8_t *config) const {
 
-    importer->runImport( DICT_ptr(EngineCut), DICTROW_ptr(EngineCut), config, sizeof(engineCut_t));
+    return importer->runImport( DICT_ptr(EngineCut), DICTROW_ptr(EngineCut), config, sizeof(engineCut_t));
 }
 
 void EngineCut::run( Controls &controls) {

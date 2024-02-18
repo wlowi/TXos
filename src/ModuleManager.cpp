@@ -506,7 +506,7 @@ void ModuleManager::importModel( ImportExport *importer) {
     char dType;
     uint8_t width;
     uint16_t count;
-    uint8_t rc;
+    COMM_RC_t rc;
     Module *module;
     uint8_t *payload;
     size_t payloadSize;
