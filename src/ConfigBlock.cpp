@@ -58,6 +58,11 @@ configBlock_rc ConfigBlock::readBlock( configBlockID_t id) {
             return CONFIGBLOCK_RC_CSUM;
         }
 
+        if( block.payload[0] == 0xff) {
+            LOGV("** ConfigBlock::readBlock(): uninitialized block ID=%d\n", id);
+            return CONFIGBLOCK_RC_INVID;
+        }
+
         return CONFIGBLOCK_RC_OK;
     }
 

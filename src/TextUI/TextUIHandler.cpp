@@ -368,6 +368,20 @@ void TextUIHandler::updateTable(TextUILcd *lcd)
 
     screen->startRefresh();
 
+    useBackItem = screen->goBackItem();
+    tableRows = screen->getRowCount() + (useBackItem ? 1 : 0);
+    screenHeaderOffs = screen->getHeader() ? 1 : 0;
+
+    if( tableTopRow > tableRows-1) {
+        tableTopRow = tableRows-1;
+    }
+
+    if( tableRow > tableRows-1) {
+        tableRow = tableRows-1;
+    }
+
+    UILOGV("TextUIHandler::updateTable(): rows %d topRow %d row%d\n", tableRows, tableTopRow, tableRow);
+
     adjustTopRow(lcd);
     refresh = REFRESH_ROW;
 

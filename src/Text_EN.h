@@ -165,22 +165,26 @@
 #define TEXT_BOOTING                CC("Booting...")
 #define TEXT_CH                     CC("Ch")
 #define TEXT_CONNECTING             CC("CONNECTING")
+#define TEXT_COPY                   CC("Copy")
 #define TEXT_EXPO                   CC("Expo")
 #define TEXT_EXPORT                 CC("Exp Model")
 #define TEXT_IMPORT                 CC("Imp Model")
 #define TEXT_EXPORT_SYS             CC("Exp Syscf")
 #define TEXT_IMPORT_SYS             CC("Imp Syscf")
+#define TEXT_LOAD                   CC("Load")
 #define TEXT_MIX_ARROW              CC("=>")
 #define TEXT_MIX_OFFSET             CC("Of=")
 #define TEXT_MODEL                  CC("Model")
 #define TEXT_MODEL_NAME             CC("Name")
 #define TEXT_MODEL_SETUP            CC("Model setup")
+#define TEXT_PASTE                  CC("Paste")
 #define TEXT_PHASE                  CC("Phase")
 #define TEXT_PHASE_PATTERN          CC("Ph-*")
 #define TEXT_POS0                   CC("Pos0")
 #define TEXT_POS1                   CC("Pos1")
 #define TEXT_POS2                   CC("Pos2")
 #define TEXT_RATE                   CC("Rate")
+#define TEXT_REMOVE                 CC("Remove")
 #define TEXT_SEC                    CC("sec")
 #define TEXT_START                  CC("Start")
 #define TEXT_STATUS                 CC("Status")
@@ -231,21 +235,30 @@
 #define TEXT_STATISTIC_MEMFREE      CC("MemFree")
 
 /* User interface warnings and messages */
-#define TEXT_MSG_count              ((uint8_t)5)
+#define TEXT_MSG_count              ((uint8_t)6)
 
-#define MSG_NONE                    ((uint8_t)0) //1234567890123
+#define MSG_NONE                    ((uint8_t)0)
+                                      //1234567890123
 #define TEXT_MSG_NONE               CC(" ")
 
-#define MSG_BAD_SYSCONFIG           ((uint8_t)1) //1234567890123
+#define MSG_BAD_SYSCONFIG           ((uint8_t)1) 
+                                      //1234567890123
 #define TEXT_MSG_BAD_SYSCONFIG      CC("Bad Sysconfig")
 
-#define MSG_LOW_BATT                ((uint8_t)2) //1234567890123
+#define MSG_LOW_BATT                ((uint8_t)2)
+                                      //1234567890123
 #define TEXT_MSG_LOW_BATT           CC("Low Battery")
 
-#define MSG_MODEL_LOAD_FAILED       ((uint8_t)3) //1234567890123
+#define MSG_MODEL_LOAD_FAILED       ((uint8_t)3)
+                                      //1234567890123
 #define TEXT_MSG_MODEL_LOAD_FAILED  CC("Mod. load err")
 
-#define MSG_CONFIG_SIZE             ((uint8_t)4) //1234567890123
+#define MSG_CONFIG_SIZE             ((uint8_t)4)
+                                      //1234567890123
 #define TEXT_MSG_CONFIG_SIZE        CC("Mod. cfg size")
+
+#define MSG_MODEL_IMP_FAILED        ((uint8_t)5)
+                                      //1234567890123
+#define TEXT_MSG_MODEL_IMP_FAILED   CC("Import Mod E#")
 
 #endif

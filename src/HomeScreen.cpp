@@ -35,33 +35,35 @@ extern ModelSelect modelSelect;
 extern Buzzer buzzer;
 
 const buzzerCmd_t SoundClear[] = {
-  BUZZER_PLAY( 1),
-  BUZZER_PAUSE( 1),
-  BUZZER_REPEAT( 0, 2),
-  BUZZER_STOP()
+    BUZZER_PLAY(1),
+    BUZZER_PAUSE(1),
+    BUZZER_REPEAT(0, 2),
+    BUZZER_STOP()
 };
 
 const buzzerCmd_t SoundAlarm[] = {
-  BUZZER_PAUSE( 20),
-  BUZZER_PLAY( 1),
-  BUZZER_PAUSE( 1),
-  BUZZER_REPEAT( 1, 5),
-  BUZZER_PAUSE( 20),
-  BUZZER_STOP()
+    BUZZER_PAUSE(20),
+    BUZZER_PLAY(1),
+    BUZZER_PAUSE(1),
+    BUZZER_REPEAT(1, 5),
+    BUZZER_PAUSE(20),
+    BUZZER_STOP()
 };
 
-const char *messageText[] = {
+const char* messageText[] = {
     TEXT_MSG_NONE,
     TEXT_MSG_BAD_SYSCONFIG,
     TEXT_MSG_LOW_BATT,
     TEXT_MSG_MODEL_LOAD_FAILED,
-    TEXT_MSG_CONFIG_SIZE
+    TEXT_MSG_CONFIG_SIZE,
+    TEXT_MSG_MODEL_IMP_FAILED
 };
 
 HomeScreen::HomeScreen() : TextUIScreen() {
 
     message1 = message2 = 0;
     post1 = post2 = 0;
+    arg1 = arg2 = 0;
 
     lastPhase = 255;
     lastVcc = 0;
@@ -69,59 +71,67 @@ HomeScreen::HomeScreen() : TextUIScreen() {
     engineSave = false;
 }
 
-void HomeScreen::printDebug( uint16_t t) {
+void HomeScreen::printDebug(uint16_t t) {
 
-    lcd->setCursor( 0, 7);
-    lcd->setFg(255,165,0);
-    lcd->printUInt( t, 6);
+    lcd->setCursor(0, 7);
+    lcd->setFg(255, 165, 0);
+    lcd->printUInt(t, 6);
 }
 
-void HomeScreen::postMessage( uint8_t line, uint8_t msg) {
-    
-    if( msg < TEXT_MSG_count) {
-        if( line == 0) {
+void HomeScreen::postMessage(uint8_t line, uint8_t msg, uint8_t arg) {
+
+    if (msg < TEXT_MSG_count) {
+        if (line == 0) {
             post1 = msg;
-        } else{
+            arg1 = arg;
+        }
+        else {
             post2 = msg;
+            arg2 = arg;
         }
     }
 }
 
+void HomeScreen::postMessage(uint8_t line, uint8_t msg) {
+
+    postMessage( line, msg, 0);
+}
+
 /* From TextUIScreen */
-void HomeScreen::handleEvent(TextUI *ui, Event *e) {
+void HomeScreen::handleEvent(TextUI* ui, Event* e) {
 
     // LOGV("HomeScreen::handleEvent: %d\n", e->getType());
 
-    if( lcd == nullptr) {
+    if (lcd == nullptr) {
         lcd = ui->getDisplay();
         screenWidth = lcd->getColumns();
     }
 
-    TextUILcd *lcd = ui->getDisplay();
+    TextUILcd* lcd = ui->getDisplay();
 
-    if( refresh == REFRESH_FULL) {
+    if (refresh == REFRESH_FULL) {
         lcd->normalColors();
         lcd->clear();
 
-        lcd->printStr( TEXT_TXOS, 5);
-        lcd->printStr( TXOS_VERSION);
+        lcd->printStr(TEXT_TXOS, 5);
+        lcd->printStr(TXOS_VERSION);
 
         lcd->setCursor(1, 0);
-        lcd->printUInt( modelSelect.getModelID(), 2);
+        lcd->printUInt(modelSelect.getModelID(), 2);
         lcd->printStr(": ");
-        Model *model = (Model*)moduleManager.getModuleByType( MODULE_SET_MODEL, MODULE_MODEL_TYPE);
-        lcd->printStr( model->getModelName(), MODEL_NAME_LEN);
+        Model* model = (Model*)moduleManager.getModuleByType(MODULE_SET_MODEL, MODULE_MODEL_TYPE);
+        lcd->printStr(model->getModelName(), MODEL_NAME_LEN);
     }
 
-    if( engineCut && (refresh == REFRESH_FULL || engineCut->isSave() != engineSave)) {
+    if (engineCut && (refresh == REFRESH_FULL || engineCut->isSave() != engineSave)) {
         engineSave = engineCut->isSave();
 
-        lcd->setFg(0,255,0);
+        lcd->setFg(0, 255, 0);
         lcd->setCursor(2, 10);
         lcd->printStr(engineSave ? TEXT_THR : TEXT_MSG_NONE, 3);
     }
 
-    if( phases &&  (refresh == REFRESH_FULL || phases->getPhase() != lastPhase)) {
+    if (phases && (refresh == REFRESH_FULL || phases->getPhase() != lastPhase)) {
         lastPhase = phases->getPhase();
 
         lcd->normalColors();
@@ -129,79 +139,91 @@ void HomeScreen::handleEvent(TextUI *ui, Event *e) {
         lcd->printStr(phases->getPhaseName(), TEXT_PHASE_NAME_length);
     }
 
-    if( timer && (refresh == REFRESH_FULL || timer->timeSec() != lastTime)) {
+    if (timer && (refresh == REFRESH_FULL || timer->timeSec() != lastTime)) {
 
         lastTime = timer->timeSec();
 
         lcd->normalColors();
         lcd->setCursor(5, 0);
-        lcd->printStr( timer->timeStr(), 5);
+        lcd->printStr(timer->timeStr(), 5);
     }
 
-    if( vccMonitor && (refresh == REFRESH_FULL || vccMonitor->getVcc() != lastVcc)) {
+    if (vccMonitor && (refresh == REFRESH_FULL || vccMonitor->getVcc() != lastVcc)) {
 
         lastVcc = vccMonitor->getVcc();
 
-        if( vccMonitor->belowAlert()) {
-            lcd->setFg(255,0,0);
+        if (vccMonitor->belowAlert()) {
+            lcd->setFg(255, 0, 0);
             postMessage(0, MSG_LOW_BATT);
-            buzzer.playPermanent( SoundAlarm);
-        } else if( vccMonitor->belowWarn()) {
-            lcd->setFg(255,165,0);
-        } else {
-            lcd->setFg(0,255,0);
+            buzzer.playPermanent(SoundAlarm);
+        }
+        else if (vccMonitor->belowWarn()) {
+            lcd->setFg(255, 165, 0);
+        }
+        else {
+            lcd->setFg(0, 255, 0);
         }
         lcd->setCursor(5, 7);
-        lcd->printFixFloat2( lastVcc, 5);
-        lcd->printStr( "V");
+        lcd->printFixFloat2(lastVcc, 5);
+        lcd->printStr("V");
     }
 
-    if( refresh == REFRESH_FULL || post1 != message1) {
+    if (refresh == REFRESH_FULL || post1 != message1) {
         message1 = post1;
-        lcd->setFg(255,165,0);
+        lcd->setFg(255, 165, 0);
         lcd->setCursor(6, 0);
         lcd->printStr(messageText[message1], screenWidth);
+        if( arg1 ) {
+            lcd->setCursor(6, screenWidth-1);
+            lcd->printUInt( arg1, 1);
+        }
     }
 
-    if( refresh == REFRESH_FULL || post2 != message2) {
+    if (refresh == REFRESH_FULL || post2 != message2) {
         message2 = post2;
-        lcd->setFg(255,165,0);
+        lcd->setFg(255, 165, 0);
         lcd->setCursor(7, 0);
         lcd->printStr(messageText[message2], screenWidth);
+        if( arg2 ) {
+            lcd->setCursor(7, screenWidth-1);
+            lcd->printUInt( arg2, 1);
+        }
     }
 
     refresh = REFRESH_OK;
 
-    if( e->getType() == EVENT_TYPE_KEY) {
-        switch( e->getKey()) {
+    if (e->getType() == EVENT_TYPE_KEY) {
+        switch (e->getKey()) {
 
         case KEY_ENTER:
-            ui->pushScreen( moduleManager.getModelMenu());
+            ui->pushScreen(moduleManager.getModelMenu());
             break;
-    
+
         case KEY_CLEAR:
-            if( post1 || post2) {
+            if (post1 || post2) {
                 /* Clear messages and switch off alarm */
                 post1 = post2 = 0;
+                arg1 = arg2 = 0;
                 buzzer.off();
-            } else if( timer) {
+            }
+            else if (timer) {
                 timer->reset();
-                buzzer.play( SoundClear);
+                buzzer.play(SoundClear);
             }
         }
     }
 }
 
-void HomeScreen::activate(TextUI *ui) {
+void HomeScreen::activate(TextUI* ui) {
 
-    if( lcd == nullptr) {
+    if (lcd == nullptr) {
         lcd = ui->getDisplay();
         screenWidth = lcd->getColumns();
 
-        vccMonitor = (VccMonitor*)moduleManager.getModuleByType( MODULE_SET_SYSTEM, MODULE_VCC_MONITOR_TYPE);
-        phases = (Phases*)moduleManager.getModuleByType( MODULE_SET_MODEL, MODULE_PHASES_TYPE);
-        timer = (Timer*)moduleManager.getModuleByType( MODULE_SET_MODEL, MODULE_TIMER_TYPE);
-        engineCut = (EngineCut*)moduleManager.getModuleByType( MODULE_SET_MODEL, MODULE_ENGINE_CUT_TYPE);
+        vccMonitor = (VccMonitor*)moduleManager.getModuleByType(MODULE_SET_SYSTEM, MODULE_VCC_MONITOR_TYPE);
+        phases = (Phases*)moduleManager.getModuleByType(MODULE_SET_MODEL, MODULE_PHASES_TYPE);
+        timer = (Timer*)moduleManager.getModuleByType(MODULE_SET_MODEL, MODULE_TIMER_TYPE);
+        engineCut = (EngineCut*)moduleManager.getModuleByType(MODULE_SET_MODEL, MODULE_ENGINE_CUT_TYPE);
     }
 
     refresh = REFRESH_FULL;

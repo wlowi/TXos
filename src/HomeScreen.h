@@ -37,48 +37,64 @@
 
 class HomeScreen : public TextUIScreen {
 
-    private:
-        TextUILcd *lcd = nullptr;
-        VccMonitor *vccMonitor;
-        Phases *phases;
-        Timer *timer;
-        EngineCut *engineCut;
+private:
+    TextUILcd* lcd = nullptr;
+    VccMonitor* vccMonitor;
+    Phases* phases;
+    Timer* timer;
+    EngineCut* engineCut;
 
-        uint8_t refresh = REFRESH_FULL;
+    uint8_t refresh = REFRESH_FULL;
 
-        uint8_t screenWidth;
+    uint8_t screenWidth;
 
-        uint8_t message1; /* displayed messages */
-        uint8_t message2;
-        uint8_t post1;    /* posted messages */
-        uint8_t post2;
+    uint8_t message1; /* displayed messages */
+    uint8_t message2;
+    uint8_t post1;    /* posted messages */
+    uint8_t post2;
+    uint8_t arg1;     /* message argument */
+    uint8_t arg2;
 
-        phase_t lastPhase;
-        float2 lastVcc;
-        uint16_t lastTime;
-        bool engineSave;
+    phase_t lastPhase;
+    float2 lastVcc;
+    uint16_t lastTime;
+    bool engineSave;
 
-    public:
-        HomeScreen();
+public:
+    HomeScreen();
 
-	      void printDebug( uint16_t t);
-	      void postMessage( uint8_t line, uint8_t msg);
+    void printDebug(uint16_t t);
 
-        /* From TextUIScreen */
-        virtual void handleEvent(TextUI *ui, Event *e) final;
+    /**
+     * @brief Print a message into one of the two bottom lines.
+     * 
+     * line == 0 print to second to last line
+     * line == 1 print to last line
+     * msg == message number (see Text_xx.h)
+     * arg == 0 is no argument
+     * 
+     * @param line which line
+     * @param msg message number
+     * @param arg single digit argument
+     */
+    void postMessage(uint8_t line, uint8_t msg, uint8_t arg);
+    void postMessage(uint8_t line, uint8_t msg);
 
-        void activate(TextUI *ui) final;
+    /* From TextUIScreen */
+    virtual void handleEvent(TextUI* ui, Event* e) final;
 
-        /* This screen does its own painting in handleEvent().
-         * We don't use the TextUI row/column handling.
-         */
-        bool goBackItem() { return false; }
-        uint8_t getRowCount() { return 0; };
-        const char *getRowName( uint8_t row) { return ""; }
-        uint8_t getColCount( uint8_t row) { return 0; }
-        void getValue(uint8_t row, uint8_t col, Cell *cell) {}
-        const char *getMenuName() { return ""; };
-	      const char *getHeader() { return getMenuName(); }
+    void activate(TextUI* ui) final;
+
+    /* This screen does its own painting in handleEvent().
+     * We don't use the TextUI row/column handling.
+     */
+    bool goBackItem() { return false; }
+    uint8_t getRowCount() { return 0; };
+    const char* getRowName(uint8_t row) { return ""; }
+    uint8_t getColCount(uint8_t row) { return 0; }
+    void getValue(uint8_t row, uint8_t col, Cell* cell) {}
+    const char* getMenuName() { return ""; };
+    const char* getHeader() { return getMenuName(); }
 };
 
 #endif

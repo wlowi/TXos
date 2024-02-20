@@ -49,9 +49,14 @@ class ModelSelect : public Module {
     private:
         char modelNo[MODELNO_STRING_LEN +1]; // Temporary space for numeric model ID
         Model model;                         // Temporary to display model name
-        
+        configBlockID_t copyID;
+        configBlockID_t selectedID;
+        uint8_t state;
+
     public:
         ModelSelect();
+
+        void moduleEnter();
 
         configBlockID_t getModelID() const;
         

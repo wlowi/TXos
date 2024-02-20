@@ -104,24 +104,22 @@ COMM_RC_t ImportExport::runImport(const DICT_t* dict, const DICTROW_t* row[], ui
                         if (cmd == COMM_FIELD_PHASE) {
                             comm.nextData(&phase, dType, width, count);
                             if( phase < PHASES) {
-                                runImport( dict, row, config + (phase*configSz), configSz);
+                                rc = runImport( dict, row, config + (phase*configSz), configSz);
+                                if( rc == COMM_RC_END) {
+                                    rc = COMM_RC_OK;
+                                }
                             } else {
                                 LOGV("ModuleManager::importModel(): ERROR: invalid phase %d\n", phase);
-                                /* ERROR */
                                 rc = COMM_RC_PROTOCOL;
                             }
-
                         } else {
                             LOG("ModuleManager::importModel(): ERROR: COMM_FIELD_ID expected\n");
-                            /* ERROR */
                             rc = COMM_RC_PROTOCOL;
                         }
                     } else {
                         LOG("ModuleManager::importModel(): ERROR: Field expected\n");
-                        /* ERROR */ 
                         rc = COMM_RC_PROTOCOL;
                     }
-
                 }
             } else {
                 LOG("ModuleManager::importModel(): ERROR: Failed to read subpacket\n");

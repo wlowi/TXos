@@ -157,6 +157,9 @@ void TextUI::handle( Event *ev) {
   } else if( refresh == REFRESH_SCREEN) {
     handler.forceRefresh();
     refresh = REFRESH_OK;
+  } else if( refresh == REFRESH_SCREEN_SET_ROW) {
+    handler.forceRefresh( newCurrentRow);
+    refresh = REFRESH_OK;
   }
 
   handler.process( this, display, ev);

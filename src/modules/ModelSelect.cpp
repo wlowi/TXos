@@ -34,7 +34,16 @@
 extern ModuleManager moduleManager;
 extern SystemConfig systemConfig;
 
-ModelSelect::ModelSelect() : Module( MODULE_MODEL_SELECT_TYPE, TEXT_MODULE_MODEL_SELECT, COMM_SUBPACKET_NONE) {
+const uint8_t STATE_SELECT = 0;
+const uint8_t STATE_MANAGE = 1;
+
+/* Managing function (row) numbers */
+const uint8_t F_LOAD = 0;
+const uint8_t F_REMOVE = 1;
+const uint8_t F_COPY = 2;
+const uint8_t F_PASTE = 3;
+
+ModelSelect::ModelSelect() : Module(MODULE_MODEL_SELECT_TYPE, TEXT_MODULE_MODEL_SELECT, COMM_SUBPACKET_NONE) {
 
     setDefaults();
 }
@@ -46,7 +55,7 @@ configBlockID_t ModelSelect::getModelID() const {
 
 /* From Module */
 
-void ModelSelect::run( Controls &controls) {
+void ModelSelect::run(Controls& controls) {
 
     // noop
 }
@@ -60,69 +69,132 @@ void ModelSelect::setDefaults() {
     )
 }
 
+void ModelSelect::moduleEnter() {
+
+    state = STATE_SELECT;
+    copyID = 0;
+    selectedID = 0;
+}
+
 /* From TableEditable */
 
 /*
  * Called when we select a model.
  * This will load the model configuration.
  */
-void ModelSelect::rowExecute( TextUI *ui, uint8_t row) {
+void ModelSelect::rowExecute(TextUI* ui, uint8_t row) {
 
     LOGV("ModelSelect::execute( %d )\n", row);
 
-    CFG->modelID = row +1;
-    moduleManager.loadModel( CFG->modelID);
-    systemConfig.save();
-    ui->toHome();
+    switch (state) {
+    case STATE_SELECT:
+        selectedID = row + 1;
+        state = STATE_MANAGE;
+        ui->forceRefresh( 0);
+        break;
+
+    case STATE_MANAGE:
+        switch (row) {
+        case F_LOAD:
+            CFG->modelID = selectedID;
+            moduleManager.loadModel( CFG->modelID);
+            systemConfig.save();
+            ui->toHome();
+            break;
+
+        case F_REMOVE:
+            moduleManager.removeModel(selectedID);
+            state = STATE_SELECT;
+            ui->forceRefresh( 0);
+            break;
+
+        case F_COPY:
+            copyID = selectedID;
+            state = STATE_SELECT;
+            ui->forceRefresh( 0);
+            break;
+
+        case F_PASTE:
+            moduleManager.copyModel(copyID, selectedID);
+            state = STATE_SELECT;
+            ui->forceRefresh( 0);
+            break;
+        }
+        break;
+    }
 }
 
 uint8_t ModelSelect::getRowCount() {
 
-    return moduleManager.getModelCount();
+    if (state == STATE_SELECT) {
+        return moduleManager.getModelCount();
+    }
+    else {
+        return copyID == 0 ? 3 : 4;
+    }
 }
 
-const char *ModelSelect::getRowName( uint8_t row) {
+const char* ModelSelect::getRowName(uint8_t row) {
 
     int8_t p = MODELNO_STRING_LEN;
 
-    row++; // model number start at 1
+    if (state == STATE_SELECT) {
+        row++; // model number start at 1
 
-    modelNo[p--] = '\0';
+        modelNo[p--] = '\0';
 
-   	for(;;) {
-   		modelNo[p--] = (row % 10) + '0';
-        row /= 10;
+        for (;;) {
+            modelNo[p--] = (row % 10) + '0';
+            row /= 10;
 
-      	if( row == 0 || p < 0) {
-        	break;
-      	}
+            if (row == 0 || p < 0) {
+                break;
+            }
+        }
+
+        while (p >= 0) {
+            modelNo[p--] = ' ';
+        }
     }
-
-    while( p >= 0) {
-        modelNo[p--] = ' ';
+    else {
+        if (row == F_LOAD) {
+            return TEXT_LOAD;
+        }
+        else if (row == F_REMOVE) {
+            return TEXT_REMOVE;
+        }
+        else if (row == F_COPY) {
+            return TEXT_COPY;
+        }
+        else if (row == F_PASTE) {
+            return TEXT_PASTE;
+        }
     }
 
     return modelNo;
 }
 
-uint8_t ModelSelect::getColCount( uint8_t row) {
+uint8_t ModelSelect::getColCount(uint8_t row) {
 
-    return 1;
+    return state == STATE_SELECT ? 1 : 0;
 }
 
-void ModelSelect::getValue( uint8_t row, uint8_t col, Cell *cell) {
+void ModelSelect::getValue(uint8_t row, uint8_t col, Cell* cell) {
 
-    if( moduleManager.parseModule( row +1, model) == CONFIGBLOCK_RC_OK) {
-        cell->setString( MODELNO_STRING_LEN+1, model.getModelName(), MODEL_NAME_LEN);
-    } else {
-        /* Config block for this model is uninitialized.
-         * Display model number instead of name.
-         */
-        cell->setString( MODELNO_STRING_LEN+1, modelNo, 1);
+    /* There is only one column */
+
+    if (moduleManager.parseModule(row + 1, model) == CONFIGBLOCK_RC_OK) {
+        cell->setString(MODELNO_STRING_LEN + 1, model.getModelName(), MODEL_NAME_LEN);
+    }
+    else {
+     /* Config block for this model is uninitialized.
+      * Display model number instead of name.
+      */
+        cell->setString(MODELNO_STRING_LEN + 1, modelNo, 1);
     }
 }
 
-void ModelSelect::setValue( uint8_t row, uint8_t col, Cell *cell) {
+void ModelSelect::setValue(uint8_t row, uint8_t col, Cell* cell) {
 
     // noop
 }

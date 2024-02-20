@@ -102,6 +102,9 @@ class ModuleManager {
 
         uint8_t getModelCount() const;
 
+        void removeModel( configBlockID_t modelID);
+        void copyModel( configBlockID_t fromModelID, configBlockID_t toModelID);
+
         /* Model save is performed in Module.deactivate() */
         void loadModel( configBlockID_t modelID);
         void saveModel( configBlockID_t modelID);

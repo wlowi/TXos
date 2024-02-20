@@ -96,8 +96,6 @@ class ConfigBlock {
 
         configBlock_t block;
 
-        /* Store block ID and compute block and payload size. */
-        bool setBlockID( configBlockID_t blkID);
         size_t getBlockStart() const;
         checksum_t computeChecksum();
         checksum_t rotate( checksum_t v) const;
@@ -108,6 +106,8 @@ class ConfigBlock {
         size_t getStorageSize() const { return storageSize; }
         configBlockID_t getModelBlockCount() const { return modelBlockCount; }
 
+        /* Store block ID and compute block and payload size. */
+        bool setBlockID( configBlockID_t blkID);
         configBlock_rc readBlock( configBlockID_t id);
         configBlock_rc formatBlock( configBlockID_t id);
         configBlock_rc writeBlock();
