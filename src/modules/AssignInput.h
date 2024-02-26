@@ -45,6 +45,9 @@ class AssignInput : public Module {
     public:
         AssignInput();
 
+        /* Get analog input channel for a mix channel */
+        channel_t getInputChannel( channel_t ch) const;
+
         /* From Module */
         void run( Controls &controls) final;
         void setDefaults() final;

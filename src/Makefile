@@ -59,7 +59,7 @@ OBJECTS = TXos.o Module.o Comm.o ModuleManager.o ConfigBlock.o SystemConfig.o Ho
 
 # Unittest
 UTOBJECTS = unittest/UtModules.o
-UTEMU_OBJ = unittest/emu/EEPROM.o unittest/emu/InputImpl.o unittest/emu/OutputImpl.o unittest/emu/PortsImpl.o \
+UTEMU_OBJ = unittest/emu/EEPROM.o unittest/emu/EmuSerial.o unittest/emu/SerialConsole.o unittest/emu/InputImpl.o unittest/emu/OutputImpl.o unittest/emu/PortsImpl.o \
   unittest/emu/BuzzerImpl.o unittest/emu/EmuTextUILcdST7735.o unittest/emu/EmuTextUISimpleKbd.o unittest/emu/DisplayImpl.o
 UTCXXINC += -I. -Icontrols -ITextUI -Ioutput -Imodules -Iunittest -Iunittest/emu
 

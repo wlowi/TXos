@@ -44,6 +44,11 @@ AssignInput::AssignInput() : Module( MODULE_ASSIGN_INPUT_TYPE, TEXT_MODULE_ASSIG
     setDefaults();
 }
 
+channel_t AssignInput::getInputChannel( channel_t ch) const {
+
+    return CFG->source[ch];
+}
+
 /* From Module */
 
 COMM_RC_t AssignInput::exportConfig( ImportExport *exporter, uint8_t *config) const {
@@ -75,7 +80,7 @@ void AssignInput::setDefaults() {
             } else if( ch < ANALOG_CHANNELS){
                 CFG->source[ch] = ch;
             } else {
-                /* Assign to NO CHANNEL. */
+                /* Assign to last channel */
                 CFG->source[ch] = INPUT_CHANNELS -1;
             }
         }

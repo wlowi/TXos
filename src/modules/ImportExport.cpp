@@ -28,9 +28,12 @@
 #include "ModuleManager.h"
 
 extern ModuleManager moduleManager;
+extern void watchdog_reset();
 
 const uint8_t STATE_INACTIVE = 0;
 const uint8_t STATE_CONNECTING = 1;
+const uint8_t STATE_EXPORTING = 2;
+const uint8_t STATE_IMPORTING = 3;
 
 ImportExport::ImportExport(Stream& stream) : Module(MODULE_IMPORTEXPORT_TYPE, TEXT_MODULE_IMPORTEXPORT, COMM_SUBPACKET_NONE), inOut(stream), comm(*new Comm(&stream))
 {
@@ -40,6 +43,8 @@ ImportExport::ImportExport(Stream& stream) : Module(MODULE_IMPORTEXPORT_TYPE, TE
 COMM_RC_t ImportExport::runExport(const DICT_t* dict, const DICTROW_t* row[], uint8_t* config, moduleSize_t configSz)
 {
     nameType_t name;
+
+    watchdog_reset();
 
     name = pgm_read_word(&(dict->name));
     comm.openSub(name);
@@ -80,6 +85,7 @@ COMM_RC_t ImportExport::runExport(const DICT_t* dict, const DICTROW_t* row[], ui
 COMM_RC_t ImportExport::runImport(const DICT_t* dict, const DICTROW_t* row[], uint8_t* config, moduleSize_t configSz)
 {
     nameType_t cmd;
+    nameType_t sub;
     char dType;
     uint8_t width;
     uint16_t count;
@@ -93,11 +99,16 @@ COMM_RC_t ImportExport::runImport(const DICT_t* dict, const DICTROW_t* row[], ui
 
     COMM_RC_t rc;
 
+    watchdog_reset();
+
     do {
         rc = comm.nextField(&cmd, &dType, &width, &count);
         if( rc == COMM_RC_SUBSTART) {
             if ((rc = comm.nextPacket(&cmd)) == COMM_RC_OK) {
-                if( dict->subName == cmd) {
+
+                sub = pgm_read_word(&(dict->subName));
+
+                if( sub == cmd) {
                     LOGV("runImport: valid subpacket %c%c\n", PACKET_NAME(cmd));
 
                     if ((rc = comm.nextField(&cmd, &dType, &width, &count)) == COMM_RC_OK) {
@@ -255,7 +266,7 @@ void ImportExport::run(Controls& controls)
     uint16_t count;
     uint8_t rc;
 
-    if (state != STATE_CONNECTING) {
+    if (state == STATE_INACTIVE) {
         return;
     }
 
@@ -265,19 +276,23 @@ void ImportExport::run(Controls& controls)
         case COMM_PACKET_GET_MODELCONFIG:
             /* Read packet end marker */
             comm.nextField(&cmd, &dType, &width, &count);
+            state = STATE_EXPORTING;
             moduleManager.exportModels(this);
             break;
 
         case COMM_PACKET_GET_SYSCONFIG:
             comm.nextField(&cmd, &dType, &width, &count);
+            state = STATE_EXPORTING;
             moduleManager.exportSystemConfig(this);
             break;
 
         case COMM_PACKET_SYSCONFIG:
-
+            state = STATE_IMPORTING;
+            moduleManager.importSystemConfig(this);
             break;
 
         case COMM_PACKET_MODELCONFIG:
+            state = STATE_IMPORTING;
             moduleManager.importModel(this);
             break;
 
@@ -287,6 +302,8 @@ void ImportExport::run(Controls& controls)
             comm.close();
             comm.write();
         }
+
+        changed = true;
     }
 }
 
@@ -299,6 +316,9 @@ void ImportExport::setDefaults()
 void ImportExport::moduleEnter()
 {
     comm.open(COMM_PACKET_INFO);
+
+    comm.addString( COMM_FIELD_VERSION, TXOS_VERSION);
+
     comm.close();
     comm.write();
 
@@ -361,6 +381,14 @@ void ImportExport::getValue(uint8_t row, uint8_t col, Cell* cell)
 
         case STATE_CONNECTING:
             cell->setLabel(0, TEXT_CONNECTING, strlen(TEXT_CONNECTING));
+            break;
+
+        case STATE_EXPORTING:
+            cell->setLabel(0, TEXT_EXPORT, strlen(TEXT_EXPORT));
+            break;
+
+        case STATE_IMPORTING:
+            cell->setLabel(0, TEXT_IMPORT, strlen(TEXT_IMPORT));
             break;
         }
     }

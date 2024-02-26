@@ -53,6 +53,9 @@ typedef uint16_t timingUsec_t;
 #define CHANNELVALUE_MIN        ((channelValue_t)-1000)
 #define CHANNELVALUE_MAX        ((channelValue_t) 1000)
 
+/* If you change CHANNELVALUE_MAX_LIMIT you need to adjust the 
+ * algorithm in DualExpo.cpp
+ */
 #define CHANNELVALUE_MIN_LIMIT  ((channelValue_t)-1250)
 #define CHANNELVALUE_MAX_LIMIT  ((channelValue_t) 1250)
 
@@ -130,7 +133,6 @@ typedef struct controlSet_t {
     
     /* Raw analog input channels */
     channelValue_t stickADCChannel[ PORT_ANALOG_INPUT_COUNT ];
-    percent_t range_pct[PORT_ANALOG_INPUT_COUNT];
 
     channelValue_t trimADCChannel[ PORT_TRIM_INPUT_COUNT ];
     channelValue_t auxADCChannel[ PORT_AUX_INPUT_COUNT ];

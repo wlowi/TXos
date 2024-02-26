@@ -49,14 +49,14 @@ typedef uint16_t checksum_t;
 typedef int8_t configBlockID_t;
 
 #define SYSTEMCONFIG_BLOCK_SIZE ((size_t)128)
-#define MODELCONFIG_BLOCK_SIZE  ((size_t)264)
+#define MODELCONFIG_BLOCK_SIZE  ((size_t)283)
 
 /* The maximum of
  * SYSTEMCONFIG_BLOCK_SIZE and MODELCONFIG_BLOCK_SIZE.
 
  * This is used to allocate a config block in memory.
  */
-#define MEM_BLOCK_SIZE          ((size_t)264)
+#define MEM_BLOCK_SIZE          ((size_t)283)
 
 #define CONFIG_BLOCKID_INVALID  ((configBlockID_t)-1)
 #define SYSTEMCONFIG_BLOCKID    ((configBlockID_t)0)
@@ -84,9 +84,9 @@ class ConfigBlock {
 
         /* For 4096 bytes of EEPROM modelBlockCount is 15:
          * 1 system config block of size SYSTEMCONFIG_BLOCK_SIZE (128) =  128
-         * 15 model config blocks of size MODELCONFIG_BLOCK_SIZE (264) = 3960
+         * 14 model config blocks of size MODELCONFIG_BLOCK_SIZE (283) = 3962
          *                                                               ====
-         *                                                               4088
+         *                                                               4090
          */
         configBlockID_t modelBlockCount;
 

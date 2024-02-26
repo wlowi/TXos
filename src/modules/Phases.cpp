@@ -81,11 +81,6 @@ void Phases::run( Controls &controls) {
         controls.switchSet( sw, state);
     }
 
-    sw = controls.getSwitchByType( SW_CONF_PHASE_N, state);
-    if( IS_SWITCH_USED(sw)) {
-        controls.switchSet( sw, SW_STATE_1);
-    }
-
     if( state < PHASES && state != phase) {
         phase = state;
 

@@ -34,7 +34,7 @@
 #endif
 
 
-#define TXOS_VERSION "0.5.0"
+#define TXOS_VERSION "0.5.1"
 
 
 #if defined( ARDUINO )
@@ -99,8 +99,7 @@ typedef enum {
     SW_CONF_CHANNEL = 3,
     SW_CONF_FIXED_ON = 4,
     SW_CONF_LOGIC = 5,
-    SW_CONF_PHASES = 6,
-    SW_CONF_PHASE_N = 7
+    SW_CONF_PHASES = 6
 
 } switchConf_t;
 

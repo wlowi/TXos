@@ -25,14 +25,19 @@
 */
 
 #include "ChannelRange.h"
+#include "ModuleManager.h"
+#include "AssignInput.h"
+
+extern ModuleManager moduleManager;
 
 extern const char* const InputChannelNames[INPUT_CHANNELS];
 
 /* The import/export dictionary. 
  * See ImportExport.h
  */
-DICTROWA( r1, COMM_DATATYPE_INTARR, COMM_FIELD_PERCENT_ARRAY, channelRange_t, range_pct, PORT_ANALOG_INPUT_COUNT)
-DICT( ChannelRange, COMM_SUBPACKET_CHANNEL_RANGE, &r1)
+DICTROWA( r1, COMM_DATATYPE_INTARR, COMM_FIELD_PERCENT_ARRAY, channelRange_t, posRange_pct, PORT_ANALOG_INPUT_COUNT)
+DICTROWA( r2, COMM_DATATYPE_INTARR, COMM_FIELD_NEG_PERCENT_ARRAY, channelRange_t, negRange_pct, PORT_ANALOG_INPUT_COUNT)
+DICT( ChannelRange, COMM_SUBPACKET_CHANNEL_RANGE, &r1, &r2)
 
 ChannelRange::ChannelRange() : Module( MODULE_CHANNEL_RANGE_TYPE, TEXT_MODULE_CHANNEL_RANGE, COMM_SUBPACKET_CHANNEL_RANGE) {
 
@@ -55,12 +60,20 @@ void ChannelRange::run( Controls &controls) {
 
     long v;
 
-    for( channel_t ch = 0; ch < PORT_ANALOG_INPUT_COUNT; ch++) {
+    const AssignInput *assignInput = (AssignInput*)moduleManager.getModuleByType( MODULE_SET_MODEL, MODULE_ASSIGN_INPUT_TYPE);
 
-        v = controls.inputGet( ch);
-        v = v * CFG->range_pct[ch] / PERCENT_MAX_LIMIT;
-        controls.inputSet( ch, (channelValue_t)v);
-        controls.rangeSet( ch, CFG->range_pct[ch]);
+    for( channel_t ch = 0; ch < MIX_CHANNELS; ch++) {
+        channel_t in = assignInput->getInputChannel( ch);
+
+        if( in < PORT_ANALOG_INPUT_COUNT) {
+            v = controls.logicalGet( ch);
+            if( v > 0) {
+                v = v * CFG->posRange_pct[in] / PERCENT_MAX_LIMIT;
+            } else if( v < 0) {
+                v = v * CFG->negRange_pct[in] / PERCENT_MIN_LIMIT;
+            }
+            controls.logicalSet( ch, (channelValue_t)v);
+        }
     }
 }
 
@@ -68,8 +81,9 @@ void ChannelRange::setDefaults() {
 
     INIT_NON_PHASED_CONFIGURATION(
 
-        for( channel_t ch = 0; ch < PORT_ANALOG_INPUT_COUNT; ch++) {
-            CFG->range_pct[ch] = 100;
+        for( channel_t in = 0; in < PORT_ANALOG_INPUT_COUNT; in++) {
+            CFG->posRange_pct[in] = 100;
+            CFG->negRange_pct[in] = -100;
         }
 
     )
@@ -89,19 +103,24 @@ const char *ChannelRange::getRowName( uint8_t row) {
 
 uint8_t ChannelRange::getColCount( uint8_t row) {
 
-    return 1;
+    return 2;
 }
 
 void ChannelRange::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
     if( col == 0) {
-        cell->setInt8( TEXT_INPUT_length +1, CFG->range_pct[row], 3, 0, PERCENT_MAX_LIMIT);
+        cell->setInt8( 4, CFG->negRange_pct[row], 4, PERCENT_MIN_LIMIT, 0);
+    } else {
+        cell->setInt8( 9, CFG->posRange_pct[row], 4, 0, PERCENT_MAX_LIMIT);
     }
+
 }
 
 void ChannelRange::setValue( uint8_t row, uint8_t col, Cell *cell) {
 
     if( col == 0) {
-        CFG->range_pct[row] = cell->getInt8();
+        CFG->negRange_pct[row] = cell->getInt8();
+    } else {
+        CFG->posRange_pct[row] = cell->getInt8();
     }
 }

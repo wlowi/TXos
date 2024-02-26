@@ -33,6 +33,7 @@
 
 typedef struct analogTrim_t {
 
+    /* Trim values of analog input channels! */
     percent_t storedTrim_pct[PORT_TRIM_INPUT_COUNT];
 
 } analogTrim_t;
@@ -44,6 +45,7 @@ class AnalogTrim : public Module {
     private:
         Controls *current;
 
+        /* Trim values of analog input channels! */
         percent_t trim_pct[PORT_TRIM_INPUT_COUNT];
 
         uint8_t execStep;

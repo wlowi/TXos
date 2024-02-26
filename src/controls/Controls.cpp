@@ -101,17 +101,12 @@ channelValue_t Controls::auxADCGet( channel_t ch) {
     return controlSet.auxADCChannel[ch];
 }
 
-void Controls::rangeSet( channel_t ch, percent_t value) {
-
-    controlSet.range_pct[ch] = value;
-}
-
-percent_t Controls::rangeGet( channel_t ch) {
-
-    return controlSet.range_pct[ch];
-}
-
 void Controls::inputSet( channel_t ch, channelValue_t value) {
+
+    if( ch >= INPUT_CHANNELS) {
+        LOGV("Controls::inputSet: ERROR: channel %u\n", ch);
+        return;
+    }
 
     if( value > CHANNELVALUE_MAX_LIMIT) {
         value = CHANNELVALUE_MAX_LIMIT;
@@ -125,11 +120,21 @@ void Controls::inputSet( channel_t ch, channelValue_t value) {
 }
 
 channelValue_t Controls::inputGet( channel_t ch) {
+    
+    if( ch >= INPUT_CHANNELS) {
+        LOGV("Controls::inputGet: ERROR: channel %u\n", ch);
+        return CHANNELVALUE_MID;
+    }
 
     return controlSet.inputChannel[ch];
 }
 
 void Controls::trimSet( channel_t ch, channelValue_t value) {
+    
+    if( ch >= PORT_TRIM_INPUT_COUNT) {
+        LOGV("Controls::trimSet: ERROR: channel %u\n", ch);
+        return;
+    }
 
     if( value > CHANNELVALUE_MAX_LIMIT) {
         value = CHANNELVALUE_MAX_LIMIT;
@@ -144,10 +149,20 @@ void Controls::trimSet( channel_t ch, channelValue_t value) {
 
 channelValue_t Controls::trimGet( channel_t ch) {
 
+    if( ch >= PORT_TRIM_INPUT_COUNT) {
+        LOGV("Controls::trimGet: ERROR: channel %u\n", ch);
+        return 0;
+    }
+
     return controlSet.trimChannel[ch];
 }
 
 void Controls::logicalSet( channel_t ch, channelValue_t value) {
+    
+    if( ch >= LOGICAL_CHANNELS) {
+        LOGV("Controls::logicalSet: ERROR: channel %u\n", ch);
+        return;
+    }
 
     if( value > CHANNELVALUE_MAX_LIMIT) {
         value = CHANNELVALUE_MAX_LIMIT;
@@ -162,9 +177,19 @@ void Controls::logicalSet( channel_t ch, channelValue_t value) {
 
 channelValue_t Controls::logicalGet( channel_t ch) {
 
+    if( ch >= LOGICAL_CHANNELS) {
+        LOGV("Controls::logicalGet: ERROR: channel %u\n", ch);
+        return CHANNELVALUE_MID;
+    }
+
     return controlSet.logicalChannel[ch];
 }
 void Controls::outputSet( channel_t ch, channelValue_t value) {
+
+    if( ch >= PPM_CHANNELS) {
+        LOGV("Controls::outputSet: ERROR: channel %u\n", ch);
+        return;
+    }
 
     if( value > CHANNELVALUE_MAX_LIMIT) {
         value = CHANNELVALUE_MAX_LIMIT;
@@ -178,6 +203,11 @@ void Controls::outputSet( channel_t ch, channelValue_t value) {
 }
 
 channelValue_t Controls::outputGet( channel_t ch) {
+
+    if( ch >= PPM_CHANNELS) {
+        LOGV("Controls::outputGet: ERROR: channel %u\n", ch);
+        return CHANNELVALUE_MID;
+    }
 
     return controlSet.outChannel[ch];
 }
@@ -274,10 +304,6 @@ void Controls::copySwitchName( char *b, switch_t sw) {
             swType = TEXT_SW_TYPE_PHASE;
             break;
 
-        case SW_CONF_PHASE_N:
-            swType = TEXT_SW_TYPE_PHASE_N;
-            break;
-
         case SW_CONF_UNUSED:
         default:
             swType = TEXT_SW_TYPE_UNUSED;
@@ -301,10 +327,6 @@ void Controls::copySwitchName( char *b, switch_t sw) {
 
         case SW_CONF_LOGIC:
             b[idx++] = '1' + swn - LOGIC_SWITCHES_FIRST_IDX;
-            break;
-
-        case SW_CONF_PHASE_N:
-            b[idx++] = '1' + swn - PHASE_SWITCHES_FIRST_IDX;
             break;
 
         default:

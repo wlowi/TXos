@@ -32,29 +32,36 @@ extern ModuleManager moduleManager;
 
 extern const char* const LogicalChannelNames[LOGICAL_CHANNELS];
 
-#define EXPO_LOOKUP_TABLE_SIZE   20
+/* The table size must be divide the input range -1250 to 1250 without remainder. */
+#define EXPO_LOOKUP_TABLE_SIZE   25
 
-const channelValue_t expoLookup[EXPO_LOOKUP_TABLE_SIZE] = {
-    3,      //  0- 5%       0 -  62
-    6,      //  5-10%      62 - 125
-    10,     // 10-15%     125 - 187
-    15,     // 15-20%     187 - 250
-    21,     // 20-25%     250 - 312
-    29,     // 25-30%     312 - 375
-    40,     // 30-35%     375 - 437
-    54,     // 35-40%     437 - 500
-    72,     // 40-45%     500 - 562
-    95,     // 45-50%     562 - 625
-    124,    // 50-55%     625 - 687
-    162,    // 55-60%     687 - 750
-    210,    // 60-65%     750 - 812
-    272,    // 65-70%     812 - 875
-    352,    // 70-75%     875 - 937
-    454,    // 75-80%     937 - 1000
-    586,    // 80-85%    1000 - 1062
-    755,    // 85-90%    1062 - 1125
-    972,    // 90-95%    1125 - 1187
-    1250   // 95-100%   1187 - 1250
+const channelValue_t expoLookup[EXPO_LOOKUP_TABLE_SIZE+1] = {
+    0,
+    2,      //  0-  4%
+    4,      //  4-  8%
+    7,      //  8- 12%
+    10,     // 12- 16%
+    14,     // 16- 20%
+    20,     // 20- 24%
+    26,     // 24- 28%
+    33,     // 28- 32%
+    43,     // 32- 36%
+    54,     // 36- 40%
+    68,     // 40- 44%
+    84,     // 44- 48%
+    106,    // 48- 52%
+    131,    // 52- 56%
+    162,    // 56- 60%
+    200,    // 60- 64%
+    246,    // 64- 68%
+    302,    // 68- 72%
+    370,    // 72- 76%
+    454,    // 76- 80%
+    557,    // 80- 84%
+    682,    // 84- 88%
+    835,    // 88- 92%
+    1022,   // 92- 96%
+    1250    // 96-100%
 };
 
 /* The import/export dictionary. 
@@ -108,13 +115,14 @@ void DualExpo::applyRate( Controls &controls, channel_t ch, percent_t pct) {
 void DualExpo::applyExpo( Controls &controls, channel_t ch, percent_t pct) {
 
     channelValue_t v;
+    channelValue_t w;
+    long e;
 
     channelValue_t x1;
-    channelValue_t x2;
     channelValue_t y1;
     channelValue_t y2;
 
-    channelValue_t dx = PCT_TO_CHANNEL( controls.rangeGet(ch)) / EXPO_LOOKUP_TABLE_SIZE;
+    channelValue_t dx = CHANNELVALUE_MAX_LIMIT / EXPO_LOOKUP_TABLE_SIZE; // PCT_TO_CHANNEL( controls.rangeGet(ch)) / EXPO_LOOKUP_TABLE_SIZE;
 
     uint8_t interval;
     bool negative = false;
@@ -126,22 +134,25 @@ void DualExpo::applyExpo( Controls &controls, channel_t ch, percent_t pct) {
         v = -v;
     }
 
-    interval = (uint8_t)(v / dx); // interval in range 0 - 20
+    /* interval in range 0 to EXPO_LOOKUP_TABLE_SIZE-1 */
+    interval = (uint8_t)(v / dx);
 
     if( interval >= EXPO_LOOKUP_TABLE_SIZE) {
-        interval = EXPO_LOOKUP_TABLE_SIZE-1;
+        interval = EXPO_LOOKUP_TABLE_SIZE -1;
     }
 
+    /* x start of interval */
     x1 = interval * dx;
-    x2 = (interval+1) * dx;
-    
-    y1 = (interval == 0) ? 0
-        : ((pct * ((long)expoLookup[interval-1]*dx/125)) + ((long)(100 - pct) * x1)) / 100L;
- 
-    y2 =  ((pct * ((long)expoLookup[interval]*dx/125)) + ((long)(100 - pct) * x2)) / 100L;
 
-    v = (channelValue_t)((long)(v-x1) * (long)(y2-y1) / dx) + y1;
-    controls.logicalSet( ch, (channelValue_t)(negative ? -v : v));
+    /* y start and end of interval */
+    y1 = expoLookup[interval];
+    y2 = expoLookup[interval+1];
+
+    /* interpolate exponential value from table */
+    e = ((long)(v-x1) * (long)(y2-y1) / dx) + y1;
+    w = ((pct * e) + (100 - pct) * (long)v) / 100;
+
+    controls.logicalSet( ch, (channelValue_t)(negative ? -w : w));
 }
 
 void DualExpo::setDefaults() {

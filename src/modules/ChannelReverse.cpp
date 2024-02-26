@@ -68,7 +68,7 @@ void ChannelReverse::setDefaults() {
     )
 }
 
-/* From TableEditable */
+/* From TextUIScreen */
 
 uint8_t ChannelReverse::getRowCount() {
 

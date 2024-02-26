@@ -517,20 +517,23 @@ void setup( void) {
     /* The order of modules is important.
      * It defines the order of execution in RunModules().
      */
+
+    /* The following moduels act on analog input channels */
     moduleManager.addToRunList( calibrateSticks);
     moduleManager.addToRunList( calibrateTrim);
-    moduleManager.addToRunList( analogTrim);
     moduleManager.addToRunList( switchedChannels);
-    moduleManager.addToRunList( analogSwitch);
-    moduleManager.addToRunList( channelRange);
     moduleManager.addToRunList( channelReverse);
-
+    moduleManager.addToRunList( analogSwitch);
+    
     /* The following moduels act on logical channels */
     moduleManager.addToRunList( assignInput);
     moduleManager.addToRunList( channelDelay);
+    // ### done until here
     moduleManager.addToRunList( phases);
     moduleManager.addToRunList( logicSwitch);
     moduleManager.addToRunList( dualExpo);
+    moduleManager.addToRunList( channelRange);
+    moduleManager.addToRunList( analogTrim);
     moduleManager.addToRunList( model);
     moduleManager.addToRunList( mixer);
     moduleManager.addToRunList( phasesTrim);
@@ -577,7 +580,7 @@ void setup( void) {
 #endif
 }
 
-static void watchdog_reset();
+void watchdog_reset();
 static void handle_channels();
 
 void loop( void) {

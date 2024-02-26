@@ -29,7 +29,13 @@
 
 #include "Module.h"
 
-/* Control an input channel (analog channel) by switch. */
+/* Control an input channel (analog channel) by switch. 
+ *
+ * Input channels can be controlled by switches. 
+ * In the default configuration (9 channels) the last 3 channels
+ * (In7, In8, In9) are supported.
+ * The channel value ( -125% to 125% ) of each switch state can be defined.
+ */
 
 typedef struct switchedChannels_t {
 

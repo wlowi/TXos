@@ -29,7 +29,13 @@
 
 #include "Module.h"
 
-/* Delay channel movement for all mixable channels. */
+/* Delay channel movement for all mixable channels.
+ *
+ * Delay is the number of seconds from 0 to 100%.
+ * The resolution is 1/10 of a second.
+ * The maximum is CHANNELDELAY_MAX_SEC seconds.
+ * Delay for both direction can be specified separately.
+ */
 
 #define CHANNELDELAY_MAX_SEC     (10)
 

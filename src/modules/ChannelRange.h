@@ -35,7 +35,8 @@
 
 typedef struct channelRange_t {
 
-    percent_t range_pct[PORT_ANALOG_INPUT_COUNT];
+    percent_t posRange_pct[PORT_ANALOG_INPUT_COUNT];
+    percent_t negRange_pct[PORT_ANALOG_INPUT_COUNT];
 
 } channelRange_t;
 

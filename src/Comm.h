@@ -208,6 +208,9 @@ using COMM_RC_t = uint8_t;
 #define COMM_FIELD_ALERT                  FIELD_TYPE('V','A')
 #define COMM_FIELD_ADJUST                 FIELD_TYPE('V','J')
 
+/* Info packer */
+#define COMM_FIELD_VERSION                FIELD_TYPE('V','N')
+
 #define COMM_CHAR_OPEN                      '{'
 #define COMM_CHAR_CLOSE                     '}'
 #define COMM_CHAR_SUBOPEN                   '{'

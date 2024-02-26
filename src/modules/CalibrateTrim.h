@@ -29,7 +29,14 @@
 
 #include "Module.h"
 
-/* Calibrate analog trim inputs */
+/* Calibrate analog trim inputs
+ * 
+ * Implements the user interface to calibrate the trim inputs.
+ * 
+ * run() reads the ADC values and applies the calibrate range function.
+ * The value stored in the control structure is between TRIMVALUE_MAX_LIMIT
+ * and TRIMVALUE_MIN_LIMIT ( 250 to -250 or +/- 20% )
+ */
 
 typedef struct calibrateTrim_t {
 
@@ -58,7 +65,7 @@ class CalibrateTrim : public Module {
         COMM_RC_t exportConfig( ImportExport *exporter, uint8_t *config) const;
         COMM_RC_t importConfig( ImportExport *importer, uint8_t *config) const;
 
-        /* From TableEditable */
+        /* From TextUIScreen */
         uint8_t getRowCount() final;
         const char *getRowName( uint8_t row) final;
         uint8_t getColCount( uint8_t row) final;

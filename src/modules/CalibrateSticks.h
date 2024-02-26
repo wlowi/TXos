@@ -30,6 +30,12 @@
 #include "Module.h"
 
 /* Calibrate analog inputs.
+ * 
+ * Implements the user interface to calibrate the sticks.
+ * 
+ * run() reads the ADC values and applies the calibrate range function.
+ * The value stored in the control structure is between CHANNELVALUE_MAX_LIMIT
+ * and CHANNELVALUE_MIN_LIMIT ( 1250 to -1250 )
  */
 
 typedef struct calibrateSticks_t {
@@ -59,7 +65,7 @@ class CalibrateSticks : public Module {
         COMM_RC_t exportConfig( ImportExport *exporter, uint8_t *config) const;
         COMM_RC_t importConfig( ImportExport *importer, uint8_t *config) const;
 
-        /* From TableEditable */
+        /* From TextUIScreen */
         uint8_t getRowCount() final;
         const char *getRowName( uint8_t row) final;
         uint8_t getColCount( uint8_t row) final;

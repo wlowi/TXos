@@ -32,7 +32,7 @@
 /* EXTENSION FOR TXOS */
 #include "Controls.h"
 
-#define TEXTUI_DEBUG
+#undef TEXTUI_DEBUG
 
 #ifdef TEXTUI_DEBUG
     #if defined(ARDUINO)

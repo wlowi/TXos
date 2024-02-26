@@ -100,7 +100,7 @@ void CalibrateSticks::setDefaults() {
     calibrationStep = CALIBRATION_STEP_NONE;
 }
 
-/* From TableEditable */
+/* From TextUIScreen */
 
 bool CalibrateSticks::isRowExecutable( uint8_t row) {
 

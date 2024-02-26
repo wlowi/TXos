@@ -24,38 +24,57 @@
   SOFTWARE.
 */
 
-#ifndef _ChannelReverse_h_
-#define _ChannelReverse_h_
+#ifndef _EmuSerial_h_
+#define _EmuSerial_h_
 
-#include "Module.h"
+#include <wx/thread.h>
 
-/* Reverse directon of analog inputs. */
+#include "stddef.h"
+#include "Stream.h"
 
-typedef struct channelReverse_t {
+/* The buffer size needs to be big enough to store data for a complete transfer.
+ * Currently EmuSerial is called from main thread and SerialConsole is also
+ * called from main thread. There is no way to switch between threads 
+ * and comsume the buffer content.
+ */
+const int EMUSERIAL_BUFFER_SIZE = 10240;
 
-    channelBits_t revBits;
+class EmuSerial : public Stream {
 
-} channelReverse_t;
+private:
+    char sendBuffer[EMUSERIAL_BUFFER_SIZE];
+    char recvBuffer[EMUSERIAL_BUFFER_SIZE];
 
-class ChannelReverse : public Module {
+    /* send = emulation to SerialConsole */
+    wxCriticalSection sendCriticalSection;
+    int sendInPtr = 0;
+    int sendOutPtr = 0;
 
-    NON_PHASED_CONFIG( channelReverse_t)
+    /* recv = SerialConsole to emulation */
+    wxCriticalSection recvCriticalSection;
+    int recvInPtr = 0;
+    int recvOutPtr = 0;
 
-    public:
-        ChannelReverse();
+public:
+    EmuSerial();
 
-        /* From Module */
-        void run( Controls &controls) final;
-        void setDefaults() final;
-        COMM_RC_t exportConfig( ImportExport *exporter, uint8_t *config) const;
-        COMM_RC_t importConfig( ImportExport *importer, uint8_t *config) const;
+    void send(const char *text);
 
-        /* From TextUIScreen */
-        uint8_t getRowCount() final;
-        const char *getRowName( uint8_t row) final;
-        uint8_t getColCount( uint8_t row) final;
-        void getValue( uint8_t row, uint8_t col, Cell *cell) final;
-        void setValue( uint8_t row, uint8_t col, Cell *cell) final;
+    int receive();
+    
+    /* Interface: Stream */
+
+    void setTimeout(unsigned long timeout) {}; // noop
+
+    size_t write(const char* text);
+
+    void flush() {}; // noop
+
+    int read();
+
+    int available();
+
+    void close() {}; // noop 
 };
 
 #endif

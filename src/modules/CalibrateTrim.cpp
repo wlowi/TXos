@@ -101,7 +101,7 @@ void CalibrateTrim::setDefaults() {
     calibrationStep = CALIBRATION_STEP_NONE;
 }
 
-/* From TableEditable */
+/* From TextUIScreen */
 
 bool CalibrateTrim::isRowExecutable( uint8_t row) {
 

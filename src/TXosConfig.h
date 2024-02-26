@@ -66,37 +66,34 @@
 /* Total number of switches. Max is 16.
  * This includes channel switches and logical switches.
  */
-#define SWITCHES                      ((uint8_t)15)
+#define SWITCHES                      ((uint8_t)14)
 
 /* In your mind add one "Always On" logical switch
  */
 #define MECHANICAL_SWITCHES           ((uint8_t)6)
 #define MECHANICAL_SWITCHES_FIRST_IDX ((uint8_t)0)
 
-#define CHANNEL_SWITCHES              ((uint8_t)2)
+#define CHANNEL_SWITCHES              ((uint8_t)3)
 #define CHANNEL_SWITCHES_FIRST_IDX    ((uint8_t)6)
 
-#define LOGIC_SWITCHES                ((uint8_t)2)
-#define LOGIC_SWITCHES_FIRST_IDX      ((uint8_t)9)
+#define LOGIC_SWITCHES                ((uint8_t)3)
+#define LOGIC_SWITCHES_FIRST_IDX      ((uint8_t)10)
 
 /* In your mind add one logical switch that holds the
  * phase number.
  */
-#define PHASE_SWITCHES                ((uint8_t)3)
-#define PHASE_SWITCHES_FIRST_IDX      ((uint8_t)12)
 
-/* 1(AlwaysOn) + 6(Mechanical) + 2(Channel) + 2(Logical) + 4(Phase) = 15 */
+/* 1(AlwaysOn) + 6(Mechanical) + 3(Channel) + 3(Logical) + 1(Phase) = 14 */
 
 
 /* Switch configuration
  * In this case we have:
  *   4 tri state switches
  *   2 bi state switches
- *   2 control switches
- *   2 logic switches
+ *   3 control switches
+ *   3 logic switches
  *   1 switch always on
  *   1 switch reflecting the flight phase (3-state)
- *   3 switches reflecting a flight phase (2-state
  */
 
 #define SWITCH_CONFIGURATION \
@@ -111,14 +108,13 @@ const switchConf_t switchConfiguration[SWITCHES] = { \
     SW_CONF_CHANNEL, \
     SW_CONF_CHANNEL, \
     \
+    SW_CONF_CHANNEL, \
     SW_CONF_FIXED_ON, \
     SW_CONF_LOGIC, \
     SW_CONF_LOGIC, \
-    SW_CONF_PHASES, \
     \
-    SW_CONF_PHASE_N, \
-    SW_CONF_PHASE_N, \
-    SW_CONF_PHASE_N \
+    SW_CONF_LOGIC, \
+    SW_CONF_PHASES \
 };
 
 /* Number of phases.

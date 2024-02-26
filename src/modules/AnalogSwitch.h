@@ -29,7 +29,13 @@
 
 #include "Module.h"
 
-/* Control logical switch by input channels (analog) */
+/* Control logical switches by input channels (analog).
+ *
+ * Channel switches CSn are two-state switches that
+ * are controlled by the value of analog inputs.
+ * The trigger level in percent is applied before expo and dual rate and 
+ * is always -100 to 100%.
+ */
 
 typedef struct analogSwitch_t {
 

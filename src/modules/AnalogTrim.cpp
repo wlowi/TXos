@@ -25,61 +25,71 @@
 */
 
 #include "AnalogTrim.h"
+#include "ModuleManager.h"
+#include "AssignInput.h"
 
-extern const char* const InputChannelNames[INPUT_CHANNELS];
+extern ModuleManager moduleManager;
 
-/* The import/export dictionary. 
+extern const char* const LogicalChannelNames[LOGICAL_CHANNELS];
+
+/* The import/export dictionary.
  * See ImportExport.h
  */
-DICTROWA( r1, COMM_DATATYPE_INTARR, COMM_FIELD_PERCENT_ARRAY, analogTrim_t, storedTrim_pct, PORT_TRIM_INPUT_COUNT)
-DICT( AnalogTrim, COMM_SUBPACKET_ANALOG_TRIM, &r1)
+DICTROWA(r1, COMM_DATATYPE_INTARR, COMM_FIELD_PERCENT_ARRAY, analogTrim_t, storedTrim_pct, PORT_TRIM_INPUT_COUNT)
+DICT(AnalogTrim, COMM_SUBPACKET_ANALOG_TRIM, &r1)
 
-AnalogTrim::AnalogTrim() : Module( MODULE_ANALOG_TRIM_TYPE, TEXT_MODULE_ANALOG_TRIM, COMM_SUBPACKET_ANALOG_TRIM) {
+AnalogTrim::AnalogTrim() : Module(MODULE_ANALOG_TRIM_TYPE, TEXT_MODULE_ANALOG_TRIM, COMM_SUBPACKET_ANALOG_TRIM) {
 
     setDefaults();
 }
 
 /* From Module */
 
-COMM_RC_t AnalogTrim::exportConfig( ImportExport *exporter, uint8_t *config) const {
+COMM_RC_t AnalogTrim::exportConfig(ImportExport* exporter, uint8_t* config) const {
 
-    return exporter->runExport( DICT_ptr(AnalogTrim), DICTROW_ptr(AnalogTrim), config, sizeof(analogTrim_t));
+    return exporter->runExport(DICT_ptr(AnalogTrim), DICTROW_ptr(AnalogTrim), config, sizeof(analogTrim_t));
 }
 
-COMM_RC_t AnalogTrim::importConfig( ImportExport *importer, uint8_t *config) const {
+COMM_RC_t AnalogTrim::importConfig(ImportExport* importer, uint8_t* config) const {
 
-    return importer->runImport( DICT_ptr(AnalogTrim), DICTROW_ptr(AnalogTrim), config, sizeof(analogTrim_t));
+    return importer->runImport(DICT_ptr(AnalogTrim), DICTROW_ptr(AnalogTrim), config, sizeof(analogTrim_t));
 }
 
-void AnalogTrim::run( Controls &controls) {
+void AnalogTrim::run(Controls& controls) {
 
     channelValue_t v;
     percent_t currentTrim_pct;
     percent_t adj_pct;
 
+    const AssignInput* assignInput = (AssignInput*)moduleManager.getModuleByType(MODULE_SET_MODEL, MODULE_ASSIGN_INPUT_TYPE);
+
     current = &controls;
 
-    switch( execStep) {
+    switch (execStep) {
     case ANALOGTRIM_STEP_SAVE:
-        for( channel_t ch = 0; ch < PORT_TRIM_INPUT_COUNT; ch++) {
-            trim_pct[ch] = CHANNEL_TO_PCT( controls.trimGet(ch));
+        /* On enter module UI */
+        for (channel_t in = 0; in < PORT_TRIM_INPUT_COUNT; in++) {
+            trim_pct[in] = CHANNEL_TO_PCT(controls.trimGet(in));
         }
         execStep = ANALOGTRIM_STEP_ADJUST;
         break;
 
     case ANALOGTRIM_STEP_ADJUST:
-        for( channel_t ch = 0; ch < PORT_TRIM_INPUT_COUNT; ch++) {
-            currentTrim_pct = CHANNEL_TO_PCT( controls.trimGet(ch));
-            
-            if( trim_pct[ch] < 0 && currentTrim_pct > trim_pct[ch]) {
-                adj_pct = (currentTrim_pct < 0 ? currentTrim_pct : 0) - trim_pct[ch];
-                trim_pct[ch] += adj_pct;
-                CFG->storedTrim_pct[ch] -=adj_pct;
-                
-            } else if( trim_pct[ch] > 0 && currentTrim_pct < trim_pct[ch]) {
-                adj_pct = trim_pct[ch] - (currentTrim_pct > 0 ? currentTrim_pct : 0);
-                trim_pct[ch] -= adj_pct;
-                CFG->storedTrim_pct[ch] +=adj_pct;
+        /* While in module UI */
+        for (channel_t in = 0; in < PORT_TRIM_INPUT_COUNT; in++) {
+
+            currentTrim_pct = CHANNEL_TO_PCT(controls.trimGet(in));
+
+            if (trim_pct[in] < 0 && currentTrim_pct > trim_pct[in]) {
+                adj_pct = (currentTrim_pct < 0 ? currentTrim_pct : 0) - trim_pct[in];
+                trim_pct[in] += adj_pct;
+                CFG->storedTrim_pct[in] -= adj_pct;
+
+            }
+            else if (trim_pct[in] > 0 && currentTrim_pct < trim_pct[in]) {
+                adj_pct = trim_pct[in] - (currentTrim_pct > 0 ? currentTrim_pct : 0);
+                trim_pct[in] -= adj_pct;
+                CFG->storedTrim_pct[in] += adj_pct;
             }
         }
         break;
@@ -91,27 +101,32 @@ void AnalogTrim::run( Controls &controls) {
         break;
     }
 
-    for( channel_t ch = 0; ch < PORT_TRIM_INPUT_COUNT; ch++) {
-        v = controls.inputGet(ch) + controls.trimGet( ch) +  PCT_TO_CHANNEL(CFG->storedTrim_pct[ch]);
-        if( v < CHANNELVALUE_MIN_LIMIT) {
-            v = CHANNELVALUE_MIN_LIMIT;
-        } else if( v > CHANNELVALUE_MAX_LIMIT) {
-            v = CHANNELVALUE_MAX_LIMIT;
+    for (channel_t ch = 0; ch < MIX_CHANNELS; ch++) {
+        channel_t in = assignInput->getInputChannel(ch);
+
+        if (in < PORT_TRIM_INPUT_COUNT) {
+            v = controls.logicalGet(ch) + controls.trimGet(in) + PCT_TO_CHANNEL(CFG->storedTrim_pct[in]);
+            if (v < CHANNELVALUE_MIN_LIMIT) {
+                v = CHANNELVALUE_MIN_LIMIT;
+            }
+            else if (v > CHANNELVALUE_MAX_LIMIT) {
+                v = CHANNELVALUE_MAX_LIMIT;
+            }
+            controls.logicalSet(ch, v);
         }
-        controls.inputSet( ch, v);
     }
 }
 
 void AnalogTrim::setDefaults() {
 
-    INIT_NON_PHASED_CONFIGURATION (
+    INIT_NON_PHASED_CONFIGURATION(
 
-        for( channel_t ch = 0; ch < PORT_TRIM_INPUT_COUNT; ch++) {
+        for (channel_t ch = 0; ch < PORT_TRIM_INPUT_COUNT; ch++) {
             CFG->storedTrim_pct[ch] = 0;
         }
     )
 
-    execStep = ANALOGTRIM_STEP_NONE;
+        execStep = ANALOGTRIM_STEP_NONE;
 }
 
 void AnalogTrim::moduleEnter() {
@@ -135,33 +150,38 @@ uint8_t AnalogTrim::getRowCount() {
     return PORT_TRIM_INPUT_COUNT;
 }
 
-const char *AnalogTrim::getRowName( uint8_t row) {
+const char* AnalogTrim::getRowName(uint8_t row) {
 
-    return InputChannelNames[row];
+    return LogicalChannelNames[row];
 }
 
-uint8_t AnalogTrim::getColCount( uint8_t row) {
+uint8_t AnalogTrim::getColCount(uint8_t row) {
 
     return 2;
 }
 
-bool AnalogTrim::isColEditable( uint8_t row, uint8_t col) {
+bool AnalogTrim::isColEditable(uint8_t row, uint8_t col) {
 
     return col == 1;
 }
 
-void AnalogTrim::getValue( uint8_t row, uint8_t col, Cell *cell) {
+void AnalogTrim::getValue(uint8_t row, uint8_t col, Cell* cell) {
 
-    if( col == 0) {
-        cell->setInt8( TEXT_INPUT_length + 1, CHANNEL_TO_PCT(current->trimGet(row)), 0, PERCENT_MIN_LIMIT, PERCENT_MAX_LIMIT);
-    } else {
-        cell->setInt8( TEXT_INPUT_length + 6, CFG->storedTrim_pct[row], 0, PERCENT_MIN_LIMIT, PERCENT_MAX_LIMIT);
+    const AssignInput* assignInput = (AssignInput*)moduleManager.getModuleByType(MODULE_SET_MODEL, MODULE_ASSIGN_INPUT_TYPE);
+
+    if (col == 0) {
+        cell->setInt8(TEXT_INPUT_length + 1, CHANNEL_TO_PCT(current->trimGet(assignInput->getInputChannel(row))), 0, PERCENT_MIN_LIMIT, PERCENT_MAX_LIMIT);
+    }
+    else {
+        cell->setInt8(TEXT_INPUT_length + 6, CFG->storedTrim_pct[assignInput->getInputChannel(row)], 0, PERCENT_MIN_LIMIT, PERCENT_MAX_LIMIT);
     }
 }
 
-void AnalogTrim::setValue( uint8_t row, uint8_t col, Cell *cell) {
+void AnalogTrim::setValue(uint8_t row, uint8_t col, Cell* cell) {
 
-    if( col == 1) {
-        CFG->storedTrim_pct[row] = cell->getInt8();
+    const AssignInput* assignInput = (AssignInput*)moduleManager.getModuleByType(MODULE_SET_MODEL, MODULE_ASSIGN_INPUT_TYPE);
+
+    if (col == 1) {
+        CFG->storedTrim_pct[assignInput->getInputChannel(row)] = cell->getInt8();
     }
 }
