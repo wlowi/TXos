@@ -1,0 +1,3 @@
+(sym_lib_table
+  (lib (name "txboard-rescue")(type "Legacy")(uri "${KIPRJMOD}/txboard-rescue.lib")(options "")(descr ""))
+)

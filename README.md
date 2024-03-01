@@ -65,13 +65,13 @@
     SR => HR  
 - 3 Freie Mischer
 - Kanal Laufzeit Verzögerung bis 10 Sek. (Ende zu Ende)
-- 2 Geberschalter
+- 3 Geberschalter
 - 3 Schaltkanäle
-- 15 Modellspeicher
+- 14 Modellspeicher
 - 3 Flugphasen (aus Normal, Thermik, Speed, Start, Landung, Akro, Akro2, Strecke, Schlepp)
 - Phasentrim für QR,WK,LK,HR
 - Dual Rate und Exponential Funktion über Phasen für QR, SR und HR
-- 2 Logische Schalter. (Boolsche Verknüpfung von bis zu 3 Schaltern)
+- 3 Logische Schalter. (Boolsche Verknüpfung von bis zu 3 Schaltern)
 - Freie Zuordnung der Geber zu Kanälen
 - Freie Zuordnung der Kanäle zu Servo Ausgängen
 - Servo Mitte, Umkehr und Limitter
@@ -81,6 +81,7 @@
 - Reichweiten Test Funktion (Falls Support vom HF-Modul besteht)
 - Servo Monitor
 - Schalter Monitor
+- Import und Export der Modelle zum PC über USB Schnittstelle
 
 ---
 ## Installation
@@ -183,7 +184,7 @@ Der Simulator verwendet die `wxWidgets` library. Zum installieren:
 
 `cd src`  
 `make clean`  
-`make`  
+`make -j`  
 `./TXosTest`  
 
 
@@ -194,7 +195,7 @@ Der Simulator verwendet die `wxWidgets` library. Zum installieren:
 
 `cd test`  
 `make clean`  
-`make unittest`  
+`make -j unittest`  
 `./TXosUnitTest`  
 
 Achtung: `make clean unittest` funktioniert nicht!
