@@ -83,6 +83,10 @@
 - Schalter Monitor
 - Import und Export der Modelle zum PC über USB Schnittstelle
 
+## Blockschaltbild der Funktionen
+
+![Blockschaltbild](doc/TXos-Blockschaltbild.png "Blockschaltbild")
+
 ---
 ## Installation
 

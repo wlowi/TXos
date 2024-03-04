@@ -185,10 +185,7 @@ Modelleinstellungen werden pro Modell gespeichert und geladen.
 ---
 ### Modell
 
-Das Modul 
-
 ![Modell](img/TXos_model.png "Modell")
-
 
 ---
 ### Trimmspeicher
