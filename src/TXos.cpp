@@ -136,8 +136,15 @@
 #include "ServoLimit.h"
 #include "CalibrateSticks.h"
 #include "CalibrateTrim.h"
+
+#ifdef ENABLE_BIND_MODULE
 #include "Bind.h"
+#endif
+
+#ifdef ENABLE_RANGETEST_MODULE
 #include "RangeTest.h"
+#endif
+
 #include "DualExpo.h"
 #include "Phases.h"
 #include "Timer.h"
@@ -150,12 +157,20 @@
 #include "ChannelRange.h"
 #include "ChannelReverse.h"
 #include "Mixer.h"
+
+#ifdef ENABLE_STATISTICS_MODULE
 #include "Statistics.h"
+#endif
+
 #include "ChannelDelay.h"
 #include "LogicSwitch.h"
 #include "ModeAssign.h"
 #include "AnalogTrim.h"
+
+#ifdef ENABLE_SERVOTEST_MODULE
 #include "ServoTest.h"
+#endif
+
 #include "ImportExport.h"
 
 #ifdef ARDUINO
@@ -182,11 +197,21 @@ const char* InputChannelNames[INPUT_CHANNELS] = {
     TEXT_INPUT_CH_2,
     TEXT_INPUT_CH_3,
     TEXT_INPUT_CH_4,
+#if INPUT_CHANNELS > 5
     TEXT_INPUT_CH_5,
+#endif
+#if INPUT_CHANNELS > 6    
     TEXT_INPUT_CH_6,
+#endif
+#if INPUT_CHANNELS > 7
     TEXT_INPUT_CH_7,
+#endif
+#if INPUT_CHANNELS > 8
     TEXT_INPUT_CH_8,
+#endif
+#if INPUT_CHANNELS > 9
     TEXT_INPUT_CH_9,
+#endif
     TEXT_INPUT_NONE
 };
 
@@ -297,8 +322,6 @@ BuzzerImpl *buzzerImpl;
 #define ENABLE_MEMDEBUG
 #undef ENABLE_SERIAL_MEMDEBUG
 #undef ENABLE_BDEBUG
-#define ENABLE_STATISTICS_MODULE
-#define ENABLE_SERVOTEST_MODULE
 
 #ifdef ENABLE_MEMDEBUG
 
@@ -450,10 +473,14 @@ void setup( void) {
     moduleManager.addToSystemSetAndMenu( servoMonitor);
     SwitchMonitor *switchMonitor = new SwitchMonitor( controls);
     moduleManager.addToSystemSetAndMenu( switchMonitor);
+#ifdef ENABLE_BIND_MODULE
     Bind *bind = new Bind();
     moduleManager.addToSystemSetAndMenu( bind);
+#endif
+#ifdef ENABLE_RANGETEST_MODULE
     RangeTest *rangeTest = new RangeTest();
     moduleManager.addToSystemSetAndMenu( rangeTest);
+#endif
     ModeAssign *modeAssign = new ModeAssign();
     moduleManager.addToSystemSetAndMenu( modeAssign);
     CalibrateSticks *calibrateSticks = new CalibrateSticks();
@@ -569,7 +596,9 @@ void setup( void) {
 #endif
 
     wdt_enable( WDTO_1S );
+#ifdef ENABLE_STATISTICS_MODULE
     wdLastReset = millis();
+#endif
 #endif
 
     buzzer.play( SoundWelcome);

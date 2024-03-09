@@ -27,22 +27,23 @@
 #ifndef _TXosConfig_h
 #define _TXosConfig_h
 
+/* Supported languages */
 #define EN 1
 #define DE 2
-#define UI_LANGUAGE              DE
 
-/* Number of analog input channels.
- * This includes sticks, other analog inputs and
- * switched channels.
- */
-#define ANALOG_CHANNELS               ((channel_t)9)
+/* Supported HF modules */
+#define HF_SPEKTRUM_PPM 1
+#define HF_JETI_TU2     2
+
+#include "TXosLocalConfig.h"
+
+/* Analog input channels */
+#define ANALOG_CHANNELS               (ANALOG_STICK_CHANNELS + ANALOG_OTHER_CHANNELS + SWITCHED_CHANNELS)
+
 /* Input Channels:
  * ANALOG_CHANNELS plus one that decouples the channel from input.
  */
 #define INPUT_CHANNELS                (ANALOG_CHANNELS +1)
-
-/* How many of ANALOG_CHANNELS are controlled by switches */
-#define SWITCHED_CHANNELS             ((channel_t)3)
 
 /* Logical channels for mixing.
  */
@@ -56,76 +57,13 @@
 /* First 4 channels. Stick channels */
 #define MODE_CHANNELS                 ((channel_t)4)
 
-/* The number of transmitter channels.
- * This is the number of channels that will be used to
- * generate the PPM signal.
- */
-#define PPM_CHANNELS                  ((channel_t)9)
-#define PPM_FRAME_TIME_usec           (21500)
-
-/* Total number of switches. Max is 16.
- * This includes channel switches and logical switches.
- */
-#define SWITCHES                      ((uint8_t)14)
-
-/* In your mind add one "Always On" logical switch
- */
-#define MECHANICAL_SWITCHES           ((uint8_t)6)
 #define MECHANICAL_SWITCHES_FIRST_IDX ((uint8_t)0)
 
-#define CHANNEL_SWITCHES              ((uint8_t)3)
-#define CHANNEL_SWITCHES_FIRST_IDX    ((uint8_t)6)
+#define CHANNEL_SWITCHES_FIRST_IDX    ((uint8_t)MECHANICAL_SWITCHES)
 
-#define LOGIC_SWITCHES                ((uint8_t)3)
-#define LOGIC_SWITCHES_FIRST_IDX      ((uint8_t)10)
-
-/* In your mind add one logical switch that holds the
- * phase number.
+/* In your mind add one "Always On" logical switch.
  */
-
-/* 1(AlwaysOn) + 6(Mechanical) + 3(Channel) + 3(Logical) + 1(Phase) = 14 */
-
-
-/* Switch configuration
- * In this case we have:
- *   4 tri state switches
- *   2 bi state switches
- *   3 control switches
- *   3 logic switches
- *   1 switch always on
- *   1 switch reflecting the flight phase (3-state)
- */
-
-#define SWITCH_CONFIGURATION \
-const switchConf_t switchConfiguration[SWITCHES] = { \
-    SW_CONF_2STATE, \
-    SW_CONF_3STATE, \
-    SW_CONF_3STATE, \
-    SW_CONF_2STATE, \
-    \
-    SW_CONF_3STATE, \
-    SW_CONF_3STATE, \
-    SW_CONF_CHANNEL, \
-    SW_CONF_CHANNEL, \
-    \
-    SW_CONF_CHANNEL, \
-    SW_CONF_FIXED_ON, \
-    SW_CONF_LOGIC, \
-    SW_CONF_LOGIC, \
-    \
-    SW_CONF_LOGIC, \
-    SW_CONF_PHASES \
-};
-
-/* Number of phases.
- * A value > 3 does not make any sense because we only 
- * have tri-state switches.
- */
-#define PHASES                   ((phase_t)3)
-
-/* Number of general mixer.
- */
-#define MIXER                    ((uint8_t)3)
+#define LOGIC_SWITCHES_FIRST_IDX      (CHANNEL_SWITCHES_FIRST_IDX + CHANNEL_SWITCHES +1)
 
 /* Port definitions */
 
@@ -140,9 +78,18 @@ const switchConf_t switchConfiguration[SWITCHES] = { \
 #define PORT_ROTENC_DIR         A13
 #define PORT_ROTENC_BUTTON      A14
 
-/* Analog sticks and other analog channels */
-#define PORT_ANALOG_INPUT_COUNT   6
-#define PORT_ANALOG_INPUT        A0,A1,A2,A3,A4,A5
+#if (ANALOG_STICK_CHANNELS + ANALOG_OTHER_CHANNELS) == 4
+    #define PORT_ANALOG_INPUT_COUNT   4
+    #define PORT_ANALOG_INPUT        A0,A1,A2,A3
+#elif (ANALOG_STICK_CHANNELS + ANALOG_OTHER_CHANNELS) == 5
+    #define PORT_ANALOG_INPUT_COUNT   5
+    #define PORT_ANALOG_INPUT        A0,A1,A2,A3,A4
+#elif (ANALOG_STICK_CHANNELS + ANALOG_OTHER_CHANNELS) == 6
+    #define PORT_ANALOG_INPUT_COUNT   6
+    #define PORT_ANALOG_INPUT        A0,A1,A2,A3,A4,A5
+#else
+    #error "ANALOG CHANNEL CONFIG failed."
+#endif
 
 /* Analog trim inputs */
 #define PORT_TRIM_INPUT_COUNT     4
@@ -152,14 +99,50 @@ const switchConf_t switchConfiguration[SWITCHES] = { \
 #define PORT_AUX_INPUT_COUNT      1
 #define PORT_AUX_INPUT          A15
 
+
 /* Two state or three state switches */
-#define PORT_SWITCH_INPUT_COUNT   6
-#define PORT_SWITCH_INPUT        22,23,24,25,26,27
+#if MECHANICAL_SWITCHES == 0
+    #define PORT_SWITCH_INPUT_COUNT   0
+    #define PORT_SWITCH_INPUT        
+#elif MECHANICAL_SWITCHES == 1
+    #define PORT_SWITCH_INPUT_COUNT   1
+    #define PORT_SWITCH_INPUT        22
+#elif MECHANICAL_SWITCHES == 2
+    #define PORT_SWITCH_INPUT_COUNT   2
+    #define PORT_SWITCH_INPUT        22,23
+#elif MECHANICAL_SWITCHES == 3
+    #define PORT_SWITCH_INPUT_COUNT   3
+    #define PORT_SWITCH_INPUT        22,23,24
+#elif MECHANICAL_SWITCHES == 4
+    #define PORT_SWITCH_INPUT_COUNT   4
+    #define PORT_SWITCH_INPUT        22,23,24,25
+#elif MECHANICAL_SWITCHES == 5
+    #define PORT_SWITCH_INPUT_COUNT   5
+    #define PORT_SWITCH_INPUT        22,23,24,25,26
+#elif MECHANICAL_SWITCHES == 6
+    #define PORT_SWITCH_INPUT_COUNT   6
+    #define PORT_SWITCH_INPUT        22,23,24,25,26,27
+#else
+    #error "SWITCH CONFIG failed."
+#endif
+
 
 #define PORT_HF_RELAIS            2
 #define PORT_BIND_RELAIS          3
 #define PORT_BUZZER              31
 
+
+#if HF_MODULE == HF_SPEKTRUM_PPM
+    #undef PPM_CHANNELS
+    #define PPM_CHANNELS                  ((channel_t)9)
+
+#elif HF_MODULE == HF_JETI_TU2
+    #undef ENABLE_BIND_MODULE
+    #undef ENABLE_RANGETEST_MODULE
+
+#else
+  #error "Set HF_MODULE in TXosLocalConfig.h to a supported value."
+#endif
 
 /* Battery monitor */
 

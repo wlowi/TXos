@@ -1,0 +1,148 @@
+/*
+  TXos. A remote control transmitter OS.
+
+  MIT License
+
+  Copyright (c) 2023 wlowi
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.
+*/
+
+#ifndef _TXosLocalConfig_h
+#define _TXosLocalConfig_h
+
+
+/* User interface language
+ * DE or EN
+ */
+#define UI_LANGUAGE              DE
+
+
+/* HF Module 
+ *
+ * HF_SPEKTRUM_PPM
+ *   enable bind and range test module
+ *   9 channels
+ * 
+ * HF_JETI_TU2
+ *   disable bind and range test module
+ *   9 to 16 channels, but only 9 supported currently.
+ */
+#define HF_MODULE                HF_SPEKTRUM_PPM
+
+
+/* The number of transmitter channels.
+ * This is the number of channels that will be used to
+ * generate the PPM signal.
+ * MINIMUM = 4
+ * MAXIMUM = 9
+ */
+#define PPM_CHANNELS                  (9)
+#define PPM_FRAME_TIME_usec           (22000)
+
+
+/* Number of analog input channels.
+ * This includes sticks, other analog inputs and
+ * switched channels (see SWITCHED_CHANNELS).
+ */
+#define ANALOG_STICK_CHANNELS         (4)
+#define ANALOG_OTHER_CHANNELS         (2)
+
+/* How many of ANALOG_CHANNELS are controlled by switches */
+#define SWITCHED_CHANNELS             (3)
+
+
+/* Numer of hardware switches.
+ * 2-state and 3-state switches
+ * MAXIMUM = 6
+ */
+#define MECHANICAL_SWITCHES           (6)
+
+/* Number of switches controlled by analog channels.
+ * Geberschalter
+ * MAXIMUM = 3 
+ */
+#define CHANNEL_SWITCHES              (3)
+
+/* Logic switches are logical combinations of other switches
+ * MAXIMUM = 3
+ */
+#define LOGIC_SWITCHES                (3)
+
+
+
+/* 6(Mechanical) + 3(Channel) + 3(Logical) + 1(AlwaysOn) + 1(Phase) = 14 */
+/* Total number of switches. Max is 16.
+ * This includes channel switches and logical switches
+ * and 2 implicit switches (ALWAYS ON and PHASES)
+ * 
+ * DO NOT MODIFY!
+ */
+#define SWITCHES                      (MECHANICAL_SWITCHES + CHANNEL_SWITCHES + LOGIC_SWITCHES +2)
+
+
+
+/* Switch configuration
+ * In this case we have:
+ *   4 tri state switches
+ *   2 bi state switches
+ *   3 control switches
+ *   3 logic switches
+ *   1 switch always on
+ *   1 switch reflecting the flight phase (3-state)
+ */
+#define SWITCH_CONFIGURATION \
+const switchConf_t switchConfiguration[SWITCHES] = { \
+    SW_CONF_2STATE, \
+    SW_CONF_3STATE, \
+    SW_CONF_3STATE, \
+    SW_CONF_2STATE, \
+    \
+    SW_CONF_3STATE, \
+    SW_CONF_3STATE, \
+    SW_CONF_CHANNEL, \
+    SW_CONF_CHANNEL, \
+    \
+    SW_CONF_CHANNEL, \
+    SW_CONF_FIXED_ON, \
+    SW_CONF_LOGIC, \
+    SW_CONF_LOGIC, \
+    \
+    SW_CONF_LOGIC, \
+    SW_CONF_PHASES \
+};
+
+/* Number of phases.
+ * A value > 3 does not make any sense because we only 
+ * have tri-state switches.
+ */
+#define PHASES                   (3)
+
+/* Number of general mixer.
+ */
+#define MIXER                    (3)
+
+/* Enable or disable certain modules
+ */
+//#define ENABLE_STATISTICS_MODULE
+//#define ENABLE_SERVOTEST_MODULE
+#define ENABLE_BIND_MODULE
+#define ENABLE_RANGETEST_MODULE
+
+#endif

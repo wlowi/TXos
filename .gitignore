@@ -1,6 +1,7 @@
 .vscode
 **/*~
 **/*.o
+TXos/TXosLocalConfig*.h
 srv/.vscode
 src/default
 src/EEPROM.DAT*

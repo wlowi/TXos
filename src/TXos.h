@@ -34,7 +34,7 @@
 #endif
 
 
-#define TXOS_VERSION "0.5.1"
+#define TXOS_VERSION "0.5.2"
 
 
 #if defined( ARDUINO )
@@ -86,7 +86,6 @@ typedef enum {
  *  4 Switch is always on
  *  5 Switch is a logic switch (2-state, boolean combination of switches)
  *  6 Switch reflects all flight phases (3-state)
- *  7 Switch refrects a particular flight phase (2-state)
  * 
  * NOTE: If you add a switch type, please modify
  *       Controls::copySwitchName()
@@ -114,7 +113,7 @@ typedef enum {
 #elif UI_LANGUAGE == EN
   #include "Text_EN.h"
 #else
-  #error "Set UI_LANGUAGE in TXosConfig.h to a supported value."
+  #error "Set UI_LANGUAGE in TXosLocalConfig.h to a supported value."
 #endif
 
 #define MODEL_NAME_LEN          ((uint8_t)8)
