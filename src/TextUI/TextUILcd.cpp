@@ -119,16 +119,16 @@ void TextUILcd::printStr( const char str[], uint8_t width) {
 
 void TextUILcd::printStr( const char str[], uint8_t width, int8_t editIdx) {
      
-  int8_t p = 0;
+  uint8_t p = 0;
 
   if( !str) { return; }
 
   while( str[p] && p < width) {
-    if( p == editIdx) {
+    if( editIdx >= 0 && p == editIdx) {
       setInvert( true);
     }
     printChar( str[p]);
-    if( p == editIdx) {
+    if( editIdx >= 0 && p == editIdx) {
       setInvert( false);
     }
     p++;
@@ -153,7 +153,7 @@ void TextUILcd::printStr( const __FlashStringHelper *str, uint8_t width) {
 
   PGM_P p;
   unsigned char c;
-  int8_t n = 0;
+  uint8_t n = 0;
 
   if( !str) { return; }
 

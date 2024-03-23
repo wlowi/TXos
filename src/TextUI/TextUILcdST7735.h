@@ -57,6 +57,8 @@ class TextUILcdST7735 : public TextUILcd
 
         unsigned int width;
         unsigned int height;
+        uint16_t font_h;
+        uint16_t font_w;
         pixel fgCol565;
         pixel bgCol565;
         bool invers;
@@ -65,6 +67,7 @@ class TextUILcdST7735 : public TextUILcd
         unsigned int textY;
 
         pixel rgbToCol565( uint8_t r, uint8_t g, uint8_t b);
+        void initTFT();
 
     public:
       /**
@@ -73,11 +76,40 @@ class TextUILcdST7735 : public TextUILcd
        * This driver used the board specific hardware SPI interface 
        * and its corresponding pins.
        * 
+       * Default display type is INITR_BLACKTAB supporting 160x128 pixel
+       * 
        * @param tft_cs uint8_t: Chip select
        * @param tft_dc uint8_t: Data/Command select
        * @param tft_rst uint8_t: Reset pin ( can be -1 )
        */
       TextUILcdST7735( uint8_t tft_cs, uint8_t tft_dc, uint8_t tft_rst);
+
+      /**
+       * @brief Construct a new TextUILcdST7735 driver.
+       * 
+       * This driver used the board specific hardware SPI interface 
+       * and its corresponding pins.
+       * 
+       * Display type options:
+       * ~~~~
+       *   INITR_GREENTAB           160x128
+       *   INITR_144GREENTAB        128x128
+       *   INITR_18GREENTAB         160x128
+       *   INITR_REDTAB             160x128
+       *   INITR_18REDTAB           160x128
+       *   INITR_BLACKTAB           160x128
+       *   INITR_18BLACKTAB         160x128
+       *   INITR_MINI160x80         160x80
+       *   INTTR_HALLOWING          128x128
+       *   INITR_MINI160x80_PLUGIN  160x80
+       * ~~~~
+       * 
+       * @param tft_cs uint8_t: Chip select
+       * @param tft_dc uint8_t: Data/Command select
+       * @param tft_rst uint8_t: Reset pin ( can be -1 )
+       * @param options uint8_t: Display type option
+       */
+      TextUILcdST7735( uint8_t tft_cs, uint8_t tft_dc, uint8_t tft_rst, uint8_t option);
     
       void clear();
       void clearEOL();

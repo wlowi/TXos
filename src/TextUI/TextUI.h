@@ -1319,6 +1319,23 @@ private:
     unsigned long nextTick_msec = 0;
 
 public:
+
+    /**
+     * @brief Initialize TextUI but do not initialize temporary text buffer.
+     *
+     * It will be initialilzed on first usage in copyToBuffer()
+     * with a default size.
+     */
+    TextUI();
+    /**
+     * @brief Initialize TextUI and temporary text buffer with this size.
+     *
+     * See copyToBuffer() for usage.
+     *
+     * @param bufferSize Temporary text buffer size in characters.
+     */
+    TextUI( uint8_t bufferSize);
+
     /**
      * @brief Set timer interval in milliseconds.
      * 
@@ -1418,6 +1435,11 @@ public:
      */
     void forceRefresh() { refresh = REFRESH_SCREEN; }
 
+    /**
+     * @brief Set current row and force a screen refresh.
+     *
+     * @param currRow New current row.
+     */
     void forceRefresh( uint8_t currRow ) { refresh = REFRESH_SCREEN_SET_ROW; newCurrentRow = currRow; }
 
     /**
@@ -1462,6 +1484,26 @@ public:
      * Pops the current screen off the screen stack and activates the previous screen.
      */
     void popScreen();
+
+    /**
+     * @brief Copy PROGMEM string to temporary buffer.
+     *
+     * Usage Example:
+     *
+     * const char s1[] PROGMEM = "Peter";
+     * const char s2[] PROGMEM = "Paul";
+     * const char s3[] PROGMEM = "Mary";
+     *
+     * const char* const Names[ROW_COUNT] PROGMEM = { s1, s2, s3 };
+     *
+     * TextUI::copyToBuffer( (const char*)pgm_read_ptr( &Names[row]));
+     *
+     * or
+     *
+     * TextUI::copyToBuffer( (const char*)F("A fixed String."));
+     *
+     */
+    static char* copyToBuffer( const char* PROGMEM v);
 };
 
 #endif

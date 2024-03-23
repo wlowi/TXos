@@ -28,14 +28,25 @@
 
 #include <SPI.h>
 
-#define FONT_H (8 * fontSz)
-#define FONT_W (6 * fontSz)
+#define FONT_H (font_h)
+#define FONT_W (font_w)
 
 TextUILcdST7735::TextUILcdST7735( uint8_t tft_cs, uint8_t tft_dc, uint8_t tft_rst)
 {
     tft = new Adafruit_ST7735(tft_cs, tft_dc, tft_rst);
-
     tft->initR(INITR_BLACKTAB);
+    initTFT();
+}
+
+TextUILcdST7735::TextUILcdST7735( uint8_t tft_cs, uint8_t tft_dc, uint8_t tft_rst, uint8_t option)
+{
+    tft = new Adafruit_ST7735(tft_cs, tft_dc, tft_rst);
+    tft->initR(option);
+    initTFT();
+}
+
+void TextUILcdST7735::initTFT()
+{
     tft->setRotation( 3);
     
     width = tft->width();
@@ -104,6 +115,9 @@ void TextUILcdST7735::setInvert( bool inv) {
 
 void TextUILcdST7735::setFontSize( FontSize_t sz)
 {
+    int16_t x1 = 0;
+    int16_t y1 = 0;
+
     if( sz == TEXTUI_FONT_SMALL) {
         fontSz = 1;
     } else if( sz == TEXTUI_FONT_MEDIUM) {
@@ -113,6 +127,7 @@ void TextUILcdST7735::setFontSize( FontSize_t sz)
     }
 
     tft->setTextSize( fontSz);
+    tft->getTextBounds("W", 0, 0, &x1, &y1, &font_w, &font_h);
 }
 
 uint8_t TextUILcdST7735::getRows() {

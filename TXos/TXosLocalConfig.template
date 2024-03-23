@@ -34,6 +34,20 @@
 #define UI_LANGUAGE              DE
 
 
+/* User Interface
+ *
+ * #define UI_EXTERNAL_USERTERM_DISPLAY to
+ *   Redirect display output to external user terminal
+ *   NOTE: This does not use input of external user terminal
+ * 
+ * #define UI_EXTERNAL_USERTERM_INPUT
+ *   In addition to UI_EXTERNAL_USERTERM_DISPLAY,
+ *   define this if you want to process input (buttons, rotary encoder) from external user terminal
+ */
+//#define UI_EXTERNAL_USERTERM_DISPLAY
+//#define UI_EXTERNAL_USERTERM_INPUT
+
+
 /* HF Module 
  *
  * HF_SPEKTRUM_PPM

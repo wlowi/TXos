@@ -417,7 +417,12 @@ void TextUIHandler::updateRow(TextUILcd *lcd)
  */
 bool TextUIHandler::adjustTopRow(TextUILcd *lcd)
 {
-    screenTableRows = lcd->getRows() - screenHeaderOffs;
+    /* Prevent screenTableRows to become negative if getRows() returns zero. */
+    screenTableRows = lcd->getRows();
+    if (screenTableRows > screenHeaderOffs) {
+        screenTableRows -= screenHeaderOffs;
+    }
+
     tableVisibleRows = (tableRows < screenTableRows) ? tableRows : screenTableRows;
 
     if (tableRow < tableTopRow)

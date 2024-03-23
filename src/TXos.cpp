@@ -180,6 +180,7 @@
 
 #include "TextUILcdST7735.h"
 #include "TextUIRotaryEncoder.h"
+#include "TextUIStreamProxy.h"
 
 #include "InputImpl.h"
 #include "OutputImpl.h"
@@ -400,6 +401,7 @@ ModelSelect modelSelect;
 ModuleManager moduleManager( configBlock);
 
 HomeScreen *homeScreen;
+TextUIStreamProxy *streamProxy;
 
 #ifdef ENABLE_STATISTICS_MODULE
 Statistics statistics;
@@ -451,12 +453,27 @@ void setup( void) {
 
 
 #ifdef ARDUINO
+
+# ifdef UI_EXTERNAL_USERTERM_DISPLAY
+    Serial1.begin(19200, SERIAL_8N1);
+    streamProxy = new TextUIStreamProxy( Serial1);
+    userInterface.setDisplay( streamProxy);
+
+#  ifdef UI_EXTERNAL_USERTERM_INPUT
+    userInterface.setInput( streamProxy);
+#  endif
+
+# else
     userInterface.setDisplay( new TextUILcdST7735( PORT_TFT_CS, PORT_TFT_DC, PORT_TFT_RST));
     userInterface.setInput( new TextUIRotaryEncoder( PORT_ROTENC_CLK, PORT_ROTENC_DIR, PORT_ROTENC_BUTTON));
+# endif
+
 #else
     userInterface.setDisplay( displayImpl->getLcd());
     userInterface.setInput( displayImpl->getInput());
 #endif
+
+    userInterface.getDisplay()->setFontSize( TEXTUI_FONT_MEDIUM);
 
     homeScreen = new HomeScreen();
 

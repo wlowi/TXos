@@ -107,7 +107,7 @@ void HomeScreen::handleEvent(TextUI* ui, Event* e) {
         screenWidth = lcd->getColumns();
     }
 
-    TextUILcd* lcd = ui->getDisplay();
+    // TextUILcd* lcd = ui->getDisplay();
 
     if (refresh == REFRESH_FULL) {
         lcd->normalColors();
