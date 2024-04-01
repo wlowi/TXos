@@ -68,4 +68,11 @@ extern EmuSerial Serial;
 #define __FlashStringHelper char
 #define F( b ) b
 
+#define PROGMEM
+
+#define pgm_read_byte( b ) (*(b))
+#define pgm_read_word( b ) (*(b))
+#define pgm_read_dword( b ) (*(b))
+#define pgm_read_ptr_far( b ) (*(b))
+
 #endif

@@ -97,11 +97,6 @@ static const DICT_t d##_dict  = { n, s };
 #define DICTROW_ptr( d ) (const DICTROW_t**)&d##_rows
 #define DICT_ptr( d ) &d##_dict
 
-#define pgm_read_byte( b ) (*(b))
-#define pgm_read_word( b ) (*(b))
-#define pgm_read_dword( b ) (*(b))
-#define pgm_read_ptr_far( b ) (*(b))
-
 #endif
 
 class ImportExport : public Module {
