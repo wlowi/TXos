@@ -158,7 +158,6 @@ void TextUIStreamProxy::toCommandMode() {
     if (currentMode != COMMAND_MODE) {
         send(CMD_ATTN);
         currentMode = COMMAND_MODE;
-        delay(10); /** @TODO prevents overrunning UserTerm */
     }
 }
 
@@ -167,7 +166,6 @@ void TextUIStreamProxy::toPrintMode() {
     if (currentMode != PRINT_MODE) {
         send(CMD_PRINT);
         currentMode = PRINT_MODE;
-        delay(10); /** @TODO prevents overrunning UserTerm */
     }
 }
 
@@ -223,22 +221,48 @@ void TextUIStreamProxy::queryCommand(commandType_t cmd) {
 void TextUIStreamProxy::send(char ch) {
 
     stream.write(ch);
-    delay(2); /** @TODO prevents overrunning UserTerm */
-    
+
 #ifdef SERIAL_DEBUG
     Serial.write(ch);
 #endif
 }
 
-void TextUIStreamProxy::sendByte(uint8_t ch) {
+bool TextUIStreamProxy::readChar(char* b) {
 
-    stream.write(ch);
-    delay(2); /** @TODO prevents overrunning UserTerm */
+    /* Read with timeout */
+    return (stream.readBytes(b, 1) == 1);
+}
+
+void TextUIStreamProxy::sendByte(uint8_t b) {
+
+    if( b < 64) {
+        stream.write(b + SINGLECHAR_OFFSET);
+    } else {
+        stream.write(((b >> 4) & 0x0f) + TWOCHAR_OFFSET);
+        stream.write((b & 0x0f) + TWOCHAR_OFFSET);
+    }
 
 #ifdef SERIAL_DEBUG
     Serial.print(ch);
     Serial.write(';');
 #endif
+}
+
+bool TextUIStreamProxy::readByte(uint8_t* b) {
+
+    uint8_t buffer[2];
+
+    if( stream.readBytes( &buffer[0], 1) == 1) {
+        if( buffer[0] >= SINGLECHAR_OFFSET) {
+            *b = (buffer[0] - SINGLECHAR_OFFSET);
+            return true;
+        } else if( (buffer[0] >= TWOCHAR_OFFSET) && (stream.readBytes( &buffer[1], 1) == 1) ) {
+            *b = ((buffer[0] - TWOCHAR_OFFSET) << 4) | (buffer[1] - TWOCHAR_OFFSET);
+            return true;
+        }
+    }
+    
+    return false;
 }
 
 void TextUIStreamProxy::sync() {
@@ -260,21 +284,20 @@ void TextUIStreamProxy::sync() {
 
 void TextUIStreamProxy::checkInput(bool noWait) {
 
-    int ch;
-    uint8_t buffer[2];
+    char ch;
+    uint8_t buffer;
 
     if (noWait && !stream.available()) {
         return;
     }
 
-    if (1 == stream.readBytes(buffer, 1)) {
-        ch = buffer[0];
+    if ( readChar( &ch)) {
 
         switch (ch) {
         case CMD_QUERY_RESULT:
             /* Read with timeout */
-            if (1 == stream.readBytes(buffer, 1)) {
-                data = buffer[0];
+            if ( readByte( &buffer)) {
+                data = buffer;
                 dataPending = true;
             }
             else {
@@ -283,10 +306,12 @@ void TextUIStreamProxy::checkInput(bool noWait) {
             break;
 
         case CMD_KBD:
-            if (2 == stream.readBytes(buffer, 2)) {
-                key = buffer[0];
-                count = buffer[1];
-                eventPending = true;
+            if ( readByte( &buffer)) {
+                key = buffer;
+                if ( readByte( &buffer)) {
+                    count = buffer;
+                    eventPending = true;
+                }
             }
             else {
                 sync();

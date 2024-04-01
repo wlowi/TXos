@@ -52,8 +52,21 @@
  * 
  *  Clear End Of Line
  *  L
- * 
  */
+
+
+/* How a uint8_t is encoded for transfer.
+ * 
+ * A value in range 0 .. 63 is encoded as a single character with offset 48 ('0').
+ * The result is a printable character in range '0' to 'o'
+ * 
+ * A value in range 64 .. 255 is encoded as two characters where the first
+ * character represents the high nibble and the second character represents 
+ * the low nibble. The offset is 32 (' ', space character).
+ * The characters are two printable characters in range ' ' to '/'
+ */
+const uint8_t SINGLECHAR_OFFSET = 48;
+const uint8_t TWOCHAR_OFFSET = 32;
 
 
 /* current mode */
@@ -157,7 +170,10 @@ private:
     void queryCommand( commandType_t cmd);
 
     void send( char ch);
-    void sendByte( uint8_t ch);
+    bool readChar(char* b);
+    
+    void sendByte( uint8_t b);
+    bool readByte( uint8_t* b);
 
     void sync();
     

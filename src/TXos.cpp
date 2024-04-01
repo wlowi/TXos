@@ -181,6 +181,7 @@
 #include "TextUILcdST7735.h"
 #include "TextUIRotaryEncoder.h"
 #include "TextUIStreamProxy.h"
+#include "ReliableStream.h"
 
 #include "InputImpl.h"
 #include "OutputImpl.h"
@@ -401,7 +402,11 @@ ModelSelect modelSelect;
 ModuleManager moduleManager( configBlock);
 
 HomeScreen *homeScreen;
+
+#ifdef UI_EXTERNAL_USERTERM_DISPLAY
 TextUIStreamProxy *streamProxy;
+ReliableStream *stream;
+#endif
 
 #ifdef ENABLE_STATISTICS_MODULE
 Statistics statistics;
@@ -418,6 +423,8 @@ uint8_t bdebugi = 0;
 char bdebug[ BDEBUG_LEN ];
 #endif
 
+unsigned long nextScreenUpdate = 0L;
+const unsigned int SCREEN_UPDATE_msec = 50; // Limit screen update frequency
 
 void setup( void) {
 
@@ -455,8 +462,9 @@ void setup( void) {
 #ifdef ARDUINO
 
 # ifdef UI_EXTERNAL_USERTERM_DISPLAY
-    Serial1.begin(19200, SERIAL_8N1);
-    streamProxy = new TextUIStreamProxy( Serial1);
+    Serial1.begin(57600, SERIAL_8N1);
+    stream = new ReliableStream( Serial1, 256, 64);
+    streamProxy = new TextUIStreamProxy( *stream);
     userInterface.setDisplay( streamProxy);
 
 #  ifdef UI_EXTERNAL_USERTERM_INPUT
@@ -678,7 +686,14 @@ void loop( void) {
     now = millis();
 #endif
 
-    userInterface.handle( userInterface.getEvent());
+    if( now >= nextScreenUpdate) {
+        userInterface.handle( userInterface.getEvent());
+        nextScreenUpdate = now + SCREEN_UPDATE_msec;
+    }
+    
+#ifdef UI_EXTERNAL_USERTERM_DISPLAY
+    stream->handleComm();
+#endif
 
 #ifdef ENABLE_STATISTICS_MODULE
     now = millis() - now;
