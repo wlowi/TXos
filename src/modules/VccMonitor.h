@@ -46,6 +46,7 @@ class VccMonitor : public Module {
     private:
         float2 vcc;
         bool vccUpdateImmediate;
+        bool changed;
         
     public:
         VccMonitor();
@@ -67,6 +68,7 @@ class VccMonitor : public Module {
         uint8_t getColCount( uint8_t row) final;
         void getValue( uint8_t row, uint8_t col, Cell *cell) final;
         void setValue( uint8_t row, uint8_t col, Cell *cell) final;
+        bool hasChanged( uint8_t row, uint8_t col) final;
 };
 
 #endif

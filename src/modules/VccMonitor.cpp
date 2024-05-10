@@ -77,6 +77,7 @@ void VccMonitor::run( Controls &controls) {
     if( vccUpdateImmediate || newVcc < vcc || newVcc > vcc+10) { /* 0.1V */
         vcc = newVcc;
         vccUpdateImmediate = false;
+        changed = true;
     }
 }
 
@@ -84,6 +85,7 @@ void VccMonitor::setDefaults() {
 
     vcc = 1200;
     vccUpdateImmediate = true;
+    changed = true;
 
     INIT_NON_PHASED_CONFIGURATION(
 
@@ -126,7 +128,7 @@ uint8_t VccMonitor::getColCount( uint8_t row) {
 }
 
 void VccMonitor::getValue( uint8_t row, uint8_t col, Cell *cell) {
-
+    
     if( row == 0) {
         cell->setFloat2( 8, CFG->warnLevel, 5, 0, 1200);
     } else if( row == 1) {
@@ -152,4 +154,16 @@ void VccMonitor::setValue( uint8_t row, uint8_t col, Cell *cell) {
             vccUpdateImmediate = true;
         }
     }
+}
+
+bool VccMonitor::hasChanged( uint8_t row, uint8_t col) {
+
+    bool ret = false;
+    
+    if( row == 2 && col == 1) {
+        ret = changed;
+        changed = false;
+    }
+
+    return ret;
 }
