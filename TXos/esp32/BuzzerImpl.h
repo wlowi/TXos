@@ -24,64 +24,39 @@
   SOFTWARE.
 */
 
-#include "Ports.h"
-#include "PortsImpl.h"
+#ifndef _BuzzerImpl_h_
+#define _BuzzerImpl_h_
 
-/*
- * Call system specific implementations
- * to control IO ports.
+#include "Arduino.h"
+#include "Buzzer.h"
+
+/* System dependent implementations of Buzzer.
+ * For more documentation see Buzzer.h
  */
+ 
+class BuzzerImpl {
 
-extern PortsImpl *portsImpl;
+    private:
+        Ports *ports;
+        buzzerCmd_t sound[BUZZER_SOUND_LEN];
+        const buzzerCmd_t *soundAlarm;
+        bool alarm;
 
-void Ports::init() const {
+    public:
+        BuzzerImpl();
 
-#if defined( ENABLE_BIND_MODULE )
-    portsImpl->portInit( PORT_BIND_RELAIS, OUTPUT);
-    portsImpl->portInit( PORT_HF_RELAIS, OUTPUT);
+        void init( Ports &p);
+        
+        void off();
+        void play( const buzzerCmd_t s[]);
+        void playPermanent( const buzzerCmd_t sound[]);
+
+        /* Cannot be private because it is called from ISR */
+        void processNext();
+
+    private:
+        void scheduleInterrupt( uint8_t t);
+        void stopSound();
+};
+
 #endif
-    portsImpl->portInit( PORT_BUZZER, OUTPUT);
-
-    buzzerOff();
-    bindOff();
-    hfOn();
-}
-
-void Ports::hfOn() const {
-
-#if defined( ENABLE_BIND_MODULE )
-    /* HF is on when relais is off */
-    portsImpl->portSet( PORT_HF_RELAIS, LOW);
-#endif
-}
-
-void Ports::hfOff() const {
-
-#if defined( ENABLE_BIND_MODULE )
-    portsImpl->portSet( PORT_HF_RELAIS, HIGH);
-#endif
-}
-
-void Ports::bindOn() const {
-
-#if defined( ENABLE_BIND_MODULE )
-    portsImpl->portSet( PORT_BIND_RELAIS, HIGH);
-#endif
-}
-
-void Ports::bindOff() const {
-
-#if defined( ENABLE_BIND_MODULE )
-    portsImpl->portSet( PORT_BIND_RELAIS, LOW);
-#endif
-}
-
-void Ports::buzzerOn() const {
-
-    portsImpl->portSet( PORT_BUZZER, HIGH);
-}
-
-void Ports::buzzerOff() const {
-
-    portsImpl->portSet( PORT_BUZZER, LOW);
-}

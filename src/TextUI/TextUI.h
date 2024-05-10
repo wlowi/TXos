@@ -35,9 +35,14 @@
 #undef TEXTUI_DEBUG
 
 #ifdef TEXTUI_DEBUG
-    #if defined(ARDUINO)
+    #if defined( ARDUINO_ARCH_AVR )
         #define UILOG(f)
         #define UILOGV(f, ...)
+
+    #elif defined( ARDUINO_ARCH_ESP32 )
+        #define UILOG(f)
+        #define UILOGV(f, ...)
+        
     #else
         #include "stdio.h"
         #include <cstring>

@@ -26,7 +26,9 @@
 
 #include "TextUIRotaryEncoder.h"
 
-#include <util/atomic.h>
+#if defined( ARDUINO_ARCH_AVR )
+# include <util/atomic.h>
+#endif
 
 #define ROTARYENC_CLK    ((byte)0b00000001)
 #define ROTARYENC_DIR    ((byte)0b00000010)
@@ -43,7 +45,7 @@
 #define ROTARYENC_BUTTON_LONG_MSEC  300
 
 
-static TextUIRotaryEncoder *rotEnc = nullptr;
+static TextUIRotaryEncoder* rotEnc = nullptr;
 
 /*
  * The pin change interrupt is fixed to PCINT2.
@@ -58,7 +60,7 @@ static TextUIRotaryEncoder *rotEnc = nullptr;
  *  PCINT2 PCINT16-23  (Port D0 - D7)  (PCINT16-23: Pin D0 - D7)
  *
  * Arduino Mega 2560:
- * 
+ *
  *  Interrupt          Chip Port       Arduino Port
  *  -----------------  --------------  -------------------------
  *  PCINT0 PCINT0-7    (Port B0 - B7)  (PCINT4-7:   Pin D10 - D13)
@@ -66,48 +68,61 @@ static TextUIRotaryEncoder *rotEnc = nullptr;
  *  PCINT1 PCINT9-15   (Port J0 - J6)  (PCINT9-10:  Pin D15, D14)
  *  PCINT2 PCINT16-23  (Port K0 - K7)  (PCINT16-23: Pin A8 -A15)
  */
-ISR( PCINT2_vect)
+#if defined( ARDUINO_ARCH_AVR )
+ISR(PCINT2_vect)
+#elif defined( ARDUINO_ARCH_ESP32 )
+static void TextUIRotaryEncoder_runISR()
+#endif
 {
-    if( rotEnc != nullptr) {
-    	rotEnc->runISR();
+    if (rotEnc != nullptr) {
+        rotEnc->runISR();
     }
 }
 
-TextUIRotaryEncoder::TextUIRotaryEncoder( uint8_t pinClock, uint8_t pinDir, uint8_t pinButton)
-{
+TextUIRotaryEncoder::TextUIRotaryEncoder(uint8_t pinClock, uint8_t pinDir, uint8_t pinButton) {
+
+#if defined( ARDUINO_ARCH_AVR )
     uint8_t pcintMask;
-    
+#endif
+
     this->pinClock = pinClock;
     this->pinDir = pinDir;
     this->pinButton = pinButton;
-    
-    pinMode( pinClock, INPUT);
-    pinMode( pinDir, INPUT);
-    pinMode( pinButton, INPUT);
+
+    pinMode(pinClock, INPUT);
+    pinMode(pinDir, INPUT);
+    pinMode(pinButton, INPUT);
 
     /* Enable pull-up */
-    digitalWrite( pinClock, HIGH);
-    digitalWrite( pinDir, HIGH);
-    digitalWrite( pinButton, HIGH);
-    
-    oldVal  = digitalRead( pinClock) ? ROTARYENC_CLK    : 0;
-    oldVal |= digitalRead( pinDir) ? ROTARYENC_DIR    : 0;
-    oldVal |= digitalRead( pinButton) ? ROTARYENC_SWITCH : 0;
+    digitalWrite(pinClock, HIGH);
+    digitalWrite(pinDir, HIGH);
+    digitalWrite(pinButton, HIGH);
+
+    oldVal = digitalRead(pinClock) ? ROTARYENC_CLK : 0;
+    oldVal |= digitalRead(pinDir) ? ROTARYENC_DIR : 0;
+    oldVal |= digitalRead(pinButton) ? ROTARYENC_SWITCH : 0;
 
     enc = button = buttonDown_msec = 0;
     buttonIsDown = false;
+    rotEnc = this;
 
-    ATOMIC_BLOCK( ATOMIC_RESTORESTATE ) {
-      
-        pcintMask = bit( digitalPinToPCMSKbit( pinClock))
-		              | bit( digitalPinToPCMSKbit( pinDir))
-                  | bit( digitalPinToPCMSKbit( pinButton));
-    
+#if defined( ARDUINO_ARCH_AVR )
+    ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+
+        pcintMask = bit(digitalPinToPCMSKbit(pinClock))
+            | bit(digitalPinToPCMSKbit(pinDir))
+            | bit(digitalPinToPCMSKbit(pinButton));
+
         PCMSK2 |= pcintMask;
         PCICR |= bit(PCIE2);
-
-        rotEnc = this;
     }
+
+#elif defined( ARDUINO_ARCH_ESP32 )
+    attachInterrupt(pinClock, TextUIRotaryEncoder_runISR, CHANGE);
+    attachInterrupt(pinDir, TextUIRotaryEncoder_runISR, CHANGE);
+    attachInterrupt(pinButton, TextUIRotaryEncoder_runISR, CHANGE);
+
+#endif
 }
 
 void TextUIRotaryEncoder::runISR() {
@@ -116,29 +131,31 @@ void TextUIRotaryEncoder::runISR() {
     byte encVal;
     unsigned long now = millis();
 
-    encVal =  digitalRead( pinClock) ? ROTARYENC_CLK : 0;
-    encVal |= digitalRead( pinDir) ? ROTARYENC_DIR : 0;
-    butVal = digitalRead( pinButton) ? ROTARYENC_SWITCH : 0;
+    encVal = digitalRead(pinClock) ? ROTARYENC_CLK : 0;
+    encVal |= digitalRead(pinDir) ? ROTARYENC_DIR : 0;
+    butVal = digitalRead(pinButton) ? ROTARYENC_SWITCH : 0;
 
-    if( (oldVal & ROTARYENC_SWITCH) && !butVal) { /* Button down */
+    if ((oldVal & ROTARYENC_SWITCH) && !butVal) { /* Button down */
         buttonDown_msec = now;
         buttonIsDown = true;
-        
+
         oldVal &= ~ROTARYENC_SWITCH_MASK;
         oldVal |= butVal;
-        
-    } else if ( !(oldVal & ROTARYENC_SWITCH) && butVal) { /* Button up */
+
+    }
+    else if (!(oldVal & ROTARYENC_SWITCH) && butVal) { /* Button up */
         unsigned int down_msec;
         buttonIsDown = false;
 
         down_msec = (now >= buttonDown_msec)
-                  ? now - buttonDown_msec
-                  : UINT16_MAX - buttonDown_msec + now;
-           
-        if( down_msec >= ROTARYENC_BUTTON_LONG_MSEC) {
+            ? now - buttonDown_msec
+            : UINT16_MAX - buttonDown_msec + now;
+
+        if (down_msec >= ROTARYENC_BUTTON_LONG_MSEC) {
             button = ROTARYENC_BUTTON_LONG;
 
-        } else if( down_msec >= ROTARYENC_BUTTON_SHORT_MSEC) {
+        }
+        else if (down_msec >= ROTARYENC_BUTTON_SHORT_MSEC) {
             button = ROTARYENC_BUTTON_SHORT;
         }
 
@@ -146,9 +163,9 @@ void TextUIRotaryEncoder::runISR() {
         oldVal |= butVal;
     }
 
-    if( (oldVal & ROTARYENC_ENC_MASK) != encVal) {
-        if( ((oldVal & ROTARYENC_ENC_MASK) ^ encVal) == ROTARYENC_CLK) {
-            if( encVal == 0 || encVal == 3) enc--; else enc++;
+    if ((oldVal & ROTARYENC_ENC_MASK) != encVal) {
+        if (((oldVal & ROTARYENC_ENC_MASK) ^ encVal) == ROTARYENC_CLK) {
+            if (encVal == 0 || encVal == 3) enc--; else enc++;
         }
 
         oldVal &= ~ROTARYENC_ENC_MASK;
@@ -161,26 +178,33 @@ bool TextUIRotaryEncoder::pending() {
     return (button != 0) || (enc >= 2) || (enc <= -2);
 }
 
-void TextUIRotaryEncoder::setEvent(Event *e) {
+void TextUIRotaryEncoder::setEvent(Event* e) {
 
-    ATOMIC_BLOCK( ATOMIC_RESTORESTATE ) {
-
-        if( button == ROTARYENC_BUTTON_SHORT) {
-            e->setKeyEvent( KEY_ENTER, 1);
+#if defined( ARDUINO_ARCH_AVR )
+    ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+#endif
+        if (button == ROTARYENC_BUTTON_SHORT) {
+            e->setKeyEvent(KEY_ENTER, 1);
             button = 0;
-        } else if( button == ROTARYENC_BUTTON_LONG) {
-            e->setKeyEvent( KEY_CLEAR, 1);
+        }
+        else if (button == ROTARYENC_BUTTON_LONG) {
+            e->setKeyEvent(KEY_CLEAR, 1);
             button = 0;
-        } else if( enc >= 2) {
-            e->setKeyEvent( KEY_DOWN, enc >> 1);
+        }
+        else if (enc >= 2) {
+            e->setKeyEvent(KEY_DOWN, enc >> 1);
             enc &= 1;
-        } else if( enc <= -2) {
+        }
+        else if (enc <= -2) {
             enc = -enc;
-            e->setKeyEvent( KEY_UP, enc >> 1);
+            e->setKeyEvent(KEY_UP, enc >> 1);
             enc &= 1;
             enc = -enc;
-        } else {
+        }
+        else {
             e->setNoEvent();
         }
+#if defined( ARDUINO_ARCH_AVR )
     }
+#endif
 }

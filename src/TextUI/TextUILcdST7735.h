@@ -29,8 +29,14 @@
 
 #include "TextUI.h"
 
-#include <Adafruit_GFX.h>    // Core graphics library
-#include <Adafruit_ST7735.h> // Hardware-specific library for ST7735
+#if defined( ARDUINO_ARCH_AVR )
+# include <Adafruit_GFX.h>    // Core graphics library
+# include <Adafruit_ST7735.h> // Hardware-specific library for ST7735
+#elif defined( ARDUINO_ARCH_ESP32 )
+# include <TFT_eSPI.h>
+#else
+# error unknown architecture
+#endif
 
 typedef uint16_t pixel;
 
@@ -53,7 +59,11 @@ typedef uint16_t pixel;
 class TextUILcdST7735 : public TextUILcd
 {
     private:
+#if defined( ARDUINO_ARCH_AVR )
         Adafruit_ST7735 *tft;
+#elif defined( ARDUINO_ARCH_ESP32 )
+        TFT_eSPI *tft;    
+#endif
 
         unsigned int width;
         unsigned int height;

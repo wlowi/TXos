@@ -24,64 +24,23 @@
   SOFTWARE.
 */
 
-#include "Ports.h"
-#include "PortsImpl.h"
+#ifndef _PortsImpl_h_
+#define _PortsImpl_h_
+
+#include "Arduino.h"
 
 /*
- * Call system specific implementations
- * to control IO ports.
+ * System specific implementation of Ports.h
  */
 
-extern PortsImpl *portsImpl;
+class PortsImpl {
 
-void Ports::init() const {
+    public:
+        PortsImpl();
 
-#if defined( ENABLE_BIND_MODULE )
-    portsImpl->portInit( PORT_BIND_RELAIS, OUTPUT);
-    portsImpl->portInit( PORT_HF_RELAIS, OUTPUT);
+        void portInit( uint8_t p, uint8_t t) const;
+        void portSet( uint8_t p, uint8_t s) const;
+        uint8_t portGet( uint8_t p) const;
+};
+
 #endif
-    portsImpl->portInit( PORT_BUZZER, OUTPUT);
-
-    buzzerOff();
-    bindOff();
-    hfOn();
-}
-
-void Ports::hfOn() const {
-
-#if defined( ENABLE_BIND_MODULE )
-    /* HF is on when relais is off */
-    portsImpl->portSet( PORT_HF_RELAIS, LOW);
-#endif
-}
-
-void Ports::hfOff() const {
-
-#if defined( ENABLE_BIND_MODULE )
-    portsImpl->portSet( PORT_HF_RELAIS, HIGH);
-#endif
-}
-
-void Ports::bindOn() const {
-
-#if defined( ENABLE_BIND_MODULE )
-    portsImpl->portSet( PORT_BIND_RELAIS, HIGH);
-#endif
-}
-
-void Ports::bindOff() const {
-
-#if defined( ENABLE_BIND_MODULE )
-    portsImpl->portSet( PORT_BIND_RELAIS, LOW);
-#endif
-}
-
-void Ports::buzzerOn() const {
-
-    portsImpl->portSet( PORT_BUZZER, HIGH);
-}
-
-void Ports::buzzerOff() const {
-
-    portsImpl->portSet( PORT_BUZZER, LOW);
-}

@@ -87,6 +87,10 @@ class TextUIRotaryEncoder : public TextUIInput
          *  PCINT1 PCINT9-15  |(Port J0 - J6) |(PCINT9-10:  Pin D15, D14)
          *  PCINT2 PCINT16-23 |(Port K0 - K7) |(PCINT16-23: Pin A8 -A15)
          * 
+         * Espressif ESP 32:
+         * 
+         * Any usable GPIO pin.
+         * 
          * Example:
          *   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
          *   OK:   new TextUIRotaryEncoder( A8, A9, A10) 

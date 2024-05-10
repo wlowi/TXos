@@ -45,6 +45,11 @@
 
 #include "TXos.h"
 
+#if defined(ARDUINO_ARCH_ESP32)
+#define ESP32_MODEL_STORE_SIZE (4096)
+#define ESP32_PREFERENCES_NAMESPACE "TXOS_STORE"
+#endif
+
 typedef uint16_t checksum_t;
 typedef int8_t configBlockID_t;
 

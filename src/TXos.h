@@ -29,21 +29,34 @@
 
 #include "Arduino.h"
 
-#if defined( ARDUINO )
+#if defined( ARDUINO_ARCH_AVR )
 # include <util/atomic.h>
 #endif
 
 
 #define TXOS_VERSION "0.5.4"
 
+#undef ENABLE_LOGGING
 
-#if defined( ARDUINO )
-    #define LOG( f )
-    #define LOGV( f, ... )
+#if defined( ENABLE_LOGGING )
+
+#if defined( ARDUINO_ARCH_AVR )
+    #define LOG( f ) Serial.print( f )
+    #define LOGV( f, ... ) Serial.print( f )
+
+#elif defined( ARDUINO_ARCH_ESP32 )
+    #define LOG( f ) Serial.printf( f )
+    #define LOGV( f, ... ) Serial.printf( f, __VA_ARGS__)
+
 #else
     #include "stdio.h"
     #define LOG( f ) printf( f )
     #define LOGV( f, ... ) printf( f, __VA_ARGS__)
+#endif
+
+#else 
+    #define LOG( f )
+    #define LOGV( f, ... )
 #endif
 
 extern void yieldLoop();

@@ -33,15 +33,27 @@
 
 TextUILcdST7735::TextUILcdST7735( uint8_t tft_cs, uint8_t tft_dc, uint8_t tft_rst)
 {
+#if defined( ARDUINO_ARCH_AVR )
     tft = new Adafruit_ST7735(tft_cs, tft_dc, tft_rst);
     tft->initR(INITR_BLACKTAB);
+#elif defined( ARDUINO_ARCH_ESP32 )
+    tft = new TFT_eSPI();    
+    tft->init();
+#endif
+
     initTFT();
 }
 
 TextUILcdST7735::TextUILcdST7735( uint8_t tft_cs, uint8_t tft_dc, uint8_t tft_rst, uint8_t option)
 {
+#if defined( ARDUINO_ARCH_AVR )
     tft = new Adafruit_ST7735(tft_cs, tft_dc, tft_rst);
     tft->initR(option);
+#elif defined( ARDUINO_ARCH_ESP32 )
+    tft = new TFT_eSPI();
+    tft->init();
+#endif
+
     initTFT();
 }
 
@@ -54,6 +66,10 @@ void TextUILcdST7735::initTFT()
 
     textX = 0; // text cursor position
     textY = 0;
+
+#if defined( ARDUINO_ARCH_ESP32 )
+    tft->setTextFont( 1); // Default Adafruit Font 8x6 pixel
+#endif
 
     setFg( 255, 255, 255);
     setBg( 0, 0, 0);
@@ -72,7 +88,7 @@ void TextUILcdST7735::clear()
 
 void TextUILcdST7735::clearEOL()
 {
-    tft->fillRect( textX, textY, width - textX, 8*fontSz, invers ? fgCol565 : bgCol565);
+    tft->fillRect( textX, textY, width - textX, FONT_H, invers ? fgCol565 : bgCol565);
 }
 
 bool TextUILcdST7735::colorSupport() {
@@ -115,8 +131,10 @@ void TextUILcdST7735::setInvert( bool inv) {
 
 void TextUILcdST7735::setFontSize( FontSize_t sz)
 {
+#if defined( ARDUINO_ARCH_AVR )
     int16_t x1 = 0;
     int16_t y1 = 0;
+#endif
 
     if( sz == TEXTUI_FONT_SMALL) {
         fontSz = 1;
@@ -127,7 +145,13 @@ void TextUILcdST7735::setFontSize( FontSize_t sz)
     }
 
     tft->setTextSize( fontSz);
+
+#if defined( ARDUINO_ARCH_AVR )
     tft->getTextBounds("W", 0, 0, &x1, &y1, &font_w, &font_h);
+#elif defined( ARDUINO_ARCH_ESP32 )
+    font_h = tft->fontHeight();
+    font_w = tft->textWidth("W");
+#endif
 }
 
 uint8_t TextUILcdST7735::getRows() {
@@ -176,8 +200,8 @@ void TextUILcdST7735::printChar( char ch)
 pixel TextUILcdST7735::rgbToCol565( uint8_t r, uint8_t g, uint8_t b)
 {
     pixel col565 = ((r >> 3) << 11)
-                | ((g >> 2) << 5)
-                | (b >> 3);
+                 | ((g >> 2) << 5)
+                 | (b >> 3);
 
     return col565;  
 }

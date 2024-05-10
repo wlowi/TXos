@@ -93,14 +93,14 @@ void TextUI::setHomeScreen( TextUIScreen *scr) {
   CURRENT_SCREEN = homeScreen = scr;
   refresh = REFRESH_FULL;
 }
-    
+
 Event *TextUI::getEvent() {
 
   unsigned long now = millis();
   TextUIInput *lastInput;
-  
+
   event.setNoEvent(); 
-  
+
   /* First check input queues.
    * Queues are checked round robin.
    * If there are two queues and the first queue had an event pending,
@@ -134,12 +134,12 @@ Event *TextUI::getEvent() {
   }
 
   if( event.getType() == EVENT_TYPE_NONE ) {
-  
+ 
     if( timer_msec && (now >= nextTimer_msec)) {
     
       nextTimer_msec += timer_msec;
       if( nextTimer_msec <= now) {
-	nextTimer_msec = now + timer_msec;
+        nextTimer_msec = now + timer_msec;
       }
       event.setTimerEvent();
     

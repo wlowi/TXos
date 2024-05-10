@@ -65,6 +65,11 @@
  */
 #define LOGIC_SWITCHES_FIRST_IDX      (CHANNEL_SWITCHES_FIRST_IDX + CHANNEL_SWITCHES +1)
 
+
+
+
+#if defined(ARDUINO_ARCH_AVR) || defined(ARDUINO_ARCH_EMU)
+
 /* Port definitions */
 
 #define PORT_TFT_CS              10
@@ -152,6 +157,105 @@
 #define ADC_VOLTAGE               500
 /* 10 bits => 1024 steps */
 #define ADC_VCC_RESOLUTION       1024
+
+
+
+
+#elif defined(ARDUINO_ARCH_ESP32)
+
+/* Port definitions */
+
+#define PORT_TFT_CS               5
+#define PORT_TFT_DC               2
+#define PORT_TFT_RST             -1
+
+/* Rotary encoder
+ * Must be in range A8 - A15
+ */
+#define PORT_ROTENC_CLK          22
+#define PORT_ROTENC_DIR          21
+#define PORT_ROTENC_BUTTON       19
+
+#if (ANALOG_STICK_CHANNELS + ANALOG_OTHER_CHANNELS) == 4
+    #define PORT_ANALOG_INPUT_COUNT   4
+    #define PORT_ANALOG_INPUT        36,39,34,35
+#elif (ANALOG_STICK_CHANNELS + ANALOG_OTHER_CHANNELS) == 5
+    #define PORT_ANALOG_INPUT_COUNT   5
+    #define PORT_ANALOG_INPUT        36,39,34,35,32
+#elif (ANALOG_STICK_CHANNELS + ANALOG_OTHER_CHANNELS) == 6
+    #define PORT_ANALOG_INPUT_COUNT   6
+    #define PORT_ANALOG_INPUT        36,39,34,35,32,33
+#else
+    #error "ANALOG CHANNEL CONFIG failed."
+#endif
+
+/* Analog trim inputs */
+#define PORT_TRIM_INPUT_COUNT     4
+#define PORT_TRIM_INPUT          25,26,27,14
+
+/* Auxiliary analog input: Vcc monitor */
+#define PORT_AUX_INPUT_COUNT      1
+#define PORT_AUX_INPUT           12
+
+
+/* Two state or three state switches */
+#if MECHANICAL_SWITCHES == 0
+    #define PORT_SWITCH_INPUT_COUNT   0
+    #define PORT_SWITCH_INPUT        
+#elif MECHANICAL_SWITCHES == 1
+    #define PORT_SWITCH_INPUT_COUNT   1
+    #define PORT_SWITCH_INPUT         4
+#elif MECHANICAL_SWITCHES == 2
+    #define PORT_SWITCH_INPUT_COUNT   2
+    #define PORT_SWITCH_INPUT         4,16
+#elif MECHANICAL_SWITCHES == 3
+    #define PORT_SWITCH_INPUT_COUNT   3
+    #define PORT_SWITCH_INPUT         4,16,17
+#elif MECHANICAL_SWITCHES == 4
+    #define PORT_SWITCH_INPUT_COUNT   4
+    #define PORT_SWITCH_INPUT         4,16,17
+#elif MECHANICAL_SWITCHES == 5
+    #define PORT_SWITCH_INPUT_COUNT   5
+    #define PORT_SWITCH_INPUT         4,16,17
+#elif MECHANICAL_SWITCHES == 6
+    #define PORT_SWITCH_INPUT_COUNT   6
+    #define PORT_SWITCH_INPUT         4,16,17
+#else
+    #error "SWITCH CONFIG failed."
+#endif
+
+
+#define PORT_HF_RELAIS            2
+#define PORT_BIND_RELAIS          3
+#define PORT_BUZZER              13
+
+
+#if HF_MODULE == HF_SPEKTRUM_PPM
+    #undef PPM_CHANNELS
+    #define PPM_CHANNELS                  ((channel_t)9)
+
+#elif HF_MODULE == HF_JETI_TU2
+    #undef ENABLE_BIND_MODULE
+    #undef ENABLE_RANGETEST_MODULE
+
+#else
+  #error "Set HF_MODULE in TXosLocalConfig.h to a supported value."
+#endif
+
+/* Battery monitor */
+
+/* Voltage mutliplied by 100 to maintain 2 fractional digits.
+ * 500 = 5.00V
+ */
+#define ADC_VOLTAGE               330
+/* 10 bits => 1024 steps */
+#define ADC_VCC_RESOLUTION       4096
+
+
+#else
+  #error "No supported architecture"
+#endif
+
 
 /* Voltage divider values in 1000Ohm units.*/
 #define ADC_VOLTAGE_DIVIDER_R1     22

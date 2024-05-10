@@ -58,10 +58,14 @@ Timer::Timer() : Module( MODULE_TIMER_TYPE, TEXT_MODULE_TIMER, COMM_SUBPACKET_TI
 
 void Timer::reset() {
 
+#if defined(ARDUINO_ARCH_AVR)
     ATOMIC_BLOCK( ATOMIC_RESTORESTATE) {
+#endif
         countdown_sec = CFG->time_sec;
         lastMillis = 0;
+#if defined(ARDUINO_ARCH_AVR)
     }
+#endif
     LOGV("Timer::reset: %d\n", countdown_sec);
 }
 
@@ -69,9 +73,13 @@ uint16_t Timer::timeSec() {
 
     uint16_t t;
 
+#if defined(ARDUINO_ARCH_AVR)
     ATOMIC_BLOCK( ATOMIC_RESTORESTATE) {
+#endif
         t = countdown_sec;
+#if defined(ARDUINO_ARCH_AVR)
     }
+#endif
 
     return t;
 }
@@ -82,9 +90,13 @@ char *Timer::timeStr() {
     uint8_t min;
     uint8_t sec;
 
+#if defined(ARDUINO_ARCH_AVR)
     ATOMIC_BLOCK( ATOMIC_RESTORESTATE) {
+#endif
         t = countdown_sec;
+#if defined(ARDUINO_ARCH_AVR)
     }
+#endif
 
     min = t / 60;
     sec = t % 60;
@@ -122,7 +134,9 @@ void Timer::run( Controls &controls) {
     bool update = false;
 
     if( controls.evalSwitches( CFG->swState) && countdown_sec > 0) {
+#if defined(ARDUINO_ARCH_AVR)
         ATOMIC_BLOCK( ATOMIC_RESTORESTATE) {
+#endif
             c = millis();
             if( c > lastMillis +1500) {
                 lastMillis = c;
@@ -133,7 +147,9 @@ void Timer::run( Controls &controls) {
                 countdown_sec--;
                 update = true;
             }
+#if defined(ARDUINO_ARCH_AVR)
         }
+#endif
 
         if( update) {
             if( countdown_sec == 0) {

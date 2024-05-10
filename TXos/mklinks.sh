@@ -3,10 +3,17 @@
 # Create links for all cpp and header files from ../src hierarchy
 #
 
+if [ "$1" == "atmega2560" ] || [ "$1" == "esp32" ]; then
+    echo Configuring for $1
+else
+    echo "Select a platform: atmega2560 or esp32"
+    exit
+fi
+
 LOCALCONFIGTEMPLATE=TXosLocalConfig.template
 LOCALCONFIG=TXosLocalConfig.h
 
-SOURCE="../src ../src/controls ../src/modules ../src/output ../src/TextUI atmega2560"
+SOURCE="../src ../src/controls ../src/modules ../src/output ../src/TextUI $1"
 
 sh rmlinks.sh
 

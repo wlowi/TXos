@@ -175,8 +175,10 @@
 
 #ifdef ARDUINO
 
+#ifdef ARDUINO_ARCH_AVR
 #include "avr/sleep.h"
 #include "avr/wdt.h"
+#endif
 
 #include "TextUILcdST7735.h"
 #include "TextUIRotaryEncoder.h"
@@ -324,6 +326,11 @@ BuzzerImpl *buzzerImpl;
 #define ENABLE_MEMDEBUG
 #undef ENABLE_SERIAL_MEMDEBUG
 #undef ENABLE_BDEBUG
+
+
+#if defined(ARDUINO_ARCH_ESP32)
+#undef ENABLE_MEMDEBUG
+#endif
 
 #ifdef ENABLE_MEMDEBUG
 
@@ -615,7 +622,7 @@ void setup( void) {
 
     controls.init();
 
-#ifdef ARDUINO
+#if defined( ARDUINO_ARCH_AVR)
 #ifdef ENABLE_MEMDEBUG
     MEMDEBUG_INIT();
 #endif
@@ -639,12 +646,12 @@ static void handle_channels();
 
 void loop( void) {
 
-#ifdef ENABLE_STATISTICS_MODULE
     unsigned long now;
+#ifdef ENABLE_STATISTICS_MODULE
     uint16_t overrun;
 #endif
 
-#ifdef ARDUINO
+#if defined( ARDUINO_ARCH_AVR)
 
     set_sleep_mode( SLEEP_MODE_IDLE);
     cli();
@@ -652,11 +659,11 @@ void loop( void) {
     sei();
     sleep_cpu();
     sleep_disable();
-    
-    watchdog_reset();
-    
+
 #endif
 
+    watchdog_reset();
+    
     handle_channels();
 
 #ifdef ARDUINO
@@ -682,9 +689,7 @@ void loop( void) {
 
 #endif
 
-#ifdef ENABLE_STATISTICS_MODULE
     now = millis();
-#endif
 
     if( now >= nextScreenUpdate) {
         userInterface.handle( userInterface.getEvent());
@@ -727,7 +732,7 @@ void yieldLoop() {
 
 void watchdog_reset() {
 
-#ifdef ARDUINO
+#if defined( ARDUINO_ARCH_AVR )
     wdt_reset();
 
 #ifdef ENABLE_STATISTICS_MODULE

@@ -25,14 +25,26 @@
 */
 
 #include "ConfigBlock.h"
-#include "EEPROM.h"
+
+#if defined(ARDUINO_ARCH_AVR) || defined(ARDUINO_ARCH_EMU)
+# include "EEPROM.h"
+#elif defined(ARDUINO_ARCH_ESP32)
+# include <Preferences.h>
+#endif
 
 ConfigBlock::ConfigBlock() {
 
+#if defined(ARDUINO_ARCH_AVR) || defined(ARDUINO_ARCH_EMU)
     storageSize = EEPROM.length();
+#elif defined(ARDUINO_ARCH_ESP32)
+    storageSize = ESP32_MODEL_STORE_SIZE;
+#else
+# error "No storage size definition for this architecture"
+#endif
+
     modelBlockCount = (storageSize - SYSTEMCONFIG_BLOCK_SIZE) / MODELCONFIG_BLOCK_SIZE;
 
-    LOGV("ConfigBlock::ConfigBlock(): Storage size is %ld. Model configurations: %d\n", storageSize, modelBlockCount);
+    LOGV("ConfigBlock::ConfigBlock(): Storage size is %u. Model configurations: %d\n", storageSize, modelBlockCount);
 }
 
 /*
@@ -40,18 +52,39 @@ ConfigBlock::ConfigBlock() {
  */
 configBlock_rc ConfigBlock::readBlock( configBlockID_t id) {
 
+#if defined( ARDUINO_ARCH_AVR ) || defined(ARDUINO_ARCH_EMU)
     size_t configStart;
+#elif defined( ARDUINO_ARCH_ESP32 )
+    Preferences modelStore;
+    char key[6];
+#endif
 
     LOGV("ConfigBlock::readBlock( %d )\n", id);
 
     if( setBlockID( id)) {
 
+#if defined(ARDUINO_ARCH_AVR) || defined(ARDUINO_ARCH_EMU)
         configStart = getBlockStart();
+        LOGV("ConfigBlock::readBlock(): reading %u bytes from addr %u\n", configBlockSize, configStart);
 
-        LOGV("ConfigBlock::readBlock(): reading %ld bytes from addr %ld\n", configBlockSize, configStart);
         for( uint16_t i=0; i < configBlockSize; i++) {
             block.payload[i] = EEPROM.read( configStart + i);
         }
+
+#elif defined(ARDUINO_ARCH_ESP32)
+        LOGV("ConfigBlock::readBlock(): reading %u bytes from block %d\n", configBlockSize, id);
+
+        if( modelStore.begin(ESP32_PREFERENCES_NAMESPACE,true)) {
+            itoa(id,key,10);
+            if( modelStore.isKey( key)) {
+                modelStore.getBytes( key, &block.payload[0], configBlockSize);
+            } else {
+                LOGV("** ConfigBlock::writeBlock(): uninitialized block ID=%d\n", blockID);
+                return CONFIGBLOCK_RC_INVID;
+            }
+            modelStore.end();
+        }
+#endif
 
         if( !isBlockValid()) {
             LOGV("** ConfigBlock::readBlock(): invalid csum for block ID=%d\n", id);
@@ -95,21 +128,35 @@ configBlock_rc ConfigBlock::formatBlock( configBlockID_t id) {
  * Verify current block id, update block checksum and write block to EEPROM.
  */
 configBlock_rc ConfigBlock::writeBlock() {
-    
+
+#if defined( ARDUINO_ARCH_AVR ) || defined(ARDUINO_ARCH_EMU)
     size_t configStart;
+#elif defined( ARDUINO_ARCH_ESP32 )
+    Preferences modelStore;
+    char key[6];
+#endif
 
     LOGV("ConfigBlock::writeBlock() blockID=%d\n", blockID);
 
     if( setBlockID( blockID)) {
-
-        configStart = getBlockStart();
         *block.checksum = computeChecksum();
 
-        LOGV("ConfigBlock::writeBlock(): writing %ld bytes to addr %ld\n", configBlockSize, configStart);
+#if defined( ARDUINO_ARCH_AVR ) || defined(ARDUINO_ARCH_EMU)
+        configStart = getBlockStart();
+        LOGV("ConfigBlock::writeBlock(): writing %u bytes to addr %u\n", configBlockSize, configStart);
+
         for( uint16_t i=0; i < configBlockSize; i++) {
             EEPROM.update( configStart + i, block.payload[i]);
         }
+#elif defined( ARDUINO_ARCH_ESP32 )
+        LOGV("ConfigBlock::writeBlock(): writing %u bytes to block %d\n", configBlockSize, blockID);
 
+        if( modelStore.begin(ESP32_PREFERENCES_NAMESPACE,false)) {
+            itoa(blockID,key,10);
+            modelStore.putBytes( key, &block.payload[0], configBlockSize);
+            modelStore.end();
+        }
+#endif
         return CONFIGBLOCK_RC_OK;
     }
 

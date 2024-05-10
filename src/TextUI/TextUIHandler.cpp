@@ -82,12 +82,12 @@ void TextUIHandler::set(TextUI *ui, TextUIScreen *scr, uint8_t currentSelected)
 void TextUIHandler::process(TextUI *ui, TextUILcd *lcd, Event *event)
 {
     uint8_t row; // real table row number, excluding back item
-    
+
     /* Let the screen handle events first.
      * The screen may or may not mark the event as "processed".
      */
     screen->handleEvent(ui, event);
-    
+
     /* Screen has no rows and does its own painting,
      * we can quit here.
      */

@@ -139,7 +139,7 @@ COMM_RC_t ImportExport::runImport(const DICT_t* dict, const DICTROW_t* row[], ui
         } else if( rc == COMM_RC_OK) {
             LOGV("runImport: %c%c: dType=%c, width=%d, count=%d\n", PACKET_NAME(cmd), dType, width, count);
             if( findDictEntry( row, cmd, &dictDataType, &dictOffset, &dictSize, &dictCount)) {
-                LOGV("runImport: dictType=%d, offset=%ld, size=%ld count=%d\n", dictDataType, dictOffset, dictSize, dictCount);
+                LOGV("runImport: dictType=%d, offset=%d, size=%d count=%d\n", dictDataType, dictOffset, dictSize, dictCount);
                 rc = comm.nextData( config+dictOffset, dType, width, count);
             } else {
                 LOGV("runImport: ERROR: No dictionary entry found for %c%c\n", PACKET_NAME(cmd));
@@ -159,7 +159,7 @@ bool ImportExport::findDictEntry( const DICTROW_t* row[], nameType_t cmd, uint8_
 
     uint8_t ri = 0;
 
-    while ((drow = pgm_read_ptr_far(&(row[ri++])))) {
+    while ((drow = (const DICTROW_t*)pgm_read_ptr_far(&(row[ri++])))) {
 
         name = pgm_read_word(&(drow->rowName));
 
@@ -192,7 +192,7 @@ void ImportExport::exportModulePhase(const DICTROW_t* row[], uint8_t* config)
 
     uint8_t ri = 0;
 
-    while ((drow = pgm_read_ptr_far(&(row[ri++])))) {
+    while ((drow = (const DICTROW_t*)pgm_read_ptr_far(&(row[ri++])))) {
 
         dataType = pgm_read_byte(&(drow->dataType));
         name = pgm_read_word(&(drow->rowName));
