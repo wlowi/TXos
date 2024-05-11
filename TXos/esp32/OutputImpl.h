@@ -30,7 +30,7 @@
 #include "TXos.h"
 #include "Controls.h"
 
-#define PPM_PORT            5
+#define PPM_PORT            15
 
 /*
  *      0  400     1000  1500  2000             22000

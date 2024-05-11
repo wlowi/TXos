@@ -204,22 +204,20 @@
     #define PORT_SWITCH_INPUT        
 #elif MECHANICAL_SWITCHES == 1
     #define PORT_SWITCH_INPUT_COUNT   1
-    #define PORT_SWITCH_INPUT         4
+    #define PORT_SWITCH_INPUT         17
 #elif MECHANICAL_SWITCHES == 2
     #define PORT_SWITCH_INPUT_COUNT   2
-    #define PORT_SWITCH_INPUT         4,16
+    #define PORT_SWITCH_INPUT         17,16
 #elif MECHANICAL_SWITCHES == 3
     #define PORT_SWITCH_INPUT_COUNT   3
-    #define PORT_SWITCH_INPUT         4,16,17
+    #define PORT_SWITCH_INPUT         17,16,4
 #elif MECHANICAL_SWITCHES == 4
     #define PORT_SWITCH_INPUT_COUNT   4
-    #define PORT_SWITCH_INPUT         4,16,17
+    #define PORT_SWITCH_INPUT         17,16,4,0
 #elif MECHANICAL_SWITCHES == 5
-    #define PORT_SWITCH_INPUT_COUNT   5
-    #define PORT_SWITCH_INPUT         4,16,17
+    #error "To many mechanical switches. Only 4 are supported"
 #elif MECHANICAL_SWITCHES == 6
-    #define PORT_SWITCH_INPUT_COUNT   6
-    #define PORT_SWITCH_INPUT         4,16,17
+    #error "To many mechanical switches. Only 4 are supported"
 #else
     #error "SWITCH CONFIG failed."
 #endif

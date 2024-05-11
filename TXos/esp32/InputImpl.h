@@ -30,8 +30,8 @@
 #include "TXos.h"
 #include "Controls.h"
 
-/* 10 bit ADC => 1023 */
-#define ADC_RESOLUTION 1023
+/* 12 bit ADC => 4096 */
+#define ADC_RESOLUTION 4096
 
 /* Invert raw channel values */
 #define INVERT_CH1

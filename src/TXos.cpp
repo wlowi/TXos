@@ -452,16 +452,17 @@ void setup( void) {
 
 #ifdef ARDUINO
 
+#ifdef ENABLE_SERIAL
+    //Serial.begin(115200);
+    Serial.begin(19200);
+#endif
+
     inputImpl = new InputImpl( PORT_ANALOG_INPUT_COUNT, PORT_TRIM_INPUT_COUNT, PORT_AUX_INPUT_COUNT,
                                AnalogPins,
                                PORT_SWITCH_INPUT_COUNT, switchConfiguration,
                                SwitchPins);
 
     outputImpl = new OutputImpl();
-    
-#ifdef ENABLE_SERIAL
-    Serial.begin(19200);
-#endif
    
 #endif
 
