@@ -30,44 +30,6 @@
 extern InputImpl *inputImpl;
 extern PortsImpl *portsImpl;
 
-/* 
- * ADC conversion complete interrupt. 
- */
-#if defined(ARDUINO_ARCH_AVR)
-ISR(ADC_vect) {
-
-    /* MUST read ADCL first */
-    channelValue_t v = ADCL;
-    v |= (ADCH << 8);
-
-    /* Disable ADC */
-    ADCSRA &= ~_BV(ADEN);
-    
-    if( inputImpl->mux < inputImpl->adcInputs) {
-
-#ifdef INVERT_CH1
-      if( inputImpl->mux == 0) v = ADC_RESOLUTION -v;
-#endif
-#ifdef INVERT_CH2
-      if( inputImpl->mux == 1) v = ADC_RESOLUTION -v;
-#endif
-#ifdef INVERT_CH3
-      if( inputImpl->mux == 2) v = ADC_RESOLUTION -v;
-#endif
-#ifdef INVERT_CH4
-      if( inputImpl->mux == 3) v = ADC_RESOLUTION -v;
-#endif
-
-      inputImpl->adcValues[inputImpl->mux] = v;
-      
-      inputImpl->mux++;
-      inputImpl->setMux();      
-    } else {
-      /* done */
-    }
-}
-#endif
-
 InputImpl::InputImpl( channel_t stickCnt, channel_t trimCnt, channel_t auxCnt,
                       const uint8_t analogPins[],
                       switch_t switches, const switchConf_t *conf,
@@ -93,33 +55,8 @@ InputImpl::InputImpl( channel_t stickCnt, channel_t trimCnt, channel_t auxCnt,
 
 void InputImpl::init() {
 
-#if defined(ARDUINO_ARCH_AVR)
-    ATOMIC_BLOCK( ATOMIC_RESTORESTATE) {
-    
-        /* Disable power reduction for ADC */
-        PRR0 &= ~_BV(PRADC);
-         
-        /* REFS1 = 0, REFS0 = 1   ==>   VCC with ext. cap. on AREF */
-        ADMUX = _BV(REFS0);
-        
-        /* Prescaler /128   ==>   16MHz / 128 = 125KHz */
-        ADCSRA = _BV(ADPS2) | _BV(ADPS1) | _BV(ADPS0);
-        ADCSRB = 0;
-
-        for( uint8_t i=0; i<adcInputs; i++) {
-          
-            uint8_t adc = analogPins[i];
-             
-            /* Disable Digital input on ADC pins */
-            if( adc < A8) {
-                DIDR0 |= (1 << (adc - A0));
-            } else {
-                DIDR2 |= (1 << (adc - A8));
-            }
-        }
-
-    }
-#endif
+    analogReadResolution( 10);
+    analogSetAttenuation( ADC_11db );
 
     for( uint8_t i=0; i<switches; i++) {
         portsImpl->portInit( switchPins[i], INPUT);
@@ -127,40 +64,6 @@ void InputImpl::init() {
 }
 
 void InputImpl::start() {
-
-#if defined(ARDUINO_ARCH_AVR)
-    ATOMIC_BLOCK( ATOMIC_RESTORESTATE) {
-      
-       mux = 0;
-       setMux();
-
-    }
-#endif
-
-}
-
-void InputImpl::setMux() {
-
-#if defined(ARDUINO_ARCH_AVR)
-    uint8_t adc;
-
-    if( mux < adcInputs) {
-
-        adc = analogPins[mux];
-
-        ADMUX &= ~(_BV(MUX4) | _BV(MUX3) | _BV(MUX2) | _BV(MUX1) | _BV(MUX0));
-        
-        if( adc < A8) {
-          ADMUX |= (adc - A0);
-          ADCSRB &= ~_BV(MUX5);
-        } else {
-          ADMUX |= (adc - A8);
-          ADCSRB |= _BV(MUX5);
-        }
-          
-        ADCSRA |= _BV(ADEN) | _BV(ADSC) | _BV(ADIE);
-    }
-#endif
 
 }
 
@@ -207,15 +110,9 @@ channelValue_t InputImpl::GetAnalogValue( channel_t ch) {
     channelValue_t v;
 
     if( ch < adcInputs) {
-#if defined(ARDUINO_ARCH_AVR)
-      ATOMIC_BLOCK( ATOMIC_RESTORESTATE) {
-          v = adcValues[ch];
-      }
-#elif defined(ARDUINO_ARCH_ESP32)
-# warning FIXIT
-      v = 0;   
-#endif
-      return v;
+
+        v = analogRead( analogPins[ch]);
+        return v;
     }
 
     LOGV("InputImpl::GetStickValue: Illegal channel no. %d", ch);

@@ -30,15 +30,6 @@
 #include "TXos.h"
 #include "Controls.h"
 
-/* 12 bit ADC => 4096 */
-#define ADC_RESOLUTION 4096
-
-/* Invert raw channel values */
-#define INVERT_CH1
-#define INVERT_CH2
-#undef  INVERT_CH3
-#define INVERT_CH4
-
 class InputImpl
 {
     private:
@@ -59,15 +50,12 @@ class InputImpl
         channel_t adcInputs;  /* Total number of ADC inputs */
         switch_t switches;
 
-        uint8_t mux;
-
         InputImpl( channel_t stickCnt, channel_t trimCnt, channel_t auxCnt, const uint8_t analogPins[],
                    switch_t switches, const switchConf_t *conf, const uint8_t switchPins[]);
 
         void init();
 
         void start();
-        void setMux();
 
         switch_t GetSwitches();
 
