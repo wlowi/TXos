@@ -41,7 +41,6 @@ static uint8_t outputState;
 #define END_OF_MARK             2
 #define END_OF_LAST_SPACE       4
 
-/* inFrameTime is used to compute the remaining time until frame end */
 static timingUsec_t lastChStart_uSec;
 static timingUsec_t maxFrameTime_uSec;
 static channel_t outputChannel;
@@ -49,14 +48,18 @@ static channel_t outputChannel;
 /* 1Mhz results in 1 usec resolution */
 static hw_timer_t *ppmTimer = NULL;
 
+/*
 #define PIN_LOW()  digitalWrite( PPM_PORT, false)
 #define PIN_HIGH() digitalWrite( PPM_PORT, true)
+*/
+#define PIN_LOW()  gpio_set_level( (gpio_num_t)PPM_PORT, 0)
+#define PIN_HIGH() gpio_set_level( (gpio_num_t)PPM_PORT, 1)
 
 /* This compensates time from begin of ISR to actual timer reset */
-#define RESET_ADJUST 9
+#define RESET_ADJUST 6
 
 /* This compensates ISR service time */
-#define ISR_ADJUST   2
+#define ISR_ADJUST   3
 
 portMUX_TYPE ppmMux = portMUX_INITIALIZER_UNLOCKED;
 
@@ -95,7 +98,7 @@ void ARDUINO_ISR_ATTR ppmTimerISR() {
     case BEGIN_OF_FIRST_SPACE:
         PIN_LOW();
         timerWrite( ppmTimer, RESET_ADJUST);
-    
+
         if( inFrameTime_uSec > maxFrameTime_uSec) {
             maxFrameTime_uSec = inFrameTime_uSec;
         }
@@ -113,7 +116,7 @@ void ARDUINO_ISR_ATTR ppmTimerISR() {
 
     default:
         PIN_LOW();
-        timerWrite( ppmTimer, RESET_ADJUST);
+        timerWrite( ppmTimer, 0);
         nextTimerValue_uSec = PPM_INIT_usec;
         outputState = BEGIN_OF_FIRST_SPACE;
     }
@@ -191,8 +194,8 @@ uint16_t OutputImpl::getOverrunCounter() {
 }
 
 /* Switch active and modifiable set.
- * Increate the ppmOverrun counter if the channelSetDone flag has not
- * been set.
+ * Increase the ppmOverrun counter if the channelSetDone flag has not
+ * been set in time.
  */
 void OutputImpl::switchSet() {
 
@@ -207,7 +210,7 @@ void OutputImpl::switchSet() {
 
 bool OutputImpl::acceptChannels() {
 
-    return true;
+    return !channelSetDone;
 }
 
 /* Set timing for a channel.

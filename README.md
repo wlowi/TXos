@@ -2,23 +2,21 @@
 
 [Bedienungsanleitung](MANUAL.md)
 
+---
 ## Unterstützte Hardware
-
 
 ### Arduino CPU Board
 
 - Joy-IT ADR MEGA2560PRO
-
+- ESP32 DevKit 38 Pin (THIS IS EXPERIMENTAL)
 
 ### Display
 
 - ST7735 1,8" Color TFT Display
 
-
 ### Drück-Dreh Encoder
 
 - Z.Bsp. von ALPS
-
 
 ### PPM HF-Module
 
@@ -83,6 +81,7 @@
 - Schalter Monitor
 - Import und Export der Modelle zum PC über USB Schnittstelle
 
+---
 ## Blockschaltbild der Funktionen
 
 ![Blockschaltbild](doc/TXos-Blockschaltbild.png "Blockschaltbild")
@@ -90,10 +89,47 @@
 ---
 ## Installation
 
+### Übersetzen mit der Arduino IDE 
+
+#### Für ADR MEGA2560PRO
+
+Benötigte Arduino Libraries
+- Adafruit ST7736 and ST7789 Library
+- Adafruit GFX Library
+- TO_BE_COMPLETED
+
+`cd TXos`  
+`./mklinks atmega2560`  
+
+Dieses Kommando verlinkt die Dateien im `src` Verzeichnis nach `TXos`.
+
+Fall noch keine lokale Konfigurationsdtei TXosLocalConfig.h existiert wird diese von einer Musterdatei kopiert und muss an die eigen Hardware konfiguration angepasst werden.
+
+Mit der Arduino IDE kann dann in diesem Verzeichnis TXos compiliert werden.
+
+Notwendige Einstellungen der Arduino IDE
+
+TO_BE_COMPLETED
+
+#### Für ESP32 (WARNING: EXPERMENTAL)
+
+Benötigte Arduino Libraries
+- TFT_eSPI
+- TO_BE_COMPLETED
+
+`cd TXos`  
+`./mklinks esp32`  
+
+Mit der Arduino IDE kann dann in diesem Verzeichnis TXos compiliert werden.
+
+Notwendinge Einstellungen der Arduino IDE
+
+![Arduino IDE Einstellungen für ESP32](img/Arduino_IDE_ESP32.png "Arduino IDE Einstellungen für ESP32")
+
+---
 ### Grundsätzliche Konfiguration:
 
-In TXos/atmega2560/InputImp.h
-
+In TXos/InputImp.h
 
 Falls ein Potentiometer falsch angeschlossen ist kann hier die Wirkrichtung
 umgekehrt werden.
@@ -104,80 +140,19 @@ umgekehrt werden.
 `#undef  INVERT_CH3`  
 `#define INVERT_CH4`  
 
+---
 
-In test/TXosConfig.h
-
+In TXos/TXosLocalConfig.h
 
 Hier werden eingestellt:
 
-Anzahl der Analog Channels. Dazu zählen Analog Eingänge und Schaltkanäle.
-
-ANALOG_CHANNELS
-
-Anzahl der Schaltkanäle
-
-SWITCHED_CHANNELS
-
-Anzahl der Servo Kanäle
-
-PPM_CHANNELS
-
-
-
-### Schalter Konfiguration
-
-SWITCHES  
-
-MECHANICAL_SWITCHES  
-MECHANICAL_SWITCHES_FIRST_IDX  
-
-CHANNEL_SWITCHES  
-CHANNEL_SWITCHES_FIRST_IDX  
-
-LOGIC_SWITCHES  
-LOGIC_SWITCHES_FIRST_IDX  
-
-PHASE_SWITCHES  
-PHASE_SWITCHES_FIRST_IDX  
-
-SWITCH_CONFIGURATION  
-
-
-### Ports und Analog Eingänge
-
-Die folgenden defines legen die Arduino Port Nummern fest:
-
-PORT_ANALOG_INPUT_COUNT  
-PORT_ANALOG_INPUT  
-
-PORT_TRIM_INPUT_COUNT  
-PORT_TRIM_INPUT  
-
-PORT_AUX_INPUT_COUNT  
-PORT_AUX_INPUT  
-
-PORT_SWITCH_INPUT_COUNT  
-PORT_SWITCH_INPUT  
-
-PORT_HF_RELAIS  
-PORT_BIND_RELAIS  
-PORT_BUZZER  
-
----
-## Verzeichnisstruktur
-
-
-
-
----
-## Übersetzen mit der Arduino IDE 
-
-`cd TXos`  
-`./mklinks`  
-
-Dieses Kommando verlinkt die Dateien im `src` Verzeichnis nach `TXos`.
-
-Mit der Arduino IDE kann dann in diesem Verzeichnis TXos compiliert werden.
+- Die Sprache der Benutzeroberfläche
+- Das verwendete HF Modul
+- Die Anzahl der PPM Kanäle
+- Die Anzahl der Analog Kanäle
+- Die Anzahl der Schalter (mechanische, logische und Sonderschalter)
+- Die Anzahl der Flugphasen
+- Die Anzahl der freien Mischer
 
 ---
 ## TXos Simulator
