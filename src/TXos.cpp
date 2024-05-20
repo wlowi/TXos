@@ -28,9 +28,9 @@
  * TXos - RC Transmitter OS
  *
  * 
- * ==============================
- * Port usage
- * ==============================
+ * =============================================================
+ * Port usage for AtMega2560
+ * =============================================================
  * 
  * PPM Output
  * ==========
@@ -97,10 +97,8 @@
  * PB1 SCK              SCK    7
  *                      +3.3V  8
  * 
- * 
- * ==============================
  * Timer usage
- * ==============================
+ * ===========
  * 
  * Timer 0   8 bit       Arduino micros() millis() delay()...
  * Timer 1  16 bit       Buzzer Sound      BuzzerImpl.cpp
@@ -108,6 +106,75 @@
  * Timer 3  16 bit       PPM generation    OutputImpl.cpp
  * Timer 4  16 bit 
  * Timer 5  16 bit 
+ * 
+ * 
+ * 
+ * =============================================================
+ * Port usage for ESP32 DevKit (38Pins)
+ * =============================================================
+ * 
+ * PPM Output
+ * ==========
+ * 
+ * GPIO15    PPM Out
+ * 
+ * Switches
+ * ========
+ * 
+ * GPIO17    Digital 1
+ * GPIO16    Digital 2
+ * GPIO4     Digital 3
+ * GPIO0     Digital 4
+ * 
+ * Analog Input
+ * ============
+ * 
+ * GPIO36 ADC1_0    Analog 1
+ * GPIO39 ADC1_3    Analog 2
+ * GPIO34 ADC1_6    Analog 3
+ * GPIO35 ADC1_7    Analog 4
+ * GPIO32 ADC1_4    Analog 5
+ * GPIO33 ADC1_5    Analog 6
+ * 
+ * GPIO25 ADC2_8    Trim 1
+ * GPIO26 ADC2_9    Trim 2
+ * GPIO27 ADC2_7    Trim 3
+ * GPIO14 ADC2_6    Trim 4
+ * 
+ * GPIO12 ADC2_5    Vcc Monitor
+ * 
+ * Rotary Encoder
+ * ==============
+ * 
+ * GPIO22     Rotary Encoder A
+ * GPIO21     Rotary Encoder B
+ * GPIO19     Rotary Encoder Switch
+ * 
+ * Buzzer
+ * ======
+ * GPIO13     Buzzer
+ * 
+ * Relais
+ * ======
+ * GPIO1      HF on
+ * GPIO3      Bind
+ * 
+ * Display
+ * =======
+ *                +5V    1  
+ *                GND    2
+ * GPIO5          CS     3
+ * EN             RESET  4
+ * GPIO2          A0/DC  5
+ * GPIO23 MOSI    DATA   6
+ * GPIO18 SCK     SCK    7
+ *                +3.3V  8
+ * 
+ * Timer usage
+ * ===========
+ * 
+ * Timer 0         PPM generation    OutputImpl.cpp
+ * Timer 1         Buzzer Sound      BuzzerImpl.cpp
  * 
  */
 
@@ -453,8 +520,8 @@ void setup( void) {
 #ifdef ARDUINO
 
 #ifdef ENABLE_SERIAL
-    //Serial.begin(115200);
-    Serial.begin(19200);
+    Serial.begin(115200);
+    //Serial.begin(19200);
 #endif
 
     inputImpl = new InputImpl( PORT_ANALOG_INPUT_COUNT, PORT_TRIM_INPUT_COUNT, PORT_AUX_INPUT_COUNT,

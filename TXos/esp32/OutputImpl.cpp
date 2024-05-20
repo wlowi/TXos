@@ -42,26 +42,27 @@ static uint8_t outputState;
 #define END_OF_LAST_SPACE       4
 
 /* inFrameTime is used to compute the remaining time until frame end */
-static timingUsec_t inFrameTime_uSec;
+static timingUsec_t lastChStart_uSec;
 static timingUsec_t maxFrameTime_uSec;
 static channel_t outputChannel;
 
 /* 1Mhz results in 1 usec resolution */
-static hw_timer_t *ppmTimer;
+static hw_timer_t *ppmTimer = NULL;
 
 #define PIN_LOW()  digitalWrite( PPM_PORT, false)
 #define PIN_HIGH() digitalWrite( PPM_PORT, true)
 
 /* This compensates time from begin of ISR to actual timer reset */
-#define RESET_ADJUST 3
+#define RESET_ADJUST 9
 
 /* This compensates ISR service time */
-#define ISR_ADJUST   5
+#define ISR_ADJUST   2
 
 portMUX_TYPE ppmMux = portMUX_INITIALIZER_UNLOCKED;
 
 void ARDUINO_ISR_ATTR ppmTimerISR() {
 
+    timingUsec_t inFrameTime_uSec;
     timingUsec_t nextTimerValue_uSec;
 
     inFrameTime_uSec = (timingUsec_t)timerRead( ppmTimer);
@@ -71,14 +72,14 @@ void ARDUINO_ISR_ATTR ppmTimerISR() {
     switch (outputState) {
     case END_OF_SPACE:
         PIN_HIGH();
-        nextTimerValue_uSec = outputImpl->ppmSet[outputImpl->currentSet].channel[outputChannel] - PPM_SPACE_usec;
-
+        nextTimerValue_uSec = lastChStart_uSec + outputImpl->ppmSet[outputImpl->currentSet].channel[outputChannel];
         outputState = END_OF_MARK;
         break;
 
     case END_OF_MARK:
         PIN_LOW();
-        nextTimerValue_uSec = PPM_SPACE_usec;
+        nextTimerValue_uSec = inFrameTime_uSec + PPM_SPACE_usec;
+        lastChStart_uSec = inFrameTime_uSec;
 
         outputChannel++;
         if (outputChannel < PPM_CHANNELS) {
@@ -100,24 +101,25 @@ void ARDUINO_ISR_ATTR ppmTimerISR() {
         }
 
         nextTimerValue_uSec = PPM_SPACE_usec;
-        inFrameTime_uSec = 0;
+        lastChStart_uSec = 0;
         outputState = END_OF_SPACE;
         break;
 
     case END_OF_LAST_SPACE:
         PIN_HIGH();
-        nextTimerValue_uSec = PPM_FRAME_usec - inFrameTime_uSec;
-
+        nextTimerValue_uSec = PPM_FRAME_usec;
         outputState = BEGIN_OF_FIRST_SPACE;
         break;
 
     default:
-        nextTimerValue_uSec = 0;
+        PIN_LOW();
+        timerWrite( ppmTimer, RESET_ADJUST);
+        nextTimerValue_uSec = PPM_INIT_usec;
+        outputState = BEGIN_OF_FIRST_SPACE;
     }
 
     portEXIT_CRITICAL(&ppmMux);
 
-    nextTimerValue_uSec += inFrameTime_uSec;
     nextTimerValue_uSec -= ISR_ADJUST;
 
     timerAlarmWrite( ppmTimer, nextTimerValue_uSec, false);
@@ -132,7 +134,7 @@ OutputImpl::OutputImpl() {
  * - Set all channels to mid.
  * - Switch PPM pin to output.
  * - Initialize timer
- *     Timer 3 counts at a rate of 2Mhz ( 0.5 micro sec. )
+ *     Timer counts at a rate of 1Mhz ( 1 micro sec. )
  */
 void OutputImpl::init() {
 
@@ -146,7 +148,6 @@ void OutputImpl::init() {
     channelSetDone = true;
 
     outputChannel = 0;
-    inFrameTime_uSec = 0;
     maxFrameTime_uSec = 0;
     outputState = BEGIN_OF_FIRST_SPACE;
 
@@ -157,7 +158,7 @@ void OutputImpl::init() {
 
     if( ppmTimer)
     {
-        timerAttachInterrupt( ppmTimer, &ppmTimerISR, true);
+        timerAttachInterrupt( ppmTimer, &ppmTimerISR, false);
         timerAlarmWrite( ppmTimer, PPM_INIT_usec, false);
         timerAlarmEnable( ppmTimer);
     }
@@ -180,7 +181,13 @@ timingUsec_t OutputImpl::getMaxFrameTime() {
  */
 uint16_t OutputImpl::getOverrunCounter() {
 
-    return ppmOverrun;
+    uint16_t c;
+
+    portENTER_CRITICAL(&ppmMux);
+    c = ppmOverrun;
+    portEXIT_CRITICAL(&ppmMux);
+
+    return c;
 }
 
 /* Switch active and modifiable set.

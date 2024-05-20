@@ -38,9 +38,10 @@ class BuzzerImpl {
 
     private:
         Ports *ports;
-        buzzerCmd_t sound[BUZZER_SOUND_LEN];
-        const buzzerCmd_t *soundAlarm;
-        bool alarm;
+        volatile buzzerCmd_t sound[BUZZER_SOUND_LEN];
+        volatile uint8_t sndIdx;
+        volatile const buzzerCmd_t *soundAlarm;
+        volatile bool alarm;
 
     public:
         BuzzerImpl();

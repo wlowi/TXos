@@ -90,10 +90,10 @@ typedef uint8_t buzzerCmd_t;
 #define BUZZER_REPEAT( s, c)   ((buzzerCmd_t)((BUZZER_REPEAT_CMD) | (((s) & 0x07) << 3) | ((c) & 0x07)))
 
 /* Extract from buzzer command */
-#define BUZZER_CMD( v)         ((v) & 0xc0)
-#define BUZZER_TIME( v)        ((v) & 0x3f)
-#define BUZZER_STEP( v)        (((v) >> 3) & 0x07)
-#define BUZZER_COUNT( v)       ((v) & 0x07)
+#define BUZZER_CMD( v)         (((buzzerCmd_t)v) & 0xc0)
+#define BUZZER_TIME( v)        (((buzzerCmd_t)v) & 0x3f)
+#define BUZZER_STEP( v)        ((((buzzerCmd_t)v) >> 3) & 0x07)
+#define BUZZER_COUNT( v)       (((buzzerCmd_t)v) & 0x07)
 
 #define BUZZER_SOUND_LEN       8
 

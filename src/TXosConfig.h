@@ -223,7 +223,7 @@
 #endif
 
 
-#define PORT_HF_RELAIS            2
+#define PORT_HF_RELAIS            1
 #define PORT_BIND_RELAIS          3
 #define PORT_BUZZER              13
 
@@ -247,7 +247,7 @@
  */
 #define ADC_VOLTAGE               330
 /* 10 bits => 1024 steps */
-#define ADC_VCC_RESOLUTION       4096
+#define ADC_VCC_RESOLUTION       1024
 
 
 #else
