@@ -2,6 +2,8 @@
 
 [Bedienungsanleitung](MANUAL.md)
 
+[Robbe Supra PCMS Umbau](SUPRA.md)
+
 ---
 ## Unterstützte Hardware
 
