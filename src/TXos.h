@@ -34,7 +34,7 @@
 #endif
 
 
-#define TXOS_VERSION "0.5.5"
+#define TXOS_VERSION "0.5.6"
 
 #undef ENABLE_LOGGING
 
@@ -54,7 +54,7 @@
     #define LOGV( f, ... ) printf( f, __VA_ARGS__)
 #endif
 
-#else 
+#else
     #define LOG( f )
     #define LOGV( f, ... )
 #endif
@@ -99,7 +99,7 @@ typedef enum {
  *  4 Switch is always on
  *  5 Switch is a logic switch (2-state, boolean combination of switches)
  *  6 Switch reflects all flight phases (3-state)
- * 
+ *
  * NOTE: If you add a switch type, please modify
  *       Controls::copySwitchName()
  */

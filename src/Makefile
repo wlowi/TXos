@@ -47,9 +47,9 @@ OUTPUT_OBJ = output/Output.o output/Ports.o output/Buzzer.o
 MODULE_OBJ = modules/ModelSelect.o modules/Model.o modules/EngineCut.o modules/ServoReverse.o modules/ServoSubtrim.o modules/ServoLimit.o \
   modules/SwitchMonitor.o modules/ServoMonitor.o modules/CalibrateSticks.o modules/CalibrateTrim.o \
   modules/Bind.o modules/RangeTest.o modules/DualExpo.o modules/Phases.o modules/Timer.o modules/VccMonitor.o modules/PhasesTrim.o \
-  modules/SwitchedChannels.o modules/AssignInput.o modules/ServoRemap.o modules/AnalogSwitch.o modules/ChannelRange.o \
+  modules/SwitchedChannels.o modules/AssignInput.o modules/ServoRange.o modules/ServoRemap.o modules/AnalogSwitch.o modules/ChannelRange.o \
   modules/ChannelReverse.o modules/ChannelDelay.o modules/Mixer.o modules/Statistics.o modules/LogicSwitch.o modules/ModeAssign.o \
-  modules/AnalogTrim.o modules/ServoTest.o modules/ImportExport.o
+  modules/AnalogTrim.o modules/DigitalTrim.o modules/ServoTest.o modules/ImportExport.o
 
 CXXFLAGS += -g -O0 -Wall -Wpedantic -Wextra -Wno-unused-parameter -DARDUINO_ARCH_EMU
 
@@ -77,15 +77,15 @@ endif
 
 all: $(PROGRAM)
 
-unittest: $(UNITTEST) 
+unittest: $(UNITTEST)
 
 run:
 	./$(PROGRAM)
 
 $(PROGRAM):$(OBJECTS) $(EMU_OBJ) $(PROGRAM).o
-	$(CXX) -g $(CXXINC) -o $(PROGRAM) $(PROGRAM).o $(OBJECTS) $(EMU_OBJ) $(WX_LIBS) 
+	$(CXX) -g $(CXXINC) -o $(PROGRAM) $(PROGRAM).o $(OBJECTS) $(EMU_OBJ) $(WX_LIBS)
 
-$(UNITTEST):$(OBJECTS) $(UTOBJECTS) $(UTEMU_OBJ) $(UNITTEST).o 
+$(UNITTEST):$(OBJECTS) $(UTOBJECTS) $(UTEMU_OBJ) $(UNITTEST).o
 	$(CXX) -g -DUNITTEST $(CXXINC) -o $(UNITTEST) $(UNITTEST).o $(OBJECTS) $(UTEMU_OBJ) $(UTOBJECTS)
 
 clean:

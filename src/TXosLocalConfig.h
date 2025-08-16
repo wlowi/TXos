@@ -39,7 +39,7 @@
  * #define UI_EXTERNAL_USERTERM_DISPLAY to
  *   Redirect display output to external user terminal
  *   NOTE: This does not use input of external user terminal
- * 
+ *
  * #define UI_EXTERNAL_USERTERM_INPUT
  *   In addition to UI_EXTERNAL_USERTERM_DISPLAY,
  *   define this if you want to process input (buttons, rotary encoder) from external user terminal
@@ -48,12 +48,12 @@
 //#define UI_EXTERNAL_USERTERM_INPUT
 
 
-/* HF Module 
+/* HF Module
  *
  * HF_SPEKTRUM_PPM
  *   enable bind and range test module
  *   9 channels
- * 
+ *
  * HF_JETI_TU2
  *   disable bind and range test module
  *   9 to 16 channels, but only 9 supported currently.
@@ -82,6 +82,14 @@
 #define SWITCHED_CHANNELS             (3)
 
 
+/* Digital (Button) or Analog (Poti) Trim for stick channels
+ *
+ * DIGITAL_TRIM
+ * ANALOG_TRIM
+ */
+#define STICK_TRIM                ANALOG_TRIM
+
+
 /* Numer of hardware switches.
  * 2-state and 3-state switches
  * MAXIMUM = 6
@@ -90,7 +98,7 @@
 
 /* Number of switches controlled by analog channels.
  * Geberschalter
- * MAXIMUM = 3 
+ * MAXIMUM = 3
  */
 #define CHANNEL_SWITCHES              (3)
 
@@ -105,7 +113,7 @@
 /* Total number of switches. Max is 16.
  * This includes channel switches and logical switches
  * and 2 implicit switches (ALWAYS ON and PHASES)
- * 
+ *
  * DO NOT MODIFY!
  */
 #define SWITCHES                      (MECHANICAL_SWITCHES + CHANNEL_SWITCHES + LOGIC_SWITCHES +2)
@@ -143,7 +151,7 @@ const switchConf_t switchConfiguration[SWITCHES] = { \
 };
 
 /* Number of phases.
- * A value > 3 does not make any sense because we only 
+ * A value > 3 does not make any sense because we only
  * have tri-state switches.
  */
 #define PHASES                   (3)

@@ -35,6 +35,10 @@
 #define HF_SPEKTRUM_PPM 1
 #define HF_JETI_TU2     2
 
+/* Trim mode */
+#define ANALOG_TRIM     1
+#define DIGITAL_TRIM    2
+
 #include "TXosLocalConfig.h"
 
 /* Analog input channels */
@@ -66,6 +70,14 @@
 #define LOGIC_SWITCHES_FIRST_IDX      (CHANNEL_SWITCHES_FIRST_IDX + CHANNEL_SWITCHES +1)
 
 
+/* Digital (Button) or Analog (Poti) Trim for stick channels
+ *
+ * DIGITAL_TRIM
+ * ANALOG_TRIM
+ */
+#ifndef STICK_TRIM
+#define STICK_TRIM                ANALOG_TRIM
+#endif
 
 
 #if defined(ARDUINO_ARCH_AVR) || defined(ARDUINO_ARCH_EMU)

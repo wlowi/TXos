@@ -39,7 +39,7 @@ InputImpl::InputImpl( wxWindow *parent,
     this->trimCount = trimCnt;
     this->auxCount = auxCnt;
 
-    this->channels = stickCnt + trimCnt + auxCnt;
+    this->channels = stickCount + trimCount + auxCount;
     this->switches = switches;
     this->switchConf = conf;
 
@@ -68,10 +68,12 @@ InputImpl::InputImpl( wxWindow *parent,
             hboxInner = new wxStaticBoxSizer( wxHORIZONTAL, parent, "Sticks");
             hbox->Add( hboxInner);
             hbox->AddSpacer(10);
+#if STICK_TRIM == ANALOG_TRIM
         } else if( channel == stickCount) {
             hboxInner = new wxStaticBoxSizer(wxHORIZONTAL, parent, "Trim");
             hbox->Add( hboxInner);
             hbox->AddSpacer(10);
+#endif
         } else if( channel == stickCount + trimCount) {
             hboxInner = new wxStaticBoxSizer(wxHORIZONTAL, parent, "Aux");
             hbox->Add( hboxInner);
@@ -87,8 +89,10 @@ InputImpl::InputImpl( wxWindow *parent,
         wxString str;
         if( channel < stickCount) {
             str.Printf(wxT("CH%d"), channel+1);
+#if STICK_TRIM == ANALOG_TRIM
         } else if( channel < stickCount + trimCount) {
             str.Printf(wxT("Trim%d"), channel+1-stickCount);
+#endif
         } else {
             str.Printf(wxT("AUX%d"), channel+1-stickCount-trimCount);        
         }
@@ -174,7 +178,11 @@ channelValue_t InputImpl::GetStickValue( int ch) {
 
 channelValue_t InputImpl::GetTrimValue( int ch) {
 
+#if STICK_TRIM == ANALOG_TRIM
     return chValues[ch + stickCount];
+#else
+    return 0;
+#endif
 }
 
 channelValue_t InputImpl::GetAuxValue( int ch) {

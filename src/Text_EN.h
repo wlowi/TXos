@@ -52,6 +52,7 @@
 #define TEXT_MODULE_PHASES_TRIM       CC("Phases Trim")
 #define TEXT_MODULE_RANGE_TEST        CC("Range Test")
 #define TEXT_MODULE_SERVO_LIMIT       CC("Servo Limit")
+#define TEXT_MODULE_SERVO_RANGE       CC("Servo Range")
 #define TEXT_MODULE_SERVO_REMAP       CC("Servo Remap")
 #define TEXT_MODULE_SERVO_REVERSE     CC("Servo Reverse")
 #define TEXT_MODULE_SERVO_SUBTRIM     CC("Servo Subtrim")
@@ -241,7 +242,7 @@
                                       //1234567890123
 #define TEXT_MSG_NONE               CC(" ")
 
-#define MSG_BAD_SYSCONFIG           ((uint8_t)1) 
+#define MSG_BAD_SYSCONFIG           ((uint8_t)1)
                                       //1234567890123
 #define TEXT_MSG_BAD_SYSCONFIG      CC("Bad Sysconfig")
 

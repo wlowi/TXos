@@ -121,9 +121,15 @@ MyFrame::MyFrame()
     wxBoxSizer *hbox = new wxBoxSizer(wxHORIZONTAL);
 
     hbox->AddSpacer(10);
+#if STICK_TRIM == ANALOG_TRIM
     inputImpl =  new InputImpl( panel, 
                                 PORT_ANALOG_INPUT_COUNT, PORT_TRIM_INPUT_COUNT, PORT_AUX_INPUT_COUNT,
                                 PORT_SWITCH_INPUT_COUNT, switchConfiguration);
+#else
+    inputImpl =  new InputImpl( panel, 
+                                PORT_ANALOG_INPUT_COUNT, 0, PORT_AUX_INPUT_COUNT,
+                                PORT_SWITCH_INPUT_COUNT, switchConfiguration);
+#endif
     hbox->Add( inputImpl);
     hbox->AddSpacer(10);
     displayImpl =  new DisplayImpl( panel);

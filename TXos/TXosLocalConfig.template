@@ -82,6 +82,14 @@
 #define SWITCHED_CHANNELS             (3)
 
 
+/* Digital (Button) or Analog (Poti) Trim for stick channels
+ *
+ * DIGITAL_TRIM
+ * ANALOG_TRIM
+ */
+#define STICK_TRIM                ANALOG_TRIM
+
+
 /* Numer of hardware switches.
  * 2-state and 3-state switches
  * MAXIMUM = 6

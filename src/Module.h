@@ -81,6 +81,7 @@ class ImportExport;
 #define MODULE_CHANNEL_DELAY_TYPE       ((moduleType_t)66)
 #define MODULE_LOGIC_SWITCH_TYPE        ((moduleType_t)67)
 #define MODULE_ANALOG_TRIM_TYPE         ((moduleType_t)68)
+#define MODULE_SERVO_RANGE_TYPE         ((moduleType_t)69)
 
 /***** Configuration definition macros *****/
 
@@ -155,7 +156,7 @@ class Module : public TextUIScreen {
     public:
         Module( moduleType_t mType, const char *name, nameType_t cType);
         friend class ModuleManager;
-        
+
         /* */
         virtual void run( Controls &controls) = 0;
 
@@ -164,11 +165,11 @@ class Module : public TextUIScreen {
 
         /* Called when module is entered from menu */
         virtual void moduleEnter() { /* noop */ }
-        
+
         /* Called before leaving module */
         virtual void moduleExit() { /* noop */ }
 
-        /* Called whenever a flight phase changes. 
+        /* Called whenever a flight phase changes.
          * The overrides are automatically defined in
          * Phases.h NO_CONFIG, PHASED_CONFIG an NON_PHASED_CONFIG macros.
          */
@@ -199,7 +200,7 @@ class Module : public TextUIScreen {
         bool goBackItem() { return true; }
         void activate(TextUI *ui);
         void deactivate(TextUI *ui);
-        
+
         bool isRowEditable(uint8_t row) { return true; }
         bool isColEditable(uint8_t row, uint8_t col) { return true; }
         const char *getMenuName() final;

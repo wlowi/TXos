@@ -27,19 +27,19 @@
 /*
  * TXos - RC Transmitter OS
  *
- * 
+ *
  * =============================================================
  * Port usage for AtMega2560
  * =============================================================
- * 
+ *
  * PPM Output
  * ==========
- * 
+ *
  * PE3 D5    PPM Out
- * 
+ *
  * Switches
  * ========
- * 
+ *
  * PA0 D22   Digital 1
  * PA1 D23   Digital 2
  * PA2 D24   Digital 3
@@ -48,10 +48,10 @@
  * PA5 D27   Digital 6
  * PA6 D28
  * PA7 D29
- * 
+ *
  * Analog Input
  * ============
- * 
+ *
  * PF0 D54 A0    Analog 1
  * PF1 D55 A1    Analog 2
  * PF2 D56 A2    Analog 3
@@ -60,7 +60,7 @@
  * PF5 D59 A5    Analog 6
  * PF6 D60 A6
  * PF7 D61 A7
- * 
+ *
  * PK0 D62 A8  PCINT16     Trim 1
  * PK1 D63 A9  PCINT17     Trim 2
  * PK2 D64 A10 PCINT18     Trim 3
@@ -69,26 +69,26 @@
  * PK5 D67 A13 PCINT21     ( Rotary Encoder B )
  * PK6 D68 A14 PCINT22     ( Rotary Encoder Switch )
  * PK7 D69 A15 PCINT23     Vcc Monitor
- * 
+ *
  * Rotary Encoder
  * ==============
- * 
+ *
  * PK2 A12 PCINT20     Rotary Encoder A
  * PK3 A13 PCINT21     Rotary Encoder B
  * PK4 A14 PCINT22     Rotary Encoder Switch
- * 
+ *
  * Buzzer
  * ======
  * PC6 D31             Buzzer
- * 
+ *
  * Relais
  * ======
  * PE5 D2              HF on
  * PE4 D3              Bind
- * 
+ *
  * Display
  * =======
- *                      +5V    1  
+ *                      +5V    1
  *                      GND    2
  * PB4 D10 PCINT4       CS     3
  *     RESET            RESET  4
@@ -96,72 +96,72 @@
  * PB2 MOSI             DATA   6
  * PB1 SCK              SCK    7
  *                      +3.3V  8
- * 
+ *
  * Timer usage
  * ===========
- * 
+ *
  * Timer 0   8 bit       Arduino micros() millis() delay()...
  * Timer 1  16 bit       Buzzer Sound      BuzzerImpl.cpp
- * Timer 2   8 bit 
+ * Timer 2   8 bit
  * Timer 3  16 bit       PPM generation    OutputImpl.cpp
- * Timer 4  16 bit 
- * Timer 5  16 bit 
- * 
- * 
- * 
+ * Timer 4  16 bit
+ * Timer 5  16 bit
+ *
+ *
+ *
  * =============================================================
  * Port usage for ESP32 DevKit (38Pins)
  * =============================================================
- * 
+ *
  * PPM Output
  * ==========
- * 
+ *
  * GPIO15    PPM Out
- * 
+ *
  * Switches
  * ========
- * 
+ *
  * GPIO17    Digital 1
  * GPIO16    Digital 2
  * GPIO4     Digital 3
  * GPIO0     Digital 4
- * 
+ *
  * Analog Input
  * ============
- * 
+ *
  * GPIO36 ADC1_0    Analog 1
  * GPIO39 ADC1_3    Analog 2
  * GPIO34 ADC1_6    Analog 3
  * GPIO35 ADC1_7    Analog 4
  * GPIO32 ADC1_4    Analog 5
  * GPIO33 ADC1_5    Analog 6
- * 
+ *
  * GPIO25 ADC2_8    Trim 1
  * GPIO26 ADC2_9    Trim 2
  * GPIO27 ADC2_7    Trim 3
  * GPIO14 ADC2_6    Trim 4
- * 
+ *
  * GPIO12 ADC2_5    Vcc Monitor
- * 
+ *
  * Rotary Encoder
  * ==============
- * 
+ *
  * GPIO22     Rotary Encoder A
  * GPIO21     Rotary Encoder B
  * GPIO19     Rotary Encoder Switch
- * 
+ *
  * Buzzer
  * ======
  * GPIO13     Buzzer
- * 
+ *
  * Relais
  * ======
  * GPIO1      HF on
  * GPIO3      Bind
- * 
+ *
  * Display
  * =======
- *                +5V    1  
+ *                +5V    1
  *                GND    2
  * GPIO5          CS     3
  * EN             RESET  4
@@ -169,13 +169,13 @@
  * GPIO23 MOSI    DATA   6
  * GPIO18 SCK     SCK    7
  *                +3.3V  8
- * 
+ *
  * Timer usage
  * ===========
- * 
+ *
  * Timer 0         PPM generation    OutputImpl.cpp
  * Timer 1         Buzzer Sound      BuzzerImpl.cpp
- * 
+ *
  */
 
 #include "TXos.h"
@@ -198,11 +198,15 @@
 #include "ServoMonitor.h"
 #include "SwitchMonitor.h"
 #include "EngineCut.h"
+#include "ServoRange.h"
 #include "ServoReverse.h"
 #include "ServoSubtrim.h"
 #include "ServoLimit.h"
 #include "CalibrateSticks.h"
+
+#if STICK_TRIM == ANALOG_TRIM
 #include "CalibrateTrim.h"
+#endif
 
 #ifdef ENABLE_BIND_MODULE
 #include "Bind.h"
@@ -232,7 +236,12 @@
 #include "ChannelDelay.h"
 #include "LogicSwitch.h"
 #include "ModeAssign.h"
+
+#if STICK_TRIM == ANALOG_TRIM
 #include "AnalogTrim.h"
+#elif STICK_TRIM == DIGITAL_TRIM
+#include "DigitalTrim.h"
+#endif
 
 #ifdef ENABLE_SERVOTEST_MODULE
 #include "ServoTest.h"
@@ -271,7 +280,7 @@ const char* InputChannelNames[INPUT_CHANNELS] = {
 #if INPUT_CHANNELS > 5
     TEXT_INPUT_CH_5,
 #endif
-#if INPUT_CHANNELS > 6    
+#if INPUT_CHANNELS > 6
     TEXT_INPUT_CH_6,
 #endif
 #if INPUT_CHANNELS > 7
@@ -334,7 +343,7 @@ const char *LogicTypes[TEXT_LOGIC_SW_TYPE_count] = {
     TEXT_LOGIC_SW_TYPE6
 };
 
-/* Make sure the entries are in the same order as the 
+/* Make sure the entries are in the same order as the
  * defines in Models.h
  */
 const char *WingMixNames[TEXT_WINGMIX_count] = {
@@ -343,7 +352,7 @@ const char *WingMixNames[TEXT_WINGMIX_count] = {
     TEXT_WINGMIX_VTAIL
 };
 
-/* Make sure the entries are in the same order as the 
+/* Make sure the entries are in the same order as the
  * defines in Models.h
  */
 const char *MixNames[TEXT_MIX_count] = {
@@ -369,12 +378,20 @@ const buzzerCmd_t SoundWelcome[] = {
 #ifdef ARDUINO
 
 /* All analog pins */
+#if STICK_TRIM == ANALOG_TRIM
 #define ANALOG_PIN_COUNT (PORT_ANALOG_INPUT_COUNT + PORT_TRIM_INPUT_COUNT + PORT_AUX_INPUT_COUNT)
 const uint8_t AnalogPins[ANALOG_PIN_COUNT] = {
   PORT_ANALOG_INPUT,
   PORT_TRIM_INPUT,
   PORT_AUX_INPUT
 };
+#else
+#define ANALOG_PIN_COUNT (PORT_ANALOG_INPUT_COUNT + PORT_AUX_INPUT_COUNT)
+const uint8_t AnalogPins[ANALOG_PIN_COUNT] = {
+  PORT_ANALOG_INPUT,
+  PORT_AUX_INPUT
+};
+#endif
 
 /* All switch pins */
 const uint8_t SwitchPins[PORT_SWITCH_INPUT_COUNT] = {
@@ -524,13 +541,20 @@ void setup( void) {
     //Serial.begin(19200);
 #endif
 
+#if STICK_TRIM == ANALOG_TRIM
     inputImpl = new InputImpl( PORT_ANALOG_INPUT_COUNT, PORT_TRIM_INPUT_COUNT, PORT_AUX_INPUT_COUNT,
                                AnalogPins,
                                PORT_SWITCH_INPUT_COUNT, switchConfiguration,
                                SwitchPins);
+#else
+    inputImpl = new InputImpl( PORT_ANALOG_INPUT_COUNT, 0, PORT_AUX_INPUT_COUNT,
+                               AnalogPins,
+                               PORT_SWITCH_INPUT_COUNT, switchConfiguration,
+                               SwitchPins);
+#endif
 
     outputImpl = new OutputImpl();
-   
+
 #endif
 
 
@@ -565,7 +589,7 @@ void setup( void) {
      */
 
     /* System menu */
-    
+
     moduleManager.addToSystemSetAndMenu( &modelSelect);
     ImportExport *importExport = new ImportExport( Serial);
     moduleManager.addToSystemSetAndMenu( importExport);
@@ -585,8 +609,10 @@ void setup( void) {
     moduleManager.addToSystemSetAndMenu( modeAssign);
     CalibrateSticks *calibrateSticks = new CalibrateSticks();
     moduleManager.addToSystemSetAndMenu( calibrateSticks);
+#if STICK_TRIM == ANALOG_TRIM
     CalibrateTrim *calibrateTrim = new CalibrateTrim();
     moduleManager.addToSystemSetAndMenu( calibrateTrim);
+#endif
     VccMonitor *vccMonitor = new VccMonitor();
     moduleManager.addToSystemSetAndMenu( vccMonitor);
 #ifdef ENABLE_STATISTICS_MODULE
@@ -603,8 +629,15 @@ void setup( void) {
 
     Model *model = new Model();
     moduleManager.addToModelSetAndMenu( model);
+
+#if STICK_TRIM == ANALOG_TRIM
     AnalogTrim *analogTrim = new AnalogTrim();
     moduleManager.addToModelSetAndMenu( analogTrim);
+#elif STICK_TRIM == DIGITAL_TRIM
+    DigitalTrim *digitalTrim = new DigitalTrim();
+    moduleManager.addToModelSetAndMenu( digitalTrim);
+#endif
+
     ChannelRange *channelRange = new ChannelRange();
     moduleManager.addToModelSetAndMenu( channelRange);
     ChannelReverse *channelReverse = new ChannelReverse();
@@ -634,6 +667,8 @@ void setup( void) {
 
     ServoRemap *servoRemap = new ServoRemap();
     moduleManager.addToModelSetAndMenu( servoRemap);
+    ServoRange *servoRange = new ServoRange();
+    moduleManager.addToModelSetAndMenu( servoRange);
     ServoReverse *servoReverse = new ServoReverse();
     moduleManager.addToModelSetAndMenu( servoReverse);
     ServoSubtrim *servoSubtrim = new ServoSubtrim();
@@ -647,11 +682,13 @@ void setup( void) {
 
     /* The following moduels act on analog input channels */
     moduleManager.addToRunList( calibrateSticks);
+#if STICK_TRIM == ANALOG_TRIM
     moduleManager.addToRunList( calibrateTrim);
+#endif
     moduleManager.addToRunList( switchedChannels);
     moduleManager.addToRunList( channelReverse);
     moduleManager.addToRunList( analogSwitch);
-    
+
     /* The following moduels act on logical channels */
     moduleManager.addToRunList( assignInput);
     moduleManager.addToRunList( channelDelay);
@@ -660,7 +697,11 @@ void setup( void) {
     moduleManager.addToRunList( logicSwitch);
     moduleManager.addToRunList( dualExpo);
     moduleManager.addToRunList( channelRange);
+#if STICK_TRIM == ANALOG_TRIM
     moduleManager.addToRunList( analogTrim);
+#elif STICK_TRIM == DIGITAL_TRIM
+    moduleManager.addToRunList( digitalTrim);
+#endif
     moduleManager.addToRunList( model);
     moduleManager.addToRunList( mixer);
     moduleManager.addToRunList( phasesTrim);
@@ -669,6 +710,7 @@ void setup( void) {
     /* The following modules act on output (servo) channels */
     moduleManager.addToRunList( servoRemap);
     moduleManager.addToRunList( servoReverse);
+    moduleManager.addToRunList( servoRange);
     moduleManager.addToRunList( servoSubtrim);
 #ifdef ENABLE_SERVOTEST_MODULE
     moduleManager.addToRunList( &servotest);
@@ -731,7 +773,7 @@ void loop( void) {
 #endif
 
     watchdog_reset();
-    
+
     handle_channels();
 
 #ifdef ARDUINO
@@ -746,7 +788,7 @@ void loop( void) {
     }
 #endif
 
-        
+
 #ifdef ENABLE_MEMDEBUG
     MEMDEBUG_CHECK();
 #ifdef ENABLE_SERIAL_MEMDEBUG
@@ -763,7 +805,7 @@ void loop( void) {
         userInterface.handle( userInterface.getEvent());
         nextScreenUpdate = now + SCREEN_UPDATE_msec;
     }
-    
+
 #ifdef UI_EXTERNAL_USERTERM_DISPLAY
     stream->handleComm();
 #endif
@@ -784,7 +826,7 @@ void loop( void) {
     } else if( statistics.debugTiming()) {
         homeScreen->printDebug( (uint16_t)now);
     }
-    
+
 #endif
 }
 
@@ -812,7 +854,7 @@ void watchdog_reset() {
 }
 
 void handle_channels() {
-  
+
     if( output.acceptChannels() ) {
 
 #ifdef ENABLE_STATISTICS_MODULE

@@ -36,7 +36,7 @@
 /*
  * Commm Packet Format
  * ===================
- * 
+ *
  * {T
  * Ntdddd
  * {S
@@ -47,7 +47,7 @@
  * T   = Block type (2 characters, only letters and numbers)
  *
  * N   = field name (2 characters, only letters and numbers)
- * 
+ *
  * t   = field data type
  *       "w: = String
  *       ': = Character
@@ -58,54 +58,54 @@
  *       #w:n: = signed numeric array
  *       where "w" is the width in bytes (1,2,4)
  *       where "n" is the array length
- * 
+ *
  * ddd = data type dependent data
- * 
+ *
  * S   = Sub type (2 characters, only letters and numbers)
- * 
+ *
  * CCC = Checksum from "{" to "}" (including)
- * 
+ *
  * Comm Packet Types
  * =================
- * 
+ *
  * Command Packet
  * --------------
  * Block Type = C
  * Identifier = -
  * C (String) Command
- * 
+ *
  * Info Packet
  * -----------
  * Block Type = I
  * Identifier = -
  * V (String) Version
  * M (String) Max number of models
- * 
+ *
  * Error Packet
  * ------------
  * Block Type = E
  * Identifier = -
  * M (String) Error message
- * 
+ *
  * System Configuration
  * --------------------
  * Block Type = S
  * Identifier = -
- * 
+ *
  * Model Configuration
  * -------------------
  * Block Type = M
  * Identifier = Model number
- * 
- * 
+ *
+ *
  * API
  * ====
- * 
+ *
  * open( T)
  * open( T, iii)
  * openSub( S, xxx)
  * close()
- * 
+ *
  * addString( N, ddd)
  * addChar( N, ddd)
  * addBool( N, ddd)
@@ -117,10 +117,10 @@
  * addUInt32( N, ddd)
  * addIntArr( N, ddd, sz, cnt)
  * addUIntArr( N, ddd, sz, cnt)
- * 
+ *
  * write()
  * writePart()
- * 
+ *
  */
 
 const uint16_t COMM_TEXT_MAXLEN = 256;
@@ -166,6 +166,7 @@ using COMM_RC_t = uint8_t;
 #define COMM_SUBPACKET_PHASES_TRIM        PACKET_TYPE('P','T')
 #define COMM_SUBPACKET_PHASES_TRIM_PHASE  PACKET_TYPE('P','P')
 #define COMM_SUBPACKET_SERVO_LIMIT        PACKET_TYPE('S','L')
+#define COMM_SUBPACKET_SERVO_RANGE        PACKET_TYPE('S','R')
 #define COMM_SUBPACKET_SERVO_REMAP        PACKET_TYPE('S','M')
 #define COMM_SUBPACKET_SERVO_REVERSE      PACKET_TYPE('S','V')
 #define COMM_SUBPACKET_SERVO_SUBTRIM      PACKET_TYPE('S','T')
@@ -243,7 +244,7 @@ class Comm {
 
         /* SEND */
 
-        /* Make sure there is enough space in the buffer 
+        /* Make sure there is enough space in the buffer
          * Returns true on success.
          */
         bool ensureSpace( uint16_t bytes) const;
@@ -281,11 +282,11 @@ class Comm {
          */
         boolean optionalChar( char ch);
 
-        /* Get next character. 
+        /* Get next character.
          */
         int getChar();
 
-        /* Check if there is at least one character available. 
+        /* Check if there is at least one character available.
          */
         boolean available();
 
@@ -294,7 +295,7 @@ class Comm {
             pushbackAvailable = true;
         }
 
-        /* 
+        /*
          */
         boolean verifyType( char dType);
 
