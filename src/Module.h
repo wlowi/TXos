@@ -82,6 +82,7 @@ class ImportExport;
 #define MODULE_LOGIC_SWITCH_TYPE        ((moduleType_t)67)
 #define MODULE_ANALOG_TRIM_TYPE         ((moduleType_t)68)
 #define MODULE_SERVO_RANGE_TYPE         ((moduleType_t)69)
+#define MODULE_SERVO_DELAY_TYPE         ((moduleType_t)70)
 
 /***** Configuration definition macros *****/
 

@@ -31,7 +31,7 @@
     The EEPROM space is divided into multiple blocks.
     Each block holds configuration data.
 
-    Each block is protected by a checksum which is in the last 
+    Each block is protected by a checksum which is in the last
     bytes of a block.
 
     The first configuration block is reserved for the global
@@ -54,14 +54,14 @@ typedef uint16_t checksum_t;
 typedef int8_t configBlockID_t;
 
 #define SYSTEMCONFIG_BLOCK_SIZE ((size_t)128)
-#define MODELCONFIG_BLOCK_SIZE  ((size_t)283)
+#define MODELCONFIG_BLOCK_SIZE  ((size_t)396)
 
 /* The maximum of
  * SYSTEMCONFIG_BLOCK_SIZE and MODELCONFIG_BLOCK_SIZE.
 
  * This is used to allocate a config block in memory.
  */
-#define MEM_BLOCK_SIZE          ((size_t)283)
+#define MEM_BLOCK_SIZE          ((size_t)396)
 
 #define CONFIG_BLOCKID_INVALID  ((configBlockID_t)-1)
 #define SYSTEMCONFIG_BLOCKID    ((configBlockID_t)0)
@@ -89,9 +89,9 @@ class ConfigBlock {
 
         /* For 4096 bytes of EEPROM modelBlockCount is 15:
          * 1 system config block of size SYSTEMCONFIG_BLOCK_SIZE (128) =  128
-         * 14 model config blocks of size MODELCONFIG_BLOCK_SIZE (283) = 3962
+         * 10 model config blocks of size MODELCONFIG_BLOCK_SIZE (396) = 3960
          *                                                               ====
-         *                                                               4090
+         *                                                               4088
          */
         configBlockID_t modelBlockCount;
 

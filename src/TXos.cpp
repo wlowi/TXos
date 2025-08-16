@@ -201,6 +201,7 @@
 #include "ServoRange.h"
 #include "ServoReverse.h"
 #include "ServoSubtrim.h"
+#include "ServoDelay.h"
 #include "ServoLimit.h"
 #include "CalibrateSticks.h"
 
@@ -673,6 +674,8 @@ void setup( void) {
     moduleManager.addToModelSetAndMenu( servoReverse);
     ServoSubtrim *servoSubtrim = new ServoSubtrim();
     moduleManager.addToModelSetAndMenu( servoSubtrim);
+    ServoDelay *servoDelay = new ServoDelay();
+    moduleManager.addToModelSetAndMenu( servoDelay);
     ServoLimit *servoLimit = new ServoLimit();
     moduleManager.addToModelSetAndMenu( servoLimit);
 
@@ -712,6 +715,7 @@ void setup( void) {
     moduleManager.addToRunList( servoReverse);
     moduleManager.addToRunList( servoRange);
     moduleManager.addToRunList( servoSubtrim);
+    moduleManager.addToRunList( servoDelay);
 #ifdef ENABLE_SERVOTEST_MODULE
     moduleManager.addToRunList( &servotest);
 #endif

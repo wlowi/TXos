@@ -51,6 +51,7 @@
 #define TEXT_MODULE_PHASES            CC("Phases")
 #define TEXT_MODULE_PHASES_TRIM       CC("Phases Trim")
 #define TEXT_MODULE_RANGE_TEST        CC("Range Test")
+#define TEXT_MODULE_SERVO_DELAY       CC("Servo Delay")
 #define TEXT_MODULE_SERVO_LIMIT       CC("Servo Limit")
 #define TEXT_MODULE_SERVO_RANGE       CC("Servo Range")
 #define TEXT_MODULE_SERVO_REMAP       CC("Servo Remap")

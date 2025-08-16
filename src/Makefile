@@ -45,7 +45,7 @@ UI_OBJ = TextUI/Cell.o TextUI/TextUI.o TextUI/TextUIHandler.o TextUI/TextUILcd.o
 OUTPUT_OBJ = output/Output.o output/Ports.o output/Buzzer.o
 
 MODULE_OBJ = modules/ModelSelect.o modules/Model.o modules/EngineCut.o modules/ServoReverse.o modules/ServoSubtrim.o modules/ServoLimit.o \
-  modules/SwitchMonitor.o modules/ServoMonitor.o modules/CalibrateSticks.o modules/CalibrateTrim.o \
+  modules/ServoDelay.o modules/SwitchMonitor.o modules/ServoMonitor.o modules/CalibrateSticks.o modules/CalibrateTrim.o \
   modules/Bind.o modules/RangeTest.o modules/DualExpo.o modules/Phases.o modules/Timer.o modules/VccMonitor.o modules/PhasesTrim.o \
   modules/SwitchedChannels.o modules/AssignInput.o modules/ServoRange.o modules/ServoRemap.o modules/AnalogSwitch.o modules/ChannelRange.o \
   modules/ChannelReverse.o modules/ChannelDelay.o modules/Mixer.o modules/Statistics.o modules/LogicSwitch.o modules/ModeAssign.o \

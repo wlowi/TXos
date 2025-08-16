@@ -323,7 +323,7 @@ void ModuleManager::removeModel( configBlockID_t modelID) {
 }
 
 void ModuleManager::copyModel( configBlockID_t fromModelID, configBlockID_t toModelID) {
-    
+
     LOGV("ModuleManager::copyModel(): fromModelID=%d toModelID=%d\n", fromModelID, toModelID);
 
     if (fromModelID > 0 && fromModelID <= blockService->getModelBlockCount()
@@ -778,6 +778,11 @@ void ModuleManager::generateBlock(configBlockID_t modelID, uint8_t setType) {
                 LOGV("** ModuleManager::generateBlock(): Payload to large. %u > %u\n",
                     totalSize + sizeof(moduleType_t) + sizeof(moduleSize_t) + size,
                     payloadSize);
+#ifdef __linux__
+                printf("** ModuleManager::generateBlock(): Payload to large. %lu > %lu\n",
+                    totalSize + sizeof(moduleType_t) + sizeof(moduleSize_t) + size,
+                    payloadSize);
+#endif
             }
         }
 
@@ -789,4 +794,7 @@ void ModuleManager::generateBlock(configBlockID_t modelID, uint8_t setType) {
     PUT((uint8_t*)&type, sizeof(moduleType_t));
 
     LOGV("ModuleManager::generateBlock(): Payload %d bytes\n", totalSize);
+#ifdef __linux__
+    printf("ModuleManager::generateBlock(): Payload %d bytes\n", totalSize);
+#endif
 }
