@@ -32,8 +32,10 @@ extern void watchdog_reset();
 
 const uint8_t STATE_INACTIVE = 0;
 const uint8_t STATE_CONNECTING = 1;
-const uint8_t STATE_EXPORTING = 2;
-const uint8_t STATE_IMPORTING = 3;
+const uint8_t STATE_EXPORT_MODEL = 2;
+const uint8_t STATE_IMPORT_MODEL = 3;
+const uint8_t STATE_EXPORT_SYSCF = 4;
+const uint8_t STATE_IMPORT_SYSCF = 5;
 
 ImportExport::ImportExport(Stream& stream) : Module(MODULE_IMPORTEXPORT_TYPE, TEXT_MODULE_IMPORTEXPORT, COMM_SUBPACKET_NONE), inOut(stream), comm(*new Comm(&stream))
 {
@@ -43,8 +45,6 @@ ImportExport::ImportExport(Stream& stream) : Module(MODULE_IMPORTEXPORT_TYPE, TE
 COMM_RC_t ImportExport::runExport(const DICT_t* dict, const DICTROW_t* row[], uint8_t* config, moduleSize_t configSz)
 {
     nameType_t name;
-
-    watchdog_reset();
 
     name = pgm_read_word(&(dict->name));
     comm.openSub(name);
@@ -75,11 +75,11 @@ COMM_RC_t ImportExport::runExport(const DICT_t* dict, const DICTROW_t* row[], ui
 }
 
 /**
- * @brief 
- * 
- * @param dict 
- * @param row 
- * @param config 
+ * @brief
+ *
+ * @param dict
+ * @param row
+ * @param config
  * @param configSz The size of a single config record. Always non-phased size!
  */
 COMM_RC_t ImportExport::runImport(const DICT_t* dict, const DICTROW_t* row[], uint8_t* config, moduleSize_t configSz)
@@ -98,8 +98,6 @@ COMM_RC_t ImportExport::runImport(const DICT_t* dict, const DICTROW_t* row[], ui
     uint8_t phase;
 
     COMM_RC_t rc;
-
-    watchdog_reset();
 
     do {
         rc = comm.nextField(&cmd, &dType, &width, &count);
@@ -210,7 +208,7 @@ void ImportExport::exportModulePhase(const DICTROW_t* row[], uint8_t* config)
             break;
 
         case COMM_DATATYPE_BOOL:
-            comm.addBool(name, *((bool*)(config + offset))); 
+            comm.addBool(name, *((bool*)(config + offset)));
             break;
 
         case COMM_DATATYPE_INT8:
@@ -218,15 +216,15 @@ void ImportExport::exportModulePhase(const DICTROW_t* row[], uint8_t* config)
             break;
 
         case COMM_DATATYPE_UINT8:
-            comm.addUInt8(name, *((uint8_t*)(config + offset))); 
+            comm.addUInt8(name, *((uint8_t*)(config + offset)));
             break;
 
         case COMM_DATATYPE_INT16:
-            comm.addInt16(name, *((int16_t*)(config + offset))); 
+            comm.addInt16(name, *((int16_t*)(config + offset)));
             break;
 
         case COMM_DATATYPE_UINT16:
-            comm.addUInt16(name, *((uint16_t*)(config + offset))); 
+            comm.addUInt16(name, *((uint16_t*)(config + offset)));
             break;
 
         case COMM_DATATYPE_INT32:
@@ -265,6 +263,7 @@ void ImportExport::run(Controls& controls)
     uint8_t width;
     uint16_t count;
     uint8_t rc;
+    bool wasEnabled;
 
     if (state == STATE_INACTIVE) {
         return;
@@ -272,36 +271,41 @@ void ImportExport::run(Controls& controls)
 
     if ((rc = comm.nextPacket(&cmd)) == COMM_RC_OK) {
 
+        wasEnabled = watchdog_disable();
+
         switch (cmd) {
         case COMM_PACKET_GET_MODELCONFIG:
             /* Read packet end marker */
             comm.nextField(&cmd, &dType, &width, &count);
-            state = STATE_EXPORTING;
+            state = STATE_EXPORT_MODEL;
             moduleManager.exportModels(this);
             break;
 
         case COMM_PACKET_GET_SYSCONFIG:
             comm.nextField(&cmd, &dType, &width, &count);
-            state = STATE_EXPORTING;
+            state = STATE_EXPORT_SYSCF;
             moduleManager.exportSystemConfig(this);
             break;
 
-        case COMM_PACKET_SYSCONFIG:
-            state = STATE_IMPORTING;
-            moduleManager.importSystemConfig(this);
-            break;
-
         case COMM_PACKET_MODELCONFIG:
-            state = STATE_IMPORTING;
+            state = STATE_IMPORT_MODEL;
             moduleManager.importModel(this);
             break;
 
+        case COMM_PACKET_SYSCONFIG:
+            state = STATE_IMPORT_SYSCF;
+            moduleManager.importSystemConfig(this);
+            break;
+
         default:
+            state = STATE_CONNECTING;
             comm.nextField(&cmd, &dType, &width, &count);
             comm.open(COMM_PACKET_ERROR);
             comm.close();
             comm.write();
         }
+
+        if( wasEnabled) { watchdog_enable(); }
 
         changed = true;
     }
@@ -376,19 +380,27 @@ void ImportExport::getValue(uint8_t row, uint8_t col, Cell* cell)
         switch (state) {
 
         case STATE_INACTIVE:
-            cell->setLabel(0, TEXT_OFF, strlen(TEXT_OFF));
+            cell->setLabel(0, TEXT_OFF, 10);
             break;
 
         case STATE_CONNECTING:
-            cell->setLabel(0, TEXT_CONNECTING, strlen(TEXT_CONNECTING));
+            cell->setLabel(0, TEXT_CONNECTING, 10);
             break;
 
-        case STATE_EXPORTING:
-            cell->setLabel(0, TEXT_EXPORT, strlen(TEXT_EXPORT));
+        case STATE_EXPORT_MODEL:
+            cell->setLabel(0, TEXT_EXPORT, 10);
             break;
 
-        case STATE_IMPORTING:
-            cell->setLabel(0, TEXT_IMPORT, strlen(TEXT_IMPORT));
+        case STATE_IMPORT_MODEL:
+            cell->setLabel(0, TEXT_IMPORT, 10);
+            break;
+
+        case STATE_EXPORT_SYSCF:
+            cell->setLabel(0, TEXT_EXPORT_SYS, 10);
+            break;
+
+        case STATE_IMPORT_SYSCF:
+            cell->setLabel(0, TEXT_IMPORT_SYS, 10);
             break;
         }
     }

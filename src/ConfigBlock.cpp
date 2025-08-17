@@ -116,12 +116,12 @@ configBlock_rc ConfigBlock::formatBlock( configBlockID_t id) {
         for( uint16_t i = 0; i < configPayloadSize; i++) {
             block.payload[i] = 0xff;
         }
-        
-        return CONFIGBLOCK_RC_OK;        
+
+        return CONFIGBLOCK_RC_OK;
     }
 
     LOGV("** ConfigBlock::formatBlock(): invalid ID=%d\n", id);
-    return CONFIGBLOCK_RC_INVID;  
+    return CONFIGBLOCK_RC_INVID;
 }
 
 /* Write content of member variable "block" to EEPROM.
@@ -131,6 +131,7 @@ configBlock_rc ConfigBlock::writeBlock() {
 
 #if defined( ARDUINO_ARCH_AVR ) || defined(ARDUINO_ARCH_EMU)
     size_t configStart;
+    bool wasEnabled;
 #elif defined( ARDUINO_ARCH_ESP32 )
     Preferences modelStore;
     char key[6];
@@ -145,9 +146,14 @@ configBlock_rc ConfigBlock::writeBlock() {
         configStart = getBlockStart();
         LOGV("ConfigBlock::writeBlock(): writing %u bytes to addr %u\n", configBlockSize, configStart);
 
+        wasEnabled = watchdog_disable(); // Sometimes writing to eeprom is really slow.
+
         for( uint16_t i=0; i < configBlockSize; i++) {
             EEPROM.update( configStart + i, block.payload[i]);
         }
+
+        if( wasEnabled) { watchdog_enable(); }
+
 #elif defined( ARDUINO_ARCH_ESP32 )
         LOGV("ConfigBlock::writeBlock(): writing %u bytes to block %d\n", configBlockSize, blockID);
 
@@ -216,8 +222,8 @@ bool ConfigBlock::setBlockID( configBlockID_t blkID) {
 
 size_t ConfigBlock::getBlockStart() const {
 
-    return (blockID == SYSTEMCONFIG_BLOCKID) 
-            ? 0 
+    return (blockID == SYSTEMCONFIG_BLOCKID)
+            ? 0
             : SYSTEMCONFIG_BLOCK_SIZE + (blockID-1) * configBlockSize;
 }
 

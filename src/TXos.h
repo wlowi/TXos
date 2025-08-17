@@ -34,7 +34,7 @@
 #endif
 
 
-#define TXOS_VERSION "0.5.7"
+#define TXOS_VERSION "0.5.8"
 
 #undef ENABLE_LOGGING
 
@@ -60,6 +60,20 @@
 #endif
 
 extern void yieldLoop();
+
+/**
+ * @brief Enable watchdog.
+ *
+ */
+extern void watchdog_enable();
+
+/**
+ * @brief Disables watchdog
+ *
+ * @return true if watchdog was enabled before.
+ * @return false if watchdog was disabled before.
+ */
+extern bool watchdog_disable();
 
 /* Holds small float values with 2 fractional digits.
  * This is currently only used to display battery voltage.

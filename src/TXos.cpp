@@ -517,6 +517,10 @@ char bdebug[ BDEBUG_LEN ];
 
 unsigned long nextScreenUpdate = 0L;
 const unsigned int SCREEN_UPDATE_msec = 50; // Limit screen update frequency
+bool wdt_enabled = false;
+void watchdog_reset();
+static void handle_channels();
+
 
 void setup( void) {
 
@@ -538,8 +542,7 @@ void setup( void) {
 #ifdef ARDUINO
 
 #ifdef ENABLE_SERIAL
-    Serial.begin(115200);
-    //Serial.begin(19200);
+    Serial.begin(19200);
 #endif
 
 #if STICK_TRIM == ANALOG_TRIM
@@ -740,12 +743,9 @@ void setup( void) {
 #ifdef ENABLE_MEMDEBUG
     MEMDEBUG_INIT();
 #endif
+#endif
 
-    wdt_enable( WDTO_1S );
-#ifdef ENABLE_STATISTICS_MODULE
-    wdLastReset = millis();
-#endif
-#endif
+    watchdog_enable();
 
     buzzer.play( SoundWelcome);
 
@@ -754,9 +754,6 @@ void setup( void) {
     Serial.println(bdebug);
 #endif
 }
-
-void watchdog_reset();
-static void handle_channels();
 
 void loop( void) {
 
@@ -844,10 +841,46 @@ void yieldLoop() {
     handle_channels();
 }
 
+/**
+ * @brief Enable watchdog.
+ *
+ */
+void watchdog_enable() {
+
+#if defined( ARDUINO_ARCH_AVR )
+    wdt_enable( WDTO_1S );
+    wdt_enabled = true;
+#ifdef ENABLE_STATISTICS_MODULE
+    wdLastReset = millis();
+#endif
+#endif
+}
+
+/**
+ * @brief Disables watchdog
+ *
+ * @return true if watchdog was enabled before.
+ * @return false if watchdog was disabled before.
+ */
+bool watchdog_disable() {
+
+#if defined( ARDUINO_ARCH_AVR )
+    if( wdt_enabled) {
+        wdt_disable();
+        wdt_enabled = false;
+        return true;
+    }
+#endif
+
+    return false;
+}
+
 void watchdog_reset() {
 
 #if defined( ARDUINO_ARCH_AVR )
-    wdt_reset();
+    if( wdt_enabled) {
+        wdt_reset();
+    }
 
 #ifdef ENABLE_STATISTICS_MODULE
     unsigned long now = millis();
