@@ -147,6 +147,7 @@ using COMM_RC_t = uint8_t;
 /* This marks modules that do not need import/export */
 #define COMM_SUBPACKET_NONE               PACKET_TYPE('\0','\0')
 
+#define COMM_SUBPACKET_AIRBRAKES          PACKET_TYPE('A','B')
 #define COMM_SUBPACKET_ANALOG_SWITCH      PACKET_TYPE('A','S')
 #define COMM_SUBPACKET_ANALOG_TRIM        PACKET_TYPE('A','T')
 #define COMM_SUBPACKET_ASSIGN_INPUT       PACKET_TYPE('A','I')
@@ -185,6 +186,7 @@ using COMM_RC_t = uint8_t;
 #define COMM_FIELD_NEG_PERCENT_ARRAY      FIELD_TYPE('N','A')
 #define COMM_FIELD_DELAY_ARRAY            FIELD_TYPE('D','A')
 #define COMM_FIELD_NEG_DELAY_ARRAY        FIELD_TYPE('d','A')
+#define COMM_FIELD_REVERSE                FIELD_TYPE('R','V')
 #define COMM_FIELD_SWITCH                 FIELD_TYPE('W','W')
 #define COMM_FIELD_SWITCH_ARRAY           FIELD_TYPE('W','A')
 #define COMM_FIELD_STATEA_ARRAY           FIELD_TYPE('S','A')

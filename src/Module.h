@@ -83,6 +83,7 @@ class ImportExport;
 #define MODULE_ANALOG_TRIM_TYPE         ((moduleType_t)68)
 #define MODULE_SERVO_RANGE_TYPE         ((moduleType_t)69)
 #define MODULE_SERVO_DELAY_TYPE         ((moduleType_t)70)
+#define MODULE_AIRBRAKES_TYPE           ((moduleType_t)71)
 
 /***** Configuration definition macros *****/
 

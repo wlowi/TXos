@@ -217,6 +217,7 @@
 #include "RangeTest.h"
 #endif
 
+#include "AirBrakes.h"
 #include "DualExpo.h"
 #include "Phases.h"
 #include "Timer.h"
@@ -654,6 +655,8 @@ void setup( void) {
     moduleManager.addToModelSetAndMenu( assignInput);
     ChannelDelay *channelDelay = new ChannelDelay();
     moduleManager.addToModelSetAndMenu( channelDelay);
+    AirBrakes *airBrakes = new AirBrakes();
+    moduleManager.addToModelSetAndMenu( airBrakes);
     Phases *phases = new Phases();
     moduleManager.addToModelSetAndMenu( phases);
     PhasesTrim *phasesTrim = new PhasesTrim();
@@ -697,12 +700,12 @@ void setup( void) {
 
     /* The following moduels act on logical channels */
     moduleManager.addToRunList( assignInput);
-    moduleManager.addToRunList( channelDelay);
-    // ### done until here
+    moduleManager.addToRunList( channelRange);
     moduleManager.addToRunList( phases);
     moduleManager.addToRunList( logicSwitch);
     moduleManager.addToRunList( dualExpo);
-    moduleManager.addToRunList( channelRange);
+    moduleManager.addToRunList( airBrakes);
+    moduleManager.addToRunList( channelDelay);
 #if STICK_TRIM == ANALOG_TRIM
     moduleManager.addToRunList( analogTrim);
 #elif STICK_TRIM == DIGITAL_TRIM

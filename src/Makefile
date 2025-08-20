@@ -49,7 +49,7 @@ MODULE_OBJ = modules/ModelSelect.o modules/Model.o modules/EngineCut.o modules/S
   modules/Bind.o modules/RangeTest.o modules/DualExpo.o modules/Phases.o modules/Timer.o modules/VccMonitor.o modules/PhasesTrim.o \
   modules/SwitchedChannels.o modules/AssignInput.o modules/ServoRange.o modules/ServoRemap.o modules/AnalogSwitch.o modules/ChannelRange.o \
   modules/ChannelReverse.o modules/ChannelDelay.o modules/Mixer.o modules/Statistics.o modules/LogicSwitch.o modules/ModeAssign.o \
-  modules/AnalogTrim.o modules/DigitalTrim.o modules/ServoTest.o modules/ImportExport.o
+  modules/AnalogTrim.o modules/DigitalTrim.o modules/ServoTest.o modules/ImportExport.o modules/AirBrakes.o
 
 CXXFLAGS += -g -O0 -Wall -Wpedantic -Wextra -Wno-unused-parameter -DARDUINO_ARCH_EMU
 

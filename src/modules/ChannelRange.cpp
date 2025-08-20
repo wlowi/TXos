@@ -32,7 +32,7 @@ extern ModuleManager moduleManager;
 
 extern const char* const InputChannelNames[INPUT_CHANNELS];
 
-/* The import/export dictionary. 
+/* The import/export dictionary.
  * See ImportExport.h
  */
 DICTROWA( r1, COMM_DATATYPE_INTARR, COMM_FIELD_PERCENT_ARRAY, channelRange_t, posRange_pct, PORT_ANALOG_INPUT_COUNT)

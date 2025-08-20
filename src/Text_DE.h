@@ -30,6 +30,7 @@
 #define CC( t ) ((const char*)t)
 
 // Module Names (13 letters max.)         1234567890123
+#define TEXT_MODULE_AIRBRAKES         CC("Landeklappen")
 #define TEXT_MODULE_ANALOG_SWITCH     CC("Geberschalter")
 #define TEXT_MODULE_ANALOG_TRIM       CC("Trimmspeicher")
 #define TEXT_MODULE_ASSIGN_INPUT      CC("Kanal Zuord.")
@@ -179,6 +180,7 @@
 #define TEXT_MODEL                  CC("Modell")
 #define TEXT_MODEL_NAME             CC("Name")
 #define TEXT_MODEL_SETUP            CC("Modelleinst.")
+#define TEXT_OFF_POS                CC("Aus Pos.")
 #define TEXT_PASTE                  CC("Einfuegen")
 #define TEXT_PHASE                  CC("Phase")
 #define TEXT_PHASE_PATTERN          CC("Ph-*")
@@ -187,6 +189,7 @@
 #define TEXT_POS2                   CC("Pos2")
 #define TEXT_RATE                   CC("Rate")
 #define TEXT_REMOVE                 CC("Entfernen")
+#define TEXT_REVERSE                CC("Umkehr")
 #define TEXT_SEC                    CC("sek")
 #define TEXT_START                  CC("Start")
 #define TEXT_STATUS                 CC("Status")
