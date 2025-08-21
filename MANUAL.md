@@ -1,53 +1,56 @@
 # TXos Bedienungsanleitung
 
-Diese Anleitung beschreibt die TXos Version 0.5.4 (April 2024)
+Diese Anleitung beschreibt die TXos Version 0.5.9 (August 2025)
 
 ---
 
 # Inhalt
 
-[Grundsätzliche Bedienung](#grundsätzliche-bedienung)  
-[Konzept](#konzept)  
-[Blockschaltbild](#blockschaltbild)  
-[Schalter](#schalter)  
-[Hauptbildschirm](#hauptbildschirm)  
+[Grundsätzliche Bedienung](#grundsätzliche-bedienung)<br/>
+[Konzept](#konzept)<br/>
+[Blockschaltbild](#blockschaltbild)<br/>
+[Schalter](#schalter)<br/>
+[Hauptbildschirm](#hauptbildschirm)<br/>
 
-[Systemeinstellungen](#systemeinstellungen)
+[Systemeinstellungen](#systemeinstellungen)<br/>
 
-[Modellauswahl](#modellauswahl)  
-[Import/Export](#importexport)  
-[Servo Monitor](#servo-monitor)  
-[Schalter Anzeige](#schalter-anzeige)  
-[Empfänger Binden](#empfänger-binden)  
-[Reichweiten Test](#reichweiten-test)  
-[Mode Zuordnung](#mode-zuordnung)  
-[Kalibrieren](#kalibrieren)  
-[Trimmung Kalibrieren](#trimmung-kalibrieren)  
-[Batterie Warnung](#batterie-warnung)  
-[Statistiken](#statistiken)  
-[Servo Test](#servo-test)  
+[Modellauswahl](#modellauswahl)<br/>
+[Import/Export](#importexport)<br/>
+[Servo Monitor](#servo-monitor)<br/>
+[Schalter Anzeige](#schalter-anzeige)<br/>
+[Empfänger Binden](#empfänger-binden)<br/>
+[Reichweiten Test](#reichweiten-test)<br/>
+[Mode Zuordnung](#mode-zuordnung)<br/>
+[Kalibrieren](#kalibrieren)<br/>
+[Trimmung Kalibrieren](#trimmung-kalibrieren)<br/>
+[Batterie Warnung](#batterie-warnung)<br/>
+[Statistiken](#statistiken)<br/>
+[Servo Test](#servo-test)<br/>
 
-[Modelleinstellungen](#modelleinstellungen)
+[Modelleinstellungen](#modelleinstellungen)<br/>
 
-[Modell](#modell)  
-[Trimspeicher](#trimmspeicher)  
-[Geber Limit](#geber-limit)  
-[Geber Umkehr](#geber-umkehr)  
-[Geberschalter](#geberschalter)  
-[Schaltkanal](#schaltkanal)  
-[Kanal Zuordnung](#kanal-zuordnung)  
-[Kanal Verzögerung](#kanal-verzögerung)  
-[Flugphasen](#flugphasen)  
-[Phasentrimm](#phasentrimm)  
-[Logikschalter](#logikschalter)  
-[Dual Rate & Expo](#dual-rate--expo)  
-[Mischer](#mischer)  
-[Motor Aus](#motor-aus)  
-[Timer](#timer)  
-[Servo Zuordnung](#servo-zuordnung)  
-[Servo Umkehr](#servo-umkehr)  
-[Servo Mitte](#servo-mitte)  
-[Servo Limit](#servo-limit)  
+[Modell](#modell)<br/>
+[Trimspeicher](#trimmspeicher)<br/>
+[Geber Limit](#geber-limit)<br/>
+[Geber Umkehr](#geber-umkehr)<br/>
+[Geberschalter](#geberschalter)<br/>
+[Schaltkanal](#schaltkanal)<br/>
+[Kanal Zuordnung](#kanal-zuordnung)<br/>
+[Kanal Verzögerung](#kanal-verzögerung)<br/>
+[Landeklappen](#landeklappen)<br/>
+[Flugphasen](#flugphasen)<br/>
+[Phasentrimm](#phasentrimm)<br/>
+[Logikschalter](#logikschalter)<br/>
+[Dual Rate & Expo](#dual-rate--expo)<br/>
+[Mischer](#mischer)<br/>
+[Motor Aus](#motor-aus)<br/>
+[Timer](#timer)<br/>
+[Servo Zuordnung](#servo-zuordnung)<br/>
+[Servo Weg](#servo-weg)<br/>
+[Servo Umkehr](#servo-umkehr)<br/>
+[Servo Mitte](#servo-mitte)<br/>
+[Servo Verzögerung](#servo-verzögerung)<br/>
+[Servo Limit](#servo-limit)<br/>
 
 ---
 ## Grundsätzliche Bedienung
@@ -97,7 +100,7 @@ Die 4 Haupt Steuerfunktionen können mit den Eingabekanälen In1-In4 frei belegt
 In den Systemeinstellungen kann unter [Mode Zuordnung](#mode-zuordnung) die Voreinstellung festgelegt werden die für jedes neu angelegte Model verwerndet wird.
 Die Einstellung kann aber für jedes Model unter Modeleinstellungen [Kanal Zuordnung](#kanal-zuordnung) geändert werden.
 
-Intern werden 12 logische Kanäle verwendet.  
+Intern werden 12 logische Kanäle verwendet.<br/>
 * Mot - Motor
 * QR - Querruder
 * QR2 - Querruder zweiter Kanal
@@ -138,7 +141,7 @@ TXos unterstützt folgende Schalter:
 
 Eine bestimmte Schalterstellung wird mit angehängtem Doppelpunkt und der Schalterposition angegeben.
 
-Beispiel: 2-stufen Schalter 1 in Schalterstellung 0  
+Beispiel: 2-stufen Schalter 1 in Schalterstellung 0<br/>
 **BI1:0**
 
 ---
@@ -240,7 +243,7 @@ Wählen Sie dazu "Bind" aus und drücken Sie ENTER.
 Beim Binden wird:
 * Das HF Modul ausgeschaltet
 * Das "Bind" Relais eingeschaltet
-* Das HF Module wieder eingeschaltet 
+* Das HF Module wieder eingeschaltet<br/>
 
 ![Empf. binden](img/TXos_bind_active.png "Empf. binden")
 
@@ -283,14 +286,14 @@ Beim Erstellen einen neuen Modells wird diese Zuordnung als Vorgabe verwendet.
 ### Kalibrieren
 [Inhalt](#inhalt)
 
-Die Kalibrierung legt die Mittelstellung sowie die Endpositionen der Kreuzknüppel und Potertiomenter fest. 
+Die Kalibrierung legt die Mittelstellung sowie die Endpositionen der Kreuzknüppel und Potertiomenter fest.<br/>
 Die Kalibrierung erfolgt für die Analogeingänge 1 bis 6, also die Kreuzknüppel und optionale Linearschieber oder Potentiometer.
 
 Die Trimmung wird getrennt kalibriert.
 
 ![TXos Kalibrieren](img/TXos_callib.png "TXos Kalibrieren")
 
-Unkalibrierte Eingänge zeigen einem Minimalwert von 0 und einen Maximalwert von 1023.  
+Unkalibrierte Eingänge zeigen einem Minimalwert von 0 und einen Maximalwert von 1023.<br/>
 Starten sie die Kalibrierung mit ENTER nachdem Sie "Start" ausgewählt haben.
 
 ![TXos Kalibrieren 1](img/TXos_callib_1.png "TXos Kalibrieren 1")
@@ -371,7 +374,7 @@ Im "Modell" Modul werden der Modellname, der Leitwerksmischer, die Querruderdiff
 ![Modell](img/TXos_model.png "Modell")
 
 Für Funktionen die 2 getrennte Servos bedienen können, wie Querruder (QR), Wölbklappen (WK) und Landeklappen (LK) werden immer beide logische Kanäle gemischt. Also QR und QR2, WK und WK2 sowie LK und LK2. Ob der zweite Kanal dann auch wirklich verwendet wird, wird später in der Kanal - Servo zuordnung festgelegt.
- 
+
 ---
 ### Trimmspeicher
 [Inhalt](#inhalt)
@@ -388,8 +391,8 @@ Die Anzeige des Trimspeichers sieht wie folgt aus:
 
 Wird während eines Fluges die Trimmung verstellt und der Wert soll in den Trimspeicher übernommen werden, passiert das einfach durch zurückstellen des Trimschiebers auf neutral, während man sich im Trimspeicher befindet.
 
-Die linke Spalte zeigt den aktuellen Wert der Trimschieber. Die rechte Spalte den Wert des Trimspeichers für das aktuelle Modell. Im obigen Bild steht also der HR Trim auf -4 und es ist kein Wert für HR im Trimspeicher.  
-Um den aktuellen Wert der Trimmung in den Trimspeicher zu übernehmen braucht nur der Trimschieber auf Mittelstellung geschoben werden. 
+Die linke Spalte zeigt den aktuellen Wert der Trimschieber. Die rechte Spalte den Wert des Trimspeichers für das aktuelle Modell. Im obigen Bild steht also der HR Trim auf -4 und es ist kein Wert für HR im Trimspeicher.<br/>
+Um den aktuellen Wert der Trimmung in den Trimspeicher zu übernehmen braucht nur der Trimschieber auf Mittelstellung geschoben werden.
 
 ![Trimmspeicher1](img/TXos_trim_adjust.png "Trimmspeicher1")
 
@@ -407,7 +410,7 @@ Dazu den Kanal auswählen und ENTER drücken. Ein langer druck auf den Drück-Dr
 
 Analoggeber (In1-In6) Wegbegrenzung in Prozent.
 
-Bereich: -125 % bis +125 %  
+Bereich: -125 % bis +125 %<br/>
 Einstellung bei einem neuen Modell: +/- 100 %
 
 Diese Funktion wird im Normalfall nicht gebraucht. Ein Limit sollte über Servolimit eingestellt werden.
@@ -432,7 +435,7 @@ Diese Funktion wird im Normalfall nicht gebraucht. Eine Richtungsumkehr sollte �
 
 Ansteuerung eines Schalters über einen analogen Eingang.
 
-Geberschalter sind 2-Stufen Schalter deren Schaltstellung vom Wert eines analogen Eingangs abhängig ist.  
+Geberschalter sind 2-Stufen Schalter deren Schaltstellung vom Wert eines analogen Eingangs abhängig ist.<br/>
 Im Beispiel wird der Schalter CS1 von 0 auf 1 geschalten wenn der Wert des Eingangs In1 größer -90 % ist.
 
 ![Geberschalter](img/TXos_input_switches.png "Geberschalter")
@@ -459,10 +462,34 @@ Die Standard Zuordnung für ein neues Modell wird in den Systemeinstellungen unt
 ### Kanal Verzögerung
 [Inhalt](#inhalt)
 
-Die Geschwindigkeit der Bewegung jedes Kanals kann auf bis zu 10 Sekunden (von 0 bis 100%) veringert werden.  
+Die Geschwindigkeit der Bewegung jedes Kanals kann auf bis zu 10 Sekunden (von 0 bis 100%) veringert werden.<br/>
 Eingestellt wird die Zeit der Bewegung von 0 bis 100% in Sekunden, jeweils getrennt für beide Richtungen.
 
 ![Kanal Verz](img/TXos_channel_delay.png "Kanal Verz")
+
+---
+### Landeklappen
+[Inhalt](#inhalt)
+
+Landeklappen (Airbrakes).
+
+Diese Einstellungen wirken auf die logischen Kanäle LK und LK2.<br/>
+Der Geber für die Landeklappen wird im Menü [Kanal Zuordnung](#kanal-zuordnung) zugeordnet.<br/>
+Eine Verzögerung der Bewegung wird im Menü [Kanal Verzögerung](#kanal-verzögerung) eingestellt<br/>
+
+Landeklappen Einstellungen:
+
+* Aktiv: Schalter zur aktivierung der Landeklappen.
+* Aus Pos: Diese Position wird angefahren wenn die Landeklappen nicht aktiviert sind.
+* Umkehr: Umkehrung der Wirkrichtung.
+
+Einstellungen bei einem neuen Modell:
+
+* Aktiv: Kein Schalter (nicht aktiv)
+* Aus Pos: 0%
+* Umkehr: Aus
+
+![Kanal Verz](img/TXos_airbrakes.png "Landeklappen Verz")
 
 ---
 ### Flugphasen
@@ -499,10 +526,10 @@ Die beiden QR Flächen werden dabei gleichsinning und nicht gegensinning wie bei
 ### Logikschalter
 [Inhalt](#inhalt)
 
-TXos unterstützt bis zu 3 Logikschalter.  
+TXos unterstützt bis zu 3 Logikschalter.<br/>
 Logikschalter sind boolsche Verknüpfungen von bis zu 3 anderen Schaltern.
 
-Folgende Verknüpfungen sind möglich:  
+Folgende Verknüpfungen sind möglich:<br/>
 ( "&" steht für "und", "|" steht für "oder" )
 * A & B
 * A | B
@@ -521,12 +548,12 @@ Für die Hauptfunktionen QR, HR und SR stehen phasenabhängige Wegverkürzungen 
 
 **Dual Rate:**
 
-Bereich: 0 % bis 100 %  
+Bereich: 0 % bis 100 %<br/>
 Einstellung bei einem neuen Modell: 100 %
 
 **Exponentialfunktion:**
 
-Bereich: 0 % bis 100 %  
+Bereich: 0 % bis 100 %<br/>
 Einstellung bei einem neuen Modell: 0 %
 
 ![Dual & Expo](img/TXos_dual_expo.png "Dual & Expo")
@@ -537,8 +564,8 @@ Einstellung bei einem neuen Modell: 0 %
 
 TXos unterstützt 3 freie Mischer.
 
-Der Mischer wird aktiviert wenn der Mischer Schalter in der vorgegebenen Position steht.  
-Quell und Zielkanäle können alle einfachen logischen Kanäle sein (Also nicht QR2,WK2 und LK2).  
+Der Mischer wird aktiviert wenn der Mischer Schalter in der vorgegebenen Position steht.<br/>
+Quell und Zielkanäle können alle einfachen logischen Kanäle sein (Also nicht QR2,WK2 und LK2).<br/>
 Optional kann ein Offset auf den Mischerwert addiert werden. Der Offset kann auch negativ sein.
 
 ![Mischer](img/TXos_mixer.png "Mischer")
@@ -547,12 +574,12 @@ Optional kann ein Offset auf den Mischerwert addiert werden. Der Offset kann auc
 ### Motor Aus
 [Inhalt](#inhalt)
 
-Beim aktivieren der "Motor Aus" Funktion wird der Motorkanal "Mot" auf einen vorher festgelegten Wert gesetzt.  
+Beim aktivieren der "Motor Aus" Funktion wird der Motorkanal "Mot" auf einen vorher festgelegten Wert gesetzt.<br/>
 Der Wert lässt sich auch durch Mischer nicht ändern und verhindert das der Motor anläuft.
 
 ![Motor Aus](img/TXos_engine_cut.png "Motor Aus")
 
-Bei aktivierter "Motor Aus" Funktion wird auf dem Hauptbildschirm ein grünes "Mot" angezeigt. 
+Bei aktivierter "Motor Aus" Funktion wird auf dem Hauptbildschirm ein grünes "Mot" angezeigt.<br/>
 
 ![Motor Aus2](img/TXos_main.png "Motor Aus2")
 
@@ -568,30 +595,30 @@ Tipp: Programmierung eines Timers mit Motor Stopp Funktion
 
 Schalter BI1 soll in Stellung 1 die “Motor Aus” Funktion aktivieren und der Timer soll nur laufen wenn BI1 auf 0 steht und der Gas Knüppel über -90% steht.
 
-1) Menü: Modelleinstell. => Motor aus  
-Schalt auswählen, ENTER drücken und Schalter BI1 auswählen  
-Den Schalter BI1 auf Stellung 1 schalten, dann nochmal ENTER drücken.  
+1) Menü: Modelleinstell. => Motor aus<br/>
+Schalt auswählen, ENTER drücken und Schalter BI1 auswählen<br/>
+Den Schalter BI1 auf Stellung 1 schalten, dann nochmal ENTER drücken.<br/>
 Kanal Mot auf -100% stellen
 
 ![Timer1](img/TXos_timer_prog1.png "Timer1")
 
-2) Menü: Modelleinstell. => Geberschalter  
-CS1 auf den Eingabekanal stellen der den Motor steuert. In diesem Fall IN1.  
-Schaltschwelle auf -90% stellen.  
-Der Schalter CS1 schaltet jetzt auf 1 wenn der Gasknüppel über -90% bewegt wird.
+2) Menü: Modelleinstell. => Geberschalter<br/>
+CS1 auf den Eingabekanal stellen der den Motor steuert. In diesem Fall IN1.<br/>
+Schaltschwelle auf -90% stellen.<br/>
+Der Schalter CS1 schaltet jetzt auf 1 wenn der Gasknüppel über -90% bewegt wird.<br/>
 
 ![Timer2](img/TXos_timer_prog2.png "Timer2")
 
-3) Menü: Modelleinstell. => Logikschalter  
-Der Logikschalter LS1 soll auf 1 schalten wenn BI1 auf 0 steht und CS1 auf 1.  
-LS1 auf A&B stellen  
-A auf BI1:0 stellen   (Dazu muss der Schalter BI1 auf Stellung 0 bewegt werden)  
-B auf CS1:1 stellen   (Dazu muss der Gasknüppel auf > -90% bewegt werden)
+3) Menü: Modelleinstell. => Logikschalter<br/>
+Der Logikschalter LS1 soll auf 1 schalten wenn BI1 auf 0 steht und CS1 auf 1.<br/>
+LS1 auf A&B stellen<br/>
+A auf BI1:0 stellen   (Dazu muss der Schalter BI1 auf Stellung 0 bewegt werden)<br/>
+B auf CS1:1 stellen   (Dazu muss der Gasknüppel auf > -90% bewegt werden)<br/>
 
 ![Timer3](img/TXos_timer_prog3.png "Timer3")
 
-4) Menü: Modelleinstell. => Timer  
-Schalt auf LS1:1 stellen   (Dazu muss Schalter BI1 auf 0 stehen und Gasknüppel > -90%)  
+4) Menü: Modelleinstell. => Timer<br/>
+Schalt auf LS1:1 stellen   (Dazu muss Schalter BI1 auf 0 stehen und Gasknüppel > -90%)<br/>
 Zeit auf die gewünschte Zeit einstellen.
 
 ![Timer4](img/TXos_timer_prog4.png "Timer4")
@@ -602,10 +629,23 @@ Zeit auf die gewünschte Zeit einstellen.
 
 Zuordnung der logischen Kanäle zu Servo Kanälen S1-S9.
 
-Verfügbare logische Kanäle:  
+Verfügbare logische Kanäle:<br/>
 Mot, QR, HR, SR, WK, LK, FWk, K8, K9, QR2, WK2, LK2
 
 ![Servo Zuord.](img/TXos_servo_mapping.png "Servo Zuord.")
+
+---
+### Servo Weg
+[Inhalt](#inhalt)
+
+Servo S1-S9 Weg.
+
+Verkürzung oder Erweiterung des Servowegs.<br/>
+Im Gegensatz zur Servo Wegbegrenzung wird hier der Weg eingestellt, den das Servo für die Vorgabe über den vollen Bereich (-100%,+100%) laufen soll.
+
+Einstellung bei einem neuen Modell: -100% bis +100%
+
+![Servo Umkehr](img/TXos_servo_range.png "Servo Weg")
 
 ---
 ### Servo Umkehr
@@ -623,10 +663,23 @@ Einstellung bei einem neuen Modell: Aus
 
 Einstellung der Servo S1-S9 Mittelstellung in Prozent.
 
-Bereich: -125 % bis +125 %  
+Bereich: -125 % bis +125 %<br/>
 Einstellung bei einem neuen Modell: 0 %
 
 ![Servo Mitte](img/TXos_servo_mid.png "Servo Mitte")
+
+---
+### Servo Verzögerung
+[Inhalt](#inhalt)
+
+Servo S1-S9 Verzögerung.
+
+Die Geschwindigkeit der Bewegung jedes Servos kann auf bis zu 10 Sekunden (von 0 bis 100%) veringert werden.<br/>
+Eingestellt wird die Zeit der Bewegung von 0 bis 100% in Sekunden, jeweils getrennt für beide Richtungen.
+
+Einstellung bei einem neuen Modell: 0 Sek.
+
+![Servo Umkehr](img/TXos_servo_verz.png "Servo Verzögerung")
 
 ---
 ### Servo Limit
@@ -634,7 +687,7 @@ Einstellung bei einem neuen Modell: 0 %
 
 Servo S1-S9 Wegbegrenzung in Prozent.
 
-Bereich: -125 % bis +125 %  
+Bereich: -125 % bis +125 %<br/>
 Einstellung bei einem neuen Modell: +/- 125 %
 
 ![Servo Limit](img/TXos_servo_limit.png "Servo Limit")
