@@ -114,8 +114,8 @@
 #define TEXT_SW_NAME_STATE_length   ((uint8_t)5)
 
 #define TEXT_SW_TYPE_UNUSED         CC("---")
-#define TEXT_SW_TYPE_2_STATE        CC("BI")
-#define TEXT_SW_TYPE_3_STATE        CC("TR")
+#define TEXT_SW_TYPE_2_STATE        CC("SW")
+#define TEXT_SW_TYPE_3_STATE        CC("SW")
 #define TEXT_SW_TYPE_CHANNEL        CC("CS")
 #define TEXT_SW_TYPE_FIXED_ON       CC(" ON")
 #define TEXT_SW_TYPE_LOGIC          CC("LS")
@@ -198,6 +198,7 @@
 #define TEXT_SYSTEM_SETUP           CC("System setup")
 #define TEXT_TEST                   CC("Test")
 #define TEXT_THR                    CC("THR")
+#define TEXT_THRDEP                 CC("THR dep.")
 #define TEXT_TIME                   CC("Time")
 #define TEXT_TXOS                   CC("TXos")
 #define TEXT_VCC_ADJUST             CC("+/-")

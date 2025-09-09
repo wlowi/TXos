@@ -207,6 +207,7 @@ using COMM_RC_t = uint8_t;
 #define COMM_FIELD_MODEL_SWITCH_MIX       FIELD_TYPE('W','M')
 #define COMM_FIELD_MODEL_PERCENT_MIX      FIELD_TYPE('P','M')
 #define COMM_FIELD_MODEL_OFFSET_MIX       FIELD_TYPE('O','M')
+#define COMM_FIELD_THRDEP                 FIELD_TYPE('T','D')
 #define COMM_FIELD_TIME                   FIELD_TYPE('T','M')
 #define COMM_FIELD_WARN                   FIELD_TYPE('V','W')
 #define COMM_FIELD_ALERT                  FIELD_TYPE('V','A')

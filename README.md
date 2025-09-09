@@ -89,7 +89,7 @@ Please obey the license.
 - Freie Zuordnung der Geber zu Kanälen
 - Freie Zuordnung der Kanäle zu Servo Ausgängen
 - Servo Mitte, Umkehr und Limitter
-- Timer
+- Timer (Wahlweise Gasabhängig)
 - Motor-Aus Schalter
 - Bind Funktion (Falls Support vom HF-Modul besteht)
 - Reichweiten Test Funktion (Falls Support vom HF-Modul besteht)
@@ -105,16 +105,20 @@ Please obey the license.
 ---
 ## Change History
 
-0.5.9 Landeklappen Modul.<br/>
-0.5.8 Watchdog fix beim schreiben ins EEPROM und serial I/O<br/>
-0.5.7 Servo Verzögerung Modul.<br/>
-0.5.6 Servo Weg Modul.<br/>
-0.5.5 Experimental ESP 32 support<br/>
-0.5.4 External user terminal support.<br/>
-0.5.3 Experimental external user terminal support.<br/>
-0.5.2 Template based configuration<br/>
-0.5.1 Modul import fixed. Geber Weg getrennt pos. und neg.<br/>
+```
+0.5.10 Timer wahlweise Gasabhängig.
+       Alle Schalter in SWx umbenannt.
+0.5.9 Landeklappen Modul.
+0.5.8 Watchdog fix beim schreiben ins EEPROM und serial I/O
+0.5.7 Servo Verzögerung Modul.
+0.5.6 Servo Weg Modul.
+0.5.5 Experimental ESP 32 support.
+0.5.4 External user terminal support.
+0.5.3 Experimental external user terminal support.
+0.5.2 Template based configuration
+0.5.1 Modul import fixed. Geber Weg getrennt pos. und neg.
 0.5.0 Modell import/export. Modell management.
+```
 
 ---
 ## Installation
@@ -128,8 +132,10 @@ Benötigte Arduino Libraries
 - Adafruit GFX Library
 - TO_BE_COMPLETED
 
-`cd TXos`
-`./mklinks atmega2560`
+```
+cd TXos
+./mklinks atmega2560
+```
 
 Dieses Kommando verlinkt die Dateien im `src` Verzeichnis nach `TXos`.
 
@@ -147,8 +153,10 @@ Benötigte Arduino Libraries
 - TFT_eSPI
 - TO_BE_COMPLETED
 
-`cd TXos`
-`./mklinks esp32`
+```
+cd TXos
+./mklinks esp32
+```
 
 Mit der Arduino IDE kann dann in diesem Verzeichnis TXos compiliert werden.
 
@@ -211,12 +219,14 @@ Please modify your local config to your needs.
 
 Der Simulator verwendet die `wxWidgets` library. Zum installieren:
 
-`apt install gcc make libwxgtk3.0-gtk3-dev`
+```
+apt install gcc make libwxgtk3.0-gtk3-dev
 
-`cd src`
-`make clean`
-`make -j`
-`./TXosTest`
+cd src
+make clean
+make -j
+./TXosTest
+```
 
 
 ![TXos Simulator](img/TXos_026.png "TXos Simulator")
@@ -224,9 +234,11 @@ Der Simulator verwendet die `wxWidgets` library. Zum installieren:
 ---
 ## Unit test
 
-`cd test`
-`make clean`
-`make -j unittest`
-`./TXosUnitTest`
+```
+cd test
+make clean
+make -j unittest
+./TXosUnitTest
+```
 
 Achtung: `make clean unittest` funktioniert nicht!

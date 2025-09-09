@@ -57,7 +57,7 @@ void Controls::GetControlValues() {
         controlSet.outChannel[ch] = CHANNELVALUE_MID;
     }
 
-    /* Read analog inputs */
+    /* Read analog inputs, Range is 0 - 1023 (for ATmega2560) */
     for( ch = 0; ch < PORT_ANALOG_INPUT_COUNT; ch++) {
         controlSet.stickADCChannel[ch] = inputImpl->GetStickValue( ch);
     }
@@ -120,7 +120,7 @@ void Controls::inputSet( channel_t ch, channelValue_t value) {
 }
 
 channelValue_t Controls::inputGet( channel_t ch) {
-    
+
     if( ch >= INPUT_CHANNELS) {
         LOGV("Controls::inputGet: ERROR: channel %u\n", ch);
         return CHANNELVALUE_MID;
@@ -130,7 +130,7 @@ channelValue_t Controls::inputGet( channel_t ch) {
 }
 
 void Controls::trimSet( channel_t ch, channelValue_t value) {
-    
+
     if( ch >= PORT_TRIM_INPUT_COUNT) {
         LOGV("Controls::trimSet: ERROR: channel %u\n", ch);
         return;
@@ -158,7 +158,7 @@ channelValue_t Controls::trimGet( channel_t ch) {
 }
 
 void Controls::logicalSet( channel_t ch, channelValue_t value) {
-    
+
     if( ch >= LOGICAL_CHANNELS) {
         LOGV("Controls::logicalSet: ERROR: channel %u\n", ch);
         return;
@@ -249,10 +249,10 @@ switchConf_t Controls::switchConfGet( switch_t sw) {
 switch_t Controls::getSwitchByType( switchConf_t type, uint8_t idx) {
 
     switch_t sw;
-    
+
     // Set switch to unused
     INIT_SWITCH( sw);
-    
+
     for( switch_t i = 0; i < SWITCHES; i++) {
         if(  switchConfGet(i) == type) {
             if(idx == 0) {
@@ -272,7 +272,7 @@ void Controls::copySwitchName( char *b, switch_t sw) {
     uint8_t swn = GET_SWITCH( sw);
     size_t idx = 0;
     const char *swType;
-    
+
     /* b must be of length TEXT_SW_NAME_length +1 */
 
     if( IS_SWITCH_UNUSED( sw)) {
@@ -355,6 +355,6 @@ void Controls::copySwitchNameAndState( char *b, switch_t sw) {
 
 bool Controls::evalSwitches( switch_t trigger) {
 
-    return IS_SWITCH_USED( trigger) 
+    return IS_SWITCH_USED( trigger)
             && GET_SWITCH_STATE( trigger) == GET_SWITCH_STATE( controlSet.switches[ GET_SWITCH(trigger)]);
 }

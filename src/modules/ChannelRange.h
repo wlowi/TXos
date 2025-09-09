@@ -47,6 +47,14 @@ class ChannelRange : public Module {
     public:
         ChannelRange();
 
+        percent_t getRangeMin(channel_t ch) const {
+            return (ch < PORT_ANALOG_INPUT_COUNT) ? CFG->negRange_pct[ch] : 0;
+        }
+
+        percent_t getRangeMax(channel_t ch) const {
+            return (ch < PORT_ANALOG_INPUT_COUNT) ? CFG->posRange_pct[ch] : 0;
+        }
+
         /* From Module */
         void run( Controls &controls) final;
         void setDefaults() final;

@@ -53,7 +53,7 @@ typedef uint16_t timingUsec_t;
 #define CHANNELVALUE_MIN        ((channelValue_t)-1000)
 #define CHANNELVALUE_MAX        ((channelValue_t) 1000)
 
-/* If you change CHANNELVALUE_MAX_LIMIT you need to adjust the 
+/* If you change CHANNELVALUE_MAX_LIMIT you need to adjust the
  * algorithm in DualExpo.cpp
  */
 #define CHANNELVALUE_MIN_LIMIT  ((channelValue_t)-1250)
@@ -105,7 +105,7 @@ typedef int8_t percent_t;
 /* State of a single switch
  * Bit 7     1 == invalid / unused switch
  * Bit 4-6   switch State
- * Bit 0-3   switch number 
+ * Bit 0-3   switch number
  */
 typedef uint8_t switch_t;
 
@@ -114,7 +114,7 @@ typedef uint8_t switch_t;
 #define SWITCH_STATE_MASK               ((switch_t)0x70)
 
 #define INIT_SWITCH( sw)                sw = SWITCH_UNUSED_FLAG
-#define SET_SWITCH_UNUSED( sw)          sw |= SWITCH_UNUSED_FLAG    
+#define SET_SWITCH_UNUSED( sw)          sw |= SWITCH_UNUSED_FLAG
 #define SET_SWITCH_USED( sw)            sw &= ~SWITCH_UNUSED_FLAG
 #define IS_SWITCH_UNUSED( sw)           (sw & SWITCH_UNUSED_FLAG)
 #define IS_SWITCH_USED( sw)             (!IS_SWITCH_UNUSED( sw))
@@ -130,7 +130,7 @@ typedef uint8_t switch_t;
  * Controls are sticks, switches and logical switches.
  */
 typedef struct controlSet_t {
-    
+
     /* Raw analog input channels */
     channelValue_t stickADCChannel[ PORT_ANALOG_INPUT_COUNT ];
 
@@ -173,12 +173,19 @@ class Controls {
         void rangeSet( channel_t ch, percent_t value);
         percent_t rangeGet( channel_t ch);
 
+        // Range is always CHANNELVALUE_MIN_LIMIT - CHANNELVALUE_MAX_LIMIT
+        // [-1250 ... 1250]
         void inputSet( channel_t ch, channelValue_t value);
         channelValue_t inputGet( channel_t ch);
 
+        // Range is always TRIMVALUE_MIN_LIMIT - TRIMVALUE_MAX_LIMIT
+        // [-250 ... 250]
         void trimSet( channel_t ch, channelValue_t value);
         channelValue_t trimGet( channel_t ch);
 
+        // Range depends on settings of ChannelRange module.
+        // Default is [-100% ... 100%] which maps to [-1000 ... 1000]
+        // Can be extended up to [-125% ... 125%]
         void logicalSet( channel_t ch, channelValue_t value);
         channelValue_t logicalGet( channel_t ch);
 

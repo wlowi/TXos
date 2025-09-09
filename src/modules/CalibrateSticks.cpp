@@ -26,7 +26,7 @@
 
 #include "CalibrateSticks.h"
 
-/* The import/export dictionary. 
+/* The import/export dictionary.
  * See ImportExport.h
  */
 DICTROWA( r1, COMM_DATATYPE_INTARR, COMM_FIELD_LOW_ARRAY, calibrateSticks_t, minPos, PORT_ANALOG_INPUT_COUNT)
@@ -57,6 +57,7 @@ void CalibrateSticks::run( Controls &controls) {
 
     for( channel_t ch = 0; ch < PORT_ANALOG_INPUT_COUNT; ch++) {
 
+        // Range is whatever the AD Converter outputs. For ATmega2560 0-1023
         v = controls.stickADCGet( ch);
 
         if( calibrationStep == CALIBRATION_STEP_CENTER) {
@@ -90,7 +91,7 @@ void CalibrateSticks::setDefaults() {
 
     INIT_NON_PHASED_CONFIGURATION(
 
-        for( channel_t ch = 0; ch < PORT_ANALOG_INPUT_COUNT; ch++) {        
+        for( channel_t ch = 0; ch < PORT_ANALOG_INPUT_COUNT; ch++) {
             CFG->minPos[ch] = 0;
             CFG->maxPos[ch] = 1023;
             CFG->midPos[ch] = CFG->maxPos[ch] / 2;
@@ -117,7 +118,7 @@ void CalibrateSticks::rowExecute( TextUI *ui, uint8_t row ) {
     case CALIBRATION_STEP_CENTER:
         calibrationStep = CALIBRATION_STEP_MINMAX;
         break;
-        
+
     case CALIBRATION_STEP_MINMAX:
         [[fallthrough]];
 

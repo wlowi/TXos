@@ -29,7 +29,7 @@
 extern Controls controls;
 extern const char* const InputChannelNames[INPUT_CHANNELS];
 
-/* The import/export dictionary. 
+/* The import/export dictionary.
  * See ImportExport.h
  */
 DICTROWA( r1, COMM_DATATYPE_UINTARR, COMM_FIELD_CHANNEL_ARRAY, analogSwitch_t, source, CHANNEL_SWITCHES)
@@ -59,9 +59,9 @@ void AnalogSwitch::run( Controls &controls) {
     switchState_t state;
 
     for( switch_t sw = 0; sw < CHANNEL_SWITCHES; sw++) {
-        /* Convert v from range -125 - 125 tp -100 - 100 before compare */
+        /* Convert v from range -125 - 125 to -100 - 100 before compare */
         v = (long)controls.inputGet(CFG->source[sw]) * PERCENT_MAX / PERCENT_MAX_LIMIT;
-        
+
         state = ((channelValue_t)v >= PCT_TO_CHANNEL(CFG->trigger_pct[sw])) ? SW_STATE_1 : SW_STATE_0;
         controls.switchSet( CHANNEL_SWITCHES_FIRST_IDX + sw, state);
     }

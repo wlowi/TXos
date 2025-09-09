@@ -29,10 +29,13 @@
 
 #include "Module.h"
 
+#define MSEC_PER_SEC (1000)
+
 typedef struct flightTimer_t {
 
     switch_t swState;
     uint16_t time_sec;
+    bool throttleDep;
 
 } flightTimer_t;
 
@@ -41,6 +44,8 @@ class Timer : public Module {
     NON_PHASED_CONFIG( flightTimer_t)
 
     private:
+        bool running;
+        uint32_t countdown_mSec;
         uint16_t countdown_sec;
         long lastMillis;
         char timeAsString[6]; // Format mm:ss
@@ -48,6 +53,7 @@ class Timer : public Module {
     public:
         Timer();
 
+        // Time remaining in seconds.
         uint16_t timeSec();
         char *timeStr();
 
