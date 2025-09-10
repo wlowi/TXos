@@ -32,10 +32,11 @@
 typedef struct logicSwitch_t {
 
     uint8_t  type[LOGIC_SWITCHES];
-    
+
     switch_t swStateA[LOGIC_SWITCHES];
     switch_t swStateB[LOGIC_SWITCHES];
     switch_t swStateC[LOGIC_SWITCHES];
+    uint8_t  invert[LOGIC_SWITCHES]; // bits 0-3 invert A,B,C
 
 } logicSwitch_t;
 

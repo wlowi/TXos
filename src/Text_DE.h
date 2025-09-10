@@ -137,6 +137,9 @@
 #define TEXT_LOGIC_SW_B             CC("B")
 #define TEXT_LOGIC_SW_C             CC("C")
 
+#define TEXT_LOGIC_IS               CC("=")
+#define TEXT_LOGIC_IS_NOT           CC("<>")
+
 // Calibration steps (7 letters max)
 #define TEXT_CALIB_length           ((uint8_t)7)
 #define TEXT_CALIB_CENTER           CC("CENTER")

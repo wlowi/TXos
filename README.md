@@ -106,6 +106,7 @@ Please obey the license.
 ## Change History
 
 ```
+0.5.11 Logische Schalter: invertierte Schalter.
 0.5.10 Timer wahlweise Gasabhängig.
        Alle Schalter in SWx umbenannt.
 0.5.9 Landeklappen Modul.
