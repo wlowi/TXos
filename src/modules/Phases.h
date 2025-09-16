@@ -31,8 +31,10 @@
 
 typedef struct phases_t {
 
-    switch_t sw;
-    phase_t phaseName[PHASES]; 
+    // Switch for phase 0 is actually unused as this is the
+    // default phase
+    switch_t swState[PHASES];
+    phase_t phaseName[PHASES];
 
 } phases_t;
 
@@ -43,7 +45,7 @@ class Phases : public Module {
     private:
         phase_t phase;
 
-        char phaseText[5];
+        char phaseText[3];
 
     public:
         Phases();

@@ -172,6 +172,7 @@
 #define TEXT_CH                     CC("Ch")
 #define TEXT_CONNECTING             CC("CONNECTING")
 #define TEXT_COPY                   CC("Copy")
+#define TEXT_DEFAULT                CC("Default")
 #define TEXT_EXPO                   CC("Expo")
 #define TEXT_EXPORT                 CC("Exp Model")
 #define TEXT_IMPORT                 CC("Imp Model")

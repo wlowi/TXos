@@ -37,6 +37,8 @@
 #include "SerialConsole.h"
 #include "time.h"
 
+#include <wx/utils.h>
+
 EEPROMClass EEPROM(4096);
 SerialConsole *serialConsole;
 EmuSerial Serial;
@@ -58,7 +60,15 @@ SWITCH_CONFIGURATION
 
 unsigned long millis() {
 
-    return (unsigned long)clock() * 1000 / CLOCKS_PER_SEC;
+    static wxLongLong startTime = 0;
+
+    wxLongLong now = wxGetUTCTimeMillis();
+
+    if( startTime == 0) {
+        startTime = now;
+    }
+
+    return (now - startTime).GetLo();
 }
 
 class TXosTest : public wxApp
@@ -66,12 +76,12 @@ class TXosTest : public wxApp
     public:
         virtual bool OnInit();
 };
- 
+
 class MyFrame : public wxFrame
 {
     public:
         MyFrame();
- 
+
     private:
         void OnClose(wxCloseEvent& event);
         void OnExit(wxCommandEvent& event);
@@ -79,9 +89,9 @@ class MyFrame : public wxFrame
         void OnConsole(wxCommandEvent& event);
         void handleIdle(wxIdleEvent& event);
 };
- 
+
 wxIMPLEMENT_APP(TXosTest);
- 
+
 bool TXosTest::OnInit()
 {
     EEPROM.loadFromFile();
@@ -98,19 +108,19 @@ MyFrame::MyFrame()
     menuFile->Append(idConsole, "&Console", "Open Serial Console Emulation");
     menuFile->AppendSeparator();
     menuFile->Append(wxID_EXIT);
- 
+
     wxMenu *menuHelp = new wxMenu;
     menuHelp->Append(wxID_ABOUT);
- 
+
     wxMenuBar *menuBar = new wxMenuBar;
     menuBar->Append(menuFile, "&File");
     menuBar->Append(menuHelp, "&Help");
- 
+
     SetMenuBar( menuBar );
- 
+
     CreateStatusBar();
     SetStatusText("TXosTest");
- 
+
     Bind(wxEVT_MENU, &MyFrame::OnConsole, this, idConsole);
     Bind(wxEVT_MENU, &MyFrame::OnAbout, this, wxID_ABOUT);
     Bind(wxEVT_MENU, &MyFrame::OnExit, this, wxID_EXIT);
@@ -122,11 +132,11 @@ MyFrame::MyFrame()
 
     hbox->AddSpacer(10);
 #if STICK_TRIM == ANALOG_TRIM
-    inputImpl =  new InputImpl( panel, 
+    inputImpl =  new InputImpl( panel,
                                 PORT_ANALOG_INPUT_COUNT, PORT_TRIM_INPUT_COUNT, PORT_AUX_INPUT_COUNT,
                                 PORT_SWITCH_INPUT_COUNT, switchConfiguration);
 #else
-    inputImpl =  new InputImpl( panel, 
+    inputImpl =  new InputImpl( panel,
                                 PORT_ANALOG_INPUT_COUNT, 0, PORT_AUX_INPUT_COUNT,
                                 PORT_SWITCH_INPUT_COUNT, switchConfiguration);
 #endif
@@ -150,7 +160,7 @@ MyFrame::MyFrame()
     portsImpl = new PortsImpl();
     buzzerImpl = new BuzzerImpl();
 }
- 
+
 void MyFrame::OnClose(wxCloseEvent& event)
 {
     serialConsole->Show(false);
@@ -160,10 +170,10 @@ void MyFrame::OnClose(wxCloseEvent& event)
 }
 
 void MyFrame::OnExit(wxCommandEvent& event)
-{    
+{
     Close();
 }
- 
+
 void MyFrame::OnConsole(wxCommandEvent& event)
 {
     if( serialConsole->IsShown()) {
@@ -171,7 +181,7 @@ void MyFrame::OnConsole(wxCommandEvent& event)
     } else {
         serialConsole->Show(true);
     }
-} 
+}
 
 void MyFrame::OnAbout(wxCommandEvent& event)
 {
@@ -180,7 +190,7 @@ void MyFrame::OnAbout(wxCommandEvent& event)
 
 }
 
-void MyFrame::handleIdle(wxIdleEvent& event) 
+void MyFrame::handleIdle(wxIdleEvent& event)
 {
     static bool setup_done = false;
 
@@ -188,6 +198,7 @@ void MyFrame::handleIdle(wxIdleEvent& event)
 
     if( setup_done) {
         loop();
+        wxMicroSleep(1000);
     } else {
         setup();
         setup_done = true;

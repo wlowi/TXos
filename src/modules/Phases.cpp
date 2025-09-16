@@ -31,14 +31,14 @@ extern ModuleManager moduleManager;
 
 extern const char* const PhaseNames[TEXT_PHASES_count];
 
-/* The import/export dictionary. 
+/* The import/export dictionary.
  * See ImportExport.h
  */
-DICTROW( r1, COMM_DATATYPE_UINT8, COMM_FIELD_SWITCH, phases_t, sw)
-DICTROWA( r2, COMM_DATATYPE_UINTARR, COMM_FIELD_PHASE_NAMES, phases_t, phaseName, PHASES)
-DICT( Phases, COMM_SUBPACKET_PHASES, &r1, &r2)
+DICTROWA(r1, COMM_DATATYPE_UINTARR, COMM_FIELD_SWITCH, phases_t, swState, PHASES)
+DICTROWA(r2, COMM_DATATYPE_UINTARR, COMM_FIELD_PHASE_NAMES, phases_t, phaseName, PHASES)
+DICT(Phases, COMM_SUBPACKET_PHASES, &r1, &r2)
 
-Phases::Phases() : Module( MODULE_PHASES_TYPE, TEXT_MODULE_PHASES, COMM_SUBPACKET_PHASES) {
+Phases::Phases() : Module(MODULE_PHASES_TYPE, TEXT_MODULE_PHASES, COMM_SUBPACKET_PHASES) {
 
     setDefaults();
 }
@@ -48,44 +48,52 @@ phase_t Phases::getPhase() {
     return phase;
 }
 
-const char *Phases::getPhaseName() {
+const char* Phases::getPhaseName() {
 
     return PhaseNames[CFG->phaseName[phase]];
 }
 
 /* From Module */
 
-COMM_RC_t Phases::exportConfig( ImportExport *exporter, uint8_t *config) const {
+COMM_RC_t Phases::exportConfig(ImportExport* exporter, uint8_t* config) const {
 
-    return exporter->runExport( DICT_ptr(Phases), DICTROW_ptr(Phases), config, sizeof(phases_t));
+    return exporter->runExport(DICT_ptr(Phases), DICTROW_ptr(Phases), config, sizeof(phases_t));
 }
 
-COMM_RC_t Phases::importConfig( ImportExport *importer, uint8_t *config) const {
+COMM_RC_t Phases::importConfig(ImportExport* importer, uint8_t* config) const {
 
-    return importer->runImport( DICT_ptr(Phases), DICTROW_ptr(Phases), config, sizeof(phases_t));
+    return importer->runImport(DICT_ptr(Phases), DICTROW_ptr(Phases), config, sizeof(phases_t));
 }
 
-void Phases::run( Controls &controls) {
+void Phases::run(Controls& controls) {
+
+    uint8_t i;
 
     switchState_t state;
-    switch_t sw;
+    switch_t phaseSw;
 
-    if( IS_SWITCH_UNUSED( CFG->sw)) {
-        return;
+    /* Phase 0 is the default phase and active if no other phase is active.
+     * We scan phases from highest number to lowest.
+     */
+    for (i = PHASES - 1; i > 0; i--) {
+        if (IS_SWITCH_USED(CFG->swState[i])) {
+            state = controls.switchGet(GET_SWITCH(CFG->swState[i]));
+            if (state == GET_SWITCH_STATE(CFG->swState[i])) {
+                break;
+            }
+        }
     }
 
-    state = controls.switchGet( CFG->sw);
-        
-    sw = controls.getSwitchByType( SW_CONF_PHASES, 0);
-    if( IS_SWITCH_USED(sw)) {
-        controls.switchSet( sw, state);
+    // Update the phases switch
+    phaseSw = controls.getSwitchByType(SW_CONF_PHASES, 0);
+    if (IS_SWITCH_USED(phaseSw)) {
+        controls.switchSet(phaseSw, (switchState_t)i);
     }
 
-    if( state < PHASES && state != phase) {
-        phase = state;
-
-        LOGV("Phases::run: switch to phase %d\n", phase);
-        moduleManager.switchPhase( phase);
+    if (i != phase) { // The phase has changed
+        phase = i;
+        LOGV("Phases::run: switch to phase %d\n", i);
+        moduleManager.switchPhase(i);
     }
 }
 
@@ -93,58 +101,62 @@ void Phases::setDefaults() {
 
     INIT_NON_PHASED_CONFIGURATION(
 
-        INIT_SWITCH( CFG->sw);
-
         phase = 0;
 
-        for( phase_t p = 0; p < PHASES; p++) {
+        for (phase_t p = 0; p < PHASES; p++) {
+            INIT_SWITCH(CFG->swState[p]);
             CFG->phaseName[p] = p;
         }
 
     )
-
-    strcpy( phaseText, TEXT_PHASE_PATTERN);
 }
 
 /* From TableEditable */
 
 uint8_t Phases::getRowCount() {
 
-    /* One for the switch + number of phases */
-    return 1 + PHASES;
+    return 2 * PHASES;
 }
 
-const char *Phases::getRowName( uint8_t row) {
+const char* Phases::getRowName(uint8_t row) {
 
-    if( row == 0) {
+    if (row == 0) {
+        return TEXT_DEFAULT;
+    } else if ((row % 2) == 0) {
         return TEXT_SWITCH;
     }
 
-    phaseText[3] = '0'+row;
-    phaseText[4] = '\0';
+    phaseText[0] = ' ';
+    phaseText[1] = '0' + (row / 2);
+    phaseText[2] = '\0';
 
     return phaseText;
 }
 
-uint8_t Phases::getColCount( uint8_t row) {
+uint8_t Phases::getColCount(uint8_t row) {
+
+    if( row == 0) {
+        return 0;
+    }
 
     return 1;
 }
 
-void Phases::getValue( uint8_t row, uint8_t col, Cell *cell) {
+void Phases::getValue(uint8_t row, uint8_t col, Cell* cell) {
 
-    if( row == 0) {
-        cell->setSwitch( 7, CFG->sw);
+    if (row % 2) {
+        cell->setList(3, PhaseNames, TEXT_PHASES_count, CFG->phaseName[row / 2]);
     } else {
-        cell->setList( 6, PhaseNames, TEXT_PHASES_count, CFG->phaseName[row-1]);
+        cell->setSwitchState(7, CFG->swState[row / 2]);
     }
 }
 
-void Phases::setValue( uint8_t row, uint8_t col, Cell *cell) {
+void Phases::setValue(uint8_t row, uint8_t col, Cell* cell) {
 
-    if( row == 0) {
-        CFG->sw = cell->getSwitch();
-    } else {
-        CFG->phaseName[row-1] = cell->getList();
+    if (row % 2) {
+        CFG->phaseName[row / 2] = cell->getList();
+    }
+    else {
+        CFG->swState[row / 2] = cell->getSwitchState();
     }
 }
