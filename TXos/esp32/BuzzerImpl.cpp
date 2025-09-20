@@ -55,12 +55,11 @@ void BuzzerImpl::init(Ports& p) {
     off();
 
     /* Timer runns at 10kHz */
-    buzzerTimer = timerBegin( 1, 8000, true);
+    buzzerTimer = timerBegin( 10000);
 
     if (buzzerTimer) {
         timerStop(buzzerTimer);
-        timerAttachInterrupt(buzzerTimer, &buzzerTimerISR, false);
-        timerAlarmDisable(buzzerTimer);
+        timerAttachInterrupt(buzzerTimer, &buzzerTimerISR);
     }
 }
 
@@ -125,7 +124,6 @@ void BuzzerImpl::stopSound() {
 
     if (buzzerTimer) {
         timerStop(buzzerTimer);
-        timerAlarmDisable(buzzerTimer);
     }
 
     sndIdx = 0;
@@ -149,7 +147,6 @@ void BuzzerImpl::processNext() {
     portENTER_CRITICAL(&buzzerMux);
 
     timerStop(buzzerTimer);
-    timerAlarmDisable(buzzerTimer);
 
     do {
         notDone = false;
@@ -211,8 +208,7 @@ void BuzzerImpl::scheduleInterrupt(uint8_t t) {
 
     if (buzzerTimer) {
         timerWrite(buzzerTimer, 0);
-        timerAlarmWrite(buzzerTimer, (uint64_t)t * 1000, true);
-        timerAlarmEnable(buzzerTimer);
+        timerAlarm(buzzerTimer, (uint64_t)t * 1000, false, 0);
         timerStart(buzzerTimer);
     }
 }

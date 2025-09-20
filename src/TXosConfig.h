@@ -120,7 +120,7 @@
 /* Two state or three state switches */
 #if MECHANICAL_SWITCHES == 0
     #define PORT_SWITCH_INPUT_COUNT   0
-    #define PORT_SWITCH_INPUT        
+    #define PORT_SWITCH_INPUT
 #elif MECHANICAL_SWITCHES == 1
     #define PORT_SWITCH_INPUT_COUNT   1
     #define PORT_SWITCH_INPUT        22
@@ -184,8 +184,8 @@
 /* Rotary encoder
  * Must be in range A8 - A15
  */
-#define PORT_ROTENC_CLK          22
-#define PORT_ROTENC_DIR          21
+#define PORT_ROTENC_CLK           4
+#define PORT_ROTENC_DIR          22
 #define PORT_ROTENC_BUTTON       19
 
 #if (ANALOG_STICK_CHANNELS + ANALOG_OTHER_CHANNELS) == 4
@@ -213,7 +213,7 @@
 /* Two state or three state switches */
 #if MECHANICAL_SWITCHES == 0
     #define PORT_SWITCH_INPUT_COUNT   0
-    #define PORT_SWITCH_INPUT        
+    #define PORT_SWITCH_INPUT
 #elif MECHANICAL_SWITCHES == 1
     #define PORT_SWITCH_INPUT_COUNT   1
     #define PORT_SWITCH_INPUT         17
@@ -235,8 +235,8 @@
 #endif
 
 
-#define PORT_HF_RELAIS            1
-#define PORT_BIND_RELAIS          3
+#define PORT_HF_RELAIS           16
+#define PORT_BIND_RELAIS         17
 #define PORT_BUZZER              13
 
 

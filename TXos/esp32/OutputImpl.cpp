@@ -125,7 +125,7 @@ void ARDUINO_ISR_ATTR ppmTimerISR() {
 
     nextTimerValue_uSec -= ISR_ADJUST;
 
-    timerAlarmWrite( ppmTimer, nextTimerValue_uSec, false);
+    timerAlarm( ppmTimer, nextTimerValue_uSec, false, 0);
 }
 
 OutputImpl::OutputImpl() {
@@ -157,13 +157,12 @@ void OutputImpl::init() {
     pinMode(PPM_PORT, OUTPUT);
     PIN_HIGH();
 
-    ppmTimer = timerBegin( 0, 80, true);
+    ppmTimer = timerBegin( 1000000);
 
     if( ppmTimer)
     {
-        timerAttachInterrupt( ppmTimer, &ppmTimerISR, false);
-        timerAlarmWrite( ppmTimer, PPM_INIT_usec, false);
-        timerAlarmEnable( ppmTimer);
+        timerAttachInterrupt( ppmTimer, &ppmTimerISR);
+        timerAlarm( ppmTimer, PPM_INIT_usec, false, 0);
     }
 }
 
