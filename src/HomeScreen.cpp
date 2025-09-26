@@ -123,16 +123,30 @@ void HomeScreen::handleEvent(TextUI* ui, Event* e) {
         lcd->printStr(model->getModelName(), MODEL_NAME_LEN);
     }
 
-    if (engineCut && (refresh == REFRESH_FULL || engineCut->isSave() != engineSave)) {
-        engineSave = engineCut->isSave();
+    if ( (refresh == REFRESH_FULL)
+         || (engineCut && engineCut->isSave() != engineSave)
+         || (motorStart && motorStart->isActive() != startActive)) {
 
-        lcd->setFg(0, 255, 0);
-        lcd->setCursor(2, 10);
-        lcd->printStr(engineSave ? TEXT_THR : TEXT_MSG_NONE, 3);
+        engineSave = engineCut->isSave();
+        startActive = motorStart->isActive();
+
+        if( engineSave) {
+            lcd->setFg(0, 255, 0);
+            lcd->setCursor(2, 8);
+            lcd->printStr( TEXT_THR, 5);
+        } else if( startActive) {
+            lcd->setFg(255, 0, 0);
+            lcd->setCursor(2, 8);
+            lcd->printStr( TEXT_START, 5);
+        } else {
+            lcd->setFg(255, 0, 0);
+            lcd->setCursor(2, 8);
+            lcd->printStr( TEXT_MSG_NONE, 5);
+        }
     }
 
-    if (phases && (refresh == REFRESH_FULL || phases->getPhase() != lastPhase)) {
-        lastPhase = phases->getPhase();
+    if (phases && (refresh == REFRESH_FULL || phases->getPhaseNo() != lastPhase)) {
+        lastPhase = phases->getPhaseNo();
 
         lcd->normalColors();
         lcd->setCursor(3, 3);
@@ -224,6 +238,7 @@ void HomeScreen::activate(TextUI* ui) {
         phases = (Phases*)moduleManager.getModuleByType(MODULE_SET_MODEL, MODULE_PHASES_TYPE);
         timer = (Timer*)moduleManager.getModuleByType(MODULE_SET_MODEL, MODULE_TIMER_TYPE);
         engineCut = (EngineCut*)moduleManager.getModuleByType(MODULE_SET_MODEL, MODULE_ENGINE_CUT_TYPE);
+        motorStart = (MotorStart*)moduleManager.getModuleByType(MODULE_SET_MODEL, MODULE_MOTOR_START_TYPE);
     }
 
     refresh = REFRESH_FULL;

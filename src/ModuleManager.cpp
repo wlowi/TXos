@@ -611,7 +611,7 @@ void ModuleManager::importModel(ImportExport* importer) {
 
                         }
                         else {
-                            LOGV("** ModuleManager::importModel(): ERROR: Payload to large. %u > %u\n",
+                            LOGV("** ModuleManager::importModel(): ERROR: Payload to large. %lu > %lu\n",
                                 totalSize + sizeof(moduleType_t) + sizeof(moduleSize_t) + size,
                                 payloadSize);
                             errCode = 5;
@@ -666,7 +666,7 @@ void ModuleManager::parseBlock(uint8_t setType) {
         }
 
         if( totalSize + size > blockService->getPayloadSize()) {
-            LOGV("ModuleManager::parseBlock(): ERROR: size > payloadSize %u > %u\n", totalSize + size, blockService->getPayloadSize());
+            LOGV("ModuleManager::parseBlock(): ERROR: size > payloadSize %u > %lu\n", totalSize + size, blockService->getPayloadSize());
             break;
         }
 
@@ -775,7 +775,7 @@ void ModuleManager::generateBlock(configBlockID_t modelID, uint8_t setType) {
 
             }
             else {
-                LOGV("** ModuleManager::generateBlock(): Payload to large. %u > %u\n",
+                LOGV("** ModuleManager::generateBlock(): Payload to large. %lu > %lu\n",
                     totalSize + sizeof(moduleType_t) + sizeof(moduleSize_t) + size,
                     payloadSize);
 #ifdef __linux__
@@ -793,8 +793,8 @@ void ModuleManager::generateBlock(configBlockID_t modelID, uint8_t setType) {
     type = MODULE_INVALID_TYPE;
     PUT((uint8_t*)&type, sizeof(moduleType_t));
 
-    LOGV("ModuleManager::generateBlock(): Payload %d bytes\n", totalSize);
+    LOGV("ModuleManager::generateBlock(): Payload %d bytes (%ld max)\n", totalSize, payloadSize);
 #ifdef __linux__
-    printf("ModuleManager::generateBlock(): Payload %d bytes\n", totalSize);
+    printf("ModuleManager::generateBlock(): Payload %d bytes (%ld max)\n", totalSize, payloadSize);
 #endif
 }

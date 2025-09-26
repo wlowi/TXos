@@ -24,43 +24,67 @@
   SOFTWARE.
 */
 
-#ifndef _Phases_h_
-#define _Phases_h_
+#ifndef _MotorStart_h_
+#define _MotorStart_h_
 
 #include "Module.h"
 
-typedef struct phases_t {
 
-    // Switch for phase 0 is actually unused as this is the
-    // default phase
-    switch_t swState[PHASES];
-    phase_t phaseName[PHASES];
+/*
+ * Leading time before the motor starts.
+ * Leading time is triggered by moving the gas stick above trigger_pct.
+ * After leading time expires the motor starts to turn and full
+ * throttle is reached after delay time.
+ */
+#define LEADING_MAX_SEC   (10)
+/*
+ * Delay is the number of seconds from 0 to 100%.
+ * The resolution is 1/10 of a second.
+ */
+#define DELAY_MAX_SEC     (10)
 
-} phases_t;
+typedef enum {
 
-class Phases : public Module {
+    STATE_INACTIVE = 0,
+    STATE_ACTIVATED,
+    STATE_TRIGGERED,
+    STATE_START,
+    STATE_DEACTIVATING
 
-    NON_PHASED_CONFIG( phases_t )
+} motorStartState_t;
+
+typedef struct motorStart_t {
+
+    phase_t phase;
+    switch_t activateSw;
+    percent_t trigger_pct;
+    float1 leadingTime;
+    float1 delayTime;
+
+} motorStart_t;
+
+class MotorStart : public Module {
+
+    NON_PHASED_CONFIG( motorStart_t)
 
     private:
-        phase_t phase;
-
-        char phaseText[3];
+        motorStartState_t state;
+        unsigned long endTime_msec;
+        // Last value of motor channel (times 10)
+        int16_t lastChannelValue10;
+        bool inModule;
 
     public:
-        Phases();
+        MotorStart();
+        bool isActive();
 
-        // This is the phase number from 0 to PHASES (3)
-        phase_t getPhaseNo();
-        // This is the actual phase type from 0 to TEXT_PHASES_count (9)
-        phase_t getPhaseType();
-        const char *getPhaseName();
-
-        /* From Module */
+        /* From module */
         void run( Controls &controls) final;
         void setDefaults() final;
         COMM_RC_t exportConfig( ImportExport *exporter, uint8_t *config) const;
         COMM_RC_t importConfig( ImportExport *importer, uint8_t *config) const;
+        void moduleEnter() { inModule = true; }
+        void moduleExit() { inModule = false; }
 
         /* From TableEditable */
         uint8_t getRowCount() final;

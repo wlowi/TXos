@@ -137,7 +137,7 @@ COMM_RC_t ImportExport::runImport(const DICT_t* dict, const DICTROW_t* row[], ui
         } else if( rc == COMM_RC_OK) {
             LOGV("runImport: %c%c: dType=%c, width=%d, count=%d\n", PACKET_NAME(cmd), dType, width, count);
             if( findDictEntry( row, cmd, &dictDataType, &dictOffset, &dictSize, &dictCount)) {
-                LOGV("runImport: dictType=%d, offset=%d, size=%d count=%d\n", dictDataType, dictOffset, dictSize, dictCount);
+                LOGV("runImport: dictType=%d, offset=%ld, size=%ld count=%d\n", dictDataType, dictOffset, dictSize, dictCount);
                 rc = comm.nextData( config+dictOffset, dType, width, count);
             } else {
                 LOGV("runImport: ERROR: No dictionary entry found for %c%c\n", PACKET_NAME(cmd));

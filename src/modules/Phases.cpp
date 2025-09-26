@@ -43,9 +43,14 @@ Phases::Phases() : Module(MODULE_PHASES_TYPE, TEXT_MODULE_PHASES, COMM_SUBPACKET
     setDefaults();
 }
 
-phase_t Phases::getPhase() {
+phase_t Phases::getPhaseNo() {
 
     return phase;
+}
+
+phase_t Phases::getPhaseType() {
+
+    return CFG->phaseName[phase];
 }
 
 const char* Phases::getPhaseName() {

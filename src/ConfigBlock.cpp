@@ -44,7 +44,7 @@ ConfigBlock::ConfigBlock() {
 
     modelBlockCount = (storageSize - SYSTEMCONFIG_BLOCK_SIZE) / MODELCONFIG_BLOCK_SIZE;
 
-    LOGV("ConfigBlock::ConfigBlock(): Storage size is %u. Model configurations: %d\n", storageSize, modelBlockCount);
+    LOGV("ConfigBlock::ConfigBlock(): Storage size is %lu. Model configurations: %d\n", storageSize, modelBlockCount);
 }
 
 /*
@@ -65,7 +65,7 @@ configBlock_rc ConfigBlock::readBlock( configBlockID_t id) {
 
 #if defined(ARDUINO_ARCH_AVR) || defined(ARDUINO_ARCH_EMU)
         configStart = getBlockStart();
-        LOGV("ConfigBlock::readBlock(): reading %u bytes from addr %u\n", configBlockSize, configStart);
+        LOGV("ConfigBlock::readBlock(): reading %lu bytes from addr %lu\n", configBlockSize, configStart);
 
         for( uint16_t i=0; i < configBlockSize; i++) {
             block.payload[i] = EEPROM.read( configStart + i);
@@ -144,7 +144,7 @@ configBlock_rc ConfigBlock::writeBlock() {
 
 #if defined( ARDUINO_ARCH_AVR ) || defined(ARDUINO_ARCH_EMU)
         configStart = getBlockStart();
-        LOGV("ConfigBlock::writeBlock(): writing %u bytes to addr %u\n", configBlockSize, configStart);
+        LOGV("ConfigBlock::writeBlock(): writing %lu bytes to addr %lu\n", configBlockSize, configStart);
 
         wasEnabled = watchdog_disable(); // Sometimes writing to eeprom is really slow.
 

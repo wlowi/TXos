@@ -74,7 +74,7 @@ void Timer::reset() {
 #if defined(ARDUINO_ARCH_AVR)
     }
 #endif
-    LOGV("Timer::reset: %ld mSec\n", countdown_mSec);
+    LOGV("Timer::reset: %d mSec\n", countdown_mSec);
 }
 
 uint16_t Timer::timeSec() {
@@ -139,7 +139,7 @@ COMM_RC_t Timer::importConfig(ImportExport* importer, uint8_t* config) const {
 
 void Timer::run(Controls& controls) {
 
-    long now;
+    unsigned long now;
     bool update = false;
     percent_t thrPct;
 
@@ -225,7 +225,7 @@ void Timer::run(Controls& controls) {
 void Timer::init() {
 
     reset();
-    LOGV("Timer::init: %ld mSec\n", countdown_mSec);
+    LOGV("Timer::init: %d mSec\n", countdown_mSec);
 }
 
 void Timer::setDefaults() {

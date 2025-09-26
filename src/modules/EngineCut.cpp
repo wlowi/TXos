@@ -26,7 +26,7 @@
 
 #include "EngineCut.h"
 
-/* The import/export dictionary. 
+/* The import/export dictionary.
  * See ImportExport.h
  */
 DICTROW( r1, COMM_DATATYPE_UINT8, COMM_FIELD_SWITCH, engineCut_t, swState)
@@ -41,6 +41,11 @@ EngineCut::EngineCut() : Module( MODULE_ENGINE_CUT_TYPE, TEXT_MODULE_ENGINE_CUT,
 bool EngineCut::isSave() {
 
     return save;
+}
+
+percent_t EngineCut::getEngineCutPct() {
+
+    return CFG->cut_pct;
 }
 
 /* From Module */
@@ -62,7 +67,7 @@ void EngineCut::run( Controls &controls) {
     if( save) {
         controls.logicalSet( CHANNEL_THROTTLE, PCT_TO_CHANNEL(CFG->cut_pct));
     }
-    
+
 }
 
 void EngineCut::setDefaults() {

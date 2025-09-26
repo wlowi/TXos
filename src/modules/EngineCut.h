@@ -46,6 +46,7 @@ class EngineCut : public Module {
     public:
         EngineCut();
         bool isSave();
+        percent_t getEngineCutPct();
 
         /* From module */
         void run( Controls &controls) final;

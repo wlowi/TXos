@@ -47,7 +47,7 @@ class Timer : public Module {
         bool running;
         uint32_t countdown_mSec;
         uint16_t countdown_sec;
-        long lastMillis;
+        unsigned long lastMillis;
         char timeAsString[6]; // Format mm:ss
 
     public:

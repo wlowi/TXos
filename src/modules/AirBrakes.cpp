@@ -121,7 +121,7 @@ void AirBrakes::setValue( uint8_t row, uint8_t col, Cell *cell) {
     if( row == 0) {
         CFG->swActive = cell->getSwitchState();
     } else if( row == 1) {
-        CFG->off_pct = cell->getInt8();;
+        CFG->off_pct = cell->getInt8();
     } else if( row == 2) {
         CFG->rev = cell->getBool();
     }

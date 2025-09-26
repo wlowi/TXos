@@ -32,6 +32,7 @@
 
 #include "VccMonitor.h"
 #include "EngineCut.h"
+#include "MotorStart.h"
 #include "Phases.h"
 #include "Timer.h"
 
@@ -43,6 +44,7 @@ private:
     Phases* phases;
     Timer* timer;
     EngineCut* engineCut;
+    MotorStart *motorStart;
 
     uint8_t refresh = REFRESH_FULL;
 
@@ -59,6 +61,7 @@ private:
     float2 lastVcc;
     uint16_t lastTime;
     bool engineSave;
+    bool startActive;
 
 public:
     HomeScreen();
@@ -67,12 +70,12 @@ public:
 
     /**
      * @brief Print a message into one of the two bottom lines.
-     * 
+     *
      * line == 0 print to second to last line
      * line == 1 print to last line
      * msg == message number (see Text_xx.h)
      * arg == 0 is no argument
-     * 
+     *
      * @param line which line
      * @param msg message number
      * @param arg single digit argument

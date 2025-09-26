@@ -198,6 +198,7 @@
 #include "ServoMonitor.h"
 #include "SwitchMonitor.h"
 #include "EngineCut.h"
+#include "MotorStart.h"
 #include "ServoRange.h"
 #include "ServoReverse.h"
 #include "ServoSubtrim.h"
@@ -669,6 +670,8 @@ void setup( void) {
     moduleManager.addToModelSetAndMenu( mixer);
     EngineCut *engineCut = new EngineCut();
     moduleManager.addToModelSetAndMenu( engineCut);
+    MotorStart *motorStart = new MotorStart();
+    moduleManager.addToModelSetAndMenu( motorStart);
     Timer *timer = new Timer();
     moduleManager.addToModelSetAndMenu( timer);
 
@@ -711,6 +714,7 @@ void setup( void) {
 #elif STICK_TRIM == DIGITAL_TRIM
     moduleManager.addToRunList( digitalTrim);
 #endif
+    moduleManager.addToRunList( motorStart);
     moduleManager.addToRunList( model);
     moduleManager.addToRunList( mixer);
     moduleManager.addToRunList( phasesTrim);

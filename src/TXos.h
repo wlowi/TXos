@@ -34,7 +34,7 @@
 #endif
 
 
-#define TXOS_VERSION "0.5.12"
+#define TXOS_VERSION "0.5.13"
 
 #undef ENABLE_LOGGING
 
