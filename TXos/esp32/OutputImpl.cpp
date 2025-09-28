@@ -27,6 +27,10 @@
 #include "OutputImpl.h"
 #include "InputImpl.h"
 
+#include "Ports.h"
+
+extern Ports ports;
+
 extern OutputImpl* outputImpl;
 extern InputImpl* inputImpl;
 
@@ -258,4 +262,42 @@ void OutputImpl::SetChannelValue(int channel, int value) {
         }
         portEXIT_CRITICAL(&ppmMux);
     }
+}
+
+bool OutputImpl::isBindSupported() const {
+
+    return true;
+};
+
+bool OutputImpl::isRangeTestSupported() const {
+
+    return true;
+}
+
+void OutputImpl::bindActivate() {
+
+    ports.hfOff();
+    delay( 500);
+    ports.bindOn();
+    delay( 100);
+    ports.hfOn();
+}
+
+void OutputImpl::bindDeactivate() {
+
+    ports.hfOff();
+    delay( 500);
+    ports.bindOff();
+    delay( 100);
+    ports.hfOn();
+}
+
+void OutputImpl::rangeTestActivate() {
+
+    ports.bindOn();
+}
+
+void OutputImpl::rangeTestDeactivate() {
+
+    ports.bindOff();
 }

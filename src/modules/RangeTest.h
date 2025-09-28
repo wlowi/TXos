@@ -35,6 +35,7 @@ class RangeTest : public Module {
 
     private:
 
+        bool isSupported;
         uint8_t rangeTestStep;
 #define RANGETEST_STEP_NONE     0
 #define RANGETEST_STEP_ACTIVE   1
@@ -52,6 +53,8 @@ class RangeTest : public Module {
         void setDefaults() final;
         COMM_RC_t exportConfig( ImportExport *exporter, uint8_t *config) const { return COMM_RC_OK; }
         COMM_RC_t importConfig( ImportExport *importer, uint8_t *config) const { return COMM_RC_OK; }
+
+        void moduleEnter() final;
         void moduleExit() final;
 
         /* From TableEditable */

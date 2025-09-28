@@ -28,7 +28,7 @@
 #define _OutputImpl_h_
 
 #include <wx/wxprec.h>
- 
+
 #ifndef WX_PRECOMP
     #include <wx/wx.h>
 #endif
@@ -43,13 +43,23 @@ class OutputImpl : public wxStaticBoxSizer
         wxStaticText **values = NULL;
 
         long lastFrameMs = 0;
-        
+
     public:
         OutputImpl( wxWindow *parent, int channels);
         ~OutputImpl( void);
 
         bool acceptChannels();
         void SetChannelValue( int channel, int value);
+
+        bool isBindSupported() const;
+        bool isRangeTestSupported() const;
+
+        void bindActivate();
+        void bindDeactivate();
+
+        void rangeTestActivate();
+        void rangeTestDeactivate();
+
         uint16_t getOverrunCounter();
         timingUsec_t getMaxFrameTime();
 };

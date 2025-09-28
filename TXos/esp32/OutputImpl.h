@@ -71,7 +71,7 @@
 #define OTHER_PPMSET( s)    (((s) +1) % 2)
 
 typedef struct ppmSet_t {
-    
+
     timingUsec_t channel[ PPM_CHANNELS ];
 
 } ppmSet_t;
@@ -83,13 +83,13 @@ class OutputImpl
         uint8_t currentSet;
 
     private:
-        /* Count how may times the user mode code was unable to compute 
+        /* Count how may times the user mode code was unable to compute
          * and set all channels within one PPM frame.
          * This should always be 0.
          */
         uint16_t ppmOverrun;
         bool channelSetDone;
-    	
+
     public:
         OutputImpl();
 
@@ -97,11 +97,20 @@ class OutputImpl
 
         bool acceptChannels();
         void SetChannelValue( int channel, int value);
-        
+
+        bool isBindSupported() const;
+        bool isRangeTestSupported() const;
+
+        void bindActivate();
+        void bindDeactivate();
+
+        void rangeTestActivate();
+        void rangeTestDeactivate();
+
         timingUsec_t getInFrameTime();
         timingUsec_t getMaxFrameTime();
         uint16_t getOverrunCounter();
-        
+
     private:
         void init();
 };

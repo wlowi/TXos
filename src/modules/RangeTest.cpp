@@ -25,9 +25,9 @@
 */
 
 #include "RangeTest.h"
-#include "Ports.h"
+#include "Output.h"
 
-extern Ports ports;
+extern Output output;
 
 RangeTest::RangeTest() : Module( MODULE_RANGE_TEST_TYPE, TEXT_MODULE_RANGE_TEST, COMM_SUBPACKET_NONE) {
 
@@ -36,14 +36,14 @@ RangeTest::RangeTest() : Module( MODULE_RANGE_TEST_TYPE, TEXT_MODULE_RANGE_TEST,
 
 void RangeTest::rangeTestOn() {
 
-    ports.bindOn();
+    output.rangeTestActivate();
     rangeTestStep = RANGETEST_STEP_ACTIVE;
     changed = true;
 }
 
 void RangeTest::rangeTestOff() {
 
-    ports.bindOff();
+    output.rangeTestDeactivate();
     rangeTestStep = RANGETEST_STEP_NONE;
     changed = true;
 }
@@ -59,6 +59,11 @@ void RangeTest::setDefaults() {
 
     rangeTestStep = RANGETEST_STEP_NONE;
     changed = true;
+}
+
+void RangeTest::moduleEnter() {
+
+    isSupported = output.isRangeTestSupported();
 }
 
 void RangeTest::moduleExit() {
@@ -80,7 +85,7 @@ bool RangeTest::hasChanged( uint8_t row, uint8_t col) {
 
 bool RangeTest::isRowExecutable( uint8_t row) {
 
-    return (row == 0);
+    return isSupported ? (row == 0) : false;
 }
 
 void RangeTest::rowExecute( TextUI *ui, uint8_t row ) {
@@ -99,12 +104,16 @@ uint8_t RangeTest::getRowCount() {
 
 const char *RangeTest::getRowName( uint8_t row) {
 
-    return TEXT_TEST;
+    if( isSupported) {
+        return TEXT_TEST;
+    } else {
+        return TEXT_NOT_SUPPORTED;
+    }
 }
 
 uint8_t RangeTest::getColCount( uint8_t row) {
 
-    return 1;
+    return isSupported ? 1 : 0;
 }
 
 void RangeTest::getValue( uint8_t row, uint8_t col, Cell *cell) {

@@ -37,8 +37,8 @@ Output::Output() = default;
 
 /* Returns true if the PPM generator is ready to accept the next channel set */
 bool Output::acceptChannels() const {
-  
-  return outputImpl->acceptChannels();  
+
+  return outputImpl->acceptChannels();
 }
 
 void Output::setChannels( Controls &controls) const {
@@ -47,6 +47,38 @@ void Output::setChannels( Controls &controls) const {
         outputImpl->SetChannelValue( ch, controls.outputGet(ch));
     }
 }
+
+bool Output::isBindSupported() const {
+
+    return outputImpl->isBindSupported();
+};
+
+bool Output::isRangeTestSupported() const {
+
+    return outputImpl->isRangeTestSupported();
+}
+
+void Output::bindActivate() {
+
+    outputImpl->bindActivate();
+}
+
+void Output::bindDeactivate() {
+
+    outputImpl->bindDeactivate();
+}
+
+void Output::rangeTestActivate() {
+
+    outputImpl->rangeTestActivate();
+}
+
+void Output::rangeTestDeactivate() {
+
+    outputImpl->rangeTestDeactivate();
+}
+
+/* Statistics */
 
 uint16_t Output::getOverrunCounter() {
 

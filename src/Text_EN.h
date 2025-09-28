@@ -187,6 +187,7 @@
 #define TEXT_MODEL                  CC("Model")
 #define TEXT_MODEL_NAME             CC("Name")
 #define TEXT_MODEL_SETUP            CC("Model setup")
+#define TEXT_NOT_SUPPORTED          CC("Not supported")
 #define TEXT_OFF_POS                CC("Off Pos.")
 #define TEXT_PASTE                  CC("Paste")
 #define TEXT_PHASE                  CC("Phase")

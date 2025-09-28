@@ -29,6 +29,10 @@
 #include "OutputImpl.h"
 #include "InputImpl.h"
 
+#include "Ports.h"
+
+extern Ports ports;
+
 extern OutputImpl *outputImpl;
 extern InputImpl *inputImpl;
 
@@ -43,9 +47,9 @@ static volatile timingUsec_t maxFrameTime_half_uSec = 0;
 ISR(TIMER3_OVF_vect) {
 
   timingUsec_t nextTimerTop;
-  
-  /* Output compare register is set to trigger at space end which is 400 usec. 
-   * The pin will be set to high at output compare match and 
+
+  /* Output compare register is set to trigger at space end which is 400 usec.
+   * The pin will be set to high at output compare match and
    * reset at TOP.
    */
   if( outputChannel >= PPM_CHANNELS) {
@@ -65,7 +69,7 @@ ISR(TIMER3_OVF_vect) {
     outputChannel = 0;
 
   } else {
-    
+
     nextTimerTop = (outputImpl->ppmSet[outputImpl->currentSet].channel[outputChannel]) << 1;
     inFrameTime_half_uSec += nextTimerTop;
     outputChannel++;
@@ -79,7 +83,7 @@ ISR(TIMER3_OVF_vect) {
 }
 
 OutputImpl::OutputImpl() {
-    
+
     init();
 }
 
@@ -104,19 +108,19 @@ void OutputImpl::init() {
 
         outputChannel = 0;
         inFrameTime_half_uSec = 0;
-        
+
         TCCR3A = (byte)0;
         TCCR3B = (byte)0;
         TCCR3C = (byte)0;
 
         pinMode( PPM_PORT, OUTPUT);
-    
+
         /* Enable timer in power reduction register */
         PRR1 &= ~bit(PRTIM3);
-    
+
         /* Set initial timer counter value */
         TCNT3 = 0;
-       
+
         /* COM3A1, COM3A0     :  Set OC3A on compare match, clear at TOP
          * WGM33, WGM32, WGM31: TOP is ICR3
          */
@@ -134,20 +138,20 @@ void OutputImpl::init() {
          * Subtract 1 because we count 798..799..0..1
          */
         OCR3A = (PPM_SPACE_usec << 1) -1;
-    
+
         /* TOIE3: Timer overflow interrupt */
         TIMSK3 = bit(TOIE3);
     }
 }
 
 timingUsec_t OutputImpl::getMaxFrameTime() {
-    
+
     timingUsec_t t;
 
     ATOMIC_BLOCK( ATOMIC_RESTORESTATE) {
         t = maxFrameTime_half_uSec / 2;
     }
-    
+
     return t;
 }
 
@@ -161,13 +165,13 @@ uint16_t OutputImpl::getOverrunCounter() {
 }
 
 /* Switch active and modifiable set.
- * Increate the ppmOverrun counter if the channelSetDone flag has not 
+ * Increate the ppmOverrun counter if the channelSetDone flag has not
  * been set.
  */
 void OutputImpl::switchSet() {
-    
+
     if( channelSetDone) {
-        channelSetDone = false; 
+        channelSetDone = false;
         currentSet = OTHER_PPMSET( currentSet);
 
     } else {
@@ -183,18 +187,18 @@ bool OutputImpl::acceptChannels() {
 /* Set timing for a channel.
  * The value must be between -PPM_RANGE_usec and PPM_RANGE_usec.
  * A value outside is clipped.
- * 
+ *
  * Setting the last channel will set the channelSetDone flag.
- * 
+ *
  * SO SET THE LAST CHANNEL LAST !!
- * 
+ *
  */
 void OutputImpl::SetChannelValue(int channel, int value) {
 
     timingUsec_t t;
 
     /* Convert:
-     * 
+     *
      * value
      * =======
      * CHANNELVALUE_MID   0
@@ -202,13 +206,13 @@ void OutputImpl::SetChannelValue(int channel, int value) {
      * CHANNELVALUE_MAX    1250 ==  125%  ==  500
      *
      * To:
-     * 
+     *
      * ppmTiming_t
      * ===========
      * PPM_MID_usec        ((timingUsec_t) 1500)
      * PPM_MIN_usec        (PPM_MID_usec - PPM_RANGE_usec) = 900
      * PPM_MAX_usec        (PPM_MID_usec + PPM_RANGE_usec) = 2100
-     *  
+     *
      */
 
     if( channel < PPM_CHANNELS) {
@@ -217,7 +221,7 @@ void OutputImpl::SetChannelValue(int channel, int value) {
 
         if( t < PPM_MIN_usec) t = PPM_MIN_usec;
         if( t > PPM_MAX_usec) t = PPM_MAX_usec;
-        
+
         ATOMIC_BLOCK( ATOMIC_RESTORESTATE) {
 
             ppmSet[ OTHER_PPMSET( currentSet) ].channel[ channel ] = t;
@@ -227,4 +231,42 @@ void OutputImpl::SetChannelValue(int channel, int value) {
             }
         }
     }
+}
+
+bool OutputImpl::isBindSupported() const {
+
+    return true;
+};
+
+bool OutputImpl::isRangeTestSupported() const {
+
+    return true;
+}
+
+void OutputImpl::bindActivate() {
+
+    ports.hfOff();
+    delay( 500);
+    ports.bindOn();
+    delay( 100);
+    ports.hfOn();
+}
+
+void OutputImpl::bindDeactivate() {
+
+    ports.hfOff();
+    delay( 500);
+    ports.bindOff();
+    delay( 100);
+    ports.hfOn();
+}
+
+void OutputImpl::rangeTestActivate() {
+
+    ports.bindOn();
+}
+
+void OutputImpl::rangeTestDeactivate() {
+
+    ports.bindOff();
 }

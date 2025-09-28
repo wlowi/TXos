@@ -35,6 +35,7 @@ class Bind : public Module {
 
     private:
 
+        bool isSupported;
         uint8_t bindStep;
 #define BIND_STEP_NONE     0
 #define BIND_STEP_ACTIVE   1
@@ -53,6 +54,7 @@ class Bind : public Module {
         COMM_RC_t exportConfig( ImportExport *exporter, uint8_t *config) const { return COMM_RC_OK; }
         COMM_RC_t importConfig( ImportExport *importer, uint8_t *config) const { return COMM_RC_OK; }
 
+        void moduleEnter() final;
         void moduleExit() final;
 
         /* From TableEditable */

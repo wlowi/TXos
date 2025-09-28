@@ -61,7 +61,7 @@ bool OutputImpl::acceptChannels() {
     if( now >= lastFrameMs + PPM_FRAME_TIME_usec/1000 ) {
         lastFrameMs = now;
         return true;
-    } 
+    }
 
     return false;
 }
@@ -72,6 +72,36 @@ void OutputImpl::SetChannelValue(int channel, int value) {
     str.Printf(wxT("%d"), value);
     values[channel]->SetLabel( str);
     gauges[channel]->SetValue( value+1500);
+}
+
+bool OutputImpl::isBindSupported() const {
+
+    return true;
+}
+
+bool OutputImpl::isRangeTestSupported() const {
+
+    return true;
+}
+
+void OutputImpl::bindActivate() {
+
+    printf("Bind activated\n");
+}
+
+void OutputImpl::bindDeactivate() {
+
+    printf("Bind deactivated\n");
+}
+
+void OutputImpl::rangeTestActivate() {
+
+    printf("Bind test activated\n");
+}
+
+void OutputImpl::rangeTestDeactivate() {
+
+    printf("Range test deactivated\n");
 }
 
 uint16_t OutputImpl::getOverrunCounter() {

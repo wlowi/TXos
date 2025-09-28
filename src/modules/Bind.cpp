@@ -25,9 +25,9 @@
 */
 
 #include "Bind.h"
-#include "Ports.h"
+#include "Output.h"
 
-extern Ports ports;
+extern Output output;
 
 Bind::Bind() : Module( MODULE_BIND_TYPE, TEXT_MODULE_BIND, COMM_SUBPACKET_NONE) {
 
@@ -36,22 +36,14 @@ Bind::Bind() : Module( MODULE_BIND_TYPE, TEXT_MODULE_BIND, COMM_SUBPACKET_NONE) 
 
 void Bind::bindOn() {
 
-    ports.hfOff();
-    delay( 500);
-    ports.bindOn();
-    delay( 100);
-    ports.hfOn();
+    output.bindActivate();
     bindStep = BIND_STEP_ACTIVE;
     changed = true;
 }
 
 void Bind::bindOff() {
 
-    ports.hfOff();
-    delay( 500);
-    ports.bindOff();
-    delay( 100);
-    ports.hfOn();
+    output.bindDeactivate();
     bindStep = BIND_STEP_NONE;
     changed = true;
 }
@@ -67,6 +59,11 @@ void Bind::setDefaults() {
 
     bindStep = BIND_STEP_NONE;
     changed = true;
+}
+
+void Bind::moduleEnter() {
+
+    isSupported = output.isBindSupported();
 }
 
 void Bind::moduleExit() {
@@ -88,7 +85,7 @@ bool Bind::hasChanged( uint8_t row, uint8_t col) {
 
 bool Bind::isRowExecutable( uint8_t row) {
 
-    return (row == 0);
+    return isSupported ? (row == 0) : false;
 }
 
 void Bind::rowExecute( TextUI *ui, uint8_t row ) {
@@ -107,12 +104,16 @@ uint8_t Bind::getRowCount() {
 
 const char *Bind::getRowName( uint8_t row) {
 
-    return TEXT_BIND;
+    if( isSupported) {
+        return TEXT_BIND;
+    } else {
+        return TEXT_NOT_SUPPORTED;
+    }
 }
 
 uint8_t Bind::getColCount( uint8_t row) {
 
-    return 1;
+    return isSupported ? 1 : 0;
 }
 
 void Bind::getValue( uint8_t row, uint8_t col, Cell *cell) {

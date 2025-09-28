@@ -43,6 +43,16 @@ class Output {
         bool acceptChannels() const;
         void setChannels( Controls &controls) const;
 
+        bool isBindSupported() const;
+        bool isRangeTestSupported() const;
+
+        void bindActivate();
+        void bindDeactivate();
+
+        void rangeTestActivate();
+        void rangeTestDeactivate();
+
+        /* Statistics */
         uint16_t getOverrunCounter();
         timingUsec_t getMaxFrameTime();
 };
