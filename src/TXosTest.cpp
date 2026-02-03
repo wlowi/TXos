@@ -28,7 +28,7 @@
 
 #include "InputImpl.h"
 #include "DisplayImpl.h"
-#include "OutputImpl.h"
+#include "OutputImplEmu.h"
 #include "PortsImpl.h"
 #include "BuzzerImpl.h"
 
@@ -47,6 +47,7 @@ extern void setup( void);
 extern void loop( void);
 
 InputImpl *inputImpl;
+OutputImplEmu *outputImplEmu;
 OutputImpl *outputImpl;
 DisplayImpl *displayImpl;
 PortsImpl *portsImpl;
@@ -145,8 +146,9 @@ MyFrame::MyFrame()
     displayImpl =  new DisplayImpl( panel);
     hbox->Add( displayImpl);
     hbox->AddSpacer(10);
-    outputImpl = new OutputImpl( panel, 9);
-    hbox->Add( outputImpl);
+    outputImplEmu = new OutputImplEmu( panel, 9);
+    outputImpl = outputImplEmu;
+    hbox->Add( outputImplEmu);
     hbox->AddSpacer(10);
 
     panel->SetSizer(hbox);

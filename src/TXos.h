@@ -34,7 +34,7 @@
 #endif
 
 
-#define TXOS_VERSION "0.5.13"
+#define TXOS_VERSION "0.5.15"
 
 #undef ENABLE_LOGGING
 
@@ -74,6 +74,23 @@ extern void watchdog_enable();
  * @return false if watchdog was disabled before.
  */
 extern bool watchdog_disable();
+
+/**
+ * @brief Disables Interrupt Services
+ *
+ * During flash read/write (Preferences API) the scheduler gets disabled
+ * temporary.
+ * Trying to use quere API results in assertion and crash.
+ * The uart API does this, so we need to disable the OutputImplSerial
+ * temporary.
+ */
+extern void isr_disable();
+
+/**
+ * @brief Enable Interrupt Services
+ *
+ */
+extern void isr_enable();
 
 /* Holds small float values with 2 fractional digits.
  * This is currently only used to display battery voltage.

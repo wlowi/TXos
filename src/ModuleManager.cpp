@@ -25,11 +25,14 @@
 */
 
 #include "ModuleManager.h"
+#include "Model.h"
 #include "ImportExport.h"
 #include "Comm.h"
 #include "TextUI.h"
 #include "HomeScreen.h"
+#include "Output.h"
 
+extern Output output;
 extern HomeScreen* homeScreen;
 
 ModuleManager::ModuleManager(ConfigBlock& svc) : blockService(&svc) {
@@ -341,10 +344,16 @@ void ModuleManager::copyModel( configBlockID_t fromModelID, configBlockID_t toMo
  *
  * Read configuration block from EEPROM and distribute
  * configuration data to each module.
+ *
+ * modelID starts from 1
  */
 void ModuleManager::loadModel(configBlockID_t modelID) {
 
     LOGV("\nModuleManager::loadModel(): loading model %d\n", modelID);
+
+    Model* model = (Model*)getModuleByType(MODULE_SET_MODEL, MODULE_MODEL_TYPE);
+
+    output.HFoff();
 
     setModelDefaults();
 
@@ -360,6 +369,11 @@ void ModuleManager::loadModel(configBlockID_t modelID) {
     }
 
     initModel();
+
+    output.setModelID( modelID);
+    output.setBindMode( model->getBindMode());
+
+    output.HFon();
 }
 
 /*
@@ -582,7 +596,7 @@ void ModuleManager::importModel(ImportExport* importer) {
                 LOGV("ModuleManager::importModel(): substart name=%c%c\n", PACKET_NAME(cmd));
                 module = getModuleByCommType(MODULE_SET_MODEL, cmd);
                 if (module == nullptr) {
-                    LOG("** ModuleManager::importModel(): ERROR: no module found\n");
+                    LOG("** ModuleManager::importModel(): ERROR: No module found\n");
                     errCode = 3;
                 }
                 else {
@@ -611,7 +625,7 @@ void ModuleManager::importModel(ImportExport* importer) {
 
                         }
                         else {
-                            LOGV("** ModuleManager::importModel(): ERROR: Payload to large. %lu > %lu\n",
+                            LOGV("** ModuleManager::importModel(): ERROR: Payload too large. %lu > %lu\n",
                                 totalSize + sizeof(moduleType_t) + sizeof(moduleSize_t) + size,
                                 payloadSize);
                             errCode = 5;
@@ -637,6 +651,16 @@ void ModuleManager::importModel(ImportExport* importer) {
 
     if (errCode) {
         homeScreen->postMessage(1, MSG_MODEL_IMP_FAILED, errCode);
+        comm.open(COMM_PACKET_ERROR);
+        comm.addString( COMM_FIELD_REMARK, "Import failed");
+        comm.addInt8( COMM_FIELD_ERRORCODE, errCode);
+        comm.close();
+        comm.write();
+    } else {
+        comm.open(COMM_PACKET_OK);
+        comm.addString( COMM_FIELD_REMARK, "Import ok");
+        comm.close();
+        comm.write();
     }
 }
 

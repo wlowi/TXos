@@ -73,6 +73,8 @@ InputImpl::InputImpl( wxWindow *parent,
             hboxInner = new wxStaticBoxSizer(wxHORIZONTAL, parent, "Trim");
             hbox->Add( hboxInner);
             hbox->AddSpacer(10);
+#elif STICK_TRIM == DIGITAL_TRIM
+
 #endif
         } else if( channel == stickCount + trimCount) {
             hboxInner = new wxStaticBoxSizer(wxHORIZONTAL, parent, "Aux");
@@ -92,9 +94,11 @@ InputImpl::InputImpl( wxWindow *parent,
 #if STICK_TRIM == ANALOG_TRIM
         } else if( channel < stickCount + trimCount) {
             str.Printf(wxT("Trim%d"), channel+1-stickCount);
+#elif STICK_TRIM == DIGITAL_TRIM
+
 #endif
         } else {
-            str.Printf(wxT("AUX%d"), channel+1-stickCount-trimCount);        
+            str.Printf(wxT("AUX%d"), channel+1-stickCount-trimCount);
         }
         vbox->Add( new wxStaticText(parent, wxID_ANY, str));
 
@@ -106,7 +110,7 @@ InputImpl::InputImpl( wxWindow *parent,
     }
 
     Add( hbox);
-    AddSpacer(10); 
+    AddSpacer(10);
 
     /* Another horizontal box that contains all switches */
 
@@ -180,6 +184,8 @@ channelValue_t InputImpl::GetTrimValue( int ch) {
 
 #if STICK_TRIM == ANALOG_TRIM
     return chValues[ch + stickCount];
+#elif STICK_TRIM == DIGITAL_TRIM
+    return 0;
 #else
     return 0;
 #endif
@@ -209,7 +215,7 @@ void InputImpl::OnScroll( wxScrollEvent& event) {
             break;
         }
     }
-    
+
 }
 
 void InputImpl::OnSwitch( wxCommandEvent& event) {

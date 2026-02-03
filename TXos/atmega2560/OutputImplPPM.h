@@ -24,11 +24,14 @@
   SOFTWARE.
 */
 
-#ifndef _OutputImpl_h_
-#define _OutputImpl_h_
+#ifndef _OutputImplPPM_h_
+#define _OutputImplPPM_h_
 
 #include "TXos.h"
-#include "Controls.h"
+
+#if HF_MODULE == HF_SPEKTRUM_PPM || HF_MODULE == HF_JETI_TU2
+
+#include "OutputImpl.h"
 
 #define PPM_PORT            5
 
@@ -76,7 +79,7 @@ typedef struct ppmSet_t {
 
 } ppmSet_t;
 
-class OutputImpl
+class OutputImplPPM : public OutputImpl
 {
     public:
         ppmSet_t ppmSet[2];
@@ -89,11 +92,15 @@ class OutputImpl
          */
         uint16_t ppmOverrun;
         bool channelSetDone;
+        uint8_t modelID;
 
     public:
-        OutputImpl();
+        OutputImplPPM();
 
         void switchSet();
+
+        void isrDisable() {}
+        void isrEnable() {}
 
         bool acceptChannels();
         void SetChannelValue( int channel, int value);
@@ -101,11 +108,23 @@ class OutputImpl
         bool isBindSupported() const;
         bool isRangeTestSupported() const;
 
-        void bindActivate();
+        uint8_t getBindModeCount() const;
+        bindmode_t* getBindModes() const;
+
+        void bindActivate( bindmode_t bm);
         void bindDeactivate();
 
         void rangeTestActivate();
         void rangeTestDeactivate();
+
+        void setModelID( uint8_t mID);
+        uint8_t getModelID();
+
+        void setBindMode( bindmode_t bm);
+        bindmode_t getBindMode();
+
+        void HFoff();
+        void HFon();
 
         timingUsec_t getInFrameTime();
         timingUsec_t getMaxFrameTime();
@@ -114,5 +133,7 @@ class OutputImpl
     private:
         void init();
 };
+
+#endif
 
 #endif

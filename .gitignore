@@ -1,4 +1,5 @@
 .vscode
+.zed
 **/*~
 **/*.o
 TXos/TXosLocalConfig*.h

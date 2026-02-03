@@ -27,6 +27,7 @@
 #ifndef _Model_h_
 #define _Model_h_
 
+#include "Bind.h"
 #include "Module.h"
 
 /* First and last valid model ID */
@@ -35,7 +36,7 @@
 
 typedef uint8_t wingMix_t;
 
-/* Make sure the defines are in the same order as the 
+/* Make sure the defines are in the same order as the
  * entires of wingMixNames in TXos.cpp
  */
 #define WINGMIX_NORMAL      ((wingMix_t)0)
@@ -44,7 +45,7 @@ typedef uint8_t wingMix_t;
 
 typedef uint8_t mix_t;
 
-/* Make sure the defines are in the same order as the 
+/* Make sure the defines are in the same order as the
  * entries of mixNames in TXos.cpp
  */
 #define MIX_AIL_RUD         ((mix_t)0)
@@ -62,8 +63,9 @@ typedef struct model_t {
 
     char modelName[MODEL_NAME_LEN +1];
 
+    bindmode_t bindMode;
     wingMix_t wingMix;
-    
+
     switch_t qrDiffSw;
     percent_t qrDiffPct;
 
@@ -85,6 +87,8 @@ class Model : public Module {
         Model();
 
         char *getModelName() { return CFG->modelName; }
+        void setBindMode( bindmode_t bm) { CFG->bindMode = bm; }
+        bindmode_t getBindMode() { return CFG->bindMode; }
 
         /* From Module */
         void run( Controls &controls) final;

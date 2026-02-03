@@ -29,6 +29,14 @@
 
 #include "Module.h"
 
+typedef uint8_t bindmode_t;
+
+#define BINDMODE_CPPM     0
+#define BINDMODE_DSM2     1
+#define BINDMODE_DSMX     2
+#define BINDMODE_CRSF     3
+
+
 class Bind : public Module {
 
     NO_CONFIG()
@@ -39,7 +47,10 @@ class Bind : public Module {
         uint8_t bindStep;
 #define BIND_STEP_NONE     0
 #define BIND_STEP_ACTIVE   1
-
+        uint8_t modelID;
+        uint8_t bindMode_idx = 0;
+        uint8_t bindMode_count;
+        bindmode_t* bindModes;
         bool changed;
 
         void bindOn();
@@ -64,7 +75,7 @@ class Bind : public Module {
         void getValue( uint8_t row, uint8_t col, Cell *cell) final;
         void setValue( uint8_t row, uint8_t col, Cell *cell) final;
 
-        bool isRowEditable( uint8_t row) final { return false; }
+        bool isRowEditable( uint8_t row);
         bool isRowExecutable( uint8_t row) final;
         void rowExecute( TextUI *ui, uint8_t row ) final;
         bool hasChanged( uint8_t row, uint8_t col) final;

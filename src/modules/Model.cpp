@@ -25,21 +25,23 @@
 */
 
 #include "Model.h"
+#include "Bind.h"
 
 extern const char* const WingMixNames[TEXT_WINGMIX_count];
 extern const char* const MixNames[TEXT_MIX_count];
 
-/* The import/export dictionary. 
+/* The import/export dictionary.
  * See ImportExport.h
  */
 DICTROW( r1, COMM_DATATYPE_STRING, COMM_FIELD_MODEL_NAME, model_t, modelName)
-DICTROW( r2, COMM_DATATYPE_UINT8, COMM_FIELD_MODEL_MIX, model_t, wingMix)
-DICTROW( r3, COMM_DATATYPE_UINT8, COMM_FIELD_MODEL_SWITCH_QDIFF, model_t, qrDiffSw)
-DICTROW( r4, COMM_DATATYPE_INT8, COMM_FIELD_MODEL_QDIFF_PCT, model_t, qrDiffPct)
-DICTROWA( r5, COMM_DATATYPE_UINTARR, COMM_FIELD_MODEL_SWITCH_MIX, model_t, mixSw, TEXT_MIX_count)
-DICTROWA( r6, COMM_DATATYPE_INTARR, COMM_FIELD_MODEL_PERCENT_MIX, model_t, mixPct, TEXT_MIX_count)
-DICTROWA( r7, COMM_DATATYPE_INTARR, COMM_FIELD_MODEL_OFFSET_MIX, model_t, mixOffset, TEXT_MIX_count)
-DICT( Model, COMM_SUBPACKET_MODEL, &r1, &r2, &r3, &r4, &r5, &r6, &r7)
+DICTROW( r2, COMM_DATATYPE_UINT8, COMM_FIELD_MODEL_BINDMODE, model_t, bindMode)
+DICTROW( r3, COMM_DATATYPE_UINT8, COMM_FIELD_MODEL_MIX, model_t, wingMix)
+DICTROW( r4, COMM_DATATYPE_UINT8, COMM_FIELD_MODEL_SWITCH_QDIFF, model_t, qrDiffSw)
+DICTROW( r5, COMM_DATATYPE_INT8, COMM_FIELD_MODEL_QDIFF_PCT, model_t, qrDiffPct)
+DICTROWA( r6, COMM_DATATYPE_UINTARR, COMM_FIELD_MODEL_SWITCH_MIX, model_t, mixSw, TEXT_MIX_count)
+DICTROWA( r7, COMM_DATATYPE_INTARR, COMM_FIELD_MODEL_PERCENT_MIX, model_t, mixPct, TEXT_MIX_count)
+DICTROWA( r8, COMM_DATATYPE_INTARR, COMM_FIELD_MODEL_OFFSET_MIX, model_t, mixOffset, TEXT_MIX_count)
+DICT( Model, COMM_SUBPACKET_MODEL, &r1, &r2, &r3, &r4, &r5, &r6, &r7, &r8)
 
 Model::Model() : Module( MODULE_MODEL_TYPE, TEXT_MODULE_MODEL, COMM_SUBPACKET_MODEL) {
 
@@ -112,7 +114,7 @@ void Model::run( Controls &controls) {
             } else {
                 controls.logicalSet( CHANNEL_AILERON, elv + trim + reduction);
                 controls.logicalSet( CHANNEL_ELEVATOR, elv - ail);
-            } 
+            }
 
         } else {
             controls.logicalSet( CHANNEL_AILERON, elv + ail);
@@ -138,7 +140,7 @@ void Model::run( Controls &controls) {
             } else {
                 controls.logicalSet( CHANNEL_AILERON, trim + reduction);
                 controls.logicalSet( CHANNEL_AILERON2, -ail);
-            } 
+            }
 
         } else {
             controls.logicalSet( CHANNEL_AILERON2, -ail);
@@ -270,6 +272,7 @@ void Model::setDefaults() {
 
         memcpy( CFG->modelName, MODEL_NAME_DEFAULT, MODEL_NAME_LEN +1);
         CFG->wingMix = WINGMIX_NORMAL;
+        CFG->bindMode = BINDMODE_CPPM;
         CFG->qrDiffPct = 0;
         INIT_SWITCH( CFG->qrDiffSw);
 

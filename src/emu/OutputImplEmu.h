@@ -24,8 +24,8 @@
   SOFTWARE.
 */
 
-#ifndef _OutputImpl_h_
-#define _OutputImpl_h_
+#ifndef _OutputImplEmu_h_
+#define _OutputImplEmu_h_
 
 #include <wx/wxprec.h>
 
@@ -33,9 +33,9 @@
     #include <wx/wx.h>
 #endif
 
-#include "Controls.h"
+#include "OutputImpl.h"
 
-class OutputImpl : public wxStaticBoxSizer
+class OutputImplEmu : public wxStaticBoxSizer, public OutputImpl
 {
     private:
         wxWindowID *channelIDs = NULL;
@@ -43,10 +43,14 @@ class OutputImpl : public wxStaticBoxSizer
         wxStaticText **values = NULL;
 
         long lastFrameMs = 0;
+        uint8_t modelID = 0;
 
     public:
-        OutputImpl( wxWindow *parent, int channels);
-        ~OutputImpl( void);
+        OutputImplEmu( wxWindow *parent, int channels);
+        virtual ~OutputImplEmu( void);
+
+        void isrDisable() {}
+        void isrEnable() {}
 
         bool acceptChannels();
         void SetChannelValue( int channel, int value);
@@ -54,14 +58,26 @@ class OutputImpl : public wxStaticBoxSizer
         bool isBindSupported() const;
         bool isRangeTestSupported() const;
 
-        void bindActivate();
+        uint8_t getBindModeCount() const;
+        bindmode_t* getBindModes() const;
+
+        void bindActivate( bindmode_t bm);
         void bindDeactivate();
 
         void rangeTestActivate();
         void rangeTestDeactivate();
 
-        uint16_t getOverrunCounter();
+        void setModelID( uint8_t mID);
+        uint8_t getModelID();
+
+        void setBindMode( bindmode_t bm);
+        bindmode_t getBindMode();
+
+        void HFoff();
+        void HFon();
+
         timingUsec_t getMaxFrameTime();
+        uint16_t getOverrunCounter();
 };
 
 #endif

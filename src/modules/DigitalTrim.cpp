@@ -60,6 +60,8 @@ COMM_RC_t DigitalTrim::importConfig(ImportExport* importer, uint8_t* config) con
 
 void DigitalTrim::run(Controls& controls) {
 
+    /** @todo fix digital trim */
+
     channelValue_t v;
 
     const AssignInput* assignInput = (AssignInput*)moduleManager.getModuleByType(MODULE_SET_MODEL, MODULE_ASSIGN_INPUT_TYPE);

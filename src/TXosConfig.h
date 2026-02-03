@@ -32,8 +32,9 @@
 #define DE 2
 
 /* Supported HF modules */
-#define HF_SPEKTRUM_PPM 1
-#define HF_JETI_TU2     2
+#define HF_SPEKTRUM_PPM    1
+#define HF_JETI_TU2        2
+#define HF_SPEKTRUM_SERIAL 3
 
 /* Trim mode */
 #define ANALOG_TRIM     1
@@ -233,18 +234,23 @@
 #endif
 
 
-#define PORT_HF_RELAIS           16
-#define PORT_BIND_RELAIS         17
 #define PORT_BUZZER              13
 
 
 #if HF_MODULE == HF_SPEKTRUM_PPM
+    #define PORT_HF_RELAIS           16
+    #define PORT_BIND_RELAIS         17
     #undef PPM_CHANNELS
     #define PPM_CHANNELS                  ((channel_t)9)
 
 #elif HF_MODULE == HF_JETI_TU2
     #undef ENABLE_BIND_MODULE
     #undef ENABLE_RANGETEST_MODULE
+
+#elif HF_MODULE == HF_SPEKTRUM_SERIAL
+    #define PORT_HF_RELAIS           15
+    #define PORT_SERIAL_RX           16
+    #define PORT_SERIAL_TX           17
 
 #else
   #error "Set HF_MODULE in TXosLocalConfig.h to a supported value."

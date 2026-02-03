@@ -36,8 +36,10 @@ extern PortsImpl *portsImpl;
 
 void Ports::init() const {
 
-#if defined( ENABLE_BIND_MODULE )
+#if defined( ENABLE_BIND_MODULE ) && defined( PORT_BIND_RELAIS )
     portsImpl->portInit( PORT_BIND_RELAIS, OUTPUT);
+#endif
+#if defined( PORT_HF_RELAIS )
     portsImpl->portInit( PORT_HF_RELAIS, OUTPUT);
 #endif
     portsImpl->portInit( PORT_BUZZER, OUTPUT);
@@ -49,7 +51,7 @@ void Ports::init() const {
 
 void Ports::hfOn() const {
 
-#if defined( ENABLE_BIND_MODULE )
+#if defined( PORT_HF_RELAIS )
     /* HF is on when relais is off */
     portsImpl->portSet( PORT_HF_RELAIS, LOW);
 #endif
@@ -57,21 +59,21 @@ void Ports::hfOn() const {
 
 void Ports::hfOff() const {
 
-#if defined( ENABLE_BIND_MODULE )
+#if defined( PORT_HF_RELAIS )
     portsImpl->portSet( PORT_HF_RELAIS, HIGH);
 #endif
 }
 
 void Ports::bindOn() const {
 
-#if defined( ENABLE_BIND_MODULE )
+#if defined( ENABLE_BIND_MODULE ) && defined( PORT_BIND_RELAIS )
     portsImpl->portSet( PORT_BIND_RELAIS, HIGH);
 #endif
 }
 
 void Ports::bindOff() const {
 
-#if defined( ENABLE_BIND_MODULE )
+#if defined( ENABLE_BIND_MODULE ) && defined( PORT_BIND_RELAIS )
     portsImpl->portSet( PORT_BIND_RELAIS, LOW);
 #endif
 }

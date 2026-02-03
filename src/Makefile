@@ -35,8 +35,8 @@ WX_LIBS = $(shell wx-config --libs)
 WX_CXXFLAGS_GEN = $(shell wx-config --cxxflags)
 WX_CXXFLAGS = $(subst -I,-isystem,$(WX_CXXFLAGS_GEN))
 
-## EMU_OBJ = emu/EEPROM.o emu/InputImpl.o emu/OutputImpl.o emu/PortsImpl.o emu/BuzzerImpl.o emu/LcdWidget.o emu/DisplayImpl.o
-EMU_OBJ = emu/EEPROM.o emu/EmuSerial.o emu/SerialConsole.o emu/InputImpl.o emu/OutputImpl.o emu/PortsImpl.o emu/BuzzerImpl.o emu/EmuTextUILcdST7735.o emu/EmuTextUISimpleKbd.o emu/DisplayImpl.o
+## EMU_OBJ = emu/EEPROM.o emu/InputImpl.o emu/OutputImplEmu.o emu/PortsImpl.o emu/BuzzerImpl.o emu/LcdWidget.o emu/DisplayImpl.o
+EMU_OBJ = emu/EEPROM.o emu/EmuSerial.o emu/SerialConsole.o emu/InputImpl.o emu/OutputImplEmu.o emu/PortsImpl.o emu/BuzzerImpl.o emu/EmuTextUILcdST7735.o emu/EmuTextUISimpleKbd.o emu/DisplayImpl.o
 
 CONTROLS_OBJ = controls/Controls.o
 
@@ -59,7 +59,7 @@ OBJECTS = TXos.o Module.o Comm.o ModuleManager.o ConfigBlock.o SystemConfig.o Ho
 
 # Unittest
 UTOBJECTS = unittest/UtModules.o
-UTEMU_OBJ = unittest/emu/EEPROM.o unittest/emu/EmuSerial.o unittest/emu/SerialConsole.o unittest/emu/InputImpl.o unittest/emu/OutputImpl.o unittest/emu/PortsImpl.o \
+UTEMU_OBJ = unittest/emu/EEPROM.o unittest/emu/EmuSerial.o unittest/emu/SerialConsole.o unittest/emu/InputImpl.o unittest/emu/OutputImplEmu.o unittest/emu/PortsImpl.o \
   unittest/emu/BuzzerImpl.o unittest/emu/EmuTextUILcdST7735.o unittest/emu/EmuTextUISimpleKbd.o unittest/emu/DisplayImpl.o
 UTCXXINC += -I. -Icontrols -ITextUI -Ioutput -Imodules -Iunittest -Iunittest/emu
 
@@ -76,6 +76,8 @@ else
 endif
 
 all: $(PROGRAM)
+
+compile: $(PROGRAM)
 
 unittest: $(UNITTEST)
 

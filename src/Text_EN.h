@@ -108,6 +108,12 @@
 #define TEXT_OUT_CH_8               CC("S8")
 #define TEXT_OUT_CH_9               CC("S9")
 
+#define TEXT_BINDMODE_count         ((uint8_t)4)
+#define TEXT_BINDMODE_CPPM          CC("CPPM")
+#define TEXT_BINDMODE_DSM2          CC("DSM2")
+#define TEXT_BINDMODE_DSMX          CC("DSMX")
+#define TEXT_BINDMODE_CRSF          CC("CRSF")
+
 // Switch types (2 letters fixed)
 // Note name length is 3 because the format includes the switch number
 // ntt  (1BI)
@@ -169,6 +175,7 @@
 #define TEXT_ARROW_RIGHT            CC(">")
 #define TEXT_BACK                   CC("<<<<")
 #define TEXT_BIND                   CC("Bind")
+#define TEXT_BINDMODE               CC("Bindmode")
 #define TEXT_BOOTING                CC("Booting...")
 #define TEXT_CH                     CC("Ch")
 #define TEXT_CONNECTING             CC("Connecting")
@@ -185,6 +192,7 @@
 #define TEXT_MIX_ARROW              CC("=>")
 #define TEXT_MIX_OFFSET             CC("Of=")
 #define TEXT_MODEL                  CC("Model")
+#define TEXT_MODEL_ID               CC("Model ID")
 #define TEXT_MODEL_NAME             CC("Name")
 #define TEXT_MODEL_SETUP            CC("Model setup")
 #define TEXT_NOT_SUPPORTED          CC("Not supported")

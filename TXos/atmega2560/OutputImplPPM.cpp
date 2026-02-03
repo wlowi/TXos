@@ -24,9 +24,13 @@
   SOFTWARE.
 */
 
+#include "TXos.h"
+
+#if HF_MODULE == HF_SPEKTRUM_PPM || HF_MODULE == HF_JETI_TU2
+
 #include <util/atomic.h>
 
-#include "OutputImpl.h"
+#include "OutputImplPPM.h"
 #include "InputImpl.h"
 
 #include "Ports.h"
@@ -35,6 +39,11 @@ extern Ports ports;
 
 extern OutputImpl *outputImpl;
 extern InputImpl *inputImpl;
+
+const uint8_t BINDMODE_COUNT = 1;
+static bindmode_t BINDMODES[BINDMODE_COUNT] = {
+    BINDMODE_CPPM
+};
 
 static channel_t outputChannel = 0;
 
@@ -47,6 +56,7 @@ static volatile timingUsec_t maxFrameTime_half_uSec = 0;
 ISR(TIMER3_OVF_vect) {
 
   timingUsec_t nextTimerTop;
+  OutputImplPPM *outputImplPPM = (OutputImplPPM*)outputImpl;
 
   /* Output compare register is set to trigger at space end which is 400 usec.
    * The pin will be set to high at output compare match and
@@ -54,7 +64,7 @@ ISR(TIMER3_OVF_vect) {
    */
   if( outputChannel >= PPM_CHANNELS) {
 
-    outputImpl->switchSet();
+    outputImplPPM->switchSet();
     inputImpl->start();
 
     /* Fill gap until end of frame time (22msec) */
@@ -70,7 +80,7 @@ ISR(TIMER3_OVF_vect) {
 
   } else {
 
-    nextTimerTop = (outputImpl->ppmSet[outputImpl->currentSet].channel[outputChannel]) << 1;
+    nextTimerTop = (outputImplPPM->ppmSet[outputImplPPM->currentSet].channel[outputChannel]) << 1;
     inFrameTime_half_uSec += nextTimerTop;
     outputChannel++;
   }
@@ -82,7 +92,7 @@ ISR(TIMER3_OVF_vect) {
   ICR3 = nextTimerTop;
 }
 
-OutputImpl::OutputImpl() {
+OutputImplPPM::OutputImplPPM() {
 
     init();
 }
@@ -93,7 +103,7 @@ OutputImpl::OutputImpl() {
  * - Initialize timer
  *     Timer 3 counts at a rate of 2Mhz ( 0.5 micro sec. )
  */
-void OutputImpl::init() {
+void OutputImplPPM::init() {
 
     ATOMIC_BLOCK( ATOMIC_RESTORESTATE) {
 
@@ -144,7 +154,7 @@ void OutputImpl::init() {
     }
 }
 
-timingUsec_t OutputImpl::getMaxFrameTime() {
+timingUsec_t OutputImplPPM::getMaxFrameTime() {
 
     timingUsec_t t;
 
@@ -159,7 +169,7 @@ timingUsec_t OutputImpl::getMaxFrameTime() {
 /* An overrun occurs if not all channels in the modifiable set
  * were set and a switch occurs.
  */
-uint16_t OutputImpl::getOverrunCounter() {
+uint16_t OutputImplPPM::getOverrunCounter() {
 
     return ppmOverrun;
 }
@@ -168,7 +178,7 @@ uint16_t OutputImpl::getOverrunCounter() {
  * Increate the ppmOverrun counter if the channelSetDone flag has not
  * been set.
  */
-void OutputImpl::switchSet() {
+void OutputImplPPM::switchSet() {
 
     if( channelSetDone) {
         channelSetDone = false;
@@ -179,7 +189,7 @@ void OutputImpl::switchSet() {
     }
 }
 
-bool OutputImpl::acceptChannels() {
+bool OutputImplPPM::acceptChannels() {
 
     return !channelSetDone;
 }
@@ -193,7 +203,7 @@ bool OutputImpl::acceptChannels() {
  * SO SET THE LAST CHANNEL LAST !!
  *
  */
-void OutputImpl::SetChannelValue(int channel, int value) {
+void OutputImplPPM::SetChannelValue(int channel, int value) {
 
     timingUsec_t t;
 
@@ -233,40 +243,81 @@ void OutputImpl::SetChannelValue(int channel, int value) {
     }
 }
 
-bool OutputImpl::isBindSupported() const {
+bool OutputImplPPM::isBindSupported() const {
 
     return true;
 };
 
-bool OutputImpl::isRangeTestSupported() const {
+bool OutputImplPPM::isRangeTestSupported() const {
 
     return true;
 }
 
-void OutputImpl::bindActivate() {
+uint8_t OutputImplPPM::getBindModeCount() const {
 
-    ports.hfOff();
-    delay( 500);
+    return BINDMODE_COUNT;
+}
+
+bindmode_t* OutputImplPPM::getBindModes() const {
+
+    return BINDMODES;
+}
+
+void OutputImplPPM::bindActivate( bindmode_t bm) {
+
+    HFoff();
     ports.bindOn();
     delay( 100);
+    HFon();
+}
+
+void OutputImplPPM::bindDeactivate() {
+
+    HFoff();
+    ports.bindOff();
+    delay( 100);
+    HFon();
+}
+
+void OutputImplPPM::rangeTestActivate() {
+
+    ports.bindOn();
+}
+
+void OutputImplPPM::rangeTestDeactivate() {
+
+    ports.bindOff();
+}
+
+void OutputImplPPM::setModelID( uint8_t mID) {
+
+    modelID = mID;
+}
+
+uint8_t OutputImplPPM::getModelID() {
+
+    return modelID;
+}
+
+void OutputImplPPM::setBindMode( bindmode_t bm) {
+
+    // NOOP. the only supported bind mode is BINDMODE_CPPM
+}
+
+bindmode_t OutputImplPPM::getBindMode() {
+
+    return BINDMODE_CPPM;
+}
+
+void OutputImplPPM::HFoff() {
+
+    ports.hfOff();
+    delay(500);
+}
+
+void OutputImplPPM::HFon() {
+
     ports.hfOn();
 }
 
-void OutputImpl::bindDeactivate() {
-
-    ports.hfOff();
-    delay( 500);
-    ports.bindOff();
-    delay( 100);
-    ports.hfOn();
-}
-
-void OutputImpl::rangeTestActivate() {
-
-    ports.bindOn();
-}
-
-void OutputImpl::rangeTestDeactivate() {
-
-    ports.bindOff();
-}
+#endif

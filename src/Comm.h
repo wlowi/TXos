@@ -141,6 +141,7 @@ using COMM_RC_t = uint8_t;
 #define COMM_PACKET_GET_MODELCONFIG       PACKET_TYPE('G','M')
 #define COMM_PACKET_INFO                  PACKET_TYPE('I','N')
 #define COMM_PACKET_ERROR                 PACKET_TYPE('E','R')
+#define COMM_PACKET_OK                    PACKET_TYPE('O','K')
 #define COMM_PACKET_MODELCONFIG           PACKET_TYPE('M','C')
 #define COMM_PACKET_SYSCONFIG             PACKET_TYPE('S','C')
 
@@ -202,6 +203,7 @@ using COMM_RC_t = uint8_t;
 #define COMM_FIELD_BITS                   FIELD_TYPE('B','F')
 #define COMM_FIELD_PHASE                  FIELD_TYPE('P','H')
 #define COMM_FIELD_PHASE_NAMES            FIELD_TYPE('P','N')
+#define COMM_FIELD_MODEL_BINDMODE         FIELD_TYPE('M','B')
 #define COMM_FIELD_MODEL_NAME             FIELD_TYPE('M','N')
 #define COMM_FIELD_MODEL_MIX              FIELD_TYPE('M','M')
 #define COMM_FIELD_MODEL_SWITCH_QDIFF     FIELD_TYPE('W','Q')
@@ -215,8 +217,10 @@ using COMM_RC_t = uint8_t;
 #define COMM_FIELD_ALERT                  FIELD_TYPE('V','A')
 #define COMM_FIELD_ADJUST                 FIELD_TYPE('V','J')
 
-/* Info packer */
+/* Info packet */
 #define COMM_FIELD_VERSION                FIELD_TYPE('V','N')
+#define COMM_FIELD_REMARK                 FIELD_TYPE('R','M')
+#define COMM_FIELD_ERRORCODE              FIELD_TYPE('E','E')
 
 #define COMM_CHAR_OPEN                      '{'
 #define COMM_CHAR_CLOSE                     '}'

@@ -24,9 +24,14 @@
   SOFTWARE.
 */
 
-#include "OutputImpl.h"
+#include "OutputImplEmu.h"
 
-OutputImpl::OutputImpl( wxWindow *parent, int channels)
+const uint8_t BINDMODE_COUNT = 1;
+static bindmode_t BINDMODES[BINDMODE_COUNT] = {
+    BINDMODE_CPPM
+};
+
+OutputImplEmu::OutputImplEmu( wxWindow *parent, int channels)
     : wxStaticBoxSizer(wxHORIZONTAL, parent, "Servos")
 {
     channelIDs = new wxWindowID[channels];
@@ -54,7 +59,17 @@ OutputImpl::OutputImpl( wxWindow *parent, int channels)
     }
 }
 
-bool OutputImpl::acceptChannels() {
+OutputImplEmu::~OutputImplEmu( void) {
+
+    if( channelIDs != NULL) {
+        delete [] channelIDs;
+        delete [] gauges;
+        delete [] values;
+        channelIDs = NULL;
+    }
+}
+
+bool OutputImplEmu::acceptChannels() {
 
     long now = millis();
 
@@ -66,7 +81,7 @@ bool OutputImpl::acceptChannels() {
     return false;
 }
 
-void OutputImpl::SetChannelValue(int channel, int value) {
+void OutputImplEmu::SetChannelValue(int channel, int value) {
 
     wxString str;
     str.Printf(wxT("%d"), value);
@@ -74,52 +89,84 @@ void OutputImpl::SetChannelValue(int channel, int value) {
     gauges[channel]->SetValue( value+1500);
 }
 
-bool OutputImpl::isBindSupported() const {
+bool OutputImplEmu::isBindSupported() const {
 
     return true;
 }
 
-bool OutputImpl::isRangeTestSupported() const {
+bool OutputImplEmu::isRangeTestSupported() const {
 
     return true;
 }
 
-void OutputImpl::bindActivate() {
+uint8_t OutputImplEmu::getBindModeCount() const {
 
-    printf("Bind activated\n");
+    return BINDMODE_COUNT;
 }
 
-void OutputImpl::bindDeactivate() {
+bindmode_t* OutputImplEmu::getBindModes() const {
+
+    return BINDMODES;
+}
+
+void OutputImplEmu::bindActivate( bindmode_t bm) {
+
+    printf("Bind activated. Bind mode: %d\n", bm);
+}
+
+void OutputImplEmu::bindDeactivate() {
 
     printf("Bind deactivated\n");
 }
 
-void OutputImpl::rangeTestActivate() {
+void OutputImplEmu::rangeTestActivate() {
 
     printf("Bind test activated\n");
 }
 
-void OutputImpl::rangeTestDeactivate() {
+void OutputImplEmu::rangeTestDeactivate() {
 
     printf("Range test deactivated\n");
 }
 
-uint16_t OutputImpl::getOverrunCounter() {
+uint16_t OutputImplEmu::getOverrunCounter() {
 
     return 0;
 }
 
-timingUsec_t OutputImpl::getMaxFrameTime() {
+timingUsec_t OutputImplEmu::getMaxFrameTime() {
 
     return 0;
 }
 
-OutputImpl::~OutputImpl( void) {
+void OutputImplEmu::setModelID( uint8_t mID) {
 
-    if( channelIDs != NULL) {
-        delete [] channelIDs;
-        delete [] gauges;
-        delete [] values;
-        channelIDs = NULL;
-    }
+    modelID = mID;
+    printf("Model ID set to %d\n", modelID);
+}
+
+uint8_t OutputImplEmu::getModelID() {
+
+    return modelID;
+}
+
+void OutputImplEmu::setBindMode( bindmode_t bm) {
+
+    // NOOP. the only supported bind mode is BINDMODE_CPPM
+    printf("Set bind mode to %d (ignored)\n", bm);
+}
+
+bindmode_t OutputImplEmu::getBindMode() {
+
+    return BINDMODE_CPPM;
+}
+
+void OutputImplEmu::HFoff() {
+
+    printf("HF off\n");
+}
+
+void OutputImplEmu::HFon() {
+
+    printf("HF on\n");
 }

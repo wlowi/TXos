@@ -29,6 +29,7 @@
  */
 
 #include "Output.h"
+#include "Bind.h"
 #include "OutputImpl.h"
 
 extern OutputImpl *outputImpl;
@@ -58,9 +59,19 @@ bool Output::isRangeTestSupported() const {
     return outputImpl->isRangeTestSupported();
 }
 
-void Output::bindActivate() {
+uint8_t Output::getBindModeCount() const {
 
-    outputImpl->bindActivate();
+    return outputImpl->getBindModeCount();
+}
+
+bindmode_t* Output::getBindModes() const {
+
+    return outputImpl->getBindModes();
+}
+
+void Output::bindActivate( bindmode_t bindMode) {
+
+    outputImpl->bindActivate( bindMode);
 }
 
 void Output::bindDeactivate() {
@@ -76,6 +87,36 @@ void Output::rangeTestActivate() {
 void Output::rangeTestDeactivate() {
 
     outputImpl->rangeTestDeactivate();
+}
+
+void Output::setModelID( uint8_t mID) {
+
+    outputImpl->setModelID( mID);
+}
+
+uint8_t Output::getModelID() {
+
+    return outputImpl->getModelID();
+}
+
+void Output::setBindMode( bindmode_t bm) {
+
+    outputImpl->setBindMode( bm);
+}
+
+bindmode_t Output::getBindMode() {
+
+    return outputImpl->getBindMode();
+}
+
+void Output::HFoff() {
+
+    outputImpl->HFoff();
+}
+
+void Output::HFon() {
+
+    outputImpl->HFon();
 }
 
 /* Statistics */

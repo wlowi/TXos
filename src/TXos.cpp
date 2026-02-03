@@ -265,9 +265,19 @@
 #include "ReliableStream.h"
 
 #include "InputImpl.h"
-#include "OutputImpl.h"
 #include "PortsImpl.h"
 #include "BuzzerImpl.h"
+
+#if HF_MODULE == HF_SPEKTRUM_PPM
+#include "OutputImplPPM.h"
+
+#elif HF_MODULE == HF_JETI_TU2
+#include "OutputImplPPM.h"
+
+#elif HF_MODULE == HF_SPEKTRUM_SERIAL
+#include "OutputImplSerial.h"
+#endif
+
 
 #else
 
@@ -417,6 +427,8 @@ BuzzerImpl *buzzerImpl;
 
 #if defined(ARDUINO_ARCH_ESP32)
 #undef ENABLE_MEMDEBUG
+#define USE_MULTICORE
+TaskHandle_t Task1; // UI Handler
 #endif
 
 #ifdef ENABLE_MEMDEBUG
@@ -559,7 +571,19 @@ void setup( void) {
                                SwitchPins);
 #endif
 
-    outputImpl = new OutputImpl();
+
+#if HF_MODULE == HF_SPEKTRUM_PPM
+    outputImpl = new OutputImplPPM();
+
+#elif HF_MODULE == HF_JETI_TU2
+    outputImpl = new OutputImplPPM();
+
+#elif HF_MODULE == HF_SPEKTRUM_SERIAL
+    outputImpl = new OutputImplSerial();
+
+#else
+    #error "No HF Module defined"
+#endif
 
 #endif
 
@@ -756,11 +780,32 @@ void setup( void) {
 
     buzzer.play( SoundWelcome);
 
+#ifdef USE_MULTICORE
+    xTaskCreatePinnedToCore(
+        Task1_HandleUI,   /* Task function. */
+        "UI",             /* name of task. */
+        8192,             /* Stack size of task */
+        NULL,             /* parameter of the task */
+        1,                /* priority of the task */
+        &Task1,           /* Task handle to keep track of created task */
+        0);               /* pin task to core 0 */
+#endif
+
 #if (defined( ENABLE_BDEBUG) && defined( ENABLE_SERIAL))
     Serial.print("D:");
     Serial.println(bdebug);
 #endif
 }
+
+#ifdef USE_MULTICORE
+void Task1_HandleUI( void * pvParameters ) {
+
+    for(;;){
+        userInterface.handle( userInterface.getEvent());
+        delay(100);
+    }
+}
+#endif
 
 void loop( void) {
 
@@ -809,10 +854,12 @@ void loop( void) {
 
     now = millis();
 
+#ifndef USE_MULTICORE
     if( now >= nextScreenUpdate) {
         userInterface.handle( userInterface.getEvent());
         nextScreenUpdate = now + SCREEN_UPDATE_msec;
     }
+#endif
 
 #ifdef UI_EXTERNAL_USERTERM_DISPLAY
     stream->handleComm();
@@ -840,12 +887,16 @@ void loop( void) {
 
 void yieldLoop() {
 
+#ifndef USE_MULTICORE
+
 #ifdef ENABLE_SERIAL
     Serial.flush();
 #endif
 
     watchdog_reset();
     handle_channels();
+
+#endif
 }
 
 /**
@@ -896,6 +947,22 @@ void watchdog_reset() {
 #endif
 #endif
 }
+
+
+extern void isr_disable() {
+
+#ifndef ARDUINO_ARCH_EMU
+    outputImpl->isrDisable();
+#endif
+}
+
+extern void isr_enable() {
+
+#ifndef ARDUINO_ARCH_EMU
+    outputImpl->isrEnable();
+#endif
+}
+
 
 void handle_channels() {
 

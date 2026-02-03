@@ -1,0 +1,66 @@
+
+Serial Protocol Spektrum Module X1TXN
+=====================================
+
+  * A six channel DSM2/DSMX transmitter module
+  * Serial line parameters: 125000 baud, 8 data bits, no parity, 1 stop bit
+
+  Pin assignment
+  --------------
+    Pin 1	GND
+    Pin 2 VCC
+    Pin 6 RX data in
+
+  Each frame consists of 14 bytes.
+  The first two bytes are header bytes.
+  The next 12 bytes encode data of 6 channels.
+
+
+Header byte (0)
+===============
+
+  Bit 7		1: Bind mode
+  Bit 6		1: Extended transmitter range (US mode)
+  Bit 5		1: Range test
+  Bit 4		1: EU Frequency, 0: France Frequency
+  
+  Bit 3		1: DSMX, 0: DSM2
+  Bit 2		unused (0)
+  Bit 1		unused (0)
+  Bit 0		1: Plane 0: Helicopter (?? not sure what this means)
+
+
+Header byte (1)
+===============
+
+  Can be 0x00
+
+  
+Data bytes (2-13)
+=================
+
+  * Channel number is 4 bits wide
+  * Channel value is 10 bits wide (range 0-1023)
+
+  Byte (n)
+  --------
+  
+    Bit 7	unused (0)
+    Bit 6	unused (0)
+    Bit 5	Channel no. bit 3
+    Bit 4	Channel no. bit 2
+  
+    Bit 3	Channel no. bit 1
+    Bit 2	Channel no. bit 0
+    Bit 1	Channel value bit 9
+    Bit 0	Channel value bit 8
+  
+  Byte (n+1)
+  ----------
+  
+    Bit 7	Channel value bit 7
+    ..
+    Bit 0	Channel value bit 0
+  
+  
+

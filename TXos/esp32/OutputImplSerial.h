@@ -24,37 +24,16 @@
   SOFTWARE.
 */
 
-#ifndef _OutputImpl_h_
-#define _OutputImpl_h_
+#ifndef _OutputImplSerial_h_
+#define _OutputImplSerial_h_
 
+#include "Bind.h"
 #include "TXos.h"
-#include "Controls.h"
 
-#define PPM_PORT            15
+#if HF_MODULE == HF_SPEKTRUM_SERIAL
 
-/*
- *      0  400     1000  1500  2000             22000
- *  ____     _______             _________ ... ____
- *      |   |       |     |     |
- *      |___|       |     |     |
- *
- *      |   |
- *    PPM_SPACE
- *
- *      |     PPM_MID     |
- *
- *
- *  100%  ==   1.1  -  1.9 mSec
- *  125%  ==   1.0  -  2.0 mSec
- *  150%  ==   0.9  -  2.1 mSec
- *
- *  9 ch * 2.1 mSec = 18.9 mSec    22.0 - 18.9 = 3.1 mSec
- *
- */
+#include "OutputImpl.h"
 
-
-#define PPM_FRAME_usec      ((timingUsec_t) PPM_FRAME_TIME_usec)
-#define PPM_SPACE_usec      ((timingUsec_t)  400)
 #define PPM_MID_usec        ((timingUsec_t) 1500)
 
 /* 100 %  1500 +/- 400 = [1100,1900] uSec */
@@ -65,8 +44,6 @@
 #define PPM_MIN_usec        (PPM_MID_usec - PPM_RANGEMAX_usec)
 #define PPM_MAX_usec        (PPM_MID_usec + PPM_RANGEMAX_usec)
 
-/* Initial high for sync */
-#define PPM_INIT_usec       ((timingUsec_t) 8000)
 
 #define OTHER_PPMSET( s)    (((s) +1) % 2)
 
@@ -76,24 +53,31 @@ typedef struct ppmSet_t {
 
 } ppmSet_t;
 
-class OutputImpl
+class OutputImplSerial : public OutputImpl
 {
     public:
-        ppmSet_t ppmSet[2];
-        uint8_t currentSet;
+        /* public because they are accessed from within ISR. */
+        volatile ppmSet_t ppmSet[2];
+        volatile uint8_t currentSet;
+        volatile bool bind;
+        volatile bool rangeTest;
+        volatile uint8_t modelID;
 
     private:
         /* Count how may times the user mode code was unable to compute
          * and set all channels within one PPM frame.
          * This should always be 0.
          */
-        uint16_t ppmOverrun;
+        uint16_t overrun;
         bool channelSetDone;
 
     public:
-        OutputImpl();
+        OutputImplSerial();
 
         void switchSet();
+
+        void isrDisable();
+        void isrEnable();
 
         bool acceptChannels();
         void SetChannelValue( int channel, int value);
@@ -101,18 +85,31 @@ class OutputImpl
         bool isBindSupported() const;
         bool isRangeTestSupported() const;
 
-        void bindActivate();
+        uint8_t getBindModeCount() const;
+        bindmode_t* getBindModes() const;
+
+        void bindActivate( bindmode_t bm);
         void bindDeactivate();
 
         void rangeTestActivate();
         void rangeTestDeactivate();
 
-        timingUsec_t getInFrameTime();
+        void setModelID( uint8_t mID);
+        uint8_t getModelID();
+
+        void setBindMode( bindmode_t bm);
+        bindmode_t getBindMode();
+
+        void HFoff();
+        void HFon();
+
         timingUsec_t getMaxFrameTime();
         uint16_t getOverrunCounter();
 
     private:
         void init();
 };
+
+#endif
 
 #endif

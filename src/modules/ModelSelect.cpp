@@ -190,7 +190,7 @@ void ModelSelect::getValue(uint8_t row, uint8_t col, Cell* cell) {
      /* Config block for this model is uninitialized.
       * Display model number instead of name.
       */
-        cell->setString(MODELNO_STRING_LEN + 1, modelNo, 1);
+        cell->setString(MODELNO_STRING_LEN + 1, modelNo, MODEL_NAME_LEN);
     }
 }
 

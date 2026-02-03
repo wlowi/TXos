@@ -24,50 +24,46 @@
   SOFTWARE.
 */
 
-/*
-    Interface code to the actual implementation of PPM generation.
- */
-
-#ifndef _Output_h_
-#define _Output_h_
+#ifndef _OutputImpl_h_
+#define _OutputImpl_h_
 
 #include "TXos.h"
 #include "Controls.h"
 #include "Bind.h"
+// #include <cstdint>
 
-class Output {
-
+class OutputImpl
+{
     public:
-        Output();
+        virtual void isrDisable() = 0;
+        virtual void isrEnable() = 0;
 
-        /* Returns true if the PPM generator is ready to accept the next channel set */
-        bool acceptChannels() const;
-        void setChannels( Controls &controls) const;
+        virtual bool acceptChannels() = 0;
+        virtual void SetChannelValue( int channel, int value) = 0;
 
-        bool isBindSupported() const;
-        bool isRangeTestSupported() const;
+        virtual bool isBindSupported() const = 0;
+        virtual bool isRangeTestSupported() const = 0;
 
-        uint8_t getBindModeCount() const;
-        bindmode_t* getBindModes() const;
+        virtual uint8_t getBindModeCount() const = 0;
+        virtual bindmode_t* getBindModes() const = 0;
 
-        void bindActivate( bindmode_t bindMode);
-        void bindDeactivate();
+        virtual void bindActivate( bindmode_t bm) = 0;
+        virtual void bindDeactivate() = 0;
 
-        void rangeTestActivate();
-        void rangeTestDeactivate();
+        virtual void rangeTestActivate() = 0;
+        virtual void rangeTestDeactivate() = 0;
 
-        void setModelID( uint8_t mID);
-        uint8_t getModelID();
+        virtual void setModelID( uint8_t mID) = 0;
+        virtual uint8_t getModelID() = 0;
 
-        void setBindMode( bindmode_t bm);
-        bindmode_t getBindMode();
+        virtual void setBindMode( bindmode_t bm) = 0;
+        virtual bindmode_t getBindMode() = 0;
 
-        void HFoff();
-        void HFon();
+        virtual void HFoff() = 0;
+        virtual void HFon() = 0;
 
-        /* Statistics */
-        uint16_t getOverrunCounter();
-        timingUsec_t getMaxFrameTime();
+        virtual timingUsec_t getMaxFrameTime() = 0;
+        virtual uint16_t getOverrunCounter() = 0;
 };
 
 #endif

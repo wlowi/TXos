@@ -24,15 +24,24 @@
   SOFTWARE.
 */
 
-#include "OutputImpl.h"
+#include "TXos.h"
+
+#if HF_MODULE == HF_SPEKTRUM_PPM || HF_MODULE == HF_JETI_TU2
+
+#include "OutputImplPPM.h"
 #include "InputImpl.h"
 
 #include "Ports.h"
 
 extern Ports ports;
 
-extern OutputImpl* outputImpl;
+extern OutputImplPPM* outputImpl;
 extern InputImpl* inputImpl;
+
+const uint8_t BINDMODE_COUNT = 1;
+static bindmode_t BINDMODES[BINDMODE_COUNT] = {
+    BINDMODE_CPPM
+};
 
 /* PPM generation state machine state.
  * Used in the interrupt routine.
@@ -65,7 +74,7 @@ static hw_timer_t *ppmTimer = NULL;
 /* This compensates ISR service time */
 #define ISR_ADJUST   3
 
-portMUX_TYPE ppmMux = portMUX_INITIALIZER_UNLOCKED;
+static portMUX_TYPE ppmMux = portMUX_INITIALIZER_UNLOCKED;
 
 void ARDUINO_ISR_ATTR ppmTimerISR() {
 
@@ -132,7 +141,7 @@ void ARDUINO_ISR_ATTR ppmTimerISR() {
     timerAlarm( ppmTimer, nextTimerValue_uSec, false, 0);
 }
 
-OutputImpl::OutputImpl() {
+OutputImplPPM::OutputImplPPM() {
 
     init();
 }
@@ -143,7 +152,7 @@ OutputImpl::OutputImpl() {
  * - Initialize timer
  *     Timer counts at a rate of 1Mhz ( 1 micro sec. )
  */
-void OutputImpl::init() {
+void OutputImplPPM::init() {
 
     for (channel_t i = 0; i < PPM_CHANNELS; i++) {
         ppmSet[0].channel[i] = PPM_MID_usec;
@@ -170,7 +179,7 @@ void OutputImpl::init() {
     }
 }
 
-timingUsec_t OutputImpl::getMaxFrameTime() {
+timingUsec_t OutputImplPPM::getMaxFrameTime() {
 
     timingUsec_t t;
 
@@ -185,7 +194,7 @@ timingUsec_t OutputImpl::getMaxFrameTime() {
 /* An overrun occurs if not all channels in the modifiable set
  * were set and a switch occurs.
  */
-uint16_t OutputImpl::getOverrunCounter() {
+uint16_t OutputImplPPM::getOverrunCounter() {
 
     uint16_t c;
 
@@ -200,7 +209,7 @@ uint16_t OutputImpl::getOverrunCounter() {
  * Increase the ppmOverrun counter if the channelSetDone flag has not
  * been set in time.
  */
-void OutputImpl::switchSet() {
+void OutputImplPPM::switchSet() {
 
     if (channelSetDone) {
         channelSetDone = false;
@@ -211,7 +220,7 @@ void OutputImpl::switchSet() {
     }
 }
 
-bool OutputImpl::acceptChannels() {
+bool OutputImplPPM::acceptChannels() {
 
     return !channelSetDone;
 }
@@ -225,7 +234,7 @@ bool OutputImpl::acceptChannels() {
  * SO SET THE LAST CHANNEL LAST !!
  *
  */
-void OutputImpl::SetChannelValue(int channel, int value) {
+void OutputImplPPM::SetChannelValue(int channel, int value) {
 
     timingUsec_t t;
 
@@ -264,40 +273,81 @@ void OutputImpl::SetChannelValue(int channel, int value) {
     }
 }
 
-bool OutputImpl::isBindSupported() const {
+bool OutputImplPPM::isBindSupported() const {
 
     return true;
 };
 
-bool OutputImpl::isRangeTestSupported() const {
+bool OutputImplPPM::isRangeTestSupported() const {
 
     return true;
 }
 
-void OutputImpl::bindActivate() {
+uint8_t OutputImplPPM::getBindModeCount() const {
 
-    ports.hfOff();
-    delay( 500);
+    return BINDMODE_COUNT;
+}
+
+bindmode_t* OutputImplPPM::getBindModes() const {
+
+    return BINDMODES;
+}
+
+void OutputImplPPM::bindActivate( bindmode_t bm) {
+
+    HFoff();
     ports.bindOn();
     delay( 100);
+    HFon();
+}
+
+void OutputImplPPM::bindDeactivate() {
+
+    HFoff();
+    ports.bindOff();
+    delay( 100);
+    HFon();
+}
+
+void OutputImplPPM::rangeTestActivate() {
+
+    ports.bindOn();
+}
+
+void OutputImplPPM::rangeTestDeactivate() {
+
+    ports.bindOff();
+}
+
+void OutputImplPPM::setModelID( uint8_t mID) {
+
+    modelID = mID;
+}
+
+uint8_t OutputImplPPM::getModelID() {
+
+    return modelID;
+}
+
+void OutputImplPPM::setBindMode( bindmode_t bm) {
+
+    // NOOP. the only supported bind mode is BINDMODE_CPPM
+}
+
+bindmode_t OutputImplPPM::getBindMode() {
+
+    return BINDMODE_CPPM;
+}
+
+void OutputImplPPM::HFoff() {
+
+    ports.hfOff();
+    delay(500);
+}
+
+void OutputImplPPM::HFon() {
+
     ports.hfOn();
 }
 
-void OutputImpl::bindDeactivate() {
-
-    ports.hfOff();
-    delay( 500);
-    ports.bindOff();
-    delay( 100);
-    ports.hfOn();
-}
-
-void OutputImpl::rangeTestActivate() {
-
-    ports.bindOn();
-}
-
-void OutputImpl::rangeTestDeactivate() {
-
-    ports.bindOff();
-}
+#endif

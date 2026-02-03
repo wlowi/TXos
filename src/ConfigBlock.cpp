@@ -52,6 +52,8 @@ ConfigBlock::ConfigBlock() {
  */
 configBlock_rc ConfigBlock::readBlock( configBlockID_t id) {
 
+    configBlock_rc rc = CONFIGBLOCK_RC_OK;
+
 #if defined( ARDUINO_ARCH_AVR ) || defined(ARDUINO_ARCH_EMU)
     size_t configStart;
 #elif defined( ARDUINO_ARCH_ESP32 )
@@ -62,6 +64,8 @@ configBlock_rc ConfigBlock::readBlock( configBlockID_t id) {
     LOGV("ConfigBlock::readBlock( %d )\n", id);
 
     if( setBlockID( id)) {
+
+        isr_disable();
 
 #if defined(ARDUINO_ARCH_AVR) || defined(ARDUINO_ARCH_EMU)
         configStart = getBlockStart();
@@ -75,32 +79,37 @@ configBlock_rc ConfigBlock::readBlock( configBlockID_t id) {
         LOGV("ConfigBlock::readBlock(): reading %u bytes from block %d\n", configBlockSize, id);
 
         if( modelStore.begin(ESP32_PREFERENCES_NAMESPACE,true)) {
-            itoa(id,key,10);
+            itoa(blockID,key,10);
             if( modelStore.isKey( key)) {
                 modelStore.getBytes( key, &block.payload[0], configBlockSize);
             } else {
-                LOGV("** ConfigBlock::writeBlock(): uninitialized block ID=%d\n", blockID);
-                return CONFIGBLOCK_RC_INVID;
+                LOGV("** ConfigBlock::readBlock(): uninitialized block ID=%d\n", blockID);
+                rc = CONFIGBLOCK_RC_INVID;
             }
             modelStore.end();
         }
 #endif
 
-        if( !isBlockValid()) {
-            LOGV("** ConfigBlock::readBlock(): invalid csum for block ID=%d\n", id);
-            return CONFIGBLOCK_RC_CSUM;
-        }
+        isr_enable();
 
-        if( block.payload[0] == 0xff) {
-            LOGV("** ConfigBlock::readBlock(): uninitialized block ID=%d\n", id);
-            return CONFIGBLOCK_RC_INVID;
-        }
+        if( rc == CONFIGBLOCK_RC_OK) { // No error up to here
 
-        return CONFIGBLOCK_RC_OK;
+            if( !isBlockValid()) {
+                LOGV("** ConfigBlock::readBlock(): invalid csum for block ID=%d\n", id);
+                rc = CONFIGBLOCK_RC_CSUM;
+            }
+            else if( block.payload[0] == 0xff) {
+                LOGV("** ConfigBlock::readBlock(): uninitialized block ID=%d\n", id);
+                rc = CONFIGBLOCK_RC_INVID;
+            }
+        }
+    }
+    else {
+        LOGV("** ConfigBlock::readBlock(): invalid block ID=%d\n", id);
+        rc = CONFIGBLOCK_RC_INVID;
     }
 
-    LOGV("** ConfigBlock::readBlock(): invalid block ID=%d\n", id);
-    return CONFIGBLOCK_RC_INVID;
+    return rc;
 }
 
 /* Format member variable "block".
@@ -129,9 +138,10 @@ configBlock_rc ConfigBlock::formatBlock( configBlockID_t id) {
  */
 configBlock_rc ConfigBlock::writeBlock() {
 
+    bool wasEnabled;
+
 #if defined( ARDUINO_ARCH_AVR ) || defined(ARDUINO_ARCH_EMU)
     size_t configStart;
-    bool wasEnabled;
 #elif defined( ARDUINO_ARCH_ESP32 )
     Preferences modelStore;
     char key[6];
@@ -142,17 +152,16 @@ configBlock_rc ConfigBlock::writeBlock() {
     if( setBlockID( blockID)) {
         *block.checksum = computeChecksum();
 
+        wasEnabled = watchdog_disable(); // Sometimes writing to eeprom is really slow.
+        isr_disable();
+
 #if defined( ARDUINO_ARCH_AVR ) || defined(ARDUINO_ARCH_EMU)
         configStart = getBlockStart();
         LOGV("ConfigBlock::writeBlock(): writing %lu bytes to addr %lu\n", configBlockSize, configStart);
 
-        wasEnabled = watchdog_disable(); // Sometimes writing to eeprom is really slow.
-
         for( uint16_t i=0; i < configBlockSize; i++) {
             EEPROM.update( configStart + i, block.payload[i]);
         }
-
-        if( wasEnabled) { watchdog_enable(); }
 
 #elif defined( ARDUINO_ARCH_ESP32 )
         LOGV("ConfigBlock::writeBlock(): writing %u bytes to block %d\n", configBlockSize, blockID);
@@ -163,6 +172,10 @@ configBlock_rc ConfigBlock::writeBlock() {
             modelStore.end();
         }
 #endif
+
+        isr_enable();
+        if( wasEnabled) { watchdog_enable(); }
+
         return CONFIGBLOCK_RC_OK;
     }
 

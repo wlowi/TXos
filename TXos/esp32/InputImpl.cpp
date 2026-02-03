@@ -71,7 +71,7 @@ switch_t InputImpl::GetSwitches() {
 
     return switches;
 }
-        
+
 channelValue_t InputImpl::GetStickValue( channel_t ch) {
 
     if( ch < stickCount) {
@@ -79,7 +79,7 @@ channelValue_t InputImpl::GetStickValue( channel_t ch) {
     }
 
     LOGV("InputImpl::GetStickValue: Illegal channel no. %d", ch);
-    
+
     return 0;
 }
 
@@ -130,15 +130,15 @@ switchState_t InputImpl::GetSwitchValue( switch_t sw) {
       LOGV("InputImpl::GetSwitchValue: Illegal switch no. %d", sw);
       return SW_STATE_DONTCARE;
     }
-      
+
     swConf = switchConf[sw];
-    
+
     switch( swConf) {
 
       case SW_CONF_2STATE:
         state = portsImpl->portGet(switchPins[sw]) ? SW_STATE_0 : SW_STATE_1;
         break;
-        
+
       case SW_CONF_3STATE:
         portsImpl->portInit( switchPins[sw], INPUT);
         s1 = portsImpl->portGet(switchPins[sw]);
@@ -149,7 +149,7 @@ switchState_t InputImpl::GetSwitchValue( switch_t sw) {
         else if( s1 && s2) state = SW_STATE_0;
         else state = SW_STATE_1;
         break;
-        
+
       case SW_CONF_UNUSED:
       case SW_CONF_CHANNEL:
       default:
@@ -160,6 +160,6 @@ switchState_t InputImpl::GetSwitchValue( switch_t sw) {
 }
 
 switchConf_t InputImpl::GetSwitchConf( switch_t sw) {
-  
+
   return switchConf[sw];
 }
