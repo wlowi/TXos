@@ -276,8 +276,10 @@
 
 #elif HF_MODULE == HF_SPEKTRUM_SERIAL
 #include "OutputImplSerial.h"
-#endif
 
+#elif HF_MODULE == HF_CRSF_SERIAL
+#include "OutputImplSerial.h"
+#endif
 
 #else
 
@@ -290,19 +292,19 @@ const char* InputChannelNames[INPUT_CHANNELS] = {
     TEXT_INPUT_CH_2,
     TEXT_INPUT_CH_3,
     TEXT_INPUT_CH_4,
-#if INPUT_CHANNELS > 5
+#if INPUT_CHANNELS > 4
     TEXT_INPUT_CH_5,
 #endif
-#if INPUT_CHANNELS > 6
+#if INPUT_CHANNELS > 5
     TEXT_INPUT_CH_6,
 #endif
-#if INPUT_CHANNELS > 7
+#if INPUT_CHANNELS > 6
     TEXT_INPUT_CH_7,
 #endif
-#if INPUT_CHANNELS > 8
+#if INPUT_CHANNELS > 7
     TEXT_INPUT_CH_8,
 #endif
-#if INPUT_CHANNELS > 9
+#if INPUT_CHANNELS > 8
     TEXT_INPUT_CH_9,
 #endif
     TEXT_INPUT_NONE
@@ -330,9 +332,36 @@ const char* OutputChannelNames[PPM_CHANNELS] = {
     TEXT_OUT_CH_4,
     TEXT_OUT_CH_5,
     TEXT_OUT_CH_6,
+#if PPM_CHANNELS > 6
     TEXT_OUT_CH_7,
+#endif
+#if PPM_CHANNELS > 7
     TEXT_OUT_CH_8,
-    TEXT_OUT_CH_9
+#endif
+#if PPM_CHANNELS > 8
+    TEXT_OUT_CH_9,
+#endif
+#if PPM_CHANNELS > 9
+    TEXT_OUT_CH_10,
+#endif
+#if PPM_CHANNELS > 10
+    TEXT_OUT_CH_11,
+#endif
+#if PPM_CHANNELS > 11
+    TEXT_OUT_CH_12,
+#endif
+#if PPM_CHANNELS > 12
+    TEXT_OUT_CH_13,
+#endif
+#if PPM_CHANNELS > 13
+    TEXT_OUT_CH_14,
+#endif
+#if PPM_CHANNELS > 14
+    TEXT_OUT_CH_15,
+#endif
+#if PPM_CHANNELS > 15
+    TEXT_OUT_CH_16,
+#endif
 };
 
 const char *PhaseNames[TEXT_PHASES_count] = {
@@ -579,6 +608,9 @@ void setup( void) {
     outputImpl = new OutputImplPPM();
 
 #elif HF_MODULE == HF_SPEKTRUM_SERIAL
+    outputImpl = new OutputImplSerial();
+
+#elif HF_MODULE == HF_CRSF_SERIAL
     outputImpl = new OutputImplSerial();
 
 #else

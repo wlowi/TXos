@@ -30,7 +30,7 @@
 #include "Bind.h"
 #include "TXos.h"
 
-#if HF_MODULE == HF_SPEKTRUM_SERIAL
+#if HF_MODULE == HF_SPEKTRUM_SERIAL || HF_MODULE == HF_CRSF_SERIAL
 
 #include "OutputImpl.h"
 

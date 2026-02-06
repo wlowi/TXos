@@ -146,7 +146,7 @@ MyFrame::MyFrame()
     displayImpl =  new DisplayImpl( panel);
     hbox->Add( displayImpl);
     hbox->AddSpacer(10);
-    outputImplEmu = new OutputImplEmu( panel, 9);
+    outputImplEmu = new OutputImplEmu( panel, PPM_CHANNELS);
     outputImpl = outputImplEmu;
     hbox->Add( outputImplEmu);
     hbox->AddSpacer(10);

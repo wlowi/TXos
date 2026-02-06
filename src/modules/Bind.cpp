@@ -33,11 +33,13 @@ const char *BindModeNames[TEXT_BINDMODE_count] = {
     TEXT_BINDMODE_CPPM,
     TEXT_BINDMODE_DSM2,
     TEXT_BINDMODE_DSMX,
-    TEXT_BINDMODE_CRSF
+    TEXT_BINDMODE_CRSF,
+    TEXT_BINDMODE_CRS4
 };
 
 /* Supported bind modes. A subset of BindModeNames. */
 const char* BindModesSupported[TEXT_BINDMODE_count] = {
+    nullptr,
     nullptr,
     nullptr,
     nullptr,

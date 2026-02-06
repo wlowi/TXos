@@ -35,7 +35,7 @@ typedef uint8_t bindmode_t;
 #define BINDMODE_DSM2     1
 #define BINDMODE_DSMX     2
 #define BINDMODE_CRSF     3
-
+#define BINDMODE_CRS4     4
 
 class Bind : public Module {
 

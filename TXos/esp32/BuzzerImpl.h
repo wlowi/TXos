@@ -33,21 +33,21 @@
 /* System dependent implementations of Buzzer.
  * For more documentation see Buzzer.h
  */
- 
+
 class BuzzerImpl {
 
     private:
         Ports *ports;
-        volatile buzzerCmd_t sound[BUZZER_SOUND_LEN];
-        volatile uint8_t sndIdx;
-        volatile const buzzerCmd_t *soundAlarm;
-        volatile bool alarm;
+        buzzerCmd_t sound[BUZZER_SOUND_LEN];
+        uint8_t sndIdx;
+        const buzzerCmd_t *soundAlarm;
+        bool alarm;
 
     public:
         BuzzerImpl();
 
         void init( Ports &p);
-        
+
         void off();
         void play( const buzzerCmd_t s[]);
         void playPermanent( const buzzerCmd_t sound[]);

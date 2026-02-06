@@ -18,7 +18,12 @@ Please obey the license.
 
 [Robbe Supra PCMS Umbau](SUPRA.md)
 
+<span style="color:red">Achtung: Crossfire Protokoll ist neu und noch nicht vollständig getestet.</span>
+
+[Crossfire / ELRS Howto](ELRS.md)
+
 ---
+
 ## Unterstützte Hardware
 
 ### Arduino CPU Board
@@ -38,13 +43,21 @@ Please obey the license.
 
 - Z.Bsp. Spektrum Modul für Graupner MC-24 / MC-22 oder Jeti TU2 Modul.
 
+### Seriell angesteuerte HF-Module
+
+<span style="color:red">Achtung: noch nicht vollständig getestet.</span>
+
+- Spektrum X1TXN
+- ELRS Full Duplex (interne Module) Bzw. Empfänger mit RxAsTx Firmware.
+
 ---
+
 ## Features
 
-- 6 Analoge Eingänge
-- 4 Eingänge für analogen Trimm
+- Bis zu 6 Analoge Eingänge
+- Bis zu 4 Eingänge für analogen Trimm
 - Trimmspeicher
-- 6 Schalteingänge für 2 oder 3 Stufenschalter
+- Bin zu 6 Schalteingänge für 2 oder 3 Stufenschalter
 - 12 Interne Kanäle
     MOT, QR, QR2, HR, SR, WK, WK2, LK, LK2, Fwk, K8, K9
     MOT = Motor
@@ -55,8 +68,10 @@ Please obey the license.
     LK = Landeklappen
     Fwk = Fahrwerk
     K8, K9 = freie Kanäle
-- 9 Servo Ausgänge
+- Bis zu 12 Servo Ausgänge
 - PPM Erzeugung (22.5 mSec. Frames)
+- Unterstützt serielles Spektrum HF Modul (X1TXN)
+- Unterstützt CRSF (Crossfire) Protokoll zur Ansteuerung von ELRS HF Modulen
 - Spannungsüberwachung
 - Display 8 x 13 Zeichen
 - Deutsche und Englische Benutzeroberfläche
@@ -98,14 +113,21 @@ Please obey the license.
 - Import und Export der Modelle zum PC über USB Schnittstelle
 
 ---
+
 ## Blockschaltbild der Funktionen
 
 ![Blockschaltbild](doc/TXos-Blockschaltbild.png "Blockschaltbild")
 
 ---
+
 ## Change History
 
 ```
+0.5.16 CRSF Protokol
+0.5.15 Serielles Spektrum Protokol
+0.5.14 internes Release
+0.5.13 Notorstart Modul
+0.5.12 Veränderte schaltung der Flugphasen
 0.5.11 Logische Schalter: invertierte Schalter.
 0.5.10 Timer wahlweise Gasabhängig.
        Alle Schalter in SWx umbenannt.
@@ -122,6 +144,7 @@ Please obey the license.
 ```
 
 ---
+
 ## Installation
 
 ### Übersetzen mit der Arduino IDE
@@ -166,6 +189,7 @@ Notwendinge Einstellungen der Arduino IDE
 ![Arduino IDE Einstellungen für ESP32](img/Arduino_IDE_ESP32.png "Arduino IDE Einstellungen für ESP32")
 
 ---
+
 ### Grundsätzliche Konfiguration:
 
 Wechsel zu Verzeichnis TXos/TXos
@@ -216,6 +240,7 @@ Please modify your local config to your needs.
 ```
 
 ---
+
 ## TXos Simulator
 
 Der Simulator verwendet die `wxWidgets` library. Zum installieren:
@@ -233,6 +258,7 @@ make -j
 ![TXos Simulator](img/TXos_026.png "TXos Simulator")
 
 ---
+
 ## Unit test
 
 ```

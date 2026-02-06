@@ -58,7 +58,7 @@
  *   disable bind and range test module
  *   9 to 16 channels, but only 9 supported currently.
  */
-#define HF_MODULE                HF_SPEKTRUM_PPM
+#define HF_MODULE                HF_CRSF_SERIAL
 
 
 /* The number of transmitter channels.
