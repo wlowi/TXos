@@ -287,24 +287,25 @@
 
 #endif
 
+/* INPUT_CHANNELS is number of ANALOG_CHANNELS plus 1 for INPUT_NONE */
 const char* InputChannelNames[INPUT_CHANNELS] = {
     TEXT_INPUT_CH_1,
     TEXT_INPUT_CH_2,
     TEXT_INPUT_CH_3,
     TEXT_INPUT_CH_4,
-#if INPUT_CHANNELS > 4
+#if INPUT_CHANNELS > 5
     TEXT_INPUT_CH_5,
 #endif
-#if INPUT_CHANNELS > 5
+#if INPUT_CHANNELS > 6
     TEXT_INPUT_CH_6,
 #endif
-#if INPUT_CHANNELS > 6
+#if INPUT_CHANNELS > 7
     TEXT_INPUT_CH_7,
 #endif
-#if INPUT_CHANNELS > 7
+#if INPUT_CHANNELS > 8
     TEXT_INPUT_CH_8,
 #endif
-#if INPUT_CHANNELS > 8
+#if INPUT_CHANNELS > 9
     TEXT_INPUT_CH_9,
 #endif
     TEXT_INPUT_NONE
@@ -452,6 +453,8 @@ BuzzerImpl *buzzerImpl;
 #define ENABLE_MEMDEBUG
 #undef ENABLE_SERIAL_MEMDEBUG
 #undef ENABLE_BDEBUG
+#define ENABLE_WATCHDOG
+// #define ENABLE_IDLE_SLEEP
 
 
 #if defined(ARDUINO_ARCH_ESP32)
@@ -846,7 +849,7 @@ void loop( void) {
     uint16_t overrun;
 #endif
 
-#if defined( ARDUINO_ARCH_AVR)
+#if defined( ARDUINO_ARCH_AVR) && defined( ENABLE_IDLE_SLEEP)
 
     set_sleep_mode( SLEEP_MODE_IDLE);
     cli();
@@ -917,6 +920,7 @@ void loop( void) {
 #endif
 }
 
+/* Called from LCD driver to handle channels during long print operations. */
 void yieldLoop() {
 
 #ifndef USE_MULTICORE
@@ -937,7 +941,7 @@ void yieldLoop() {
  */
 void watchdog_enable() {
 
-#if defined( ARDUINO_ARCH_AVR )
+#if defined( ARDUINO_ARCH_AVR ) && defined( ENABLE_WATCHDOG)
     wdt_enable( WDTO_1S );
     wdt_enabled = true;
 #ifdef ENABLE_STATISTICS_MODULE
@@ -954,7 +958,7 @@ void watchdog_enable() {
  */
 bool watchdog_disable() {
 
-#if defined( ARDUINO_ARCH_AVR )
+#if defined( ARDUINO_ARCH_AVR ) && defined( ENABLE_WATCHDOG)
     if( wdt_enabled) {
         wdt_disable();
         wdt_enabled = false;
@@ -967,7 +971,7 @@ bool watchdog_disable() {
 
 void watchdog_reset() {
 
-#if defined( ARDUINO_ARCH_AVR )
+#if defined( ARDUINO_ARCH_AVR ) && defined( ENABLE_WATCHDOG)
     if( wdt_enabled) {
         wdt_reset();
     }

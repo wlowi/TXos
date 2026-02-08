@@ -123,6 +123,7 @@ Please obey the license.
 ## Change History
 
 ```
+0.5.17 Disable sleep. Fix input names array.
 0.5.16 CRSF Protokol
 0.5.15 Serielles Spektrum Protokol
 0.5.14 internes Release

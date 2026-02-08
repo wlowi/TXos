@@ -98,6 +98,19 @@
 #define STICK_TRIM                ANALOG_TRIM
 
 
+/* Invert raw channel values */
+#undef INVERT_CH1
+#undef INVERT_CH2
+#undef INVERT_CH3
+#undef INVERT_CH4
+
+/* Invert trim if it runs oposite to channel */
+#undef INVERT_TRIM_CH1
+#undef INVERT_TRIM_CH2
+#undef INVERT_TRIM_CH3
+#undef INVERT_TRIM_CH4
+
+
 /* Numer of hardware switches.
  * 2-state and 3-state switches
  * MAXIMUM = 6

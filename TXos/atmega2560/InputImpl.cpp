@@ -32,8 +32,8 @@
 extern InputImpl *inputImpl;
 extern PortsImpl *portsImpl;
 
-/* 
- * ADC conversion complete interrupt. 
+/*
+ * ADC conversion complete interrupt.
  */
 ISR(ADC_vect) {
 
@@ -43,26 +43,13 @@ ISR(ADC_vect) {
 
     /* Disable ADC */
     ADCSRA &= ~_BV(ADEN);
-    
+
     if( inputImpl->mux < inputImpl->adcInputs) {
 
-#ifdef INVERT_CH1
-      if( inputImpl->mux == 0) v = ADC_RESOLUTION -v;
-#endif
-#ifdef INVERT_CH2
-      if( inputImpl->mux == 1) v = ADC_RESOLUTION -v;
-#endif
-#ifdef INVERT_CH3
-      if( inputImpl->mux == 2) v = ADC_RESOLUTION -v;
-#endif
-#ifdef INVERT_CH4
-      if( inputImpl->mux == 3) v = ADC_RESOLUTION -v;
-#endif
-
       inputImpl->adcValues[inputImpl->mux] = v;
-      
+
       inputImpl->mux++;
-      inputImpl->setMux();      
+      inputImpl->setMux();
     } else {
       /* done */
     }
@@ -94,21 +81,21 @@ InputImpl::InputImpl( channel_t stickCnt, channel_t trimCnt, channel_t auxCnt,
 void InputImpl::init() {
 
     ATOMIC_BLOCK( ATOMIC_RESTORESTATE) {
-    
+
         /* Disable power reduction for ADC */
         PRR0 &= ~_BV(PRADC);
-         
+
         /* REFS1 = 0, REFS0 = 1   ==>   VCC with ext. cap. on AREF */
         ADMUX = _BV(REFS0);
-        
+
         /* Prescaler /128   ==>   16MHz / 128 = 125KHz */
         ADCSRA = _BV(ADPS2) | _BV(ADPS1) | _BV(ADPS0);
         ADCSRB = 0;
 
         for( uint8_t i=0; i<adcInputs; i++) {
-          
+
             uint8_t adc = analogPins[i];
-             
+
             /* Disable Digital input on ADC pins */
             if( adc < A8) {
                 DIDR0 |= (1 << (adc - A0));
@@ -126,7 +113,7 @@ void InputImpl::init() {
 void InputImpl::start() {
 
     ATOMIC_BLOCK( ATOMIC_RESTORESTATE) {
-      
+
        mux = 0;
        setMux();
 
@@ -142,7 +129,7 @@ void InputImpl::setMux() {
         adc = analogPins[mux];
 
         ADMUX &= ~(_BV(MUX4) | _BV(MUX3) | _BV(MUX2) | _BV(MUX1) | _BV(MUX0));
-        
+
         if( adc < A8) {
           ADMUX |= (adc - A0);
           ADCSRB &= ~_BV(MUX5);
@@ -150,7 +137,7 @@ void InputImpl::setMux() {
           ADMUX |= (adc - A8);
           ADCSRB |= _BV(MUX5);
         }
-          
+
         ADCSRA |= _BV(ADEN) | _BV(ADSC) | _BV(ADIE);
     }
 }
@@ -159,7 +146,7 @@ switch_t InputImpl::GetSwitches() {
 
     return switches;
 }
-        
+
 channelValue_t InputImpl::GetStickValue( channel_t ch) {
 
     if( ch < stickCount) {
@@ -167,7 +154,7 @@ channelValue_t InputImpl::GetStickValue( channel_t ch) {
     }
 
     LOGV("InputImpl::GetStickValue: Illegal channel no. %s", ch);
-    
+
     return 0;
 }
 
@@ -219,15 +206,15 @@ switchState_t InputImpl::GetSwitchValue( switch_t sw) {
       LOGV("InputImpl::GetSwitchValue: Illegal switch no. %s", sw);
       return SW_STATE_DONTCARE;
     }
-      
+
     swConf = switchConf[sw];
-    
+
     switch( swConf) {
 
       case SW_CONF_2STATE:
         state = portsImpl->portGet(switchPins[sw]) ? SW_STATE_0 : SW_STATE_1;
         break;
-        
+
       case SW_CONF_3STATE:
         portsImpl->portInit( switchPins[sw], INPUT);
         s1 = portsImpl->portGet(switchPins[sw]);
@@ -238,7 +225,7 @@ switchState_t InputImpl::GetSwitchValue( switch_t sw) {
         else if( s1 && s2) state = SW_STATE_0;
         else state = SW_STATE_1;
         break;
-        
+
       case SW_CONF_UNUSED:
       case SW_CONF_CHANNEL:
       default:
@@ -249,6 +236,6 @@ switchState_t InputImpl::GetSwitchValue( switch_t sw) {
 }
 
 switchConf_t InputImpl::GetSwitchConf( switch_t sw) {
-  
+
   return switchConf[sw];
 }
