@@ -34,7 +34,7 @@
 #endif
 
 
-#define TXOS_VERSION "0.5.16"
+#define TXOS_VERSION "0.5.17"
 
 #undef ENABLE_LOGGING
 
@@ -59,6 +59,10 @@
     #define LOGV( f, ... )
 #endif
 
+/**
+ * @brief Handle channels during long operations
+ *
+ */
 extern void yieldLoop();
 
 /**

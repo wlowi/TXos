@@ -33,12 +33,6 @@
 /* 10 bit ADC => 1023 */
 #define ADC_RESOLUTION 1023
 
-/* Invert raw channel values */
-#define INVERT_CH1
-#define INVERT_CH2
-#undef  INVERT_CH3
-#define INVERT_CH4
-
 class InputImpl
 {
     private:

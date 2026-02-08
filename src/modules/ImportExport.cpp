@@ -28,7 +28,6 @@
 #include "ModuleManager.h"
 
 extern ModuleManager moduleManager;
-extern void watchdog_reset();
 
 const uint8_t STATE_INACTIVE = 0;
 const uint8_t STATE_CONNECTING = 1;

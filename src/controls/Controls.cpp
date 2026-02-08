@@ -70,6 +70,35 @@ void Controls::GetControlValues() {
         controlSet.auxADCChannel[ch] = inputImpl->GetAuxValue( ch);
     }
 
+
+    #ifdef INVERT_CH1
+        controlSet.stickADCChannel[0] = ADC_RESOLUTION - controlSet.stickADCChannel[0];
+    #endif
+    #ifdef INVERT_CH2
+        controlSet.stickADCChannel[1] = ADC_RESOLUTION - controlSet.stickADCChannel[1];
+    #endif
+    #ifdef INVERT_CH3
+        controlSet.stickADCChannel[2] = ADC_RESOLUTION - controlSet.stickADCChannel[2];
+    #endif
+    #ifdef INVERT_CH4
+        controlSet.stickADCChannel[3] = ADC_RESOLUTION - controlSet.stickADCChannel[3];
+    #endif
+
+
+    #ifdef INVERT_TRIM_CH1
+        controlSet.trimADCChannel[0] = ADC_RESOLUTION - controlSet.trimADCChannel[0];
+    #endif
+    #ifdef INVERT_TRIM_CH2
+        controlSet.trimADCChannel[1] = ADC_RESOLUTION - controlSet.trimADCChannel[1];
+    #endif
+    #ifdef INVERT_TRIM_CH3
+        controlSet.trimADCChannel[2] = ADC_RESOLUTION - controlSet.trimADCChannel[2];
+    #endif
+    #ifdef INVERT_TRIM_CH4
+        controlSet.trimADCChannel[3] = ADC_RESOLUTION - controlSet.trimADCChannel[3];
+    #endif
+
+
     /* Read switch inputs */
     for( switch_t sw = 0; sw < SWITCHES; sw++) {
         switchState_t state;
