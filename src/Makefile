@@ -55,7 +55,7 @@ CXXFLAGS += -g -O0 -Wall -Wpedantic -Wextra -Wno-unused-parameter -DARDUINO_ARCH
 
 CXXINC += -I. -Icontrols -ITextUI -Ioutput -Imodules -Iemu
 
-OBJECTS = TXos.o Module.o Comm.o ModuleManager.o ConfigBlock.o SystemConfig.o HomeScreen.o $(CONTROLS_OBJ) $(UI_OBJ) $(OUTPUT_OBJ) $(MODULE_OBJ)
+OBJECTS = TXos.o Module.o Comm.o ModuleManager.o ConfigBlock.o SystemConfig.o Telemetry.o HomeScreen.o $(CONTROLS_OBJ) $(UI_OBJ) $(OUTPUT_OBJ) $(MODULE_OBJ)
 
 # Unittest
 UTOBJECTS = unittest/UtModules.o

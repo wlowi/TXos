@@ -107,12 +107,15 @@ channelValue_t InputImpl::GetAuxValue( channel_t ch) {
 
 channelValue_t InputImpl::GetAnalogValue( channel_t ch) {
 
-    channelValue_t v;
+    channelValue_t v[3];
 
     if( ch < adcInputs) {
 
-        v = analogRead( analogPins[ch]);
-        return v;
+        for( uint8_t i=0; i<3; i++) {
+            v[i] = analogRead( analogPins[ch]);
+        }
+
+        return (v[0]+v[1]+v[2]) / 3;
     }
 
     LOGV("InputImpl::GetStickValue: Illegal channel no. %d", ch);

@@ -220,6 +220,7 @@
 #define TEXT_SW                     CC("Sw")
 #define TEXT_SWITCH                 CC("Switch")
 #define TEXT_SYSTEM_SETUP           CC("System setup")
+#define TEXT_TELEMETRY              CC("Telemetry")
 #define TEXT_TEST                   CC("Test")
 #define TEXT_THR                    CC("THR")
 #define TEXT_THRDEP                 CC("THR dep.")

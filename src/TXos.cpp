@@ -251,6 +251,8 @@
 #endif
 
 #include "ImportExport.h"
+#include "Telemetry.h"
+
 
 #ifdef ARDUINO
 
@@ -263,7 +265,6 @@
 #include "TextUIRotaryEncoder.h"
 #include "TextUIStreamProxy.h"
 #include "ReliableStream.h"
-
 #include "InputImpl.h"
 #include "PortsImpl.h"
 #include "BuzzerImpl.h"
@@ -281,11 +282,12 @@
 #include "OutputImplSerial.h"
 #endif
 
-#else
+#else // not defined ARDUINO
 
 #include "DisplayImpl.h"
 
 #endif
+
 
 /* INPUT_CHANNELS is number of ANALOG_CHANNELS plus 1 for INPUT_NONE */
 const char* InputChannelNames[INPUT_CHANNELS] = {
@@ -537,6 +539,7 @@ TextUI userInterface;
 ConfigBlock configBlock;
 SystemConfig systemConfig;
 ModelSelect modelSelect;
+Telemetry telemetry;
 ModuleManager moduleManager( configBlock);
 
 HomeScreen *homeScreen;
@@ -562,7 +565,7 @@ char bdebug[ BDEBUG_LEN ];
 #endif
 
 unsigned long nextScreenUpdate = 0L;
-const unsigned int SCREEN_UPDATE_msec = 50; // Limit screen update frequency
+const unsigned int SCREEN_UPDATE_msec = 100; // Limit screen update frequency
 bool wdt_enabled = false;
 void watchdog_reset();
 static void handle_channels();
@@ -588,7 +591,7 @@ void setup( void) {
 #ifdef ARDUINO
 
 #ifdef ENABLE_SERIAL
-    Serial.begin(19200);
+    Serial.begin(57600);
 #endif
 
 #if STICK_TRIM == ANALOG_TRIM
@@ -837,7 +840,7 @@ void Task1_HandleUI( void * pvParameters ) {
 
     for(;;){
         userInterface.handle( userInterface.getEvent());
-        delay(100);
+        delay(SCREEN_UPDATE_msec);
     }
 }
 #endif

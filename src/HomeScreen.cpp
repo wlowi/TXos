@@ -25,39 +25,27 @@
 */
 
 #include "HomeScreen.h"
-#include "ModuleManager.h"
+#include "Buzzer.h"
 #include "Model.h"
 #include "ModelSelect.h"
-#include "Buzzer.h"
+#include "ModuleManager.h"
+#include "Telemetry.h"
 
 extern ModuleManager moduleManager;
 extern ModelSelect modelSelect;
+extern Telemetry telemetry;
 extern Buzzer buzzer;
 
-const buzzerCmd_t SoundClear[] = {
-    BUZZER_PLAY(1),
-    BUZZER_PAUSE(1),
-    BUZZER_REPEAT(0, 2),
-    BUZZER_STOP()
-};
+const buzzerCmd_t SoundClear[] = {BUZZER_PLAY(1), BUZZER_PAUSE(1),
+                                  BUZZER_REPEAT(0, 2), BUZZER_STOP()};
 
-const buzzerCmd_t SoundAlarm[] = {
-    BUZZER_PAUSE(20),
-    BUZZER_PLAY(1),
-    BUZZER_PAUSE(1),
-    BUZZER_REPEAT(1, 5),
-    BUZZER_PAUSE(20),
-    BUZZER_STOP()
-};
+const buzzerCmd_t SoundAlarm[] = {BUZZER_PAUSE(20), BUZZER_PLAY(1),
+                                  BUZZER_PAUSE(1),  BUZZER_REPEAT(1, 5),
+                                  BUZZER_PAUSE(20), BUZZER_STOP()};
 
-const char* messageText[] = {
-    TEXT_MSG_NONE,
-    TEXT_MSG_BAD_SYSCONFIG,
-    TEXT_MSG_LOW_BATT,
-    TEXT_MSG_MODEL_LOAD_FAILED,
-    TEXT_MSG_CONFIG_SIZE,
-    TEXT_MSG_MODEL_IMP_FAILED
-};
+const char *messageText[] = {TEXT_MSG_NONE,        TEXT_MSG_BAD_SYSCONFIG,
+                             TEXT_MSG_LOW_BATT,    TEXT_MSG_MODEL_LOAD_FAILED,
+                             TEXT_MSG_CONFIG_SIZE, TEXT_MSG_MODEL_IMP_FAILED};
 
 HomeScreen::HomeScreen() : TextUIScreen() {
 
@@ -84,8 +72,7 @@ void HomeScreen::postMessage(uint8_t line, uint8_t msg, uint8_t arg) {
         if (line == 0) {
             post1 = msg;
             arg1 = arg;
-        }
-        else {
+        } else {
             post2 = msg;
             arg2 = arg;
         }
@@ -94,11 +81,11 @@ void HomeScreen::postMessage(uint8_t line, uint8_t msg, uint8_t arg) {
 
 void HomeScreen::postMessage(uint8_t line, uint8_t msg) {
 
-    postMessage( line, msg, 0);
+    postMessage(line, msg, 0);
 }
 
 /* From TextUIScreen */
-void HomeScreen::handleEvent(TextUI* ui, Event* e) {
+void HomeScreen::handleEvent(TextUI *ui, Event *e) {
 
     // LOGV("HomeScreen::handleEvent: %d\n", e->getType());
 
@@ -107,7 +94,60 @@ void HomeScreen::handleEvent(TextUI* ui, Event* e) {
         screenWidth = lcd->getColumns();
     }
 
-    // TextUILcd* lcd = ui->getDisplay();
+    switch (screenMode) {
+    case HOME_SCREEN:
+        displayHomeScreen();
+        break;
+    case TELEMETRY_SCREEN_1:
+        displayTelemetryScreen(0);
+        break;
+    case TELEMETRY_SCREEN_2:
+        displayTelemetryScreen(1);
+        break;
+    default:
+        break;
+    }
+
+    if (e->getType() == EVENT_TYPE_KEY) {
+        switch (e->getKey()) {
+
+        case KEY_ENTER:
+            ui->pushScreen(moduleManager.getModelMenu());
+            break;
+
+        case KEY_CLEAR:
+            if (post1 || post2) {
+                /* Clear messages and switch off alarm */
+                post1 = post2 = 0;
+                arg1 = arg2 = 0;
+                buzzer.off();
+            } else if (timer) {
+                timer->reset();
+                buzzer.play(SoundClear);
+            }
+            break;
+
+        case KEY_UP:
+            if (screenMode < (SCREENMODE_COUNT - 1)) {
+                screenMode = static_cast<ScreenMode>(screenMode + 1);
+                refresh = REFRESH_FULL;
+            }
+            break;
+
+        case KEY_DOWN:
+            if (screenMode > HOME_SCREEN) {
+                screenMode = static_cast<ScreenMode>(screenMode - 1);
+                refresh = REFRESH_FULL;
+            }
+            break;
+
+        default:
+            break;
+        }
+    }
+}
+
+void HomeScreen::displayHomeScreen() {
 
     if (refresh == REFRESH_FULL) {
         lcd->normalColors();
@@ -119,33 +159,35 @@ void HomeScreen::handleEvent(TextUI* ui, Event* e) {
         lcd->setCursor(1, 0);
         lcd->printUInt(modelSelect.getModelID(), 2);
         lcd->printStr(": ");
-        Model* model = (Model*)moduleManager.getModuleByType(MODULE_SET_MODEL, MODULE_MODEL_TYPE);
+        Model *model = (Model *)moduleManager.getModuleByType(
+            MODULE_SET_MODEL, MODULE_MODEL_TYPE);
         lcd->printStr(model->getModelName(), MODEL_NAME_LEN);
     }
 
-    if ( (refresh == REFRESH_FULL)
-         || (engineCut && engineCut->isSave() != engineSave)
-         || (motorStart && motorStart->isActive() != startActive)) {
+    if ((refresh == REFRESH_FULL) ||
+        (engineCut && engineCut->isSave() != engineSave) ||
+        (motorStart && motorStart->isActive() != startActive)) {
 
         engineSave = engineCut->isSave();
         startActive = motorStart->isActive();
 
-        if( engineSave) {
+        if (engineSave) {
             lcd->setFg(0, 255, 0);
             lcd->setCursor(2, 8);
-            lcd->printStr( TEXT_THR, 5);
-        } else if( startActive) {
+            lcd->printStr(TEXT_THR, 5);
+        } else if (startActive) {
             lcd->setFg(255, 0, 0);
             lcd->setCursor(2, 8);
-            lcd->printStr( TEXT_START, 5);
+            lcd->printStr(TEXT_START, 5);
         } else {
             lcd->setFg(255, 0, 0);
             lcd->setCursor(2, 8);
-            lcd->printStr( TEXT_MSG_NONE, 5);
+            lcd->printStr(TEXT_MSG_NONE, 5);
         }
     }
 
-    if (phases && (refresh == REFRESH_FULL || phases->getPhaseNo() != lastPhase)) {
+    if (phases &&
+        (refresh == REFRESH_FULL || phases->getPhaseNo() != lastPhase)) {
         lastPhase = phases->getPhaseNo();
 
         lcd->normalColors();
@@ -162,7 +204,8 @@ void HomeScreen::handleEvent(TextUI* ui, Event* e) {
         lcd->printStr(timer->timeStr(), 5);
     }
 
-    if (vccMonitor && (refresh == REFRESH_FULL || vccMonitor->getVcc() != lastVcc)) {
+    if (vccMonitor &&
+        (refresh == REFRESH_FULL || vccMonitor->getVcc() != lastVcc)) {
 
         lastVcc = vccMonitor->getVcc();
 
@@ -170,11 +213,9 @@ void HomeScreen::handleEvent(TextUI* ui, Event* e) {
             lcd->setFg(255, 0, 0);
             postMessage(0, MSG_LOW_BATT);
             buzzer.playPermanent(SoundAlarm);
-        }
-        else if (vccMonitor->belowWarn()) {
+        } else if (vccMonitor->belowWarn()) {
             lcd->setFg(255, 165, 0);
-        }
-        else {
+        } else {
             lcd->setFg(0, 255, 0);
         }
         lcd->setCursor(5, 7);
@@ -187,9 +228,9 @@ void HomeScreen::handleEvent(TextUI* ui, Event* e) {
         lcd->setFg(255, 165, 0);
         lcd->setCursor(6, 0);
         lcd->printStr(messageText[message1], screenWidth);
-        if( arg1 ) {
-            lcd->setCursor(6, screenWidth-1);
-            lcd->printUInt( arg1, 1);
+        if (arg1) {
+            lcd->setCursor(6, screenWidth - 1);
+            lcd->printUInt(arg1, 1);
         }
     }
 
@@ -198,48 +239,81 @@ void HomeScreen::handleEvent(TextUI* ui, Event* e) {
         lcd->setFg(255, 165, 0);
         lcd->setCursor(7, 0);
         lcd->printStr(messageText[message2], screenWidth);
-        if( arg2 ) {
-            lcd->setCursor(7, screenWidth-1);
-            lcd->printUInt( arg2, 1);
+        if (arg2) {
+            lcd->setCursor(7, screenWidth - 1);
+            lcd->printUInt(arg2, 1);
         }
     }
 
     refresh = REFRESH_OK;
+}
 
-    if (e->getType() == EVENT_TYPE_KEY) {
-        switch (e->getKey()) {
+void HomeScreen::displayTelemetryScreen(uint8_t tid) {
 
-        case KEY_ENTER:
-            ui->pushScreen(moduleManager.getModelMenu());
-            break;
+    TelemetryScreen *tscr;
+    tscr = telemetry.getTelemetryScreen(tid);
 
-        case KEY_CLEAR:
-            if (post1 || post2) {
-                /* Clear messages and switch off alarm */
-                post1 = post2 = 0;
-                arg1 = arg2 = 0;
-                buzzer.off();
-            }
-            else if (timer) {
-                timer->reset();
-                buzzer.play(SoundClear);
+    if (refresh == REFRESH_FULL) { /* Only when screen is actiivated. */
+        lcd->normalColors();
+        lcd->clear();
+
+        lcd->printStr(TEXT_TELEMETRY);
+
+        for (uint8_t l = 0; l < TELEMETRY_LINES; l++) {
+            if (tscr->lines[l].state != SENSOR_UNUSED) {
+                lcd->setCursor(1 + l, 0);
+                lcd->printStr(telemetry.readableName(tscr->lines[l].sensor_id),
+                              5);
             }
         }
     }
+
+    for (uint8_t l = 0; l < TELEMETRY_LINES; l++) {
+        if (tscr->lines[l].state != SENSOR_UNUSED) {
+            lcd->setCursor(1 + l, 5);
+            if (tscr->lines[l].precision == 1) {
+                lcd->printFixFloat1((fixfloat1_t)tscr->lines[l].value, 4);
+            } else if (tscr->lines[l].precision == 2) {
+                lcd->printFixFloat2((fixfloat2_t)tscr->lines[l].value, 4);
+            } else {
+                lcd->printLong(tscr->lines[l].value, 4);
+            }
+
+            lcd->setCursor(1 + l, 10);
+            lcd->printStr(telemetry.readableUnit(tscr->lines[l].unit_id), 3);
+        }
+
+        refresh = REFRESH_OK;
+    }
 }
 
-void HomeScreen::activate(TextUI* ui) {
+/**
+ * @brief Activete the screen.
+ *
+ * Called once when the screen is activated for the first time or when
+ * we switch back to this screen.
+ *
+ * @param ui Pointer to the user interface class.
+ */
+void HomeScreen::activate(TextUI *ui) {
 
     if (lcd == nullptr) {
         lcd = ui->getDisplay();
         screenWidth = lcd->getColumns();
 
-        vccMonitor = (VccMonitor*)moduleManager.getModuleByType(MODULE_SET_SYSTEM, MODULE_VCC_MONITOR_TYPE);
-        phases = (Phases*)moduleManager.getModuleByType(MODULE_SET_MODEL, MODULE_PHASES_TYPE);
-        timer = (Timer*)moduleManager.getModuleByType(MODULE_SET_MODEL, MODULE_TIMER_TYPE);
-        engineCut = (EngineCut*)moduleManager.getModuleByType(MODULE_SET_MODEL, MODULE_ENGINE_CUT_TYPE);
-        motorStart = (MotorStart*)moduleManager.getModuleByType(MODULE_SET_MODEL, MODULE_MOTOR_START_TYPE);
+        vccMonitor = (VccMonitor *)moduleManager.getModuleByType(
+            MODULE_SET_SYSTEM, MODULE_VCC_MONITOR_TYPE);
+        phases = (Phases *)moduleManager.getModuleByType(MODULE_SET_MODEL,
+                                                         MODULE_PHASES_TYPE);
+        timer = (Timer *)moduleManager.getModuleByType(MODULE_SET_MODEL,
+                                                       MODULE_TIMER_TYPE);
+        engineCut = (EngineCut *)moduleManager.getModuleByType(
+            MODULE_SET_MODEL, MODULE_ENGINE_CUT_TYPE);
+        motorStart = (MotorStart *)moduleManager.getModuleByType(
+            MODULE_SET_MODEL, MODULE_MOTOR_START_TYPE);
     }
+
+    screenMode = HOME_SCREEN;
 
     refresh = REFRESH_FULL;
 }

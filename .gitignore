@@ -2,6 +2,8 @@
 .zed
 **/*~
 **/*.o
+**/.clangd
+**/.clang-format
 TXos/TXosLocalConfig*.h
 srv/.vscode
 src/default

@@ -219,6 +219,7 @@
 #define TEXT_SW                     CC("Sw")
 #define TEXT_SWITCH                 CC("Schalt")
 #define TEXT_SYSTEM_SETUP           CC("Systemeinst.")
+#define TEXT_TELEMETRY              CC("Telemetrie")
 #define TEXT_TEST                   CC("Test")
 #define TEXT_THR                    CC("Mot")
 #define TEXT_THRDEP                 CC("Gasabh.")

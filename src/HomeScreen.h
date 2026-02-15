@@ -30,31 +30,42 @@
 #include "TXos.h"
 #include "TextUI.h"
 
-#include "VccMonitor.h"
 #include "EngineCut.h"
 #include "MotorStart.h"
 #include "Phases.h"
 #include "Timer.h"
+#include "VccMonitor.h"
+
+enum ScreenMode {
+    // HOME_SCREEN needs to come first
+    HOME_SCREEN = 0,
+    TELEMETRY_SCREEN_1,
+    TELEMETRY_SCREEN_2,
+
+    // do not remove
+    SCREENMODE_COUNT
+};
 
 class HomeScreen : public TextUIScreen {
 
-private:
-    TextUILcd* lcd = nullptr;
-    VccMonitor* vccMonitor;
-    Phases* phases;
-    Timer* timer;
-    EngineCut* engineCut;
+  private:
+    TextUILcd *lcd = nullptr;
+    VccMonitor *vccMonitor;
+    Phases *phases;
+    Timer *timer;
+    EngineCut *engineCut;
     MotorStart *motorStart;
 
+    ScreenMode screenMode; // Home or Telemetry
     uint8_t refresh = REFRESH_FULL;
 
     uint8_t screenWidth;
 
     uint8_t message1; /* displayed messages */
     uint8_t message2;
-    uint8_t post1;    /* posted messages */
+    uint8_t post1; /* posted messages */
     uint8_t post2;
-    uint8_t arg1;     /* message argument */
+    uint8_t arg1; /* message argument */
     uint8_t arg2;
 
     phase_t lastPhase;
@@ -63,7 +74,10 @@ private:
     bool engineSave;
     bool startActive;
 
-public:
+    void displayHomeScreen();
+    void displayTelemetryScreen(uint8_t tid);
+
+  public:
     HomeScreen();
 
     void printDebug(uint16_t t);
@@ -84,20 +98,20 @@ public:
     void postMessage(uint8_t line, uint8_t msg);
 
     /* From TextUIScreen */
-    virtual void handleEvent(TextUI* ui, Event* e) final;
+    virtual void handleEvent(TextUI *ui, Event *e) final;
 
-    void activate(TextUI* ui) final;
+    void activate(TextUI *ui) final;
 
     /* This screen does its own painting in handleEvent().
      * We don't use the TextUI row/column handling.
      */
     bool goBackItem() { return false; }
     uint8_t getRowCount() { return 0; };
-    const char* getRowName(uint8_t row) { return ""; }
+    const char *getRowName(uint8_t row) { return ""; }
     uint8_t getColCount(uint8_t row) { return 0; }
-    void getValue(uint8_t row, uint8_t col, Cell* cell) {}
-    const char* getMenuName() { return ""; };
-    const char* getHeader() { return getMenuName(); }
+    void getValue(uint8_t row, uint8_t col, Cell *cell) {}
+    const char *getMenuName() { return ""; };
+    const char *getHeader() { return getMenuName(); }
 };
 
 #endif

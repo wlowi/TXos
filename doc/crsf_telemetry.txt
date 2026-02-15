@@ -1,0 +1,34 @@
+
+T Sea T3a L13 C7
+2  3  4  5  6 7 8  9  10 11 12 13
+3a ea ee 10 0 1 86 a0 ff fe 76 7c 
+|RADIO_ID
+   |RADIO_ADDRESS
+      |MODULE_ADDRESS
+         |timing correction frame
+            |------|update interval (1/10 uSec)
+                      |--------|offset (1/10 uSec)
+
+T Sea T14 L12 Cd2
+2  3  4 5  6 7 8 9 10 11 12
+14 cb 0 64 d 0 4 1 db 64 c 
+|LINK_ID
+   |RX_RSSI1_INDEX
+      |RX_RSSI2_INDEX
+        |RX_QUALITY_INDEX (%)
+           |RX_SNR_INDEX
+             |RX_ANTENNA_INDEX
+               |RF_MODE_INDEX
+                 |TX_POWER_INDEX [0, 10, 25, 100, 500, 1000, 2000, 250, 50] mW
+                   |TX_RSSI_INDEX
+                      |TX_QUALITY_INDEX (%)
+                         |TX_SNR_INDEX
+
+T Sea T8 L10 C4c
+2 3 4  5 6 7 8 9 10
+8 0 2e 0 0 0 0 0 0 
+|BATTERY_ID
+  |-|BATT_VOLTAGE_INDEX (1/10 Volt)
+       |-|BATT_CURRENT_INDEX (1/10 A)
+           |---|BATT_CAPACITY_INDEX (mAH)
+                 |BATT_REMAINING_INDEX (%)
