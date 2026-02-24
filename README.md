@@ -29,7 +29,7 @@ Please obey the license.
 ### Arduino CPU Board
 
 - Joy-IT ADR MEGA2560PRO
-- ESP32 DevKit 38 Pin (THIS IS EXPERIMENTAL)
+- ESP32 DevKit (EXPERIMENTELL UND UNGETESTED, NICHT BENUTZEN!)
 
 ### Display
 
@@ -45,7 +45,7 @@ Please obey the license.
 
 ### Seriell angesteuerte HF-Module
 
-<span style="color:red">Achtung: noch nicht vollständig getestet.</span>
+<span style="color:red">Achtung: EXPERIMENTELL UND UNGETESTED, NICHT BENUTZEN!</span>
 
 - Spektrum X1TXN
 - ELRS Full Duplex (interne Module) Bzw. Empfänger mit RxAsTx Firmware.
@@ -123,6 +123,7 @@ Please obey the license.
 ## Change History
 
 ```
+0.5.18
 0.5.17 Disable sleep. Fix input names array.
 0.5.16 CRSF Protokol
 0.5.15 Serielles Spektrum Protokol
@@ -155,7 +156,6 @@ Please obey the license.
 Benötigte Arduino Libraries
 - Adafruit ST7736 and ST7789 Library
 - Adafruit GFX Library
-- TO_BE_COMPLETED
 
 ```
 cd TXos
@@ -172,11 +172,10 @@ Notwendige Einstellungen der Arduino IDE
 
 TO_BE_COMPLETED
 
-#### Für ESP32 (WARNING: EXPERMENTAL)
+#### Für ESP32 (EXPERIMENTELL UND UNGETESTED, NICHT BENUTZEN!)
 
 Benötigte Arduino Libraries
 - TFT_eSPI
-- TO_BE_COMPLETED
 
 ```
 cd TXos

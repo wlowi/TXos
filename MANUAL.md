@@ -1,6 +1,6 @@
 # TXos Bedienungsanleitung
 
-Diese Anleitung beschreibt die TXos Version 0.5.9 (August 2025)
+Diese Anleitung beschreibt die TXos Version 0.5.17 (Februar 2026)
 
 ---
 
@@ -44,6 +44,7 @@ Diese Anleitung beschreibt die TXos Version 0.5.9 (August 2025)
 [Dual Rate & Expo](#dual-rate--expo)<br/>
 [Mischer](#mischer)<br/>
 [Motor Aus](#motor-aus)<br/>
+[Motor Start](#motor-start)<br/>
 [Timer](#timer)<br/>
 [Servo Zuordnung](#servo-zuordnung)<br/>
 [Servo Weg](#servo-weg)<br/>
@@ -132,8 +133,8 @@ Die interne Verschaltung der einzelnen Module und deren Verarbeitungsreihenfolge
 
 TXos unterstützt folgende Schalter:
 
-* 2-Stufen Schalter  BIn (BI1,BI2...)
-* 3-Stufen Schalter  TRn (TR3,TR4...)
+* 2-Stufen Schalter  SWn (SW1,SW2...)
+* 3-Stufen Schalter  SWn (SW1,SW2...)
 * Geberschalter oder Kanalschalter CSn (CS1,CS2...)
 * Logische Schalter: LSn (LS1,LS2...)
 * “Immer Ein” Schalter: ON1
@@ -142,7 +143,7 @@ TXos unterstützt folgende Schalter:
 Eine bestimmte Schalterstellung wird mit angehängtem Doppelpunkt und der Schalterposition angegeben.
 
 Beispiel: 2-stufen Schalter 1 in Schalterstellung 0<br/>
-**BI1:0**
+**SW1:0**
 
 ---
 ## Hauptbildschirm
@@ -167,7 +168,7 @@ Die Systemeinstellungen sind über den Menüpunkt "Systemeinstellungen" im Model
 ### Modellauswahl
 [Inhalt](#inhalt)
 
-Ein Arduino mit Mega 2560 Prozessor hat genügend Speicherkapazität für 14 Modelle.
+Ein Arduino mit Mega 2560 Prozessor hat genügend Speicherkapazität für 10 Modelle.
 
 Wählen Sie unter "Modellauswahl" das entsprechende Modell aus und drücken Sie ENTER.
 
@@ -218,7 +219,7 @@ Dazu zählen die Hardware-Schalter, sowie logische Schalter und Phasenschalter.
 
 #### Benennung der Schalter
 
-* Hardware Schalter. Die Schalternamen bestehen aus einer Typbezeichnung (BI für 2-Stufen Schalter, TR für 3-Stufen Schalter) und einer fortlaufenden Nummer.
+* Hardware Schalter. Die Schalternamen bestehen aus einer Typbezeichnung (SW für "Switch") und einer fortlaufenden Nummer.
 * Geberschalter. Die Schalternamen sind "CS" und eine fortlaufende Nummer.
 * Logische Schalter. Logische Schalter sind Verknüpfungen von bis zu 3 anderen Schaltern. Die Schalternamen sind "LS" und eine fortlaufende Nummer.
 * Immer EIN Schalter. Dieser Schalter ist fix und kann dazu verwendet werden eine Funktion fest ein zu schalten. Der Name ist "ON". Der Zustand ist immer "1".
@@ -235,6 +236,8 @@ Mit dem Drück-Dreh Steller können Sie nach unten Scrollen um weitere Schalter 
 TXos ünterstützt 2 Relais. Ein Relais dient dazu das HF Modul auszuschalten. Ein weiteres kann einen "Bind" Taster betätigen.
 
 Je nach Sendemodul kann damit von TXos aus der Bindemodus ein- und ausgeschalten werden.
+
+Die Model ID wird nur in Verbindung mit dem seriellen Spektrum HF-Modul für die "Model Match" Funktion verwendet.
 
 ![Empf. binden](img/TXos_bind.png "Empf. binden")
 
@@ -298,12 +301,12 @@ Starten sie die Kalibrierung mit ENTER nachdem Sie "Start" ausgewählt haben.
 
 ![TXos Kalibrieren 1](img/TXos_callib_1.png "TXos Kalibrieren 1")
 
-Das Display zeigt jetzt "CENTER" an. Bewegen Sie alle Kreuzknüppel und Potertiometer in die Mittelstellung.
-Danch drücken Sie nochmals ENTER.
+Das Display zeigt jetzt "Mitte" an. Bewegen Sie alle Kreuzknüppel und Potertiometer in die Mittelstellung.
+MitteDanch drücken Sie nochmals ENTER.
 
 ![TXos Kalibrieren 2](img/TXos_callib_2.png "TXos Kalibrieren 2")
 
-Das Display zeigt jetzt "MIN/MAX" an. Bewegen Sie alle Kreuzknüppel und Potertiometer in beide Endstellungen.
+Das Display zeigt jetzt "Min/Max" an. Bewegen Sie alle Kreuzknüppel und Potertiometer in beide Endstellungen.
 Danach drücken Sie ENTER.
 
 Vergessen Sie dabei nicht die Linearschieber und Potentiometer. Durch drehen des Drück-Dreh Stellers können Sie weitere Eingabekanäle anzeigen.
@@ -497,7 +500,11 @@ Einstellungen bei einem neuen Modell:
 
 TXos unterstützt bis zu drei Flugphasen.
 
-In diesem Menüpunkt wird der Schalter sowie die Namen der Flugphasen eingestellt.
+In diesem Menüpunkt werden die Schalter sowie die Namen der Flugphasen zugeteilt.
+
+Sind keine Schalter zugewiesen bzw. ist kein Schalter aktiv, ist immer die Phase 0 aktiviert.
+
+Sind Schalter für mehrere Phasen aktiviert, ist immer die Phase mit der höchsten Nummer aktiv.
 
 Verfügbare Flugphasen sind:
 * Normal
@@ -537,6 +544,11 @@ Folgende Verknüpfungen sind möglich:<br/>
 * A | B | C
 * (A & B) | C
 * (A | B) & C
+
+Zusätzlich kann jeder Eingang invertiert werden.
+
+Im folgenden Beispiel is der Logikschalter LS1 aktiv wenn
+SW1 auf Position 1 und SW2 NICHT auf Position 1 stehen.
 
 ![Logikschalter](img/TXos_logic_switches.png "Logikschalter")
 
@@ -584,20 +596,57 @@ Bei aktivierter "Motor Aus" Funktion wird auf dem Hauptbildschirm ein grünes "M
 ![Motor Aus2](img/TXos_main.png "Motor Aus2")
 
 ---
+### Motor Start
+[Inhalt](#inhalt)
+
+Die Motor Start Funktion erleichtert das Starten eines Elektroseglers. Insbesondere für Piloten die mit dem Wurfarm auch gleichzeitig den Gaskanal bedienen.
+
+Indem der Motor Anlauf um eine bestimmte Zeit verzögert wird, kann der Pilot mit der anderen Hand Gas geben und hat danach noch genügend Zeit die Fernsteuerung richtig zu greifen.
+
+Der Ablauf ist wie folgt:
+
+* Motor Aus Funktion deaktivieren.
+* Motor Start Funktion aktivieren.
+* Gas geben
+* Für die Vorlaufzeit wird das Gas auf -100% gehalten. Der Motor läuft nicht an.
+* Nach der Vorlaufzeit wird der Gaskanal verzögert auf den aktuellen Wert gebracht. Die Verzögerungszeit gilt von -100% zu 100%.
+* Die Motor Start Funktion wird automatisch deaktiviert.
+
+Bitte Beachten: Die Motor Start Funktion kann aus Sicherheitsgründen nicht aktiviert werden wenn die Motor Aus Funktion aktiviert ist.
+
+Eine aktive Motor Start Funktion kann mit aktivieren der Motor Aus Funktion deaktiviert werden.
+
+Im folgenden Beispiel bedeutet:
+
+* Phase Normal<br/>Die Motor Start Funktion kann nur in der Phase Normal aktiviert werden.
+* Aktiv SW4:1<br/>Die Motor Start Funktion wird aktiviert wenn der Schalter SW4 auf Position 1 geschalten wird. Am sinnvollsten ist es hier einen Taster zu verwenden.
+* Ausloes. -90<br/>Die Start Sequenz läuft an, wenn der Gasheben über das Auslöseschwelle von -90% bewegt wird.
+* Vorlauf 2.0<br/>Die Vorlaufzeit nach dem Starten der Sequenz in der nichts passiert.
+* Verz. 2.0<br/>Der Motor läuft innerhalb von 2 Sekunden bis zur aktuellen Gasposition, danach wird die Motor Start Funktion automatisch deaktiviert.
+
+![Motor Aus](img/TXos_motor_start.png "Motor Start")
+
+Die aktivierte Motor Start Funktion wird mit einem roten "Start" angezeigt.
+
+![Motor Aus](img/TXos_motor_start_1.png "Motor Start Aktiv")
+
+---
 ### Timer
 [Inhalt](#inhalt)
 
 Auf dem Hauptbildschirm wird eine abwärts zählende Uhr angezeigt. Der Startwert und der Aktivierungsschalter kann in diesem Menu eingestellt werden.
 
+Wird die Option "Gasabhängig" eingeschaltet, verlangsamt sich die Ablaufzeit entsprechend der Position des Gasknüppels.
+
 ![Timer](img/TXos_flight_timer.png "Timer")
 
 Tipp: Programmierung eines Timers mit Motor Stopp Funktion
 
-Schalter BI1 soll in Stellung 1 die “Motor Aus” Funktion aktivieren und der Timer soll nur laufen wenn BI1 auf 0 steht und der Gas Knüppel über -90% steht.
+Schalter SW1 soll in Stellung 1 die “Motor Aus” Funktion aktivieren und der Timer soll nur laufen wenn SW1 nicht auf 1 steht und der Gas Knüppel über -90% steht.
 
 1) Menü: Modelleinstell. => Motor aus<br/>
-Schalt auswählen, ENTER drücken und Schalter BI1 auswählen<br/>
-Den Schalter BI1 auf Stellung 1 schalten, dann nochmal ENTER drücken.<br/>
+Schalt auswählen, ENTER drücken und Schalter SW1 auswählen<br/>
+Den Schalter SW1 auf Stellung 1 schalten, dann nochmal ENTER drücken.<br/>
 Kanal Mot auf -100% stellen
 
 ![Timer1](img/TXos_timer_prog1.png "Timer1")
@@ -610,15 +659,16 @@ Der Schalter CS1 schaltet jetzt auf 1 wenn der Gasknüppel über -90% bewegt wir
 ![Timer2](img/TXos_timer_prog2.png "Timer2")
 
 3) Menü: Modelleinstell. => Logikschalter<br/>
-Der Logikschalter LS1 soll auf 1 schalten wenn BI1 auf 0 steht und CS1 auf 1.<br/>
-LS1 auf A&B stellen<br/>
-A auf BI1:0 stellen   (Dazu muss der Schalter BI1 auf Stellung 0 bewegt werden)<br/>
-B auf CS1:1 stellen   (Dazu muss der Gasknüppel auf > -90% bewegt werden)<br/>
+Der Logikschalter LS1 soll auf 1 schalten, wenn SW1 nicht auf 1 steht und CS1 auf 1.<br/>
+* LS1 auf A&B stellen
+* A auf Sw1:1 stellen   (Dazu muss der Schalter SW1 auf Stellung 1 bewegt werden)
+* A invertieren. (Von = auf <> umstellen)
+* B auf CS1:1 stellen   (Dazu muss der Gasknüppel auf > -90% bewegt werden)
 
 ![Timer3](img/TXos_timer_prog3.png "Timer3")
 
 4) Menü: Modelleinstell. => Timer<br/>
-Schalt auf LS1:1 stellen   (Dazu muss Schalter BI1 auf 0 stehen und Gasknüppel > -90%)<br/>
+Schalt auf LS1:1 stellen   (Dazu muss Schalter SW1 auf 0 stehen und Gasknüppel > -90%)<br/>
 Zeit auf die gewünschte Zeit einstellen.
 
 ![Timer4](img/TXos_timer_prog4.png "Timer4")
@@ -691,4 +741,3 @@ Bereich: -125 % bis +125 %<br/>
 Einstellung bei einem neuen Modell: +/- 125 %
 
 ![Servo Limit](img/TXos_servo_limit.png "Servo Limit")
-

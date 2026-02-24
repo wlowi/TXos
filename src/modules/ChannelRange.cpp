@@ -68,9 +68,9 @@ void ChannelRange::run( Controls &controls) {
         if( in < PORT_ANALOG_INPUT_COUNT) {
             v = controls.logicalGet( ch);
             if( v > 0) {
-                v = v * CFG->posRange_pct[in] / PERCENT_MAX_LIMIT;
+                v = v * CFG->posRange_pct[in] / (PERCENT_MAX_LIMIT);
             } else if( v < 0) {
-                v = v * CFG->negRange_pct[in] / PERCENT_MIN_LIMIT;
+                v = v * CFG->negRange_pct[in] / (PERCENT_MIN_LIMIT);
             }
             controls.logicalSet( ch, (channelValue_t)v);
         }

@@ -107,15 +107,16 @@ channelValue_t InputImpl::GetAuxValue( channel_t ch) {
 
 channelValue_t InputImpl::GetAnalogValue( channel_t ch) {
 
-    channelValue_t v[3];
+    channelValue_t v = 0;
+#define ADC_OVERSAMPLING 3
 
     if( ch < adcInputs) {
 
-        for( uint8_t i=0; i<3; i++) {
-            v[i] = analogRead( analogPins[ch]);
+        for( uint8_t i=0; i<ADC_OVERSAMPLING; i++) {
+            v += analogRead( analogPins[ch]);
         }
 
-        return (v[0]+v[1]+v[2]) / 3;
+        return v / ADC_OVERSAMPLING;
     }
 
     LOGV("InputImpl::GetStickValue: Illegal channel no. %d", ch);
