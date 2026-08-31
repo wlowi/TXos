@@ -25,36 +25,50 @@
 */
 
 #include "ServoSubtrim.h"
+#include "ModuleManager.h"
+#include "ServoRemap.h"
 
-extern const char* const OutputChannelNames[PPM_CHANNELS];
+extern ModuleManager moduleManager;
+extern const char *const LogicalChannelNames[LOGICAL_CHANNELS];
+extern const char *const OutputChannelNames[PPM_CHANNELS];
 
-/* The import/export dictionary. 
+/* The import/export dictionary.
  * See ImportExport.h
  */
-DICTROWA( r1, COMM_DATATYPE_INTARR, COMM_FIELD_PERCENT_ARRAY, servoSubtrim_t, trim_pct, PPM_CHANNELS)
-DICT( ServoSubtrim, COMM_SUBPACKET_SERVO_SUBTRIM, &r1)
+DICTROWA(r1, COMM_DATATYPE_INTARR, COMM_FIELD_PERCENT_ARRAY, servoSubtrim_t,
+         trim_pct, PPM_CHANNELS)
+DICT(ServoSubtrim, COMM_SUBPACKET_SERVO_SUBTRIM, &r1)
 
-ServoSubtrim::ServoSubtrim() : Module( MODULE_SERVO_SUBTRIM_TYPE, TEXT_MODULE_SERVO_SUBTRIM, COMM_SUBPACKET_SERVO_SUBTRIM) {
+ServoSubtrim::ServoSubtrim()
+    : Module(MODULE_SERVO_SUBTRIM_TYPE, TEXT_MODULE_SERVO_SUBTRIM,
+             COMM_SUBPACKET_SERVO_SUBTRIM) {
 
     setDefaults();
 }
 
 /* From Module */
 
-COMM_RC_t ServoSubtrim::exportConfig( ImportExport *exporter, uint8_t *config) const {
+COMM_RC_t ServoSubtrim::exportConfig(ImportExport *exporter,
+                                     uint8_t *config) const {
 
-    return exporter->runExport( DICT_ptr(ServoSubtrim), DICTROW_ptr(ServoSubtrim), config, sizeof(servoSubtrim_t));
+    return exporter->runExport(DICT_ptr(ServoSubtrim),
+                               DICTROW_ptr(ServoSubtrim), config,
+                               sizeof(servoSubtrim_t));
 }
 
-COMM_RC_t ServoSubtrim::importConfig( ImportExport *importer, uint8_t *config) const {
+COMM_RC_t ServoSubtrim::importConfig(ImportExport *importer,
+                                     uint8_t *config) const {
 
-    return importer->runImport( DICT_ptr(ServoSubtrim), DICTROW_ptr(ServoSubtrim), config, sizeof(servoSubtrim_t));
+    return importer->runImport(DICT_ptr(ServoSubtrim),
+                               DICTROW_ptr(ServoSubtrim), config,
+                               sizeof(servoSubtrim_t));
 }
 
-void ServoSubtrim::run( Controls &controls) {
+void ServoSubtrim::run(Controls &controls) {
 
-    for( channel_t ch = 0; ch < PPM_CHANNELS; ch++) {
-        controls.outputSet( ch, controls.outputGet( ch) + PCT_TO_CHANNEL( CFG->trim_pct[ch]));
+    for (channel_t ch = 0; ch < PPM_CHANNELS; ch++) {
+        controls.outputSet(ch, controls.outputGet(ch) +
+                                   PCT_TO_CHANNEL(CFG->trim_pct[ch]));
     }
 }
 
@@ -62,36 +76,40 @@ void ServoSubtrim::setDefaults() {
 
     INIT_NON_PHASED_CONFIGURATION(
 
-        for( channel_t ch = 0; ch < PPM_CHANNELS; ch++) {
-            CFG->trim_pct[ch] = 0;
-        }
+        for (channel_t ch = 0; ch < PPM_CHANNELS;
+             ch++) { CFG->trim_pct[ch] = 0; }
 
     )
 }
 
 /* From TableEditable */
 
-uint8_t ServoSubtrim::getRowCount() {
+uint8_t ServoSubtrim::getRowCount() { return PPM_CHANNELS; }
 
-    return PPM_CHANNELS;
-}
-
-const char *ServoSubtrim::getRowName( uint8_t row) {
+const char *ServoSubtrim::getRowName(uint8_t row) {
 
     return OutputChannelNames[row];
 }
 
-uint8_t ServoSubtrim::getColCount( uint8_t row) {
+uint8_t ServoSubtrim::getColCount(uint8_t row) { return 2; }
 
-    return 1;
+void ServoSubtrim::getValue(uint8_t row, uint8_t col, Cell *cell) {
+
+    if (col == 0) {
+        ServoRemap *remap = (ServoRemap *)moduleManager.getModuleByType(
+            MODULE_SET_MODEL, MODULE_SERVO_REMAP_TYPE);
+        int logicalChannel = remap->getSourceForChannel(row);
+        cell->setLabel(TEXT_OUT_length + 1, LogicalChannelNames[logicalChannel],
+                       TEXT_OUT_length);
+    } else if (col == 1) {
+        cell->setInt8(TEXT_OUT_length + TEXT_CONTROL_length +2, CFG->trim_pct[row], 0,
+                      PERCENT_MIN_LIMIT, PERCENT_MAX_LIMIT);
+    }
 }
 
-void ServoSubtrim::getValue( uint8_t row, uint8_t col, Cell *cell) {
+void ServoSubtrim::setValue(uint8_t row, uint8_t col, Cell *cell) {
 
-    cell->setInt8( TEXT_OUT_length +1, CFG->trim_pct[row], 0, PERCENT_MIN_LIMIT, PERCENT_MAX_LIMIT);
-}
-
-void ServoSubtrim::setValue( uint8_t row, uint8_t col, Cell *cell) {
-
-    CFG->trim_pct[row] = cell->getInt8();
+    if (col == 1) {
+        CFG->trim_pct[row] = cell->getInt8();
+    }
 }

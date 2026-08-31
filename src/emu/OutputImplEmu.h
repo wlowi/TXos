@@ -41,9 +41,14 @@ class OutputImplEmu : public wxStaticBoxSizer, public OutputImpl
         wxWindowID *channelIDs = NULL;
         wxGauge **gauges = NULL;
         wxStaticText **values = NULL;
+        wxStaticText **funcs = NULL;
+        int *logicalChannels = NULL;
 
+        int channels = 0;
         long lastFrameMs = 0;
         uint8_t modelID = 0;
+
+        void updateLogicalChannelNames();
 
     public:
         OutputImplEmu( wxWindow *parent, int channels);

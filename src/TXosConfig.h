@@ -153,18 +153,22 @@
 #define PORT_BUZZER              31
 
 #if HF_MODULE == HF_SPEKTRUM_PPM
+    #undef TELEMETRY_SUPPORT
     #undef PPM_CHANNELS
     #define PPM_CHANNELS            (9)
 
 #elif HF_MODULE == HF_JETI_TU2
+    #undef TELEMETRY_SUPPORT
     #undef ENABLE_BIND_MODULE
     #undef ENABLE_RANGETEST_MODULE
 
 #elif HF_MODULE == HF_SPEKTRUM_SERIAL
+    #define TELEMETRY_SUPPORT
     #define PORT_SERIAL_RX           16
     #define PORT_SERIAL_TX           17
 
 #elif HF_MODULE == HF_CRSF_SERIAL
+    #define TELEMETRY_SUPPORT
     #define PORT_SERIAL_RX           16
     #define PORT_SERIAL_TX           17
     #undef PPM_CHANNELS

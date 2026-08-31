@@ -29,15 +29,18 @@
  */
 
 #include "Controls.h"
+#include "EngineCut.h"
 #include "InputImpl.h"
+#include "ModuleManager.h"
 
+extern ModuleManager moduleManager;
 extern InputImpl *inputImpl;
 
 Controls::Controls() = default;
 
 void Controls::init() {
 
-    //inputImpl->init();
+    // inputImpl->init();
 }
 
 void Controls::GetControlValues() {
@@ -45,112 +48,117 @@ void Controls::GetControlValues() {
     channel_t ch;
 
     /* Clean values */
-    for( ch = 0; ch < INPUT_CHANNELS; ch++) {
+    for (ch = 0; ch < INPUT_CHANNELS; ch++) {
         controlSet.inputChannel[ch] = CHANNELVALUE_MID;
     }
 
-    for( ch = 0; ch < LOGICAL_CHANNELS; ch++) {
+    for (ch = 0; ch < LOGICAL_CHANNELS; ch++) {
         controlSet.logicalChannel[ch] = CHANNELVALUE_MID;
     }
 
-    for( ch = 0; ch < PPM_CHANNELS; ch++) {
+    for (ch = 0; ch < PPM_CHANNELS; ch++) {
         controlSet.outChannel[ch] = CHANNELVALUE_MID;
     }
 
     /* Read analog inputs, Range is 0 - 1023 (for ATmega2560) */
-    for( ch = 0; ch < PORT_ANALOG_INPUT_COUNT; ch++) {
-        controlSet.stickADCChannel[ch] = inputImpl->GetStickValue( ch);
+    for (ch = 0; ch < PORT_ANALOG_INPUT_COUNT; ch++) {
+        controlSet.stickADCChannel[ch] = inputImpl->GetStickValue(ch);
     }
 
-    for( ch = 0; ch < PORT_TRIM_INPUT_COUNT; ch++) {
-        controlSet.trimADCChannel[ch] = inputImpl->GetTrimValue( ch);
+    for (ch = 0; ch < PORT_TRIM_INPUT_COUNT; ch++) {
+        controlSet.trimADCChannel[ch] = inputImpl->GetTrimValue(ch);
     }
 
-    for( ch = 0; ch < PORT_AUX_INPUT_COUNT; ch++) {
-        controlSet.auxADCChannel[ch] = inputImpl->GetAuxValue( ch);
+    for (ch = 0; ch < PORT_AUX_INPUT_COUNT; ch++) {
+        controlSet.auxADCChannel[ch] = inputImpl->GetAuxValue(ch);
     }
 
+#ifdef INVERT_CH1
+    controlSet.stickADCChannel[0] =
+        ADC_RESOLUTION - controlSet.stickADCChannel[0];
+#endif
+#ifdef INVERT_CH2
+    controlSet.stickADCChannel[1] =
+        ADC_RESOLUTION - controlSet.stickADCChannel[1];
+#endif
+#ifdef INVERT_CH3
+    controlSet.stickADCChannel[2] =
+        ADC_RESOLUTION - controlSet.stickADCChannel[2];
+#endif
+#ifdef INVERT_CH4
+    controlSet.stickADCChannel[3] =
+        ADC_RESOLUTION - controlSet.stickADCChannel[3];
+#endif
 
-    #ifdef INVERT_CH1
-        controlSet.stickADCChannel[0] = ADC_RESOLUTION - controlSet.stickADCChannel[0];
-    #endif
-    #ifdef INVERT_CH2
-        controlSet.stickADCChannel[1] = ADC_RESOLUTION - controlSet.stickADCChannel[1];
-    #endif
-    #ifdef INVERT_CH3
-        controlSet.stickADCChannel[2] = ADC_RESOLUTION - controlSet.stickADCChannel[2];
-    #endif
-    #ifdef INVERT_CH4
-        controlSet.stickADCChannel[3] = ADC_RESOLUTION - controlSet.stickADCChannel[3];
-    #endif
-
-
-    #ifdef INVERT_TRIM_CH1
-        controlSet.trimADCChannel[0] = ADC_RESOLUTION - controlSet.trimADCChannel[0];
-    #endif
-    #ifdef INVERT_TRIM_CH2
-        controlSet.trimADCChannel[1] = ADC_RESOLUTION - controlSet.trimADCChannel[1];
-    #endif
-    #ifdef INVERT_TRIM_CH3
-        controlSet.trimADCChannel[2] = ADC_RESOLUTION - controlSet.trimADCChannel[2];
-    #endif
-    #ifdef INVERT_TRIM_CH4
-        controlSet.trimADCChannel[3] = ADC_RESOLUTION - controlSet.trimADCChannel[3];
-    #endif
-
+#ifdef INVERT_TRIM_CH1
+    controlSet.trimADCChannel[0] =
+        ADC_RESOLUTION - controlSet.trimADCChannel[0];
+#endif
+#ifdef INVERT_TRIM_CH2
+    controlSet.trimADCChannel[1] =
+        ADC_RESOLUTION - controlSet.trimADCChannel[1];
+#endif
+#ifdef INVERT_TRIM_CH3
+    controlSet.trimADCChannel[2] =
+        ADC_RESOLUTION - controlSet.trimADCChannel[2];
+#endif
+#ifdef INVERT_TRIM_CH4
+    controlSet.trimADCChannel[3] =
+        ADC_RESOLUTION - controlSet.trimADCChannel[3];
+#endif
 
     /* Read switch inputs */
-    for( switch_t sw = 0; sw < SWITCHES; sw++) {
+    for (switch_t sw = 0; sw < SWITCHES; sw++) {
         switchState_t state;
 
-        if( sw < inputImpl->GetSwitches()) {
-            state = inputImpl->GetSwitchValue( sw);
+        if (sw < inputImpl->GetSwitches()) {
+            state = inputImpl->GetSwitchValue(sw);
         } else if (switchConfGet(sw) == SW_CONF_FIXED_ON) {
             state = SW_STATE_1;
         } else {
             state = SW_STATE_0;
         }
 
-        switchSet( sw, state);
+        switchSet(sw, state);
     }
 }
 
-channelValue_t Controls::stickADCGet( channel_t ch) {
+channelValue_t Controls::stickADCGet(channel_t ch) {
 
     return controlSet.stickADCChannel[ch];
 }
 
-channelValue_t Controls::trimADCGet( channel_t ch) {
+channelValue_t Controls::trimADCGet(channel_t ch) {
 
     return controlSet.trimADCChannel[ch];
 }
 
-channelValue_t Controls::auxADCGet( channel_t ch) {
+channelValue_t Controls::auxADCGet(channel_t ch) {
 
     return controlSet.auxADCChannel[ch];
 }
 
-void Controls::inputSet( channel_t ch, channelValue_t value) {
+void Controls::inputSet(channel_t ch, channelValue_t value) {
 
-    if( ch >= INPUT_CHANNELS) {
+    if (ch >= INPUT_CHANNELS) {
         LOGV("Controls::inputSet: ERROR: channel %u\n", ch);
         return;
     }
 
-    if( value > CHANNELVALUE_MAX_LIMIT) {
+    if (value > CHANNELVALUE_MAX_LIMIT) {
         value = CHANNELVALUE_MAX_LIMIT;
     }
 
-    if( value < CHANNELVALUE_MIN_LIMIT) {
+    if (value < CHANNELVALUE_MIN_LIMIT) {
         value = CHANNELVALUE_MIN_LIMIT;
     }
 
     controlSet.inputChannel[ch] = value;
 }
 
-channelValue_t Controls::inputGet( channel_t ch) {
+channelValue_t Controls::inputGet(channel_t ch) {
 
-    if( ch >= INPUT_CHANNELS) {
+    if (ch >= INPUT_CHANNELS) {
         LOGV("Controls::inputGet: ERROR: channel %u\n", ch);
         return CHANNELVALUE_MID;
     }
@@ -158,27 +166,27 @@ channelValue_t Controls::inputGet( channel_t ch) {
     return controlSet.inputChannel[ch];
 }
 
-void Controls::trimSet( channel_t ch, channelValue_t value) {
+void Controls::trimSet(channel_t ch, channelValue_t value) {
 
-    if( ch >= PORT_TRIM_INPUT_COUNT) {
+    if (ch >= PORT_TRIM_INPUT_COUNT) {
         LOGV("Controls::trimSet: ERROR: channel %u\n", ch);
         return;
     }
 
-    if( value > CHANNELVALUE_MAX_LIMIT) {
+    if (value > CHANNELVALUE_MAX_LIMIT) {
         value = CHANNELVALUE_MAX_LIMIT;
     }
 
-    if( value < CHANNELVALUE_MIN_LIMIT) {
+    if (value < CHANNELVALUE_MIN_LIMIT) {
         value = CHANNELVALUE_MIN_LIMIT;
     }
 
     controlSet.trimChannel[ch] = value;
 }
 
-channelValue_t Controls::trimGet( channel_t ch) {
+channelValue_t Controls::trimGet(channel_t ch) {
 
-    if( ch >= PORT_TRIM_INPUT_COUNT) {
+    if (ch >= PORT_TRIM_INPUT_COUNT) {
         LOGV("Controls::trimGet: ERROR: channel %u\n", ch);
         return 0;
     }
@@ -186,54 +194,66 @@ channelValue_t Controls::trimGet( channel_t ch) {
     return controlSet.trimChannel[ch];
 }
 
-void Controls::logicalSet( channel_t ch, channelValue_t value) {
+void Controls::logicalSet(channel_t ch, channelValue_t value) {
 
-    if( ch >= LOGICAL_CHANNELS) {
+    if (ch >= LOGICAL_CHANNELS) {
         LOGV("Controls::logicalSet: ERROR: channel %u\n", ch);
         return;
     }
 
-    if( value > CHANNELVALUE_MAX_LIMIT) {
+    /*
+     * If engine cut is enabled, the logical "Motor" channel should stay at
+     * the defined level under all circumstances.
+     */
+    if (ch == CHANNEL_THROTTLE) {
+        EngineCut *engineCut = (EngineCut *)moduleManager.getModuleByType(
+            MODULE_SET_MODEL, MODULE_ENGINE_CUT_TYPE);
+        if (engineCut && engineCut->isSave()) {
+            value = PCT_TO_CHANNEL(engineCut->getEngineCutPct());
+        }
+    }
+
+    if (value > CHANNELVALUE_MAX_LIMIT) {
         value = CHANNELVALUE_MAX_LIMIT;
     }
 
-    if( value < CHANNELVALUE_MIN_LIMIT) {
+    if (value < CHANNELVALUE_MIN_LIMIT) {
         value = CHANNELVALUE_MIN_LIMIT;
     }
 
     controlSet.logicalChannel[ch] = value;
 }
 
-channelValue_t Controls::logicalGet( channel_t ch) {
+channelValue_t Controls::logicalGet(channel_t ch) {
 
-    if( ch >= LOGICAL_CHANNELS) {
+    if (ch >= LOGICAL_CHANNELS) {
         LOGV("Controls::logicalGet: ERROR: channel %u\n", ch);
         return CHANNELVALUE_MID;
     }
 
     return controlSet.logicalChannel[ch];
 }
-void Controls::outputSet( channel_t ch, channelValue_t value) {
+void Controls::outputSet(channel_t ch, channelValue_t value) {
 
-    if( ch >= PPM_CHANNELS) {
+    if (ch >= PPM_CHANNELS) {
         LOGV("Controls::outputSet: ERROR: channel %u\n", ch);
         return;
     }
 
-    if( value > CHANNELVALUE_MAX_LIMIT) {
+    if (value > CHANNELVALUE_MAX_LIMIT) {
         value = CHANNELVALUE_MAX_LIMIT;
     }
 
-    if( value < CHANNELVALUE_MIN_LIMIT) {
+    if (value < CHANNELVALUE_MIN_LIMIT) {
         value = CHANNELVALUE_MIN_LIMIT;
     }
 
     controlSet.outChannel[ch] = value;
 }
 
-channelValue_t Controls::outputGet( channel_t ch) {
+channelValue_t Controls::outputGet(channel_t ch) {
 
-    if( ch >= PPM_CHANNELS) {
+    if (ch >= PPM_CHANNELS) {
         LOGV("Controls::outputGet: ERROR: channel %u\n", ch);
         return CHANNELVALUE_MID;
     }
@@ -241,24 +261,24 @@ channelValue_t Controls::outputGet( channel_t ch) {
     return controlSet.outChannel[ch];
 }
 
-void Controls::switchSet( switch_t sw, switchState_t value) {
+void Controls::switchSet(switch_t sw, switchState_t value) {
 
-    uint8_t swn = GET_SWITCH( sw);
+    uint8_t swn = GET_SWITCH(sw);
 
     // LOGV("Controls::switchSet(): sw=%d state=%d\n", swn, value);
 
-    if( swn < SWITCHES) {
-        SET_SWITCH_STATE( controlSet.switches[swn], value);
+    if (swn < SWITCHES) {
+        SET_SWITCH_STATE(controlSet.switches[swn], value);
     }
 }
 
-switchState_t Controls::switchGet( switch_t sw) {
+switchState_t Controls::switchGet(switch_t sw) {
 
-    uint8_t swn = GET_SWITCH( sw);
+    uint8_t swn = GET_SWITCH(sw);
     switchState_t state;
 
-    if( swn < SWITCHES) {
-        state = GET_SWITCH_STATE( controlSet.switches[swn]);
+    if (swn < SWITCHES) {
+        state = GET_SWITCH_STATE(controlSet.switches[swn]);
     } else {
         state = SW_STATE_DONTCARE;
     }
@@ -268,23 +288,23 @@ switchState_t Controls::switchGet( switch_t sw) {
     return state;
 }
 
-switchConf_t Controls::switchConfGet( switch_t sw) {
+switchConf_t Controls::switchConfGet(switch_t sw) {
 
-    uint8_t swn = GET_SWITCH( sw);
+    uint8_t swn = GET_SWITCH(sw);
 
-    return inputImpl->GetSwitchConf( swn);
+    return inputImpl->GetSwitchConf(swn);
 }
 
-switch_t Controls::getSwitchByType( switchConf_t type, uint8_t idx) {
+switch_t Controls::getSwitchByType(switchConf_t type, uint8_t idx) {
 
     switch_t sw;
 
     // Set switch to unused
-    INIT_SWITCH( sw);
+    INIT_SWITCH(sw);
 
-    for( switch_t i = 0; i < SWITCHES; i++) {
-        if(  switchConfGet(i) == type) {
-            if(idx == 0) {
+    for (switch_t i = 0; i < SWITCHES; i++) {
+        if (switchConfGet(i) == type) {
+            if (idx == 0) {
                 sw = i;
                 break;
             } else {
@@ -296,16 +316,16 @@ switch_t Controls::getSwitchByType( switchConf_t type, uint8_t idx) {
     return sw;
 }
 
-void Controls::copySwitchName( char *b, switch_t sw) {
+void Controls::copySwitchName(char *b, switch_t sw) {
 
-    uint8_t swn = GET_SWITCH( sw);
+    uint8_t swn = GET_SWITCH(sw);
     size_t idx = 0;
     const char *swType;
 
     /* b must be of length TEXT_SW_NAME_length +1 */
 
-    if( IS_SWITCH_UNUSED( sw)) {
-        strcpy( b, TEXT_SW_TYPE_UNUSED);
+    if (IS_SWITCH_UNUSED(sw)) {
+        strcpy(b, TEXT_SW_TYPE_UNUSED);
     } else {
 
         switch (switchConfGet(sw)) {
@@ -338,8 +358,8 @@ void Controls::copySwitchName( char *b, switch_t sw) {
             swType = TEXT_SW_TYPE_UNUSED;
             break;
         }
-        strcpy( &b[idx], swType);
-        idx = strlen( b);
+        strcpy(&b[idx], swType);
+        idx = strlen(b);
 
         switch (switchConfGet(sw)) {
         case SW_CONF_2STATE:
@@ -366,24 +386,25 @@ void Controls::copySwitchName( char *b, switch_t sw) {
     }
 }
 
-void Controls::copySwitchNameAndState( char *b, switch_t sw) {
+void Controls::copySwitchNameAndState(char *b, switch_t sw) {
 
     size_t len;
 
     /* b must be of length TEXT_SW_NAME_STATE_length +1 */
 
-    copySwitchName( b, sw);
+    copySwitchName(b, sw);
 
-    if( IS_SWITCH_USED( sw)) {
-        len = strlen( b);
+    if (IS_SWITCH_USED(sw)) {
+        len = strlen(b);
         b[len++] = ':';
-        b[len++] = '0' + GET_SWITCH_STATE( sw);
+        b[len++] = '0' + GET_SWITCH_STATE(sw);
         b[len] = '\0';
     }
 }
 
-bool Controls::evalSwitches( switch_t trigger) {
+bool Controls::evalSwitches(switch_t trigger) {
 
-    return IS_SWITCH_USED( trigger)
-            && GET_SWITCH_STATE( trigger) == GET_SWITCH_STATE( controlSet.switches[ GET_SWITCH(trigger)]);
+    return IS_SWITCH_USED(trigger) &&
+           GET_SWITCH_STATE(trigger) ==
+               GET_SWITCH_STATE(controlSet.switches[GET_SWITCH(trigger)]);
 }

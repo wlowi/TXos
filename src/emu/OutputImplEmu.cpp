@@ -25,6 +25,12 @@
 */
 
 #include "OutputImplEmu.h"
+#include "ServoRemap.h"
+#include "ModuleManager.h"
+
+extern ModuleManager moduleManager;
+extern const char* const LogicalChannelNames[LOGICAL_CHANNELS];
+extern const char* const OutputChannelNames[PPM_CHANNELS];
 
 const uint8_t BINDMODE_COUNT = 1;
 static bindmode_t BINDMODES[BINDMODE_COUNT] = {
@@ -34,9 +40,12 @@ static bindmode_t BINDMODES[BINDMODE_COUNT] = {
 OutputImplEmu::OutputImplEmu( wxWindow *parent, int channels)
     : wxStaticBoxSizer(wxHORIZONTAL, parent, "Servos")
 {
+    this->channels = channels;
     channelIDs = new wxWindowID[channels];
     gauges = new wxGauge*[channels];
     values = new wxStaticText*[channels];
+    funcs = new wxStaticText*[channels];
+    logicalChannels = new int[channels];
 
     AddSpacer(20);
 
@@ -48,14 +57,39 @@ OutputImplEmu::OutputImplEmu( wxWindow *parent, int channels)
         vbox->AddSpacer(10);
         vbox->Add( gauge);
         wxString str;
-        str.Printf(wxT(" CH%d  "), channel+1);
+
+        str.Printf(wxT("-1000 "), channel+1);
         values[channel] = new wxStaticText(parent, wxID_ANY, str);
         vbox->Add( values[channel]);
+
         vbox->AddSpacer(10);
+        str.Printf(OutputChannelNames[channel]);
         vbox->Add( new wxStaticText(parent, wxID_ANY, str));
+
+        vbox->AddSpacer(10);
+        str.Printf(wxT("%s"), "---");
+        logicalChannels[channel] = -1;
+        funcs[channel] = new wxStaticText(parent, wxID_ANY, str);
+        vbox->Add( funcs[channel]);
+
         Add( vbox);
 
         gauge->SetValue(1500);
+    }
+}
+
+void OutputImplEmu::updateLogicalChannelNames() {
+
+    ServoRemap *remap = (ServoRemap*)moduleManager.getModuleByType( MODULE_SET_MODEL, MODULE_SERVO_REMAP_TYPE);
+
+    for( int channel=0; channel<channels; channel++) {
+        int logicalChannel = remap->getSourceForChannel(channel);
+        if( logicalChannels[channel] != logicalChannel) {
+            wxString str;
+            str.Printf(wxT("%s"), LogicalChannelNames[logicalChannel]);
+            funcs[channel]->SetLabel( str);
+            logicalChannels[channel] = logicalChannel;
+        }
     }
 }
 
@@ -75,6 +109,9 @@ bool OutputImplEmu::acceptChannels() {
 
     if( now >= lastFrameMs + PPM_FRAME_TIME_usec/1000 ) {
         lastFrameMs = now;
+
+        updateLogicalChannelNames();
+
         return true;
     }
 

@@ -251,8 +251,10 @@
 #endif
 
 #include "ImportExport.h"
-#include "Telemetry.h"
 
+#ifdef TELEMETRY_SUPPORT
+#include "Telemetry.h"
+#endif
 
 #ifdef ARDUINO
 
@@ -539,7 +541,9 @@ TextUI userInterface;
 ConfigBlock configBlock;
 SystemConfig systemConfig;
 ModelSelect modelSelect;
+#ifdef TELEMETRY_SUPPORT
 Telemetry telemetry;
+#endif
 ModuleManager moduleManager( configBlock);
 
 HomeScreen *homeScreen;

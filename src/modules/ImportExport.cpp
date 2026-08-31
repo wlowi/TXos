@@ -156,7 +156,7 @@ bool ImportExport::findDictEntry( const DICTROW_t* row[], nameType_t cmd, uint8_
 
     uint8_t ri = 0;
 
-    while ((drow = (const DICTROW_t*)pgm_read_ptr_far(&(row[ri++])))) {
+    while ((drow = (const DICTROW_t*)pgm_read_ptr_far((uint_farptr_t)&(row[ri++])))) {
 
         name = pgm_read_word(&(drow->rowName));
 
@@ -189,7 +189,7 @@ void ImportExport::exportModulePhase(const DICTROW_t* row[], uint8_t* config)
 
     uint8_t ri = 0;
 
-    while ((drow = (const DICTROW_t*)pgm_read_ptr_far(&(row[ri++])))) {
+    while ((drow = (const DICTROW_t*)pgm_read_ptr_far((uint_farptr_t)&(row[ri++])))) {
 
         dataType = pgm_read_byte(&(drow->dataType));
         name = pgm_read_word(&(drow->rowName));

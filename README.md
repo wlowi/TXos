@@ -123,7 +123,9 @@ Please obey the license.
 ## Change History
 
 ```
-0.5.18
+0.5.19 Some UI improvements.
+       Keep value of logical "Mot" channel to correct value if engine cut is enabled. 
+0.5.18 CRSF and Spektrum Telemetry. First cut. 
 0.5.17 Disable sleep. Fix input names array.
 0.5.16 CRSF Protokol
 0.5.15 Serielles Spektrum Protokol

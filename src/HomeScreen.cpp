@@ -33,7 +33,9 @@
 
 extern ModuleManager moduleManager;
 extern ModelSelect modelSelect;
+#ifdef TELEMETRY_SUPPORT
 extern Telemetry telemetry;
+#endif
 extern Buzzer buzzer;
 
 const buzzerCmd_t SoundClear[] = {BUZZER_PLAY(1), BUZZER_PAUSE(1),
@@ -127,6 +129,7 @@ void HomeScreen::handleEvent(TextUI *ui, Event *e) {
             }
             break;
 
+#ifdef TELEMETRY_SUPPORT
         case KEY_UP:
             if (screenMode < (SCREENMODE_COUNT - 1)) {
                 screenMode = static_cast<ScreenMode>(screenMode + 1);
@@ -140,6 +143,7 @@ void HomeScreen::handleEvent(TextUI *ui, Event *e) {
                 refresh = REFRESH_FULL;
             }
             break;
+#endif
 
         default:
             break;
@@ -250,6 +254,7 @@ void HomeScreen::displayHomeScreen() {
 
 void HomeScreen::displayTelemetryScreen(uint8_t tid) {
 
+#ifdef TELEMETRY_SUPPORT
     TelemetryScreen *tscr;
     tscr = telemetry.getTelemetryScreen(tid);
 
@@ -285,6 +290,8 @@ void HomeScreen::displayTelemetryScreen(uint8_t tid) {
 
         refresh = REFRESH_OK;
     }
+#endif
+
 }
 
 /**

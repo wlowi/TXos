@@ -26,6 +26,8 @@
 
 #include "Telemetry.h"
 
+#ifdef TELEMETRY_SUPPORT
+
 #if HF_MODULE == HF_SPEKTRUM_SERIAL
 #include "Telemetry_SPEKTRUM.h"
 #elif HF_MODULE == HF_CRSF_SERIAL
@@ -156,3 +158,5 @@ const char *Telemetry::readableName(uint8_t sensor_id) {
         return "???";
     }
 }
+
+#endif

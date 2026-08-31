@@ -27,8 +27,11 @@
 #ifndef _Telemetry_h_
 #define _Telemetry_h_
 
-#include "Comm.h"
 #include "TXos.h"
+
+#ifdef TELEMETRY_SUPPORT
+
+#include "Comm.h"
 
 typedef long ValueConversion_cb(long);
 
@@ -89,5 +92,8 @@ class Telemetry {
     const char *readableUnit(uint8_t unit_id);
     const char *readableName(uint8_t sensor_id);
 };
+
+/* TELEMETRY_SUPPORT */
+#endif
 
 #endif

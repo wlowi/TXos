@@ -90,7 +90,7 @@ InputImpl::InputImpl( wxWindow *parent,
         vbox->Add( slider);
         wxString str;
         if( channel < stickCount) {
-            str.Printf(wxT("CH%d"), channel+1);
+            str.Printf(wxT("In%d"), channel+1);
 #if STICK_TRIM == ANALOG_TRIM
         } else if( channel < stickCount + trimCount) {
             str.Printf(wxT("Trim%d"), channel+1-stickCount);

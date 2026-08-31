@@ -33,7 +33,9 @@ Dazu schließen Sie den Empfänger and die Versorgungsspannung an und warten ein
 
 Verbinden sie nun den PC mit dem vom Empfänger aufgespannten WiFi Hotspot.
 
-Öffnen Sie den Webbrowser und geben als Adresse htt://10.0.0.1 an.
+Der Name des Hotspots ist "ExpressLRS RX" und das Passwort "expresslrs".
+
+Öffnen Sie den Webbrowser und geben als Adresse http://10.0.0.1 an.
 
 ![FirmwareUpload](img/UPLOAD.png "Firmware Upload")
 

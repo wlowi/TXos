@@ -25,7 +25,11 @@
 */
 
 #include "ServoMonitor.h"
+#include "ServoRemap.h"
+#include "ModuleManager.h"
 
+extern ModuleManager moduleManager;
+extern const char* const LogicalChannelNames[LOGICAL_CHANNELS];
 extern const char* const OutputChannelNames[PPM_CHANNELS];
 
 ServoMonitor::ServoMonitor( Controls &controls) : Module( MODULE_SERVO_MONITOR_TYPE, TEXT_MODULE_MONITOR, COMM_SUBPACKET_NONE) , current( controls) {
@@ -58,12 +62,18 @@ const char *ServoMonitor::getRowName( uint8_t row) {
 
 uint8_t ServoMonitor::getColCount( uint8_t row) {
 
-    return 1;
+    return 2;
 }
 
 void ServoMonitor::getValue( uint8_t row, uint8_t col, Cell *cell) {
 
-    cell->setInt8( TEXT_OUT_length +1, CHANNEL_TO_PCT ( current.outputGet( row)), 0, PERCENT_MIN_LIMIT, PERCENT_MAX_LIMIT);
+    if( col == 0) {
+        ServoRemap *remap = (ServoRemap*)moduleManager.getModuleByType( MODULE_SET_MODEL, MODULE_SERVO_REMAP_TYPE);
+        int logicalChannel = remap->getSourceForChannel(row);
+        cell->setLabel( TEXT_OUT_length + 1, LogicalChannelNames[logicalChannel], TEXT_OUT_length);
+    } else if (col == 1) {
+        cell->setInt8( TEXT_OUT_length + TEXT_CONTROL_length +2, CHANNEL_TO_PCT ( current.outputGet( row)), 0, PERCENT_MIN_LIMIT, PERCENT_MAX_LIMIT);
+    }
 }
 
 void ServoMonitor::setValue( uint8_t row, uint8_t col, Cell *cell) {
@@ -73,5 +83,5 @@ void ServoMonitor::setValue( uint8_t row, uint8_t col, Cell *cell) {
 
 bool ServoMonitor::hasChanged( uint8_t row, uint8_t col) {
 
-    return true;
+    return (col == 1); // Always update column 1, The channel value.
 }

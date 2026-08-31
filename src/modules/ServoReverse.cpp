@@ -25,37 +25,49 @@
 */
 
 #include "ServoReverse.h"
+#include "ModuleManager.h"
+#include "ServoRemap.h"
 
-extern const char* const OutputChannelNames[PPM_CHANNELS];
+extern ModuleManager moduleManager;
+extern const char *const LogicalChannelNames[LOGICAL_CHANNELS];
+extern const char *const OutputChannelNames[PPM_CHANNELS];
 
-/* The import/export dictionary. 
+/* The import/export dictionary.
  * See ImportExport.h
  */
-DICTROW( r1, COMM_DATATYPE_UINT16, COMM_FIELD_BITS, servoReverse_t, revBits)
-DICT( ServoReverse, COMM_SUBPACKET_SERVO_REVERSE, &r1)
+DICTROW(r1, COMM_DATATYPE_UINT16, COMM_FIELD_BITS, servoReverse_t, revBits)
+DICT(ServoReverse, COMM_SUBPACKET_SERVO_REVERSE, &r1)
 
-ServoReverse::ServoReverse() : Module( MODULE_SERVO_REVERSE_TYPE, TEXT_MODULE_SERVO_REVERSE, COMM_SUBPACKET_SERVO_REVERSE) {
+ServoReverse::ServoReverse()
+    : Module(MODULE_SERVO_REVERSE_TYPE, TEXT_MODULE_SERVO_REVERSE,
+             COMM_SUBPACKET_SERVO_REVERSE) {
 
     setDefaults();
 }
 
 /* From Module */
 
-COMM_RC_t ServoReverse::exportConfig( ImportExport *exporter, uint8_t *config) const {
+COMM_RC_t ServoReverse::exportConfig(ImportExport *exporter,
+                                     uint8_t *config) const {
 
-    return exporter->runExport( DICT_ptr(ServoReverse), DICTROW_ptr(ServoReverse), config, sizeof(servoReverse_t));
+    return exporter->runExport(DICT_ptr(ServoReverse),
+                               DICTROW_ptr(ServoReverse), config,
+                               sizeof(servoReverse_t));
 }
 
-COMM_RC_t ServoReverse::importConfig( ImportExport *importer, uint8_t *config) const {
+COMM_RC_t ServoReverse::importConfig(ImportExport *importer,
+                                     uint8_t *config) const {
 
-    return importer->runImport( DICT_ptr(ServoReverse), DICTROW_ptr(ServoReverse), config, sizeof(servoReverse_t));
+    return importer->runImport(DICT_ptr(ServoReverse),
+                               DICTROW_ptr(ServoReverse), config,
+                               sizeof(servoReverse_t));
 }
 
-void ServoReverse::run( Controls &controls) {
+void ServoReverse::run(Controls &controls) {
 
-    for( channel_t ch = 0; ch < PPM_CHANNELS; ch++) {
-        if( IS_BIT_SET( CFG->revBits, ch)) {
-            controls.outputSet( ch, -controls.outputGet(ch));
+    for (channel_t ch = 0; ch < PPM_CHANNELS; ch++) {
+        if (IS_BIT_SET(CFG->revBits, ch)) {
+            controls.outputSet(ch, -controls.outputGet(ch));
         }
     }
 }
@@ -71,31 +83,36 @@ void ServoReverse::setDefaults() {
 
 /* From TableEditable */
 
-uint8_t ServoReverse::getRowCount() {
+uint8_t ServoReverse::getRowCount() { return PPM_CHANNELS; }
 
-    return PPM_CHANNELS;
-}
-
-const char *ServoReverse::getRowName( uint8_t row) {
+const char *ServoReverse::getRowName(uint8_t row) {
 
     return OutputChannelNames[row];
 }
 
-uint8_t ServoReverse::getColCount( uint8_t row) {
+uint8_t ServoReverse::getColCount(uint8_t row) { return 2; }
 
-    return 1;
+void ServoReverse::getValue(uint8_t row, uint8_t col, Cell *cell) {
+
+    if (col == 0) {
+        ServoRemap *remap = (ServoRemap *)moduleManager.getModuleByType(
+            MODULE_SET_MODEL, MODULE_SERVO_REMAP_TYPE);
+        int logicalChannel = remap->getSourceForChannel(row);
+        cell->setLabel(TEXT_OUT_length + 1, LogicalChannelNames[logicalChannel],
+                       TEXT_OUT_length);
+    } else if (col == 1) {
+        cell->setBool(TEXT_OUT_length + TEXT_CONTROL_length + 2,
+                      IS_BIT_SET(CFG->revBits, row));
+    }
 }
 
-void ServoReverse::getValue( uint8_t row, uint8_t col, Cell *cell) {
+void ServoReverse::setValue(uint8_t row, uint8_t col, Cell *cell) {
 
-    cell->setBool( TEXT_OUT_length +1, IS_BIT_SET( CFG->revBits, row));
-}
-
-void ServoReverse::setValue( uint8_t row, uint8_t col, Cell *cell) {
-    
-    if( cell->getBool()) {
-        BIT_SET( CFG->revBits, row);
-    } else {
-        BIT_CLEAR( CFG->revBits, row);
+    if (col == 1) {
+        if (cell->getBool()) {
+            BIT_SET(CFG->revBits, row);
+        } else {
+            BIT_CLEAR(CFG->revBits, row);
+        }
     }
 }
